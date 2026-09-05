@@ -223,6 +223,83 @@ class PhieuLayVeAnService {
 
     }
 
+    async getGiaVePreview(
+        query = {}
+    ) {
+
+        const thucDonNgayId =
+            Number(
+                query.thucDonNgayId
+            );
+
+
+        if (
+            !Number.isInteger(
+                thucDonNgayId
+            ) ||
+            thucDonNgayId <=
+                0
+        ) {
+
+            throw new ApiError(
+                400,
+                "Thực đơn ngày không hợp lệ."
+            );
+
+        }
+
+
+        if (
+            query.doiTuongLayVe ===
+                undefined ||
+            query.doiTuongLayVe ===
+                null ||
+            query.doiTuongLayVe ===
+                ""
+        ) {
+
+            throw new ApiError(
+                400,
+                "Đối tượng lấy vé là bắt buộc."
+            );
+
+        }
+
+
+        const doiTuongLayVe =
+            Number(
+                query.doiTuongLayVe
+            );
+
+
+        this.validateDoiTuongLayVe(
+            doiTuongLayVe
+        );
+
+
+        await this.validateThucDonNgay(
+            thucDonNgayId
+        );
+
+
+        const donGia =
+            await this.getDonGia(
+                thucDonNgayId,
+                doiTuongLayVe
+            );
+
+
+        return {
+
+            thucDonNgayId,
+
+            doiTuongLayVe,
+
+            donGia
+
+        };
+
+    }
 
     async getChiTiet(
         id

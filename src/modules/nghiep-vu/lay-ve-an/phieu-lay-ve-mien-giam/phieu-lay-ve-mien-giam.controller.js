@@ -136,7 +136,7 @@ class PhieuLayVeMienGiamController {
                 await service
                     .apDung(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -172,7 +172,7 @@ class PhieuLayVeMienGiamController {
                 await service
                     .create(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 

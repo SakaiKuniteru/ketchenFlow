@@ -3,6 +3,7 @@
 const danhMucWebController = require("../../controllers/danh-muc.controller");
 const thucDonWebController = require("../../controllers/thuc-don.controller");
 const chiTietWebController = require("../../controllers/chi-tiet.controller");
+const veAnWebController = require("../../controllers/ve-an.controller");
 
 const danhMucRoutes = [
     {
@@ -188,8 +189,17 @@ const chiTietRoutes = [
     }
 ];
 
+const veAnRoutes = [
+    {
+        method: "get",
+        path: "/lay-ve-an",
+        handler: veAnWebController.layVeAn
+    }
+];
+
 module.exports = [
     ...danhMucRoutes,
     ...thucDonRoutes,
-    ...chiTietRoutes
+    ...chiTietRoutes,
+    ...veAnRoutes
 ];

@@ -136,7 +136,7 @@ class VeAnController {
                 await service
                     .xacNhanSuDung(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -179,7 +179,7 @@ class VeAnController {
                     .huy(
                         id,
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 

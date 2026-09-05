@@ -335,20 +335,56 @@ class PhieuLayVeMienGiamService {
                     )
                 : [];
 
+        const danhSach =
+            await repository
+                .getMienGiamKhaDung({
 
-        return await repository
-            .getMienGiamKhaDung({
+                    taiKhoanId,
 
-                taiKhoanId,
+                    chucVuId,
 
-                chucVuId,
+                    vaiTroIds
 
-                vaiTroIds
+                });
 
-            });
 
+        const soTienHienTai =
+            Number(
+                phieu.thanh_tien ??
+                phieu.tien_goc ??
+                0
+            );
+
+
+        return danhSach.map(
+            item => {
+
+                const soTienGiamDuKien =
+                    this.tinhSoTienGiam(
+                        soTienHienTai,
+                        item.loaiMienGiam,
+                        item.giaTri
+                    );
+
+
+                return {
+
+                    ...item,
+
+                    soTienGiamDuKien,
+
+                    soTienSauGiamDuKien:
+                        Math.max(
+                            soTienHienTai -
+                            soTienGiamDuKien,
+                            0
+                        )
+
+                };
+
+            }
+        );
     }
-
 
     tinhSoTienGiam(
         soTienTruocGiam,
@@ -356,52 +392,104 @@ class PhieuLayVeMienGiamService {
         giaTri
     ) {
 
-        let soTienGiam =
-            0;
+        const soTien =
+            Number(
+                soTienTruocGiam
+            );
+
+
+        const loai =
+            Number(
+                loaiMienGiam
+            );
+
+
+        const giaTriMienGiam =
+            Number(
+                giaTri
+            );
 
 
         if (
-            Number(
-                loaiMienGiam
-            ) ===
-            10
+            !Number.isFinite(
+                soTien
+            ) ||
+            soTien < 0
         ) {
 
-            soTienGiam =
-                soTienTruocGiam *
-                Number(
-                    giaTri
-                ) /
-                100;
+            throw new ApiError(
+                400,
+                "Số tiền trước giảm không hợp lệ."
+            );
 
         }
 
 
         if (
-            Number(
-                loaiMienGiam
-            ) ===
-            20
+            !Number.isFinite(
+                giaTriMienGiam
+            ) ||
+            giaTriMienGiam <= 0
+        ) {
+
+            throw new ApiError(
+                400,
+                "Giá trị miễn giảm không hợp lệ."
+            );
+
+        }
+
+
+        let soTienGiam;
+
+
+        if (
+            loai === 10
+        ) {
+
+            if (
+                giaTriMienGiam >
+                100
+            ) {
+
+                throw new ApiError(
+                    400,
+                    "Giá trị miễn giảm phần trăm không được vượt quá 100%."
+                );
+
+            }
+
+
+            soTienGiam =
+                soTien *
+                giaTriMienGiam /
+                100;
+
+        }
+        else if (
+            loai === 20
         ) {
 
             soTienGiam =
-                Number(
-                    giaTri
-                );
+                giaTriMienGiam;
+
+        }
+        else {
+
+            throw new ApiError(
+                400,
+                "Loại miễn giảm không hợp lệ."
+            );
 
         }
 
 
         return Math.min(
-            Math.max(
-                soTienGiam,
-                0
-            ),
-            soTienTruocGiam
+            soTienGiam,
+            soTien
         );
 
     }
-
 
     async tinhLaiToanBo(
         phieuLayVeId,
@@ -597,6 +685,49 @@ class PhieuLayVeMienGiamService {
 
             }
 
+            const loaiMienGiam =
+                Number(
+                    voucher.loai_mien_giam
+                );
+
+
+            const giaTri =
+                Number(
+                    voucher.gia_tri
+                );
+
+
+            this.validateLoaiMienGiam(
+                loaiMienGiam
+            );
+
+
+            if (
+                !Number.isFinite(
+                    giaTri
+                ) ||
+                giaTri <= 0
+            ) {
+
+                throw new ApiError(
+                    400,
+                    "Giá trị voucher không hợp lệ."
+                );
+
+            }
+
+
+            if (
+                loaiMienGiam === 10 &&
+                giaTri > 100
+            ) {
+
+                throw new ApiError(
+                    400,
+                    "Voucher phần trăm không được vượt quá 100%."
+                );
+
+            }
 
             if (
                 !voucher.active
@@ -762,14 +893,10 @@ class PhieuLayVeMienGiamService {
                                 voucher.ten_voucher,
 
                             loaiMienGiam:
-                                Number(
-                                    voucher.loai_mien_giam
-                                ),
+                                loaiMienGiam,
 
                             giaTri:
-                                Number(
-                                    voucher.gia_tri
-                                ),
+                                giaTri,
 
                             soTienTruocGiam:
                                 0,
@@ -909,6 +1036,24 @@ class PhieuLayVeMienGiamService {
                 phieu
             );
 
+            const mienGiamThuCongHienTai =
+                await repository
+                    .getMienGiamThuCongTheoPhieu(
+                        phieuLayVeId,
+                        client
+                    );
+
+
+            if (
+                mienGiamThuCongHienTai
+            ) {
+
+                throw new ApiError(
+                    409,
+                    "Phiếu đã có miễn giảm thủ công. Vui lòng cập nhật miễn giảm hiện tại."
+                );
+
+            }
 
             const thuTu =
                 await repository

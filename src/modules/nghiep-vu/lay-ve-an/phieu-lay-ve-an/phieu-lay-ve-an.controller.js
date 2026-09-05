@@ -79,6 +79,39 @@ class PhieuLayVeAnController {
 
     }
 
+    async getGiaVe(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const data =
+                await phieuLayVeAnService
+                    .getGiaVePreview(
+                        req.query
+                    );
+
+
+            return successResponse(
+                res,
+                "Lấy giá vé ăn thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
 
     async getChiTiet(
         req,
@@ -133,7 +166,7 @@ class PhieuLayVeAnController {
                 await phieuLayVeAnService
                     .create(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -218,7 +251,7 @@ class PhieuLayVeAnController {
                     .huy(
                         id,
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 

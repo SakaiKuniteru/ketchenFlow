@@ -805,6 +805,53 @@ class PhieuLayVeMienGiamRepository {
 
     }
 
+    async getMienGiamThuCongTheoPhieu(
+        phieuLayVeId,
+        db = pool
+    ) {
+
+        const sql = `
+            ${this.getBaseQuery()}
+
+            WHERE
+                mg.phieu_lay_ve_id = $1
+
+                AND mg.voucher_id IS NULL
+
+                AND mg.chinh_sach_id IS NULL
+
+            ORDER BY
+                mg.id ASC
+
+            LIMIT 1
+        `;
+
+
+        const result =
+            await db.query(
+                sql,
+                [
+                    phieuLayVeId
+                ]
+            );
+
+
+        if (
+            result.rows.length ===
+            0
+        ) {
+
+            return null;
+
+        }
+
+
+        return this.mapMienGiam(
+            result.rows[0]
+        );
+
+    }
+
 
     async create(
         data,

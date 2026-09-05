@@ -101,7 +101,7 @@ class ThanhToanVeAnController {
                 await service
                     .create(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -137,7 +137,7 @@ class ThanhToanVeAnController {
                 await service
                     .taoQr(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -180,7 +180,7 @@ class ThanhToanVeAnController {
                     .huyQr(
                         id,
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -223,7 +223,7 @@ class ThanhToanVeAnController {
                     .xacNhan(
                         id,
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 
@@ -259,7 +259,7 @@ class ThanhToanVeAnController {
                 await service
                     .hoanTien(
                         req.body,
-                        req.user.id
+                        req.user?.taiKhoanId
                     );
 
 

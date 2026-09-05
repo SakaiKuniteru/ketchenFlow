@@ -83,6 +83,18 @@ router.get(
 );
 
 router.get(
+    "/gia-ve",
+    authenticate,
+    authorize(
+        "Q001032",
+        "Q001033",
+        "Q001034"
+    ),
+    controller.getGiaVe
+);
+
+
+router.get(
     "/in-ve/:id",
     authenticate,
     authorize(

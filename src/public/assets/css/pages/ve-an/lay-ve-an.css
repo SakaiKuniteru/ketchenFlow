@@ -1,0 +1,682 @@
+.lva-page {
+    padding: 18px 24px 28px;
+    background: #f5f7fb;
+    min-height: calc(100vh - 64px);
+    color: #172033;
+}
+
+.lva-page *,
+.lva-page *::before,
+.lva-page *::after {
+    box-sizing: border-box;
+}
+
+.lva-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.lva-page__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+}
+
+.lva-page__header h1 {
+    margin: 0 0 5px;
+    font-size: 28px;
+}
+
+.lva-page__header p {
+    margin: 0;
+    color: #68758d;
+}
+
+.lva-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(320px, .95fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.lva-main {
+    display: grid;
+    gap: 14px;
+}
+
+.lva-card {
+    background: #fff;
+    border: 1px solid #dfe5ef;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+}
+
+.lva-card--sticky {
+    position: sticky;
+    top: 82px;
+}
+
+.lva-card__title,
+.lva-card__title-row {
+    display: flex;
+    align-items: center;
+}
+
+.lva-card__title {
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.lva-card__title i {
+    color: #1768ff;
+    width: 18px;
+}
+
+.lva-card__title-row {
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lva-card__hint {
+    margin: 8px 0 12px;
+    font-size: 13px;
+    color: #7c879c;
+}
+
+.lva-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.lva-meal {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+    border-top: 1px solid #edf1f6;
+    margin-top: 16px;
+    padding-top: 16px;
+}
+
+.lva-meal__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 24px;
+}
+
+.lva-meal__meta div,
+.lva-summary div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.lva-meal__meta span,
+.lva-summary span {
+    color: #59667d;
+}
+
+.lva-employee-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid #e0e6f0;
+    border-radius: 8px;
+    margin-top: 16px;
+    overflow: hidden;
+}
+
+.lva-employee-info > div {
+    display: grid;
+    grid-template-columns: 135px 1fr;
+    gap: 10px;
+    padding: 11px 13px;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.lva-employee-info > div:nth-child(odd) {
+    border-right: 1px solid #edf1f6;
+}
+
+.lva-employee-info__note {
+    grid-column: 2;
+    grid-template-columns: 1fr !important;
+}
+
+.lva-employee-info__note textarea {
+    border: 1px solid #d8e0ec;
+    border-radius: 8px;
+    min-height: 64px;
+    padding: 10px;
+}
+
+.lva-discount-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.lva-discount-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eaf8ee;
+    color: #15803d;
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.lva-discount-chip button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #4f6658;
+}
+
+.lva-card--note ul {
+    margin: 12px 0 0;
+    padding-left: 22px;
+    color: #59667d;
+    line-height: 1.7;
+}
+
+.lva-summary {
+    display: grid;
+    gap: 17px;
+    margin-top: 22px;
+}
+
+.lva-summary .is-discount {
+    color: #169447;
+}
+
+.lva-total {
+    border-top: 1px solid #dfe5ef;
+    border-bottom: 1px solid #dfe5ef;
+    margin: 18px 0;
+    padding: 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lva-total span {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.lva-total strong {
+    font-size: 28px;
+    color: #1768ff;
+}
+
+.lva-payment-methods h3 {
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.lva-payment-option {
+    border: 1px solid #dfe5ef;
+    border-radius: 9px;
+    padding: 12px;
+    display: flex;
+    gap: 11px;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 9px;
+}
+
+.lva-payment-option.is-selected {
+    border-color: #1768ff;
+    box-shadow: inset 0 0 0 1px #1768ff;
+}
+
+.lva-payment-option input {
+    width: 18px;
+    height: 18px;
+}
+
+.lva-payment-option__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #f3f6fb;
+    display: grid;
+    place-items: center;
+}
+
+.lva-payment-option__text {
+    display: grid;
+    gap: 2px;
+}
+
+.lva-payment-option__text small {
+    color: #7b879b;
+}
+
+.lva-action-stack {
+    display: grid;
+    gap: 9px;
+    margin-top: 15px;
+}
+
+.lva-btn {
+    min-height: 42px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 9px 14px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.lva-btn--sm {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+}
+
+.lva-btn--primary {
+    background: #1768ff;
+    color: #fff;
+}
+
+.lva-btn--success {
+    background: #149447;
+    color: #fff;
+}
+
+.lva-btn--outline {
+    border-color: #1768ff;
+    color: #1768ff;
+    background: #fff;
+}
+
+.lva-btn--danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.lva-btn--danger-soft {
+    background: #fff1f1;
+    border-color: #ffc9c9;
+    color: #b42318;
+}
+
+.lva-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.lva-ticket-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #bcd3ff;
+    border-radius: 9px;
+    background: #f6f9ff;
+    color: #4b5870;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.lva-ticket-note i {
+    color: #1768ff;
+    font-size: 26px;
+}
+
+.lva-qr-panel {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #bdd4ff;
+    border-radius: 9px;
+    background: #f6f9ff;
+}
+
+.lva-qr-panel__icon {
+    font-size: 26px;
+    color: #1768ff;
+}
+
+.lva-qr-panel span {
+    display: block;
+    color: #6c7890;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.lva-empty {
+    color: #8995a8;
+    font-size: 13px;
+}
+
+.lva-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.lva-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .42);
+}
+
+.lva-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: 900px;
+    height: 640px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow:
+        0 24px 60px
+        rgba(15, 23, 42, .24);
+}
+
+.lva-modal__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+.lva-modal__header h2,
+.lva-modal__header p {
+    margin: 0;
+}
+
+.lva-modal__header p {
+    color: #7a879b;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.lva-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #dfe5ef;
+    background: #fff;
+    cursor: pointer;
+}
+
+.lva-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e9f0;
+    padding: 0 20px;
+}
+
+.lva-tabs button {
+    border: 0;
+    background: transparent;
+    padding: 12px 14px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-weight: 700;
+}
+
+.lva-tabs button.is-active {
+    color: #1768ff;
+    border-bottom-color: #1768ff;
+}
+
+.lva-modal__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 18px 20px 20px;
+    overflow: hidden;
+}
+
+.lva-modal__header,
+.lva-tabs {
+    flex: 0 0 auto;
+}
+
+.lva-modal__body
+> [data-discount-panel] {
+    height: 100%;
+    min-height: 0;
+}
+
+.lva-modal__body
+> [data-discount-panel="available"] {
+    display: flex;
+    flex-direction: column;
+}
+
+.lva-modal__body
+> [data-discount-panel="manual"] {
+    overflow-y: auto;
+}
+
+.lva-discount-search {
+    flex: 0 0 auto;
+    margin-bottom: 12px;
+}
+
+.lva-available-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+.lva-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 18px;
+}
+
+.lva-available-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid #e0e6ef;
+    border-radius: 9px;
+}
+
+.lva-available-item small {
+    display: block;
+    color: #7b879b;
+    margin-top: 4px;
+}
+
+.lva-page.is-loading {
+    pointer-events: none;
+    opacity: .72;
+}
+
+.lva-no-permission {
+    background: #fff;
+    border: 1px solid #e0e6ef;
+    border-radius: 12px;
+    padding: 44px 24px;
+    text-align: center;
+    color: #5c687d;
+}
+
+.lva-available-item.is-applied {
+    border-color: #86d9a0;
+    background: #f2fbf5;
+}
+
+.lva-available-item.is-applied strong {
+    color: #15803d;
+}
+
+@media (max-width: 1050px) {
+    .lva-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .lva-card--sticky {
+        position: static;
+    }
+}
+
+@media (max-width: 760px) {
+    .lva-page__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .lva-page__actions {
+        width: 100%;
+    }
+
+    .lva-page {
+        padding: 14px;
+    }
+
+    .lva-form-grid,
+    .lva-meal__meta,
+    .lva-employee-info {
+        grid-template-columns: 1fr;
+    }
+
+    .lva-employee-info > div:nth-child(odd) {
+        border-right: 0;
+    }
+
+    .lva-employee-info__note {
+        grid-column: auto;
+    }
+
+    .lva-meal {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+ * Tích hợp common forms/* của KitchenFlow
+ * ======================================================= */
+
+.lva-page [hidden],
+.lva-modal[hidden] {
+    display: none !important;
+}
+
+.lva-form-single {
+    margin-top: 14px;
+}
+
+.lva-form-grid > [data-form-field],
+.lva-form-grid > .form-field,
+.lva-form-grid > [data-employee-select-field],
+.lva-form-grid > [data-quantity-field] {
+    min-width: 0;
+}
+
+.lva-form-grid__full {
+    grid-column: 1 / -1;
+}
+
+.lva-form-grid--modal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lva-page .form-field {
+    margin: 0;
+}
+
+.lva-page .form-field__control {
+    width: 100%;
+}
+
+.lva-quantity-control {
+    display: grid !important;
+    grid-template-columns: 42px minmax(64px, 1fr) 42px;
+    align-items: stretch;
+    gap: 0 !important;
+    overflow: hidden;
+    border: 1px solid #d8e0ec;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.lva-quantity-control > input,
+.lva-quantity-control .number-input,
+.lva-quantity-control .number-input__input {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    text-align: center;
+}
+
+.lva-quantity-btn {
+    border: 0;
+    background: #fff;
+    color: #172033;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.lva-quantity-btn:first-child {
+    border-right: 1px solid #d8e0ec;
+}
+
+.lva-quantity-btn:last-child {
+    border-left: 1px solid #d8e0ec;
+}
+
+.lva-quantity-btn:hover {
+    background: #f3f6fb;
+}
+
+.lva-quantity-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.lva-checkbox-field {
+    display: flex;
+    align-items: end;
+    min-height: 70px;
+}
+
+.lva-modal .form-field {
+    width: 100%;
+}
+
+@media (max-width: 760px) {
+    .lva-form-grid--modal {
+        grid-template-columns: 1fr;
+    }
+
+    .lva-form-grid__full {
+        grid-column: auto;
+    }
+}
