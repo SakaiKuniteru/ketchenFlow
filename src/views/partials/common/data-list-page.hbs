@@ -1,0 +1,155 @@
+<main class="data-list-page" data-data-list-page data-module="{{listPage.moduleName}}" data-list-endpoint="{{listPage.listEndpoint}}">
+    <header class="data-list-page__header">
+        <div>
+            <h1>{{listPage.title}}</h1>
+            {{#if listPage.description}}
+                <p>{{listPage.description}}</p>
+            {{/if}}
+        </div>
+
+        <div class="data-list-page__actions">
+            {{#each listPage.actions}}
+                <button type="button" class="data-list-btn {{className}}" data-list-action="{{action}}" {{#if hidden}}hidden{{/if}}>
+                    {{#if icon}}
+                        <i class="{{icon}}"></i>
+                    {{/if}}
+                    <span>{{label}}</span>
+                </button>
+            {{/each}}
+        </div>
+    </header>
+
+    {{#if listPage.summaryCards.length}}
+        <section class="data-list-summary">
+            {{#each listPage.summaryCards}}
+                <article class="data-list-summary__card" data-summary-key="{{key}}">
+                    <div class="data-list-summary__icon data-list-summary__icon--{{theme}}">
+                        <i class="{{icon}}"></i>
+                    </div>
+                    <div>
+                        <span>{{label}}</span>
+                        <strong data-summary-value>0</strong>
+                        {{#if description}}
+                            <small>{{description}}</small>
+                        {{/if}}
+                    </div>
+                </article>
+            {{/each}}
+        </section>
+    {{/if}}
+
+    <section class="data-list-card">
+        {{#if listPage.showSearch}}
+            <div class="data-list-card__toolbar">
+                <div class="data-list-search">
+                    {{> forms/search
+                        inputId=listPage.searchId
+                        className="search-picker--data-list"
+                        placeholder=listPage.searchPlaceholder
+                        listSearch=true
+                        showClear=true
+                        hideDropdown=true
+                    }}
+                </div>
+            </div>
+        {{/if}}
+
+        <div class="data-list-table-wrap">
+            <table class="catalog-table data-list-table">
+                <thead class="catalog-table__head">
+                    <tr>
+                        {{#if listPage.showIndex}}
+                            <th class="catalog-table__cell catalog-table__cell--index catalog-table__cell--center data-list-table__index">STT</th>
+                        {{/if}}
+
+                        {{#each listPage.columns}}
+                            <th class="catalog-table__cell catalog-table__cell--center" data-list-column data-column-key="{{key}}" data-column-type="{{type}}" {{#if width}}style="width: {{width}};"{{/if}}>
+                                {{#if sortable}}
+                                    <button type="button" class="data-list-sort-button" data-list-sort="{{key}}" aria-label="Sắp xếp theo {{label}}">
+                                        <span class="data-list-sort-button__label">{{label}}</span>
+
+                                        {{> table/sort-icon
+                                            direction="none"
+                                        }}
+                                    </button>
+                                {{else}}
+                                    {{label}}
+                                {{/if}}
+                            </th>
+                        {{/each}}
+                    </tr>
+                </thead>
+
+                <tbody class="catalog-table__body" data-list-body>
+                    <tr>
+                        <td class="catalog-table__cell data-list-table__empty" colspan="{{listPage.colspan}}">Đang tải dữ liệu...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="data-list-card__footer">
+            {{> catalog/pagination}}
+        </footer>
+    </section>
+
+    {{#if listPage.filters.length}}
+        <div class="data-list-filter" data-list-filter-panel hidden>
+            <div class="data-list-filter__body">
+                {{#each listPage.filters}}
+                    {{#if isDateRange}}
+                        <div class="data-list-filter__range">
+                            <div class="data-list-filter__range-title">{{label}}</div>
+
+                            <div class="data-list-filter__range-grid">
+                                <div data-list-filter-field data-filter-name="{{from.name}}" data-filter-type="date">
+                                    {{> forms/date
+                                        id=from.id
+                                        name=from.name
+                                        label=from.label
+                                        placeholder=from.placeholder
+                                        showTime=from.showTime
+                                        defaultToday=from.defaultToday
+                                        defaultTime=from.defaultTime
+                                    }}
+                                </div>
+
+                                <div data-list-filter-field data-filter-name="{{to.name}}" data-filter-type="date">
+                                    {{> forms/date
+                                        id=to.id
+                                        name=to.name
+                                        label=to.label
+                                        placeholder=to.placeholder
+                                        showTime=to.showTime
+                                        defaultToday=to.defaultToday
+                                        defaultTime=to.defaultTime
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
+
+                    {{#if isSelect}}
+                        <div class="data-list-filter__field" data-list-filter-field data-filter-name="{{name}}" data-filter-type="select" data-filter-source="{{source}}" data-filter-value-key="{{valueKey}}" data-filter-label-key="{{labelKey}}">
+                            {{> forms/select
+                                id=id
+                                name=name
+                                label=label
+                                mode="single"
+                                multiple=false
+                                allowAll=false
+                                placeholder=placeholder
+                                options=null
+                            }}
+                        </div>
+                    {{/if}}
+                {{/each}}
+            </div>
+
+            <div class="data-list-filter__footer">
+                <button type="button" class="data-list-btn data-list-btn--outline" data-list-filter-reset>Đặt lại</button>
+                <button type="button" class="data-list-btn data-list-btn--primary" data-list-filter-apply>Áp dụng</button>
+            </div>
+        </div>
+    {{/if}}
+</main>

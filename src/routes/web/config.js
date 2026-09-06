@@ -192,8 +192,18 @@ const chiTietRoutes = [
 const veAnRoutes = [
     {
         method: "get",
-        path: "/lay-ve-an",
+        path: "/danh-sach-lay-ve",
+        handler: veAnWebController.danhSachLayVe
+    },
+    {
+        method: "get",
+        path: "/lay-ve-an/:id",
         handler: veAnWebController.layVeAn
+    },
+    {
+        method: "get",
+        path: "/lay-ve-an",
+        handler: (req, res) => res.redirect("/danh-sach-lay-ve")
     }
 ];
 
