@@ -58,6 +58,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const printTicket = (...args) => app.printTicket(...args);
     const submitCancelPhieu = (...args) => app.submitCancelPhieu(...args);
     const submitRefundModal = (...args) => app.submitRefundModal(...args);
+    const isExistingPage = (...args) => app.isExistingPage(...args);
+    const isCreatePage = (...args) => app.isCreatePage(...args);
+    const loadExistingPhieu = (...args) => app.loadExistingPhieu(...args);
+    const reloadDiscounts = (...args) => app.reloadDiscounts(...args);
+    const reloadPaymentState = (...args) => app.reloadPaymentState(...args);
+    const renderQrPanel = (...args) => app.renderQrPanel(...args);
+    const renderStateActions = (...args) => app.renderStateActions(...args);
+    const setSelectedPaymentMethod = (...args) => app.setSelectedPaymentMethod(...args);
+    const startQrPolling = (...args) => app.startQrPolling(...args);
 
 
     if (!root) {
@@ -102,15 +111,73 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         renderOptions();
         enhanceQuantityField();
-        restoreDailyMealSelection();
-        restoreDoiTuongSelection();
-        renderPermissionActions();
+        if (
+            isExistingPage()
+        ) {
+            await loadExistingPhieu(
+                app.pageContext.recordId
+            );
+
+            const tasks = [
+                reloadDiscounts()
+            ];
+
+            if (
+                permission.canViewPayment(
+                    state.permissions
+                )
+            ) {
+                tasks.push(
+                    reloadPaymentState()
+                );
+            }
+
+            await Promise.all(
+                tasks
+            );
+
+            const existingPaymentMethod =
+                state.payment?.phuongThuc ??
+                state.phieu?.phuongThucThanhToan;
+
+            if (
+                existingPaymentMethod !==
+                    null &&
+                existingPaymentMethod !==
+                    undefined
+            ) {
+                setSelectedPaymentMethod(
+                    existingPaymentMethod
+                );
+            }
+            renderMeal();
+            renderPersonMode(
+                state.phieu?.doiTuongLayVe
+            );
+            renderEmployee();
+            renderQrPanel();
+            renderSummary();
+            renderPermissionActions();
+            renderStateActions();
+            if (state.qrPayment?.id) {
+                startQrPolling();
+            }
+        }
+
+        else if (isCreatePage()) {
+            restoreDailyMealSelection();
+            restoreDoiTuongSelection();
+            renderMeal();
+            renderPersonMode();
+            renderEmployee();
+            await loadGiaVePreview(false);
+            renderSummary();
+            renderPermissionActions();
+        }
+
+        else { throw new Error("Đường dẫn phiếu lấy vé không hợp lệ."); }
+
         bindEvents();
-        renderMeal();
-        renderPersonMode();
-        renderEmployee();
-        await loadGiaVePreview(false);
-        renderSummary();
     } catch (error) {
         showError(error, "Không thể khởi tạo trang lấy vé ăn.");
     } finally {
@@ -269,10 +336,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         bindDiscountSearch();
         bindGiaTriMienGiamInput();
-        window.addEventListener(
-            "storage",
-            handleLayVeStorageChange
-        );
+        if (
+            isCreatePage()
+        ) {
+            window.addEventListener(
+                "storage",
+                handleLayVeStorageChange
+            );
+        }
     
     }
 });

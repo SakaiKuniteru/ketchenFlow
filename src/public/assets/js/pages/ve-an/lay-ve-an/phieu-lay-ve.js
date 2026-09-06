@@ -19,6 +19,9 @@
     } = app;
 
     const closeDiscountModal = (...args) => app.closeDiscountModal(...args);
+    const fillSelect = (...args) => app.fillSelect(...args);
+    const markPageAsCreate = (...args) => app.markPageAsCreate(...args);
+    const markPageAsExisting = (...args) => app.markPageAsExisting(...args);
     const closeRefundModal = (...args) => app.closeRefundModal(...args);
     const confirmAction = (...args) => app.confirmAction(...args);
     const escapeHtml = (...args) => app.escapeHtml(...args);
@@ -441,6 +444,7 @@
         root.dataset.phieuId =
             "";
 
+        markPageAsCreate();
 
         setPricingFieldsDisabled(
             false
@@ -937,45 +941,567 @@
         renderStateActions();
     }
 
-    async function saveDraft() {
-        const payload = buildPhieuPayload();
-
-        validatePhieuPayload(payload);
-
-        const canCreate = permission.canCreatePhieu(state.permissions);
-        const canUpdate = permission.canUpdatePhieu(state.permissions);
-
-        let response;
-
-        if (!state.phieu) {
-            if (!canCreate) {
-                throw new Error("Bạn không có quyền tạo phiếu lấy vé ăn.");
-            }
-
-            response = await request(
-                `${API.phieu}/them-moi`,
-                "POST",
-                payload
+    async function loadExistingPhieu(
+        id
+    ) {
+        const phieuId =
+            toPositiveInt(
+                id
             );
-        } else {
-            if (!canUpdate) {
-                return state.phieu;
-            }
 
-            response = await request(
-                `${API.phieu}/cap-nhat/${state.phieu.id}`,
-                "PATCH",
-                payload
+        if (
+            !phieuId
+        ) {
+            throw new Error(
+                "ID phiếu lấy vé không hợp lệ."
             );
         }
 
-        state.phieu = response?.data || null;
-        state.pricePreview = state.phieu
-            ? {
-                donGia: state.phieu.donGia
+        const response =
+            await request(
+                `${API.phieu}/${phieuId}`
+            );
+
+        const phieu =
+            response?.data;
+
+        if (
+            !phieu ||
+            !phieu.id
+        ) {
+            throw new Error(
+                "Không tìm thấy phiếu lấy vé."
+            );
+        }
+
+        state.phieu =
+            phieu;
+
+        state.pricePreview =
+            Number.isFinite(
+                Number(
+                    phieu.donGia
+                )
+            )
+                ? {
+                    donGia:
+                        Number(
+                            phieu.donGia
+                        )
+                }
+                : null;
+
+        root.dataset.phieuId =
+            String(
+                phieu.id
+            );
+
+        ensureExistingMeal(
+            phieu
+        );
+
+        ensureExistingEmployee(
+            phieu
+        );
+
+        hydratePhieuForm(
+            phieu
+        );
+
+        markPageAsExisting(
+            phieu.id
+        );
+
+        return phieu;
+    }
+
+    function ensureExistingMeal(
+        phieu
+    ) {
+        const id =
+            toPositiveInt(
+                phieu?.thucDonNgayId
+            );
+
+        if (
+            !id
+        ) {
+            return;
+        }
+
+        const exists =
+            state.thucDonNgay
+                .some(
+                    item =>
+                        Number(
+                            item.id
+                        ) ===
+                        Number(
+                            id
+                        )
+                );
+
+        if (
+            !exists
+        ) {
+            state.thucDonNgay.unshift({
+                id,
+
+                ngay:
+                    phieu.ngay ||
+                    phieu.ngaySuDung ||
+                    null,
+
+                thucDonId:
+                    phieu.thucDonId ||
+                    null,
+
+                tenThucDon:
+                    phieu.tenThucDon ||
+                    phieu.maThucDon ||
+                    "Thực đơn",
+
+                tenNhaAn:
+                    phieu.tenNhaAn ||
+                    phieu.maNhaAn ||
+                    "Nhà ăn",
+
+                tenCaAn:
+                    phieu.tenCaAn ||
+                    phieu.maCaAn ||
+                    "Ca ăn",
+
+                thoiGianBatDau:
+                    phieu.thoiGianBatDau ||
+                    null,
+
+                thoiGianKetThuc:
+                    phieu.thoiGianKetThuc ||
+                    null
+            });
+        }
+
+        fillSelect(
+            el.thucDonNgayId,
+            state.thucDonNgay,
+            item =>
+                item.id,
+            item => {
+                const date =
+                    formatDate(
+                        item.ngay
+                    );
+
+                const ca =
+                    item.tenCaAn ||
+                    item.maCaAn ||
+                    "Ca ăn";
+
+                const nhaAn =
+                    item.tenNhaAn ||
+                    "Nhà ăn";
+
+                return `${date} - ${ca} - ${nhaAn}`;
             }
-            : state.pricePreview;
-        root.dataset.phieuId = state.phieu?.id || "";
+        );
+    }
+
+    function ensureExistingEmployee(
+        phieu
+    ) {
+        const id =
+            toPositiveInt(
+                phieu?.nhanVienId
+            );
+
+        if (
+            !id
+        ) {
+            return;
+        }
+
+        const exists =
+            state.employees
+                .some(
+                    item =>
+                        Number(
+                            item.id
+                        ) ===
+                        Number(
+                            id
+                        )
+                );
+
+        if (
+            !exists
+        ) {
+            state.employees.unshift({
+                id,
+
+                maNhanVien:
+                    phieu.maNhanVien ||
+                    "",
+
+                hoTen:
+                    phieu.tenNhanVien ||
+                    phieu.hoTenNhanVien ||
+                    phieu.hoTenNguoiLayVe ||
+                    "",
+
+                tenPhongBan:
+                    phieu.tenPhongBan ||
+                    "",
+
+                tenCoSo:
+                    phieu.tenCoSo ||
+                    "",
+
+                soDienThoai:
+                    phieu.soDienThoai ||
+                    phieu.soDienThoaiNguoiLayVe ||
+                    ""
+            });
+        }
+
+        fillSelect(
+            el.nhanVienId,
+            state.employees,
+            item =>
+                item.id,
+            item =>
+                [
+                    item.maNhanVien ||
+                        item.ma_nhan_vien,
+
+                    item.hoTen ||
+                        item.tenNhanVien ||
+                        item.ho_ten
+                ]
+                    .filter(
+                        Boolean
+                    )
+                    .join(
+                        " - "
+                    )
+        );
+    }
+
+    function hydratePhieuForm(
+        phieu
+    ) {
+        setSelectValue(
+            el.thucDonNgayId,
+            phieu.thucDonNgayId ??
+                "",
+            false
+        );
+
+        setSelectValue(
+            el.doiTuongLayVe,
+            phieu.doiTuongLayVe ??
+                "",
+            false
+        );
+
+        if (
+            el.soLuong
+        ) {
+            el.soLuong.value =
+                String(
+                    phieu.soLuong ||
+                    1
+                );
+        }
+
+        const isEmployee =
+            isNhanVienDoiTuong(
+                phieu.doiTuongLayVe
+            );
+
+        if (
+            isEmployee
+        ) {
+            setSelectValue(
+                el.nhanVienId,
+                phieu.nhanVienId ??
+                    "",
+                false
+            );
+
+            if (
+                el.noteEmployee
+            ) {
+                el.noteEmployee.value =
+                    phieu.ghiChu ||
+                    "";
+            }
+        } else {
+            if (
+                el.hoTen
+            ) {
+                el.hoTen.value =
+                    phieu.hoTenNguoiLayVe ||
+                    "";
+            }
+
+            if (
+                el.phone
+            ) {
+                el.phone.value =
+                    phieu.soDienThoaiNguoiLayVe ||
+                    "";
+            }
+
+            if (
+                el.address
+            ) {
+                el.address.value =
+                    phieu.diaChiNguoiLayVe ||
+                    "";
+            }
+
+            if (
+                el.unit
+            ) {
+                el.unit.value =
+                    phieu.donViNguoiLayVe ||
+                    "";
+            }
+
+            if (
+                el.noteGuest
+            ) {
+                el.noteGuest.value =
+                    phieu.ghiChu ||
+                    "";
+            }
+
+            setDateFieldValue(
+                "ngaySinhNguoiLayVe",
+                phieu.ngaySinhNguoiLayVe
+            );
+
+            setSelectValue(
+                el.gioiTinh,
+                phieu.gioiTinhNguoiLayVe ??
+                    "",
+                false
+            );
+
+            if (
+                el.permanentGuest
+            ) {
+                el.permanentGuest.checked =
+                    phieu.khachLauDai ===
+                        true ||
+                    phieu.khachLauDai ===
+                        1 ||
+                    String(
+                        phieu.khachLauDai
+                    ).toLowerCase() ===
+                        "true";
+            }
+        }
+
+        renderMeal();
+
+        renderPersonMode(
+            phieu.doiTuongLayVe
+        );
+
+        renderEmployee();
+    }
+
+    function setDateFieldValue(
+        id,
+        value
+    ) {
+        const input =
+            document.getElementById(
+                id
+            );
+
+        if (
+            !input
+        ) {
+            return;
+        }
+
+        const normalized =
+            normalizeDateForApi(
+                value
+            ) ||
+            "";
+
+        const field =
+            input.closest(
+                "[data-form-field]"
+            );
+
+        const datePickerRoot =
+            input.closest(
+                "[data-date-picker]"
+            ) ||
+            field?.querySelector(
+                "[data-date-picker]"
+            );
+
+        const hiddenInput =
+            field?.querySelector(
+                "[data-date-value]"
+            ) ||
+            input;
+
+        const displayInput =
+            field?.querySelector(
+                "[data-date-input]"
+            );
+
+        const datePicker =
+            datePickerRoot?.datePicker ||
+            field?.datePicker;
+
+        if (
+            normalized &&
+            datePicker
+                ?.setValue
+        ) {
+            const parts =
+                normalized
+                    .split("-")
+                    .map(
+                        Number
+                    );
+
+            if (
+                parts.length ===
+                    3 &&
+                parts.every(
+                    Number.isFinite
+                )
+            ) {
+                const date =
+                    new Date(
+                        parts[0],
+                        parts[1] - 1,
+                        parts[2]
+                    );
+
+                try {
+                    datePicker.setValue(
+                        date,
+                        false
+                    );
+                } catch (
+                    error
+                ) {
+                    console.warn(
+                        "Không đồng bộ được date picker ngày sinh.",
+                        error
+                    );
+                }
+            }
+        }
+
+        if (
+            hiddenInput
+        ) {
+            hiddenInput.value =
+                normalized;
+        }
+
+        if (
+            displayInput
+        ) {
+            displayInput.value =
+                normalized
+                    ? formatDate(
+                        normalized
+                    )
+                    : "";
+        }
+    }
+
+    async function saveDraft() {
+        const payload =
+            buildPhieuPayload();
+
+        validatePhieuPayload(
+            payload
+        );
+
+        const canCreate =
+            permission.canCreatePhieu(
+                state.permissions
+            );
+
+        const canUpdate =
+            permission.canUpdatePhieu(
+                state.permissions
+            );
+
+        const isCreating =
+            !state.phieu;
+
+        let response;
+
+        if (
+            isCreating
+        ) {
+            if (
+                !canCreate
+            ) {
+                throw new Error(
+                    "Bạn không có quyền tạo phiếu lấy vé ăn."
+                );
+            }
+
+            response =
+                await request(
+                    `${API.phieu}/them-moi`,
+                    "POST",
+                    payload
+                );
+        } else {
+            if (
+                !canUpdate
+            ) {
+                return state.phieu;
+            }
+
+            response =
+                await request(
+                    `${API.phieu}/cap-nhat/${state.phieu.id}`,
+                    "PATCH",
+                    payload
+                );
+        }
+
+        state.phieu =
+            response?.data ||
+            null;
+
+        state.pricePreview =
+            state.phieu
+                ? {
+                    donGia:
+                        state.phieu.donGia
+                }
+                : state.pricePreview;
+
+        root.dataset.phieuId =
+            state.phieu?.id ||
+            "";
+
+        if (
+            isCreating &&
+            state.phieu?.id
+        ) {
+            markPageAsExisting(
+                state.phieu.id
+            );
+        }
+
         renderSummary();
 
         return state.phieu;
@@ -1889,6 +2415,7 @@
             renderPersonMode,
             renderEmployee,
             renderSummary,
+            loadExistingPhieu,
             saveDraft,
             buildPhieuPayload,
             validatePhieuPayload,

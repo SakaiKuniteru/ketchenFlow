@@ -38,13 +38,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         ],
 
         onCreate() {
-            const draftId = createDraftId();
-            window.location.href = `/lay-ve-an/${encodeURIComponent(draftId)}`;
+            window.location.href = "/ve-an/lay-ve-an";
         },
 
         getRowUrl(record) {
             return record?.id
-                ? `/lay-ve-an/${record.id}`
+                ? `/ve-an/lay-ve-an/${record.id}`
                 : "";
         },
 
@@ -96,14 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             exportCsv(records);
         }
     });
-
-    function createDraftId() {
-        if (window.crypto?.randomUUID) {
-            return window.crypto.randomUUID();
-        }
-
-        return `draft-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    }
 
     function renderPaymentStatus(record) {
         const status = Number(record?.trangThai);

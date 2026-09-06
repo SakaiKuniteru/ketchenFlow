@@ -11,6 +11,124 @@
     const root = document.querySelector("[data-lay-ve-an-page]");
     const permission = window.LayVeAn?.permission;
 
+    const NUMERIC_ID_PATTERN =
+        /^[1-9]\d*$/;
+
+    const rawPageId =
+        String(
+            root?.dataset.pageId ||
+            ""
+        ).trim();
+
+    const pageContext = {
+        pageId:
+            rawPageId,
+
+        mode:
+            !rawPageId
+                ? "create"
+                : NUMERIC_ID_PATTERN.test(
+                    rawPageId
+                )
+                    ? "detail"
+                    : "invalid",
+
+        recordId:
+            NUMERIC_ID_PATTERN.test(
+                rawPageId
+            )
+                ? Number(
+                    rawPageId
+                )
+                : null
+    };
+
+    function isExistingPage() {
+        return pageContext.mode ===
+            "detail";
+    }
+
+    function isCreatePage() {
+        return pageContext.mode ===
+            "create";
+    }
+
+    function replacePageUrl(
+        id
+    ) {
+        window.history.replaceState(
+            window.history.state,
+            "",
+            `/ve-an/lay-ve-an/${encodeURIComponent(id)}`
+        );
+    }
+
+    function markPageAsExisting(
+        id
+    ) {
+        const recordId =
+            Number(
+                id
+            );
+
+        if (
+            !Number.isInteger(
+                recordId
+            ) ||
+            recordId <= 0
+        ) {
+            return;
+        }
+
+        pageContext.pageId =
+            String(
+                recordId
+            );
+
+        pageContext.mode =
+            "detail";
+
+        pageContext.recordId =
+            recordId;
+
+        if (
+            root
+        ) {
+            root.dataset.pageId =
+                String(
+                    recordId
+                );
+        }
+
+        replacePageUrl(
+            recordId
+        );
+    }
+
+    function markPageAsCreate() {
+        pageContext.pageId =
+            "";
+
+        pageContext.mode =
+            "create";
+
+        pageContext.recordId =
+            null;
+
+        if (
+            root
+        ) {
+            root.dataset.pageId =
+                "";
+        }
+
+        window.history.replaceState(
+            window.history.state,
+            "",
+            "/ve-an/lay-ve-an"
+        );
+    }
+
     const API = {
         phieu: "/api/mcs/v1/nv-phieu-lay-ve-an",
         discount: "/api/mcs/v1/ct-phieu-lay-ve-mien-giam",
@@ -823,6 +941,11 @@
             TAKER_TYPE_STORAGE_KEY,
             state,
             el,
+            pageContext,
+            isExistingPage,
+            isCreatePage,
+            markPageAsExisting,
+            markPageAsCreate,
             loadDoiTuongOrderSetting,
             loadPaymentVisibleSetting,
             getDoiTuongOrder,

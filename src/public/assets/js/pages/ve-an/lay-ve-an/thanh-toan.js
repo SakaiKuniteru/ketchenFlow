@@ -106,6 +106,69 @@
 
     }
 
+    function setSelectedPaymentMethod(
+        value
+    ) {
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return;
+        }
+
+        const methodValue =
+            Number(
+                value
+            );
+
+        if (
+            !Number.isFinite(
+                methodValue
+            )
+        ) {
+            return;
+        }
+
+        state.selectedPaymentMethod =
+            methodValue;
+
+        const radios =
+            Array.from(
+                el.paymentMethodList
+                    ?.querySelectorAll(
+                        'input[name="phuongThucThanhToan"]'
+                    ) ||
+                []
+            );
+
+        radios.forEach(
+            radio => {
+                radio.checked =
+                    Number(
+                        radio.value
+                    ) ===
+                    methodValue;
+            }
+        );
+
+        el.paymentMethodList
+            ?.querySelectorAll(
+                "[data-payment-option]"
+            )
+            .forEach(
+                option => {
+                    option.classList.toggle(
+                        "is-selected",
+                        Number(
+                            option.dataset
+                                .paymentOption
+                        ) ===
+                        methodValue
+                    );
+                }
+            );
+    }
     function renderPaymentMethods() {
         if (!el.paymentMethodList) {
             return;
@@ -1158,6 +1221,7 @@
         app,
         {
             resetPaymentSelection,
+            setSelectedPaymentMethod,
             renderPaymentMethods,
             renderPermissionActions,
             renderStateActions,
