@@ -181,6 +181,13 @@ const routes = [
         )
     ],
 
+    [
+    "/files",
+        require(
+            "../../modules/mcs/v1/files/files.route"
+        )
+    ],
+
     // CẤU HÌNH //
 
     [

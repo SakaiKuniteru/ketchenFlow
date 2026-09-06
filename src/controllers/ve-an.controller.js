@@ -115,7 +115,7 @@ class VeAnWebController {
                     name: "trangThai",
                     label: "Trạng thái thanh toán",
                     placeholder: "Chọn trạng thái thanh toán",
-                    source: "/api/mcs/v1/enums?name=trangThaiThanhToan",
+                    source: "/api/mcs/v1/enums?name=trangThaiPhieuThu",
                     valueKey: "value",
                     labelKey: "name"
                 },
@@ -126,7 +126,7 @@ class VeAnWebController {
                     name: "trangThaiSuDung",
                     label: "Trạng thái sử dụng",
                     placeholder: "Chọn trạng thái sử dụng",
-                    source: "/api/mcs/v1/enums?name=trangThaiVeAn",
+                    source: "/api/mcs/v1/enums?name=trangThaiVe",
                     valueKey: "value",
                     labelKey: "name"
                 },

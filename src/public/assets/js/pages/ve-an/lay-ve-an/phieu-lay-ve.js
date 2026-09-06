@@ -1856,85 +1856,154 @@
     async function printTicket() {
         if (
             !state.phieu?.id ||
-            !permission.canPrint(state.permissions)
+            !permission.canPrint(
+                state.permissions
+            )
         ) {
             return;
         }
 
+        let popup =
+            null;
+
+        let objectUrl =
+            null;
+
         try {
-            setLoading(true);
-
-            const response = await request(
-                `${API.phieu}/in-ve/${state.phieu.id}`
-            );
-
-            const data = response?.data;
-
-            if (!data) {
-                return;
-            }
-
-            const popup = window.open("", "_blank", "width=860,height=720");
+            popup =
+                window.open(
+                    "",
+                    "_blank",
+                    "width=1000,height=800"
+                );
 
             if (!popup) {
-                throw new Error("Trình duyệt đang chặn cửa sổ in.");
+                throw new Error(
+                    "Trình duyệt đang chặn cửa sổ in."
+                );
             }
 
-            popup.document.write(buildPrintHtml(data));
+            popup.document.write(`
+                <!doctype html>
+                <html lang="vi">
+                <head>
+                    <meta charset="utf-8">
+                    <title>Đang tạo báo cáo...</title>
+                </head>
+                <body>
+                    Đang tạo báo cáo...
+                </body>
+                </html>
+            `);
+
             popup.document.close();
-            popup.focus();
-            popup.print();
-        } catch (error) {
-            showError(error);
+
+            setLoading(
+                true
+            );
+
+            if (
+                !window.MCS
+                    ?.api
+                    ?.requestFile
+            ) {
+                throw new Error(
+                    "Chức năng tải file chưa được khởi tạo."
+                );
+            }
+
+            const file =
+                await window.MCS
+                    .api
+                    .requestFile(
+                        `${API.phieu}/in-ve/${state.phieu.id}`,
+                        {
+                            method:
+                                "GET"
+                        }
+                    );
+
+            if (
+                !file?.blob ||
+                !String(
+                    file.contentType || ""
+                ).includes(
+                    "application/pdf"
+                )
+            ) {
+                throw new Error(
+                    "API in không trả về file PDF hợp lệ."
+                );
+            }
+
+            objectUrl =
+                URL.createObjectURL(
+                    file.blob
+                );
+
+            popup.location.replace(
+                objectUrl
+            );
+
+            window.setTimeout(
+                () => {
+                    try {
+                        popup.focus();
+                        popup.print();
+                    } catch (
+                        error
+                    ) {
+                        console.warn(
+                            "Không thể tự mở hộp thoại in:",
+                            error
+                        );
+                    }
+                },
+                1000
+            );
+
+            window.setTimeout(
+                () => {
+                    if (
+                        objectUrl
+                    ) {
+                        URL.revokeObjectURL(
+                            objectUrl
+                        );
+
+                        objectUrl =
+                            null;
+                    }
+                },
+                120000
+            );
+        } catch (
+            error
+        ) {
+            if (
+                popup &&
+                !popup.closed
+            ) {
+                popup.close();
+            }
+
+            if (
+                objectUrl
+            ) {
+                URL.revokeObjectURL(
+                    objectUrl
+                );
+            }
+
+            showError(
+                error,
+                "Không thể in vé ăn."
+            );
         } finally {
-            setLoading(false);
+            setLoading(
+                false
+            );
         }
-    }
-
-    function buildPrintHtml(data) {
-        return `
-            <!doctype html>
-            <html lang="vi">
-            <head>
-                <meta charset="utf-8">
-                <title>Vé ăn ${escapeHtml(data.soPhieu || "")}</title>
-                <style>
-                    body{font-family:Arial,sans-serif;padding:28px;color:#111827}
-                    .ticket{border:1px solid #cbd5e1;border-radius:12px;padding:22px;max-width:680px;margin:auto}
-                    h1{font-size:22px;margin:0 0 18px}
-                    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px}
-                    .label{color:#64748b;font-size:12px}
-                    .value{font-weight:700;margin-top:3px}
-                    .total{border-top:1px solid #e2e8f0;margin-top:18px;padding-top:14px;font-size:18px}
-                </style>
-            </head>
-            <body>
-                <div class="ticket">
-                    <h1>PHIẾU / VÉ ĂN</h1>
-                    <div class="grid">
-                        ${printRow("Số phiếu", data.soPhieu)}
-                        ${printRow("Ngày", formatDate(data.ngay))}
-                        ${printRow("Nhà ăn", data.tenNhaAn)}
-                        ${printRow("Ca ăn", data.tenCaAn)}
-                        ${printRow("Người lấy vé", data.tenNhanVien || data.hoTenNguoiLayVe)}
-                        ${printRow("Số lượng", data.soLuong)}
-                    </div>
-                    <div class="total">
-                        Thành tiền: <strong>${escapeHtml(formatMoney(data.thanhTien))}</strong>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-    }
-
-    function printRow(label, value) {
-        return `
-            <div>
-                <div class="label">${escapeHtml(label)}</div>
-                <div class="value">${escapeHtml(value ?? "-")}</div>
-            </div>
-        `;
     }
 
     function setPricingFieldsDisabled(disabled) {
@@ -2424,8 +2493,6 @@
             closeCancelPhieuModal,
             submitCancelPhieu,
             printTicket,
-            buildPrintHtml,
-            printRow,
             setPricingFieldsDisabled,
             canChangePricingFields,
             restoreSelectedMeal,

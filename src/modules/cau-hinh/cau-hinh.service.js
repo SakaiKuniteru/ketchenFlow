@@ -21,7 +21,8 @@ const MA_THIET_LAP = {
     SO_CHU_SO_SAU_DAU_PHAY: "SO_CHU_SO_SAU_DAU_PHAY",
     BAT_BUOC_CHON_NHOM_MON: "BAT_BUOC_CHON_NHOM_MON",
     THU_TU_DOI_TUONG_LAY_VE: "THU_TU_DOI_TUONG_LAY_VE",
-    PHUONG_THUC_THANH_TOAN_HIEN_THI: "PHUONG_THUC_THANH_TOAN_HIEN_THI"
+    PHUONG_THUC_THANH_TOAN_HIEN_THI: "PHUONG_THUC_THANH_TOAN_HIEN_THI",
+    DINH_DANG_MA_VE_AN: "DINH_DANG_MA_VE_AN",
 };
 
 class CauHinhService {
@@ -144,6 +145,12 @@ class CauHinhService {
                 return {
                     ma: maThietLap,
                     giaTri: await this.getPhuongThucThanhToanHienThi()
+                };
+
+            case MA_THIET_LAP.DINH_DANG_MA_VE_AN:
+                return {
+                    ma: maThietLap,
+                    giaTri: await this.getDinhDangMaVeAn()
                 };
 
                     default: return this.resolveMacDinh(thietLap);
@@ -803,6 +810,389 @@ class CauHinhService {
         return danhSach;
 
     }
+
+    chuanHoaTienToMaVeAn(
+        value
+    ) {
+        return String(
+            value ??
+            ""
+        )
+            .normalize(
+                "NFD"
+            )
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /đ/g,
+                "d"
+            )
+            .replace(
+                /Đ/g,
+                "D"
+            )
+            .toUpperCase()
+            .replace(
+                /[^A-Z0-9]/g,
+                ""
+            );
+    }
+
+    parseDinhDangMaVeAn(
+        value
+    ) {
+        const text =
+            String(
+                value ??
+                ""
+            ).trim();
+
+        if (
+            !text
+        ) {
+            return null;
+        }
+
+        const tokens =
+            text.match(
+                /\[[^\[\]]+\]/g
+            );
+
+        if (
+            !tokens ||
+            tokens.join(
+                ""
+            ) !==
+                text
+        ) {
+            return null;
+        }
+
+        let index =
+            0;
+
+        let tienTo =
+            "";
+
+        /*
+        * ============================
+        * [X] - KHÔNG BẮT BUỘC
+        * ============================
+        *
+        * Nếu token đầu tiên không phải
+        * [yy] thì hiểu là tiền tố [X].
+        *
+        * Nhưng không cho phép các token
+        * hệ thống mm/dd/dayso đứng ở đây.
+        */
+        const firstToken =
+            String(
+                tokens[
+                    index
+                ] ||
+                ""
+            ).toLowerCase();
+
+        if (
+            firstToken !==
+            "[yy]"
+        ) {
+            if (
+                firstToken ===
+                    "[mm]" ||
+                firstToken ===
+                    "[dd]" ||
+                firstToken.startsWith(
+                    "[dayso:"
+                )
+            ) {
+                return null;
+            }
+
+            const rawPrefix =
+                String(
+                    tokens[
+                        index
+                    ] ||
+                    ""
+                ).slice(
+                    1,
+                    -1
+                );
+
+            tienTo =
+                this.chuanHoaTienToMaVeAn(
+                    rawPrefix
+                );
+
+            if (
+                !tienTo
+            ) {
+                return null;
+            }
+
+            index +=
+                1;
+        }
+
+        /*
+        * ============================
+        * [yy] - BẮT BUỘC
+        * ============================
+        */
+        if (
+            String(
+                tokens[
+                    index
+                ] ||
+                ""
+            ).toLowerCase() !==
+            "[yy]"
+        ) {
+            return null;
+        }
+
+        const coYY =
+            true;
+
+        index +=
+            1;
+
+        /*
+        * ============================
+        * [mm] - KHÔNG BẮT BUỘC
+        * nhưng chỉ được sau [yy]
+        * ============================
+        */
+        let coMM =
+            false;
+
+        if (
+            String(
+                tokens[
+                    index
+                ] ||
+                ""
+            ).toLowerCase() ===
+            "[mm]"
+        ) {
+            coMM =
+                true;
+
+            index +=
+                1;
+        }
+
+        /*
+        * ============================
+        * [dd] - KHÔNG BẮT BUỘC
+        * nhưng bắt buộc phải có [mm]
+        * ============================
+        */
+        let coDD =
+            false;
+
+        if (
+            String(
+                tokens[
+                    index
+                ] ||
+                ""
+            ).toLowerCase() ===
+            "[dd]"
+        ) {
+            if (
+                !coMM
+            ) {
+                return null;
+            }
+
+            coDD =
+                true;
+
+            index +=
+                1;
+        }
+
+        /*
+        * ============================
+        * [dayso:n] - KHÔNG BẮT BUỘC
+        *
+        * Nếu không truyền:
+        * mặc định n = 5
+        * ============================
+        */
+        let doRongDaySo =
+            5;
+
+        if (
+            index <
+            tokens.length
+        ) {
+            const daySoMatch =
+                String(
+                    tokens[
+                        index
+                    ]
+                ).match(
+                    /^\[dayso:(\d+)\]$/i
+                );
+
+            if (
+                !daySoMatch
+            ) {
+                return null;
+            }
+
+            const doRong =
+                Number(
+                    daySoMatch[
+                        1
+                    ]
+                );
+
+            if (
+                !Number.isInteger(
+                    doRong
+                ) ||
+                doRong <=
+                    0
+            ) {
+                return null;
+            }
+
+            doRongDaySo =
+                doRong;
+
+            index +=
+                1;
+        }
+
+        /*
+        * Sau dayso không được còn
+        * token nào khác.
+        */
+        if (
+            index !==
+            tokens.length
+        ) {
+            return null;
+        }
+
+        /*
+        * Chuẩn hóa lại format.
+        *
+        * Ví dụ:
+        *
+        * [á1][yy][mm]
+        *
+        * ->
+        *
+        * [A1][yy][mm][dayso:5]
+        */
+        const parts =
+            [];
+
+        if (
+            tienTo
+        ) {
+            parts.push(
+                `[${tienTo}]`
+            );
+        }
+
+        parts.push(
+            "[yy]"
+        );
+
+        if (
+            coMM
+        ) {
+            parts.push(
+                "[mm]"
+            );
+        }
+
+        if (
+            coDD
+        ) {
+            parts.push(
+                "[dd]"
+            );
+        }
+
+        parts.push(
+            `[dayso:${doRongDaySo}]`
+        );
+
+        return {
+            dinhDang:
+                parts.join(
+                    ""
+                ),
+
+            tienTo,
+
+            coYY,
+
+            coMM,
+
+            coDD,
+
+            doRongDaySo,
+
+            resetTheo:
+                coDD
+                    ? "day"
+                    : coMM
+                        ? "month"
+                        : "year"
+        };
+    }
+
+    async getQuyTacSinhMaVeAn() {
+        const MAC_DINH =
+            "[VA][yy][mm][dd][dayso:5]";
+
+        const cauHinhMacDinh =
+            this.parseDinhDangMaVeAn(
+                MAC_DINH
+            );
+
+        const thietLap =
+            await cauHinhRepository
+                .getThietLapByMa(
+                    MA_THIET_LAP
+                        .DINH_DANG_MA_VE_AN
+                );
+
+        if (
+            !thietLap ||
+            thietLap.active !==
+                true
+        ) {
+            return cauHinhMacDinh;
+        }
+
+        return (
+            this.parseDinhDangMaVeAn(
+                thietLap.gia_tri
+            ) ||
+            cauHinhMacDinh
+        );
+    }
+
+    async getDinhDangMaVeAn() {
+        const cauHinh =
+            await this
+                .getQuyTacSinhMaVeAn();
+
+        return cauHinh
+            .dinhDang;
+    }
+
 }
 
 module.exports = new CauHinhService();

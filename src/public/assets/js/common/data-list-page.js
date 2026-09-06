@@ -119,37 +119,101 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
     }
 
     function bindActions() {
-        const createButton = root.querySelector('[data-list-action="create"]');
-        const exportButton = root.querySelector('[data-list-action="export"]');
-        const filterButton = root.querySelector('[data-list-action="filter"]');
+        const createButton =
+            root.querySelector(
+                '[data-list-action="create"]'
+            );
+
+        const exportButton =
+            root.querySelector(
+                '[data-list-action="export"]'
+            );
+
+        const filterButton =
+            root.querySelector(
+                '[data-list-action="filter"]'
+            );
 
         if (createButton) {
             const allowed =
                 typeof canCreate !== "function" ||
-                canCreate(state.permissions);
+                canCreate(
+                    state.permissions
+                );
 
-            createButton.hidden = !allowed;
-            createButton.addEventListener("click", () => {
-                if (allowed) {
-                    onCreate?.();
+            createButton.hidden =
+                !allowed;
+
+            createButton.addEventListener(
+                "click",
+                () => {
+                    if (allowed) {
+                        onCreate?.();
+                    }
                 }
-            });
+            );
         }
 
         if (exportButton) {
-            exportButton.hidden = typeof onExport !== "function";
-            exportButton.addEventListener("click", () => {
-                onExport?.(state.visibleData, state.allData);
-            });
+            exportButton.hidden =
+                typeof onExport !==
+                "function";
+
+            exportButton.addEventListener(
+                "click",
+                () => {
+                    onExport?.(
+                        state.visibleData,
+                        state.allData
+                    );
+                }
+            );
         }
 
-        filterButton?.addEventListener("click", () => {
-            if (!el.filterPanel) {
-                return;
-            }
+        filterButton?.addEventListener(
+            "click",
+            event => {
+                event.stopPropagation();
 
-            el.filterPanel.hidden = !el.filterPanel.hidden;
-        });
+                if (
+                    !el.filterPanel
+                ) {
+                    return;
+                }
+
+                el.filterPanel.hidden =
+                    !el.filterPanel.hidden;
+            }
+        );
+
+        document.addEventListener(
+            "pointerdown",
+            event => {
+                if (
+                    !el.filterPanel ||
+                    el.filterPanel.hidden
+                ) {
+                    return;
+                }
+
+                const target =
+                    event.target;
+
+                if (
+                    el.filterPanel.contains(
+                        target
+                    ) ||
+                    filterButton?.contains(
+                        target
+                    )
+                ) {
+                    return;
+                }
+
+                el.filterPanel.hidden =
+                    true;
+            }
+        );
     }
 
     function bindSearch() {
@@ -404,32 +468,321 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
     }
 
     async function loadFilterOptions() {
-        const fields = Array.from(
-            root.querySelectorAll('[data-list-filter-field][data-filter-type="select"]')
+        const fields =
+            Array.from(
+                root.querySelectorAll(
+                    '[data-list-filter-field][data-filter-type="select"]'
+                )
+            );
+
+        await Promise.all(
+            fields.map(
+                async field => {
+                    const source =
+                        String(
+                            field.dataset
+                                .filterSource ||
+                            ""
+                        ).trim();
+
+                    if (!source) {
+                        return;
+                    }
+
+                    try {
+                        const response =
+                            await window.MCS
+                                .api
+                                .request(
+                                    source
+                                );
+
+                        let items =
+                            normalizeList(
+                                response?.data
+                            );
+
+                        if (
+                            isActiveOnlySource(
+                                source
+                            )
+                        ) {
+                            items =
+                                items.filter(
+                                    isActiveItem
+                                );
+                        }
+
+                        const select =
+                            field.querySelector(
+                                "select"
+                            );
+
+                        fillSelect(
+                            select,
+                            items,
+                            field.dataset
+                                .filterValueKey ||
+                                "id",
+                            field.dataset
+                                .filterLabelKey ||
+                                "name"
+                        );
+
+                        bindFilterSelectOverlay(
+                            field
+                        );
+                    } catch (error) {
+                        console.warn(
+                            `Không tải được dữ liệu bộ lọc ${field.dataset.filterName}.`,
+                            error
+                        );
+                    }
+                }
+            )
+        );
+    }
+
+    function isActiveOnlySource(
+        source
+    ) {
+        try {
+            const url =
+                new URL(
+                    source,
+                    window.location.origin
+                );
+
+            return (
+                url.searchParams
+                    .get(
+                        "active"
+                    ) ===
+                "true"
+            );
+        } catch {
+            return false;
+        }
+    }
+
+    function isActiveItem(
+        item
+    ) {
+        if (
+            item?.active ===
+                undefined ||
+            item?.active ===
+                null
+        ) {
+            return true;
+        }
+
+        return (
+            item.active === true ||
+            item.active === 1 ||
+            item.active === "1" ||
+            String(
+                item.active
+            ).toLowerCase() ===
+                "true"
+        );
+    }
+
+    function bindFilterSelectOverlay(
+        field
+    ) {
+        const smartRoot =
+            field.querySelector(
+                "[data-smart-select]"
+            );
+
+        if (
+            !smartRoot ||
+            smartRoot.dataset
+                .filterOverlayBound ===
+                "true"
+        ) {
+            return;
+        }
+
+        const control =
+            smartRoot.querySelector(
+                ".smart-select__control"
+            );
+
+        const dropdown =
+            smartRoot.querySelector(
+                ".smart-select__dropdown"
+            );
+
+        if (
+            !control ||
+            !dropdown
+        ) {
+            return;
+        }
+
+        smartRoot.dataset
+            .filterOverlayBound =
+            "true";
+
+        const updatePosition =
+            () => {
+                if (
+                    !smartRoot.classList
+                        .contains(
+                            "is-open"
+                        )
+                ) {
+                    return;
+                }
+
+                const rect =
+                    control.getBoundingClientRect();
+
+                const top =
+                    rect.bottom +
+                    6;
+
+                const maxHeight =
+                    Math.max(
+                        120,
+                        window.innerHeight -
+                        top -
+                        12
+                    );
+
+                dropdown.style.setProperty(
+                    "position",
+                    "fixed",
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "top",
+                    `${top}px`,
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "bottom",
+                    "auto",
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "left",
+                    `${rect.left}px`,
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "width",
+                    `${rect.width}px`,
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "max-height",
+                    `${maxHeight}px`,
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "overflow-y",
+                    "auto",
+                    "important"
+                );
+
+                dropdown.style.setProperty(
+                    "z-index",
+                    "10000",
+                    "important"
+                );
+            };
+
+        const schedulePosition =
+            () => {
+                window.requestAnimationFrame(
+                    () => {
+                        window.requestAnimationFrame(
+                            updatePosition
+                        );
+                    }
+                );
+            };
+
+        const observer =
+            new MutationObserver(
+                () => {
+                    if (
+                        smartRoot.classList
+                            .contains(
+                                "is-open"
+                            )
+                    ) {
+                        schedulePosition();
+                    }
+                }
+            );
+
+        observer.observe(
+            smartRoot,
+            {
+                attributes:
+                    true,
+
+                attributeFilter:
+                    [
+                        "class"
+                    ]
+            }
         );
 
-        await Promise.all(fields.map(async field => {
-            const source = String(field.dataset.filterSource || "").trim();
+        smartRoot.addEventListener(
+            "pointerdown",
+            schedulePosition
+        );
 
-            if (!source) {
-                return;
+        el.filterPanel
+            ?.querySelector(
+                ".data-list-filter__body"
+            )
+            ?.addEventListener(
+                "scroll",
+                () => {
+                    if (
+                        smartRoot.classList
+                            .contains(
+                                "is-open"
+                            )
+                    ) {
+                        schedulePosition();
+                    }
+                },
+                {
+                    passive:
+                        true
+                }
+            );
+
+        window.addEventListener(
+            "resize",
+            () => {
+                if (
+                    smartRoot.classList
+                        .contains(
+                            "is-open"
+                        )
+                ) {
+                    schedulePosition();
+                }
+            },
+            {
+                passive:
+                    true
             }
-
-            try {
-                const response = await window.MCS.api.request(source);
-                const items = normalizeList(response?.data);
-                const select = field.querySelector("select");
-
-                fillSelect(
-                    select,
-                    items,
-                    field.dataset.filterValueKey || "id",
-                    field.dataset.filterLabelKey || "name"
-                );
-            } catch (error) {
-                console.warn(`Không tải được dữ liệu bộ lọc ${field.dataset.filterName}.`, error);
-            }
-        }));
+        );
     }
 
     function applySearch() {

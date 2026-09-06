@@ -406,6 +406,34 @@
     opacity: 1;
 }
 
+.data-list-filter__field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.data-list-filter
+[data-smart-select] {
+    position: relative;
+    z-index: 1;
+}
+
+.data-list-filter
+[data-smart-select].is-open {
+    z-index: 100;
+}
+
+.data-list-filter
+[data-smart-select]
+.smart-select__dropdown {
+    z-index: 10000 !important;
+}
+
+.data-list-filter__footer {
+    position: relative;
+    z-index: 2;
+}
+
 @media (max-width: 900px) {
     .data-list-page__header {
         align-items: flex-start;

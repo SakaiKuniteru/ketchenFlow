@@ -291,91 +291,239 @@ class PhieuLayVeAnRepository {
 
     }
 
-
     async getTongHop(
         query = {}
     ) {
-
         const conditions =
             [];
 
         const values =
             [];
 
+        const addNumberCondition =
+            (
+                rawValue,
+                sqlBuilder
+            ) => {
+                if (
+                    rawValue ===
+                        undefined ||
+                    rawValue ===
+                        null ||
+                    rawValue ===
+                        ""
+                ) {
+                    return;
+                }
 
-        if (
-            query.trangThai !==
-            undefined
-        ) {
+                const value =
+                    Number(
+                        rawValue
+                    );
 
-            values.push(
-                Number(
-                    query.trangThai
-                )
-            );
+                if (
+                    !Number.isFinite(
+                        value
+                    )
+                ) {
+                    return;
+                }
 
-            conditions.push(
-                `p.trang_thai = $${values.length}`
-            );
+                values.push(
+                    value
+                );
 
-        }
+                conditions.push(
+                    sqlBuilder(
+                        `$${values.length}`
+                    )
+                );
+            };
 
+        const addDateTimeCondition =
+            (
+                rawValue,
+                sqlBuilder
+            ) => {
+                if (
+                    !rawValue
+                ) {
+                    return;
+                }
 
-        if (
-            query.doiTuongLayVe
-        ) {
+                values.push(
+                    rawValue
+                );
 
-            values.push(
-                Number(
-                    query.doiTuongLayVe
-                )
-            );
-
-            conditions.push(
-                `p.doi_tuong_lay_ve = $${values.length}`
-            );
-
-        }
-
-
-        if (
-            query.nhanVienId
-        ) {
-
-            values.push(
-                Number(
-                    query.nhanVienId
-                )
-            );
-
-            conditions.push(
-                `p.nhan_vien_id = $${values.length}`
-            );
-
-        }
-
-
-        if (
-            query.thucDonNgayId
-        ) {
-
-            values.push(
-                Number(
-                    query.thucDonNgayId
-                )
-            );
-
-            conditions.push(
-                `p.thuc_don_ngay_id = $${values.length}`
-            );
-
-        }
+                conditions.push(
+                    sqlBuilder(
+                        `$${values.length}`
+                    )
+                );
+            };
 
 
+        /*
+        * Trạng thái phiếu
+        */
+        addNumberCondition(
+            query.trangThai,
+            parameter =>
+                `p.trang_thai = ${parameter}`
+        );
+
+
+        /*
+        * Đối tượng lấy vé
+        */
+        addNumberCondition(
+            query.doiTuongLayVe,
+            parameter =>
+                `p.doi_tuong_lay_ve = ${parameter}`
+        );
+
+
+        /*
+        * Nhân viên lấy vé
+        */
+        addNumberCondition(
+            query.nhanVienId,
+            parameter =>
+                `p.nhan_vien_id = ${parameter}`
+        );
+
+
+        /*
+        * Thực đơn ngày
+        */
+        addNumberCondition(
+            query.thucDonNgayId,
+            parameter =>
+                `p.thuc_don_ngay_id = ${parameter}`
+        );
+
+
+        /*
+        * Cơ sở
+        */
+        addNumberCondition(
+            query.coSoId,
+            parameter =>
+                `td.co_so_id = ${parameter}`
+        );
+
+
+        /*
+        * Nhà ăn
+        */
+        addNumberCondition(
+            query.nhaAnId,
+            parameter =>
+                `td.nha_an_id = ${parameter}`
+        );
+
+
+        /*
+        * Ca ăn
+        */
+        addNumberCondition(
+            query.caAnId,
+            parameter =>
+                `td.ca_an_id = ${parameter}`
+        );
+
+
+        /*
+        * Phương thức thanh toán
+        */
+        addNumberCondition(
+            query.phuongThucThanhToan,
+            parameter =>
+                `p.phuong_thuc_thanh_toan = ${parameter}`
+        );
+
+
+        /*
+        * Thu ngân.
+        *
+        * Filter đang dùng ID nhân viên.
+        * p.nguoi_thanh_toan_id lại là ID tài khoản.
+        *
+        * getBaseQuery đã:
+        * taiKhoan -> nhanVien = nvtt
+        */
+        addNumberCondition(
+            query.thuNganId,
+            parameter =>
+                `nvtt.id = ${parameter}`
+        );
+
+
+        /*
+        * Trạng thái sử dụng vé.
+        *
+        * Một phiếu có thể sinh nhiều ct_ve_an,
+        * nên dùng EXISTS để không làm duplicate
+        * phiếu trong danh sách.
+        */
+        addNumberCondition(
+            query.trangThaiSuDung,
+            parameter =>
+                `
+                    EXISTS (
+                        SELECT 1
+
+                        FROM ct_ve_an v_filter
+
+                        WHERE
+                            v_filter.phieu_lay_ve_id =
+                                p.id
+
+                            AND v_filter.trang_thai =
+                                ${parameter}
+                    )
+                `
+        );
+
+
+        /*
+        * Thời gian tạo phiếu
+        */
+        addDateTimeCondition(
+            query.tuNgayTao,
+            parameter =>
+                `p.created_at >= ${parameter}::timestamp`
+        );
+
+        addDateTimeCondition(
+            query.denNgayTao,
+            parameter =>
+                `p.created_at <= ${parameter}::timestamp`
+        );
+
+
+        /*
+        * Thời gian thanh toán
+        */
+        addDateTimeCondition(
+            query.tuNgayThanhToan,
+            parameter =>
+                `p.thoi_gian_thanh_toan >= ${parameter}::timestamp`
+        );
+
+        addDateTimeCondition(
+            query.denNgayThanhToan,
+            parameter =>
+                `p.thoi_gian_thanh_toan <= ${parameter}::timestamp`
+        );
+
+
+        /*
+        * Giữ tương thích filter ngày cũ nếu còn nơi khác sử dụng.
+        */
         if (
             query.tuNgay
         ) {
-
             values.push(
                 query.tuNgay
             );
@@ -383,14 +531,11 @@ class PhieuLayVeAnRepository {
             conditions.push(
                 `tdn.ngay >= $${values.length}::date`
             );
-
         }
-
 
         if (
             query.denNgay
         ) {
-
             values.push(
                 query.denNgay
             );
@@ -398,7 +543,140 @@ class PhieuLayVeAnRepository {
             conditions.push(
                 `tdn.ngay <= $${values.length}::date`
             );
+        }
 
+
+        /*
+        * ==============================
+        * FILTER MIỄN GIẢM
+        * ==============================
+        *
+        * Gom tất cả vào CÙNG một EXISTS
+        * để cùng một record miễn giảm phải
+        * thỏa toàn bộ điều kiện.
+        */
+        const discountConditions = [
+            `
+                mg_filter.phieu_lay_ve_id =
+                    p.id
+            `
+        ];
+
+        let hasDiscountFilter =
+            false;
+
+
+        if (
+            query.tuNgayMienGiam
+        ) {
+            values.push(
+                query.tuNgayMienGiam
+            );
+
+            discountConditions.push(
+                `
+                    mg_filter.created_at >=
+                        $${values.length}::timestamp
+                `
+            );
+
+            hasDiscountFilter =
+                true;
+        }
+
+
+        if (
+            query.denNgayMienGiam
+        ) {
+            values.push(
+                query.denNgayMienGiam
+            );
+
+            discountConditions.push(
+                `
+                    mg_filter.created_at <=
+                        $${values.length}::timestamp
+                `
+            );
+
+            hasDiscountFilter =
+                true;
+        }
+
+
+        if (
+            query.loaiMienGiam !==
+                undefined &&
+            query.loaiMienGiam !==
+                null &&
+            query.loaiMienGiam !==
+                ""
+        ) {
+            values.push(
+                Number(
+                    query.loaiMienGiam
+                )
+            );
+
+            discountConditions.push(
+                `
+                    mg_filter.loai_mien_giam =
+                        $${values.length}
+                `
+            );
+
+            hasDiscountFilter =
+                true;
+        }
+
+
+        if (
+            query.nguoiTaoMienGiamId
+        ) {
+            values.push(
+                Number(
+                    query.nguoiTaoMienGiamId
+                )
+            );
+
+            discountConditions.push(
+                `
+                    tk_mg.nhan_vien_id =
+                        $${values.length}
+                `
+            );
+
+            hasDiscountFilter =
+                true;
+        }
+
+
+        if (
+            hasDiscountFilter
+        ) {
+            conditions.push(
+                `
+                    EXISTS (
+
+                        SELECT 1
+
+                        FROM
+                            ct_phieu_lay_ve_mien_giam
+                                mg_filter
+
+                        LEFT JOIN dm_tai_khoan
+                            tk_mg
+                            ON tk_mg.id =
+                            mg_filter.nguoi_tao_mien_giam_id
+
+                        WHERE
+                            ${discountConditions.join(
+                                "\nAND "
+                            )}
+
+                    )
+                `
+            );
         }
 
 
@@ -411,14 +689,12 @@ class PhieuLayVeAnRepository {
             conditions.length >
             0
         ) {
-
             sql += `
                 WHERE
                     ${conditions.join(
                         "\nAND "
                     )}
             `;
-
         }
 
 
@@ -444,9 +720,7 @@ class PhieuLayVeAnRepository {
                     row
                 )
         );
-
     }
-
 
     async getChiTiet(
         id
@@ -666,6 +940,213 @@ class PhieuLayVeAnRepository {
 
     }
 
+    async taoSoPhieuTheoQuyTac(
+        nguCanh,
+        db
+    ) {
+        const prefix =
+            String(
+                nguCanh?.prefix ||
+                ""
+            );
+
+        const doRongDaySo =
+            Number(
+                nguCanh?.doRongDaySo
+            );
+
+        if (
+            !prefix ||
+            !Number.isInteger(
+                doRongDaySo
+            ) ||
+            doRongDaySo <=
+                0
+        ) {
+            throw new Error(
+                "Cấu hình sinh mã vé ăn không hợp lệ."
+            );
+        }
+
+        /*
+        * Khóa riêng theo format + kỳ hiện tại.
+        *
+        * Ví dụ ngày 06:
+        * VA260906
+        *
+        * hai request cùng lúc sẽ phải
+        * lần lượt lấy số.
+        */
+        await db.query(
+            `
+                SELECT
+                    pg_advisory_xact_lock(
+                        hashtext(
+                            $1
+                        )
+                    )
+            `,
+            [
+                `MA_VE_AN:${nguCanh.khoa}`
+            ]
+        );
+
+        const result =
+            await db.query(
+                `
+                    SELECT
+                        so_phieu
+
+                    FROM
+                        nv_phieu_lay_ve_an
+
+                    WHERE
+                        LEFT(
+                            so_phieu,
+                            CHAR_LENGTH(
+                                $1::text
+                            )
+                        ) =
+                        $1::text
+
+                        AND SUBSTRING(
+                            so_phieu
+                            FROM
+                            CHAR_LENGTH(
+                                $1::text
+                            ) +
+                            1
+                        ) ~ '^[0-9]+$'
+
+                        AND CHAR_LENGTH(
+                            SUBSTRING(
+                                so_phieu
+                                FROM
+                                CHAR_LENGTH(
+                                    $1::text
+                                ) +
+                                1
+                            )
+                        ) >=
+                        $2
+
+                    ORDER BY
+                        created_at DESC,
+                        id DESC
+
+                    LIMIT 1
+                `,
+                [
+                    prefix,
+                    doRongDaySo
+                ]
+            );
+
+        const lastCode =
+            result.rows[0]
+                ?.so_phieu ||
+            null;
+
+        if (
+            !lastCode
+        ) {
+            return (
+                prefix +
+                "1".padStart(
+                    doRongDaySo,
+                    "0"
+                )
+            );
+        }
+
+        const lastSuffix =
+            String(
+                lastCode
+            ).slice(
+                prefix.length
+            );
+
+        if (
+            !/^\d+$/.test(
+                lastSuffix
+            )
+        ) {
+            return (
+                prefix +
+                "1".padStart(
+                    doRongDaySo,
+                    "0"
+                )
+            );
+        }
+
+        const currentWidth =
+            Math.max(
+                doRongDaySo,
+                lastSuffix.length
+            );
+
+        const currentValue =
+            BigInt(
+                lastSuffix
+            );
+
+        const maxValue =
+            (
+                10n **
+                BigInt(
+                    currentWidth
+                )
+            ) -
+            1n;
+
+        let nextValue;
+        let nextWidth;
+
+        /*
+        * dayso:1:
+        *
+        * 1...9
+        * -> 01
+        *
+        * 01...99
+        * -> 001
+        *
+        * 001...999
+        * -> 0001
+        */
+        if (
+            currentValue >=
+            maxValue
+        ) {
+            nextValue =
+                1n;
+
+            nextWidth =
+                currentWidth +
+                1;
+        } else {
+            nextValue =
+                currentValue +
+                1n;
+
+            nextWidth =
+                currentWidth;
+        }
+
+        const suffix =
+            nextValue
+                .toString()
+                .padStart(
+                    nextWidth,
+                    "0"
+                );
+
+        return (
+            prefix +
+            suffix
+        );
+    }
 
     async getNhanVienById(
         id
@@ -813,142 +1294,170 @@ class PhieuLayVeAnRepository {
 
     }
 
-
     async create(
-        data
+        data,
+        nguCanhSinhMaVeAn
     ) {
+        const client =
+            await pool.connect();
 
-        const sql = `
+        let createdId =
+            null;
 
-            INSERT INTO nv_phieu_lay_ve_an (
-
-                so_phieu,
-
-                thuc_don_ngay_id,
-
-                doi_tuong_lay_ve,
-
-                nhan_vien_id,
-
-                ho_ten_nguoi_lay_ve,
-                ngay_sinh_nguoi_lay_ve,
-                gioi_tinh_nguoi_lay_ve,
-                so_dien_thoai_nguoi_lay_ve,
-                dia_chi_nguoi_lay_ve,
-                don_vi_nguoi_lay_ve,
-
-                khach_lau_dai,
-
-                so_luong,
-
-                don_gia,
-                tien_goc,
-                tong_mien_giam,
-                thanh_tien,
-
-                ghi_chu,
-
-                phuong_thuc_thanh_toan,
-
-                trang_thai,
-
-                nguoi_tao_id,
-
-                created_at,
-                updated_at
-
-            )
-            VALUES (
-
-                $1,
-                $2,
-                $3,
-                $4,
-
-                $5,
-                $6,
-                $7,
-                $8,
-                $9,
-                $10,
-
-                $11,
-
-                $12,
-
-                $13,
-                $14,
-                $15,
-                $16,
-
-                $17,
-
-                $18,
-
-                $19,
-
-                $20,
-
-                NOW(),
-                NOW()
-
-            )
-
-            RETURNING id
-
-        `;
-
-
-        const values = [
-
-            data.soPhieu,
-
-            data.thucDonNgayId,
-
-            data.doiTuongLayVe,
-
-            data.nhanVienId,
-
-            data.hoTenNguoiLayVe,
-            data.ngaySinhNguoiLayVe,
-            data.gioiTinhNguoiLayVe,
-            data.soDienThoaiNguoiLayVe,
-            data.diaChiNguoiLayVe,
-            data.donViNguoiLayVe,
-
-            data.khachLauDai,
-
-            data.soLuong,
-
-            data.donGia,
-            data.tienGoc,
-            data.tongMienGiam,
-            data.thanhTien,
-
-            data.ghiChu,
-
-            data.phuongThucThanhToan,
-
-            data.trangThai,
-
-            data.nguoiTaoId
-
-        ];
-
-
-        const result =
-            await pool.query(
-                sql,
-                values
+        try {
+            await client.query(
+                "BEGIN"
             );
 
+            const soPhieu =
+                await this
+                    .taoSoPhieuTheoQuyTac(
+                        nguCanhSinhMaVeAn,
+                        client
+                    );
+
+            const sql = `
+                INSERT INTO nv_phieu_lay_ve_an (
+
+                    so_phieu,
+
+                    thuc_don_ngay_id,
+
+                    doi_tuong_lay_ve,
+
+                    nhan_vien_id,
+
+                    ho_ten_nguoi_lay_ve,
+                    ngay_sinh_nguoi_lay_ve,
+                    gioi_tinh_nguoi_lay_ve,
+                    so_dien_thoai_nguoi_lay_ve,
+                    dia_chi_nguoi_lay_ve,
+                    don_vi_nguoi_lay_ve,
+
+                    khach_lau_dai,
+
+                    so_luong,
+
+                    don_gia,
+                    tien_goc,
+                    tong_mien_giam,
+                    thanh_tien,
+
+                    ghi_chu,
+
+                    phuong_thuc_thanh_toan,
+
+                    trang_thai,
+
+                    nguoi_tao_id,
+
+                    created_at,
+                    updated_at
+
+                )
+                VALUES (
+
+                    $1,
+                    $2,
+                    $3,
+                    $4,
+
+                    $5,
+                    $6,
+                    $7,
+                    $8,
+                    $9,
+                    $10,
+
+                    $11,
+
+                    $12,
+
+                    $13,
+                    $14,
+                    $15,
+                    $16,
+
+                    $17,
+
+                    $18,
+
+                    $19,
+
+                    $20,
+
+                    NOW(),
+                    NOW()
+
+                )
+
+                RETURNING id
+            `;
+
+            const values = [
+
+                soPhieu,
+
+                data.thucDonNgayId,
+
+                data.doiTuongLayVe,
+
+                data.nhanVienId,
+
+                data.hoTenNguoiLayVe,
+                data.ngaySinhNguoiLayVe,
+                data.gioiTinhNguoiLayVe,
+                data.soDienThoaiNguoiLayVe,
+                data.diaChiNguoiLayVe,
+                data.donViNguoiLayVe,
+
+                data.khachLauDai,
+
+                data.soLuong,
+
+                data.donGia,
+                data.tienGoc,
+                data.tongMienGiam,
+                data.thanhTien,
+
+                data.ghiChu,
+
+                data.phuongThucThanhToan,
+
+                data.trangThai,
+
+                data.nguoiTaoId
+
+            ];
+
+            const result =
+                await client.query(
+                    sql,
+                    values
+                );
+
+            createdId =
+                result.rows[0].id;
+
+            await client.query(
+                "COMMIT"
+            );
+        } catch (
+            error
+        ) {
+            await client.query(
+                "ROLLBACK"
+            );
+
+            throw error;
+        } finally {
+            client.release();
+        }
 
         return await this.getChiTiet(
-            result.rows[0].id
+            createdId
         );
-
     }
-
 
     async update(
         id,

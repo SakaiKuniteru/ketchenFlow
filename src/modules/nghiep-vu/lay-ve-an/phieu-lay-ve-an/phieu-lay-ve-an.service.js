@@ -15,19 +15,26 @@ const {
     "../../../../constants/enums"
 );
 
+const cauHinhService =
+    require(
+        "../../../cau-hinh/cau-hinh.service"
+    );
 
 const ApiError =
     require(
         "../../../../utils/api-error"
     );
 
-
 const phieuLayVeAnRepository =
     require(
         "./phieu-lay-ve-an.repository"
     );
 
-
+const inBaoCaoService =
+    require(
+        "../../../../services/in-bao-cao/in-bao-cao.service"
+    );
+    
 class PhieuLayVeAnService {
 
     parseId(
@@ -203,6 +210,169 @@ class PhieuLayVeAnService {
 
     }
 
+    formatNgayBaoCao(
+        value
+    ) {
+        if (!value) {
+            return "";
+        }
+
+        const date =
+            new Date(
+                value
+            );
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return String(
+                value
+            );
+        }
+
+        const parts =
+            new Intl.DateTimeFormat(
+                "en-GB",
+                {
+                    timeZone:
+                        "Asia/Ho_Chi_Minh",
+
+                    day:
+                        "2-digit",
+
+                    month:
+                        "2-digit",
+
+                    year:
+                        "numeric"
+                }
+            )
+                .formatToParts(
+                    date
+                );
+
+        const map =
+            Object.fromEntries(
+                parts.map(
+                    item => [
+                        item.type,
+                        item.value
+                    ]
+                )
+            );
+
+        return `${map.day}/${map.month}/${map.year}`;
+    }
+
+    formatNgayGioBaoCao(
+        value
+    ) {
+        if (!value) {
+            return "";
+        }
+
+        const date =
+            new Date(
+                value
+            );
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return String(
+                value
+            );
+        }
+
+        const parts =
+            new Intl.DateTimeFormat(
+                "en-GB",
+                {
+                    timeZone:
+                        "Asia/Ho_Chi_Minh",
+
+                    day:
+                        "2-digit",
+
+                    month:
+                        "2-digit",
+
+                    year:
+                        "numeric",
+
+                    hour:
+                        "2-digit",
+
+                    minute:
+                        "2-digit",
+
+                    second:
+                        "2-digit",
+
+                    hour12:
+                        false
+                }
+            )
+                .formatToParts(
+                    date
+                );
+
+        const map =
+            Object.fromEntries(
+                parts.map(
+                    item => [
+                        item.type,
+                        item.value
+                    ]
+                )
+            );
+
+        return `${map.hour}:${map.minute}:${map.second} ${map.day}/${map.month}/${map.year}`;
+    }
+
+    formatGioBaoCao(
+        value
+    ) {
+        if (!value) {
+            return "";
+        }
+
+        return String(
+            value
+        ).slice(
+            0,
+            5
+        );
+    }
+
+    formatTienBaoCao(
+        value
+    ) {
+        const number =
+            Number(
+                value
+            );
+
+        if (
+            !Number.isFinite(
+                number
+            )
+        ) {
+            return "";
+        }
+
+        return number.toLocaleString(
+            "vi-VN",
+            {
+                maximumFractionDigits:
+                    5
+            }
+        );
+    }
 
     async getTongHop(
         query
@@ -575,80 +745,78 @@ class PhieuLayVeAnService {
 
     }
 
-
-    taoSoPhieu() {
-
-        const now =
-            new Date();
-
-
+    taoNguCanhSinhMaVeAn(
+        cauHinh,
+        date =
+            new Date()
+    ) {
         const yyyy =
             String(
-                now.getFullYear()
+                date.getFullYear()
             );
 
+        const yy =
+            yyyy.slice(
+                -2
+            );
 
         const mm =
             String(
-                now.getMonth() + 1
+                date.getMonth() +
+                1
             ).padStart(
                 2,
                 "0"
             );
-
 
         const dd =
             String(
-                now.getDate()
+                date.getDate()
             ).padStart(
                 2,
                 "0"
             );
 
+        let prefix =
+            cauHinh.tienTo;
 
-        const hh =
-            String(
-                now.getHours()
-            ).padStart(
-                2,
-                "0"
-            );
+        if (
+            cauHinh.coYY
+        ) {
+            prefix +=
+                yy;
+        }
 
+        if (
+            cauHinh.coMM
+        ) {
+            prefix +=
+                mm;
+        }
 
-        const mi =
-            String(
-                now.getMinutes()
-            ).padStart(
-                2,
-                "0"
-            );
+        if (
+            cauHinh.coDD
+        ) {
+            prefix +=
+                dd;
+        }
 
+        return {
+            prefix,
 
-        const ss =
-            String(
-                now.getSeconds()
-            ).padStart(
-                2,
-                "0"
-            );
+            doRongDaySo:
+                cauHinh
+                    .doRongDaySo,
 
-
-        const random =
-            String(
-                Math.floor(
-                    Math.random() *
-                    10000
+            khoa:
+                [
+                    cauHinh.dinhDang,
+                    prefix
+                ].join(
+                    ":"
                 )
-            ).padStart(
-                4,
-                "0"
-            );
-
-
-        return `PLV${yyyy}${mm}${dd}${hh}${mi}${ss}${random}`;
-
+        };
     }
-
 
     async create(
         data,
@@ -710,12 +878,16 @@ class PhieuLayVeAnService {
             donGia *
             soLuong;
 
+        const quyTacSinhMaVeAn =
+            await cauHinhService
+                .getQuyTacSinhMaVeAn();
 
+        const nguCanhSinhMaVeAn =
+            this.taoNguCanhSinhMaVeAn(
+                quyTacSinhMaVeAn
+            );
+            
         const duLieuTao = {
-
-            soPhieu:
-                this.taoSoPhieu(),
-
             thucDonNgayId:
                 Number(
                     data.thucDonNgayId
@@ -768,10 +940,10 @@ class PhieuLayVeAnService {
             duLieuTao.trangThai
         );
 
-
         return await phieuLayVeAnRepository
             .create(
-                duLieuTao
+                duLieuTao,
+                nguCanhSinhMaVeAn
             );
 
     }
@@ -1108,16 +1280,13 @@ class PhieuLayVeAnService {
 
     }
 
-
     async getDuLieuInVe(
         id
     ) {
-
         const phieuLayVeAnId =
             this.parseId(
                 id
             );
-
 
         const phieu =
             await phieuLayVeAnRepository
@@ -1125,40 +1294,89 @@ class PhieuLayVeAnService {
                     phieuLayVeAnId
                 );
 
-
-        if (
-            !phieu
-        ) {
-
+        if (!phieu) {
             throw new ApiError(
                 404,
                 "Phiếu lấy vé ăn không tồn tại."
             );
-
         }
-
 
         if (
             Number(
                 phieu.trangThai
-            ) !==
-            40
+            ) !== 40
         ) {
-
             throw new ApiError(
                 400,
                 "Phiếu chưa thanh toán nên chưa thể in vé."
             );
-
         }
 
+        const data = {
+            ...phieu,
 
-        return phieu;
+            ngay:
+                this.formatNgayBaoCao(
+                    phieu.ngay
+                ),
 
+            thoiGianBatDau:
+                this.formatGioBaoCao(
+                    phieu.thoiGianBatDau
+                ),
+
+            thoiGianKetThuc:
+                this.formatGioBaoCao(
+                    phieu.thoiGianKetThuc
+                ),
+
+            thoiGianThanhToan:
+                this.formatNgayGioBaoCao(
+                    phieu.thoiGianThanhToan
+                ),
+
+            donGia:
+                this.formatTienBaoCao(
+                    phieu.donGia
+                ),
+
+            tienGoc:
+                this.formatTienBaoCao(
+                    phieu.tienGoc
+                ),
+
+            tongMienGiam:
+                this.formatTienBaoCao(
+                    phieu.tongMienGiam
+                ),
+
+            thanhTien:
+                this.formatTienBaoCao(
+                    phieu.thanhTien
+                ),
+
+            nguoiLayVe:
+                phieu.tenNhanVien ||
+                phieu.hoTenNguoiLayVe ||
+                ""
+        };
+
+        return await inBaoCaoService
+            .taoBaoCao({
+                maBaoCao:
+                    "ve_an",
+
+                id:
+                    phieu.id,
+
+                soPhieu:
+                    phieu.soPhieu,
+
+                data
+            });
     }
 
 }
-
 
 module.exports =
     new PhieuLayVeAnService();

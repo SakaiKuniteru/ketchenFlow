@@ -274,45 +274,56 @@ class PhieuLayVeAnController {
 
     }
 
-
     async inVe(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
+            const file =
                 await phieuLayVeAnService
                     .getDuLieuInVe(
                         id
                     );
 
-
-            return successResponse(
-                res,
-                "Lấy dữ liệu in vé ăn thành công.",
-                data,
-                200
+            res.setHeader(
+                "Content-Type",
+                file.contentType
             );
 
+            res.setHeader(
+                "Content-Disposition",
+                `inline; filename*=UTF-8''${encodeURIComponent(
+                    file.fileName
+                )}`
+            );
+
+            res.setHeader(
+                "Content-Length",
+                String(
+                    file.buffer.length
+                )
+            );
+
+            res.setHeader(
+                "Cache-Control",
+                "no-store"
+            );
+
+            return res.send(
+                file.buffer
+            );
         } catch (
             error
         ) {
-
             next(
                 error
             );
-
         }
-
     }
 
 }
