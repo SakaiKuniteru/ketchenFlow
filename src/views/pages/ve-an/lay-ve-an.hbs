@@ -30,319 +30,13 @@
 
         <section class="lva-main">
 
-            <article class="lva-card">
+            {{> ve-an/lay-ve-an/phieu-lay-ve}}
 
-                <div class="lva-card__title">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span>Thông tin bữa ăn</span>
-                </div>
-
-                <div class="lva-form-single">
-                    {{> forms/select
-                        id="thucDonNgayId"
-                        name="thucDonNgayId"
-                        label="Bữa ăn / thực đơn"
-                        mode="single"
-                        multiple=false
-                        allowAll=false
-                        placeholder="Chọn bữa ăn..."
-                        options=null
-                        required=true
-                    }}
-                </div>
-
-                <div class="lva-meal" data-meal-detail hidden>
-                    <div class="lva-meal__meta">
-                        <div><span>Ngày:</span><strong data-meal-date>-</strong></div>
-                        <div><span>Thực đơn:</span><strong data-meal-name>-</strong></div>
-                        <div><span>Nhà ăn:</span><strong data-meal-canteen>-</strong></div>
-                        <div><span>Ca ăn:</span><strong data-meal-shift>-</strong></div>
-                        <div><span>Khung giờ:</span><strong data-meal-time>-</strong></div>
-                    </div>
-
-                    <a
-                        class="lva-btn lva-btn--outline lva-btn--sm"
-                        data-view-menu
-                        href="#"
-                        target="_blank"
-                        rel="noopener">
-                        <i class="fa-regular fa-eye"></i>
-                        Xem thực đơn
-                    </a>
-                </div>
-
-            </article>
-
-            <article class="lva-card">
-
-                <div class="lva-card__title">
-                    <i class="fa-solid fa-user"></i>
-                    <span>Thông tin người lấy vé</span>
-                </div>
-
-                <div class="lva-form-grid lva-form-grid--person">
-
-                    <div data-quantity-field>
-                        {{> forms/number
-                            id="soLuong"
-                            name="soLuong"
-                            label="Số lượng vé"
-                            placeholder="1"
-                            min=1
-                            step=1
-                            required=true
-                        }}
-                    </div>
-
-                    {{> forms/select
-                        id="doiTuongLayVe"
-                        name="doiTuongLayVe"
-                        label="Đối tượng lấy vé"
-                        mode="single"
-                        multiple=false
-                        allowAll=false
-                        placeholder="Chọn đối tượng lấy vé..."
-                        options=null
-                        required=true
-                    }}
-
-                    <div data-employee-select-field hidden>
-                        {{> forms/select
-                            id="nhanVienId"
-                            name="nhanVienId"
-                            label="Người lấy vé"
-                            mode="single"
-                            multiple=false
-                            allowAll=false
-                            placeholder="Chọn nhân viên..."
-                            options=null
-                            required=true
-                        }}
-                    </div>
-
-                </div>
-
-                <div class="lva-employee-info" data-employee-info hidden>
-                    <div><span>Mã nhân viên:</span><strong data-employee-code>-</strong></div>
-                    <div><span>Họ và tên:</span><strong data-employee-name>-</strong></div>
-                    <div><span>Phòng ban:</span><strong data-employee-department>-</strong></div>
-                    <div><span>Cơ sở:</span><strong data-employee-site>-</strong></div>
-                    <div><span>Số điện thoại:</span><strong data-employee-phone>-</strong></div>
-
-                    <div class="lva-employee-info__note">
-                        {{> forms/textarea
-                            id="ghiChuNhanVien"
-                            name="ghiChuNhanVien"
-                            label="Ghi chú"
-                            placeholder="Nhập ghi chú (nếu có)..."
-                            rows=3
-                            maxlength=1000
-                        }}
-                    </div>
-                </div>
-
-                <div class="lva-guest-form" data-guest-form hidden>
-                    <div class="lva-form-grid">
-
-                        {{> forms/input
-                            id="hoTenNguoiLayVe"
-                            name="hoTenNguoiLayVe"
-                            label="Họ tên"
-                            placeholder="Nhập họ tên"
-                            maxlength=150
-                            required=true
-                        }}
-
-                        {{> forms/input
-                            id="soDienThoaiNguoiLayVe"
-                            name="soDienThoaiNguoiLayVe"
-                            label="Số điện thoại"
-                            placeholder="Nhập số điện thoại"
-                            maxlength=20
-                        }}
-
-                        {{> forms/date
-                            id="ngaySinhNguoiLayVe"
-                            name="ngaySinhNguoiLayVe"
-                            label="Ngày sinh"
-                            placeholder="dd/mm/yyyy"
-                            defaultTime="00:00:00"
-                        }}
-
-                        {{> forms/select
-                            id="gioiTinhNguoiLayVe"
-                            name="gioiTinhNguoiLayVe"
-                            label="Giới tính"
-                            mode="single"
-                            multiple=false
-                            allowAll=false
-                            placeholder="Chọn giới tính..."
-                            options=null
-                        }}
-
-                        {{> forms/input
-                            id="donViNguoiLayVe"
-                            name="donViNguoiLayVe"
-                            label="Đơn vị"
-                            placeholder="Nhập đơn vị"
-                            maxlength=255
-                        }}
-
-                        <div class="lva-checkbox-field">
-                            {{> forms/checkbox
-                                id="khachLauDai"
-                                name="khachLauDai"
-                                label="Khách lâu dài"
-                                checked=false
-                            }}
-                        </div>
-
-                        <div class="lva-form-grid__full">
-                            {{> forms/input
-                                id="diaChiNguoiLayVe"
-                                name="diaChiNguoiLayVe"
-                                label="Địa chỉ"
-                                placeholder="Nhập địa chỉ"
-                            }}
-                        </div>
-
-                        <div class="lva-form-grid__full">
-                            {{> forms/textarea
-                                id="ghiChuKhach"
-                                name="ghiChuKhach"
-                                label="Ghi chú"
-                                placeholder="Nhập ghi chú (nếu có)..."
-                                rows=3
-                                maxlength=1000
-                            }}
-                        </div>
-
-                    </div>
-                </div>
-
-            </article>
-
-            <article class="lva-card">
-
-                <div class="lva-card__title-row">
-                    <div class="lva-card__title">
-                        <i class="fa-solid fa-tag"></i>
-                        <span>Miễn giảm</span>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="lva-btn lva-btn--outline lva-btn--sm"
-                        data-discount-open
-                        hidden>
-                        Tạo miễn giảm
-                    </button>
-                </div>
-
-                <p class="lva-card__hint">Các miễn giảm đã áp dụng cho phiếu này.</p>
-
-                <div class="lva-discount-list" data-discount-list>
-                    <span class="lva-empty">Chưa có miễn giảm.</span>
-                </div>
-
-            </article>
-
-            <article class="lva-card lva-card--note">
-                <div class="lva-card__title">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>Lưu ý</span>
-                </div>
-
-                <ul>
-                    <li>Vé chỉ áp dụng cho đúng ngày và ca ăn đã chọn.</li>
-                    <li>Có thể thay đổi thông tin trước khi thanh toán.</li>
-                    <li>Sau khi có miễn giảm, các trường ảnh hưởng đến giá sẽ được khóa để tránh sai lệch tiền.</li>
-                    <li>Thực đơn ngày đã chọn được ghi nhớ trong session trong ngày.</li>
-                </ul>
-            </article>
+            {{> ve-an/lay-ve-an/mien-giam}}
 
         </section>
 
-        <aside class="lva-payment">
-
-            <article class="lva-card lva-card--sticky">
-
-                <div class="lva-card__title">
-                    <i class="fa-regular fa-file-lines"></i>
-                    <span>Tóm tắt thanh toán</span>
-                </div>
-
-                <div class="lva-summary">
-                    <div><span>Loại vé:</span><strong data-summary-ticket>-</strong></div>
-                    <div><span>Số lượng:</span><strong data-summary-qty>1 vé</strong></div>
-                    <div><span>Đơn giá:</span><strong data-summary-price>-</strong></div>
-                    <div><span>Tiền gốc:</span><strong data-summary-original>-</strong></div>
-                    <div><span>Miễn giảm:</span><strong class="is-discount" data-summary-discount>0 đ</strong></div>
-                </div>
-
-                <div class="lva-total">
-                    <span>Thành tiền:</span>
-                    <strong data-summary-total>-</strong>
-                </div>
-
-                <div class="lva-payment-methods" data-payment-section hidden>
-                    <h3>Phương thức thanh toán</h3>
-                    <div data-payment-method-list></div>
-                </div>
-
-                <div class="lva-qr-panel" data-qr-panel hidden>
-                    <div class="lva-qr-panel__icon">
-                        <i class="fa-solid fa-qrcode"></i>
-                    </div>
-
-                    <div>
-                        <strong>Giao dịch QR đang chờ thanh toán</strong>
-                        <span data-qr-code></span>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="lva-btn lva-btn--danger lva-btn--sm"
-                        data-cancel-qr
-                        hidden>
-                        Hủy QR
-                    </button>
-                </div>
-
-                <div class="lva-action-stack">
-                    <button type="button" class="lva-btn lva-btn--outline" data-print hidden>
-                        <i class="fa-solid fa-print"></i>
-                        In vé
-                    </button>
-
-                    <button type="button" class="lva-btn lva-btn--primary" data-pay hidden>
-                        <i class="fa-solid fa-ticket"></i>
-                        Thanh toán & lấy vé
-                    </button>
-
-                    <button type="button" class="lva-btn lva-btn--success" data-confirm-payment hidden>
-                        <i class="fa-solid fa-check"></i>
-                        Xác nhận thanh toán
-                    </button>
-
-                    <button type="button" class="lva-btn lva-btn--outline" data-refund hidden>
-                        <i class="fa-solid fa-rotate-left"></i>
-                        Hoàn tiền
-                    </button>
-
-                    <button type="button" class="lva-btn lva-btn--danger-soft" data-cancel-phieu hidden>
-                        Hủy phiếu
-                    </button>
-                </div>
-
-                <div class="lva-ticket-note">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>Sau khi thanh toán thành công, hệ thống sinh vé ăn theo số lượng đã chọn.</span>
-                </div>
-
-            </article>
-
-        </aside>
+        {{> ve-an/lay-ve-an/thanh-toan}}
 
     </div>
 
@@ -384,6 +78,7 @@
                             hideDropdown=true
                         }}
                     </div>
+
                     <div class="lva-available-list" data-discount-available>
                         <span class="lva-empty">Không có miễn giảm khả dụng.</span>
                     </div>
@@ -454,11 +149,206 @@
                 </div>
 
             </div>
+        </section>
+    </div>
+
+    <div
+        class="lva-modal"
+        data-refund-modal
+        hidden>
+
+        <div
+            class="lva-modal__backdrop"
+            data-refund-close>
+        </div>
+
+        <section
+            class="lva-modal__dialog lva-modal__dialog--sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="refundTitle">
+
+            <header class="lva-modal__header">
+
+                <div>
+                    <h2 id="refundTitle">
+                        Hoàn phiếu / hoàn thanh toán
+                    </h2>
+
+                    <p>
+                        Nhập thông tin hoàn theo số lượng vé cần hoàn.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="lva-icon-btn"
+                    data-refund-close
+                    aria-label="Đóng">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </header>
+
+            <div class="lva-modal__body">
+
+                <div class="lva-form-grid lva-form-grid--modal">
+
+                    {{> forms/number
+                        id="soLuongHoan"
+                        name="soLuongHoan"
+                        label="Số lượng hoàn"
+                        placeholder="Nhập số lượng hoàn"
+                        min=1
+                        step=1
+                        required=true
+                    }}
+
+                    {{> forms/select
+                        id="phuongThucHoan"
+                        name="phuongThucHoan"
+                        label="Phương thức hoàn"
+                        mode="single"
+                        multiple=false
+                        allowAll=false
+                        placeholder="Chọn phương thức hoàn..."
+                        options=null
+                        required=true
+                    }}
+
+                    <div class="lva-form-grid__full">
+
+                        {{> forms/textarea
+                            id="lyDoHoan"
+                            name="lyDoHoan"
+                            label="Lý do hoàn"
+                            placeholder="Nhập lý do hoàn"
+                            rows=3
+                            maxlength=500
+                            required=true
+                        }}
+
+                    </div>
+
+                </div>
+
+                <div class="lva-modal__footer">
+
+                    <button
+                        type="button"
+                        class="lva-btn lva-btn--outline"
+                        data-refund-close>
+
+                        Đóng
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="lva-btn lva-btn--primary"
+                        data-refund-submit>
+
+                        Xác nhận hoàn
+
+                    </button>
+
+                </div>
+
+            </div>
 
         </section>
+
+    </div>
+
+    <div
+        class="lva-modal"
+        data-cancel-phieu-modal
+        hidden>
+
+        <div
+            class="lva-modal__backdrop"
+            data-cancel-phieu-close>
+        </div>
+
+        <section
+            class="lva-modal__dialog lva-modal__dialog--sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancelPhieuTitle">
+
+            <header class="lva-modal__header">
+
+                <div>
+                    <h2 id="cancelPhieuTitle">
+                        Hủy phiếu lấy vé
+                    </h2>
+
+                    <p>
+                        Nhập lý do hủy phiếu trước khi xác nhận.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="lva-icon-btn"
+                    data-cancel-phieu-close
+                    aria-label="Đóng">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </header>
+
+            <div class="lva-modal__body">
+
+                {{> forms/textarea
+                    id="lyDoHuyPhieu"
+                    name="lyDoHuyPhieu"
+                    label="Lý do hủy"
+                    placeholder="Nhập lý do hủy phiếu..."
+                    rows=4
+                    maxlength=500
+                    required=true
+                }}
+
+                <div class="lva-modal__footer">
+
+                    <button
+                        type="button"
+                        class="lva-btn lva-btn--outline"
+                        data-cancel-phieu-close>
+
+                        Đóng
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="lva-btn lva-btn--danger"
+                        data-cancel-phieu-submit>
+
+                        Tiếp tục
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </div>
 
 </main>
 
 <script src="/assets/js/pages/ve-an/permission.js"></script>
-<script src="/assets/js/pages/ve-an/lay-ve-an.js"></script>
+{{!-- <script src="/assets/js/pages/ve-an/lay-ve-an.js"></script> --}}
+
+<script src="/assets/js/pages/ve-an/lay-ve-an/core.js"></script>
+<script src="/assets/js/pages/ve-an/lay-ve-an/phieu-lay-ve.js"></script>
+<script src="/assets/js/pages/ve-an/lay-ve-an/mien-giam.js"></script>
+<script src="/assets/js/pages/ve-an/lay-ve-an/thanh-toan.js"></script>
+<script src="/assets/js/pages/ve-an/lay-ve-an/main.js"></script>

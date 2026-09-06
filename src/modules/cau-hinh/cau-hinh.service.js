@@ -19,7 +19,9 @@ const MA_THIET_LAP = {
     QUY_TAC_CHON_DON_VI_QUY_DOI: "QUY_TAC_CHON_DON_VI_QUY_DOI",
     QUY_TAC_LAM_TRON: "QUY_TAC_LAM_TRON",
     SO_CHU_SO_SAU_DAU_PHAY: "SO_CHU_SO_SAU_DAU_PHAY",
-    BAT_BUOC_CHON_NHOM_MON: "BAT_BUOC_CHON_NHOM_MON"
+    BAT_BUOC_CHON_NHOM_MON: "BAT_BUOC_CHON_NHOM_MON",
+    THU_TU_DOI_TUONG_LAY_VE: "THU_TU_DOI_TUONG_LAY_VE",
+    PHUONG_THUC_THANH_TOAN_HIEN_THI: "PHUONG_THUC_THANH_TOAN_HIEN_THI"
 };
 
 class CauHinhService {
@@ -130,6 +132,18 @@ class CauHinhService {
                 return {
                     ma: maThietLap,
                     giaTri: await this.getBatBuocChonNhomMon()
+                };
+
+            case MA_THIET_LAP.THU_TU_DOI_TUONG_LAY_VE:
+                return {
+                    ma: maThietLap,
+                    giaTri: await this.getThuTuDoiTuongLayVe()
+                };
+
+            case MA_THIET_LAP.PHUONG_THUC_THANH_TOAN_HIEN_THI:
+                return {
+                    ma: maThietLap,
+                    giaTri: await this.getPhuongThucThanhToanHienThi()
                 };
 
                     default: return this.resolveMacDinh(thietLap);
@@ -654,6 +668,140 @@ class CauHinhService {
             giaTri ===
             "true"
         );
+    }
+
+    async getThuTuDoiTuongLayVe() {
+
+        const MAC_DINH =
+            1;
+
+
+        const thietLap =
+            await cauHinhRepository
+                .getThietLapByMa(
+                    MA_THIET_LAP
+                        .THU_TU_DOI_TUONG_LAY_VE
+                );
+
+
+        if (
+            !thietLap ||
+            thietLap.active !== true
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+
+        const giaTri =
+            Number(
+                String(
+                    thietLap.gia_tri ??
+                    ""
+                ).trim()
+            );
+
+
+        if (
+            !Number.isInteger(
+                giaTri
+            ) ||
+            ![
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ].includes(
+                giaTri
+            )
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+
+        return giaTri;
+
+    }
+
+    async getPhuongThucThanhToanHienThi() {
+
+        const MAC_DINH =
+            [
+                10,
+                20,
+                30
+            ];
+
+
+        const thietLap =
+            await cauHinhRepository
+                .getThietLapByMa(
+                    MA_THIET_LAP
+                        .PHUONG_THUC_THANH_TOAN_HIEN_THI
+                );
+
+
+        if (
+            !thietLap ||
+            thietLap.active !== true
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+
+        const giaTri =
+            String(
+                thietLap.gia_tri ??
+                ""
+            )
+                .split(
+                    ","
+                )
+                .map(
+                    item =>
+                        Number(
+                            item.trim()
+                        )
+                )
+                .filter(
+                    item =>
+                        [
+                            10,
+                            20,
+                            30
+                        ].includes(
+                            item
+                        )
+                );
+
+
+        const danhSach =
+            [
+                ...new Set(
+                    giaTri
+                )
+            ];
+
+
+        if (
+            danhSach.length ===
+            0
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+
+        return danhSach;
+
     }
 }
 

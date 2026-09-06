@@ -12,11 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initialize();
 
     async function initialize() {
-        await initializeCatalog();
         await Promise.all([
             loadCoSo(),
             loadNhomTinhNang()
         ]);
+        await initializeCatalog();
         syncCurrentCoSo();
         syncCurrentNhomTinhNang();
     }
@@ -344,20 +344,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    async function loadNhomTinhNang() {
-        try {
-            const response = await window.MCS.api.request(API_NHOM_TINH_NANG);
-            const data = response?.data;
-
-            if (Array.isArray(data)) {
-                dsNhomTinhNang = data;
-                return;
-            }
-
-            dsNhomTinhNang =
+    function normalizeActiveRecords(data) {
+        const records = Array.isArray(data)
+            ? data
+            : (
                 data?.items ||
+                data?.rows ||
+                data?.danhSach ||
                 data?.data ||
-                [];
+                []
+            );
+
+
+        return records.filter(
+            item => {
+                const active = item?.active;
+                return (
+                    active === true ||
+                    active === 1 ||
+                    active === "1" ||
+                    String(active)
+                        .trim()
+                        .toLowerCase() === "true"
+                );
+            }
+        );
+
+    }
+
+    async function loadNhomTinhNang() {
+
+        try {
+
+            const response =
+                await window.MCS.api.request(
+                    API_NHOM_TINH_NANG
+                );
+
+            dsNhomTinhNang = normalizeActiveRecords(response?.data);
         } catch (error) {
             dsNhomTinhNang = [];
 
@@ -366,35 +390,51 @@ document.addEventListener("DOMContentLoaded", () => {
                 error
             );
 
-            window.MCS?.toast?.error(
-                error?.message ||
-                "Không thể tải danh sách nhóm tính năng."
-            );
+            window.MCS
+                ?.toast
+                ?.error(
+                    error?.message || "Không thể tải danh sách nhóm tính năng."
+                );
         }
     }
 
     async function loadCoSo() {
         try {
-            const response = await window.MCS.api.request(API_CO_SO);
-            const data = response?.data;
 
-            if (Array.isArray(data)) {
-                dsCoSo = data;
-                return;
-            }
+            const response =
+                await window.MCS.api.request(
+                    API_CO_SO
+                );
+
 
             dsCoSo =
-                data?.items ||
-                data?.data ||
-                [];
-        } catch (error) {
-            dsCoSo = [];
+                normalizeActiveRecords(
+                    response?.data
+                );
 
-            window.MCS.toast?.error(
-                error?.message ||
-                "Không thể tải danh sách cơ sở."
+        } catch (
+            error
+        ) {
+
+            dsCoSo =
+                [];
+
+
+            console.error(
+                "Không thể tải cơ sở.",
+                error
             );
+
+
+            window.MCS
+                ?.toast
+                ?.error(
+                    error?.message ||
+                    "Không thể tải danh sách cơ sở."
+                );
+
         }
+
     }
 
     function syncCurrentNhomTinhNang() {

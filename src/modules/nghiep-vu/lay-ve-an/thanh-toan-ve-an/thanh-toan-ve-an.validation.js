@@ -201,6 +201,31 @@ const hoanTienSchema =
                         "Phương thức hoàn tiền là bắt buộc."
                 }),
 
+        soLuongHoan:
+            Joi.number()
+                .integer()
+                .min(1)
+                .required()
+                .messages({
+                    "number.base": "Số lượng hoàn phải là số.",
+                    "number.integer": "Số lượng hoàn phải là số nguyên.",
+                    "number.min": "Số lượng hoàn phải lớn hơn 0.",
+                    "any.required": "Số lượng hoàn là bắt buộc."
+                }),
+
+        lyDoHoan:
+            Joi.string()
+                .trim()
+                .max(500)
+                .required()
+                .messages({
+                    "string.base": "Lý do hoàn phải là chuỗi.",
+                    "string.empty": "Lý do hoàn không được để trống.",
+                    "string.max": "Lý do hoàn không được vượt quá 500 ký tự.",
+                    "any.required": "Lý do hoàn là bắt buộc."
+                }),
+
+
         soTien:
             Joi.number()
                 .positive()

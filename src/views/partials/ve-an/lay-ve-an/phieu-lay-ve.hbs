@@ -1,0 +1,191 @@
+<article class="lva-card">
+
+    <div class="lva-card__title">
+        <i class="fa-regular fa-calendar"></i>
+        <span>Thông tin bữa ăn</span>
+    </div>
+
+    <div class="lva-form-single">
+        {{> forms/select
+            id="thucDonNgayId"
+            name="thucDonNgayId"
+            label="Bữa ăn / thực đơn"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn bữa ăn..."
+            options=null
+            required=true
+        }}
+    </div>
+
+    <div class="lva-meal" data-meal-detail hidden>
+        <div class="lva-meal__meta">
+            <div><span>Ngày:</span><strong data-meal-date>-</strong></div>
+            <div><span>Thực đơn:</span><strong data-meal-name>-</strong></div>
+            <div><span>Nhà ăn:</span><strong data-meal-canteen>-</strong></div>
+            <div><span>Ca ăn:</span><strong data-meal-shift>-</strong></div>
+            <div><span>Khung giờ:</span><strong data-meal-time>-</strong></div>
+        </div>
+
+        <a
+            class="lva-btn lva-btn--outline lva-btn--sm"
+            data-view-menu
+            href="#"
+            target="_blank"
+            rel="noopener">
+            <i class="fa-regular fa-eye"></i>
+            Xem thực đơn
+        </a>
+    </div>
+
+</article>
+
+<article class="lva-card">
+
+    <div class="lva-card__title">
+        <i class="fa-solid fa-user"></i>
+        <span>Thông tin người lấy vé</span>
+    </div>
+
+    <div class="lva-form-grid lva-form-grid--person">
+
+        <div data-quantity-field>
+            {{> forms/number
+                id="soLuong"
+                name="soLuong"
+                label="Số lượng vé"
+                placeholder="1"
+                min=1
+                step=1
+                required=true
+            }}
+        </div>
+
+        {{> forms/select
+            id="doiTuongLayVe"
+            name="doiTuongLayVe"
+            label="Đối tượng lấy vé"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn đối tượng lấy vé..."
+            options=null
+            required=true
+        }}
+
+        <div data-employee-select-field hidden>
+            {{> forms/select
+                id="nhanVienId"
+                name="nhanVienId"
+                label="Người lấy vé"
+                mode="single"
+                multiple=false
+                allowAll=false
+                placeholder="Chọn nhân viên..."
+                options=null
+                required=true
+            }}
+        </div>
+
+    </div>
+
+    <div class="lva-employee-info" data-employee-info hidden>
+        <div><span>Mã nhân viên:</span><strong data-employee-code>-</strong></div>
+        <div><span>Họ và tên:</span><strong data-employee-name>-</strong></div>
+        <div><span>Phòng ban:</span><strong data-employee-department>-</strong></div>
+        <div><span>Cơ sở:</span><strong data-employee-site>-</strong></div>
+        <div><span>Số điện thoại:</span><strong data-employee-phone>-</strong></div>
+
+        <div class="lva-employee-info__note">
+            {{> forms/textarea
+                id="ghiChuNhanVien"
+                name="ghiChuNhanVien"
+                label="Ghi chú"
+                placeholder="Nhập ghi chú (nếu có)..."
+                rows=3
+                maxlength=1000
+            }}
+        </div>
+    </div>
+
+    <div class="lva-guest-form" data-guest-form hidden>
+        <div class="lva-form-grid">
+
+            {{> forms/input
+                id="hoTenNguoiLayVe"
+                name="hoTenNguoiLayVe"
+                label="Họ tên"
+                placeholder="Nhập họ tên"
+                maxlength=150
+                required=true
+            }}
+
+            {{> forms/input
+                id="soDienThoaiNguoiLayVe"
+                name="soDienThoaiNguoiLayVe"
+                label="Số điện thoại"
+                placeholder="Nhập số điện thoại"
+                maxlength=20
+            }}
+
+            {{> forms/date
+                id="ngaySinhNguoiLayVe"
+                name="ngaySinhNguoiLayVe"
+                label="Ngày sinh"
+                placeholder="dd/mm/yyyy"
+                defaultTime="00:00:00"
+            }}
+
+            {{> forms/select
+                id="gioiTinhNguoiLayVe"
+                name="gioiTinhNguoiLayVe"
+                label="Giới tính"
+                mode="single"
+                multiple=false
+                allowAll=false
+                placeholder="Chọn giới tính..."
+                options=null
+            }}
+
+            {{> forms/input
+                id="donViNguoiLayVe"
+                name="donViNguoiLayVe"
+                label="Đơn vị"
+                placeholder="Nhập đơn vị"
+                maxlength=255
+            }}
+
+            <div class="lva-checkbox-field">
+                {{> forms/checkbox
+                    id="khachLauDai"
+                    name="khachLauDai"
+                    label="Khách lâu dài"
+                    checked=false
+                }}
+            </div>
+
+            <div class="lva-form-grid__full">
+                {{> forms/input
+                    id="diaChiNguoiLayVe"
+                    name="diaChiNguoiLayVe"
+                    label="Địa chỉ"
+                    placeholder="Nhập địa chỉ"
+                }}
+            </div>
+
+            <div class="lva-form-grid__full">
+                {{> forms/textarea
+                    id="ghiChuKhach"
+                    name="ghiChuKhach"
+                    label="Ghi chú"
+                    placeholder="Nhập ghi chú (nếu có)..."
+                    rows=3
+                    maxlength=1000
+                }}
+            </div>
+
+        </div>
+    </div>
+
+</article>

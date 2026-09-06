@@ -671,6 +671,89 @@
     width: 100%;
 }
 
+.lva-btn--block {
+    width: 100%;
+}
+
+.lva-payment-info {
+    margin-top: 12px;
+    border: 1px solid #dfe5ef;
+    border-radius: 10px;
+    padding: 14px;
+    background: #fff;
+}
+
+.lva-payment-info__title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #172033;
+}
+
+.lva-payment-info__content {
+    display: grid;
+    gap: 10px;
+}
+
+.lva-payment-info__content > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lva-payment-info__content span {
+    color: #68758d;
+}
+
+.lva-payment-info__footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.lva-payment-header {
+    align-items: center;
+}
+
+.lva-payment-header
+[data-payment-main-action] {
+    flex: 0 0 auto;
+    min-width: 140px;
+}
+
+.lva-action-row {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.lva-action-slot {
+    min-width: 0;
+}
+
+.lva-action-slot .lva-btn {
+    width: 100%;
+    min-width: 0;
+}
+
+.lva-payment-info {
+    margin-top: 14px;
+    min-height: 190px;
+}
+
+.lva-modal__dialog--sm {
+    width: 640px;
+    height: auto;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+}
+
 @media (max-width: 760px) {
     .lva-form-grid--modal {
         grid-template-columns: 1fr;
@@ -678,5 +761,19 @@
 
     .lva-form-grid__full {
         grid-column: auto;
+    }    
+    
+    .lva-action-row {
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+    }
+
+    .lva-action-slot .lva-btn {
+        padding-left: 6px;
+        padding-right: 6px;
+        font-size: 12px;
     }
 }

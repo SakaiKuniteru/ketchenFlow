@@ -947,21 +947,23 @@ class ThanhToanVeAnService {
                     client
                 );
 
+                const trangThaiBanDau =
+                    0;
 
-            const trangThaiHuyQr =
-                this.getEnumValue(
+
+                this.validateEnum(
                     dsTrangThaiPhieuThu,
-                    "Huỷ QR"
+                    trangThaiBanDau,
+                    "Trạng thái ban đầu của phiếu không hợp lệ."
                 );
 
 
-            await repository
-                .updateTrangThaiPhieu(
-                    thanhToan.phieuLayVeId,
-                    trangThaiHuyQr,
-                    client
-                );
-
+                await repository
+                    .updateTrangThaiPhieu(
+                        thanhToan.phieuLayVeId,
+                        trangThaiBanDau,
+                        client
+                    );
 
             await client.query(
                 "COMMIT"
@@ -1128,6 +1130,65 @@ class ThanhToanVeAnService {
                 0
             );
 
+        const soLuongHoan =
+            Number(
+                data.soLuongHoan
+            );
+
+
+        if (
+            !Number.isInteger(
+                soLuongHoan
+            ) ||
+            soLuongHoan <=
+                0
+        ) {
+
+            throw new ApiError(
+                400,
+                "Số lượng hoàn không hợp lệ."
+            );
+
+        }
+
+
+        const tongSoLuong =
+            Number(
+                phieu.so_luong
+            );
+
+
+        if (
+            soLuongHoan >
+            tongSoLuong
+        ) {
+
+            throw new ApiError(
+                400,
+                "Số lượng hoàn không được lớn hơn số lượng vé."
+            );
+
+        }
+
+
+        const lyDoHoan =
+            String(
+                data.lyDoHoan ||
+                ""
+            )
+                .trim();
+
+
+        if (
+            !lyDoHoan
+        ) {
+
+            throw new ApiError(
+                400,
+                "Lý do hoàn là bắt buộc."
+            );
+
+        }
 
         if (
             conLai <=
@@ -1141,16 +1202,21 @@ class ThanhToanVeAnService {
 
         }
 
+        const soTienMoiVe =
+            tongThanhToan /
+            tongSoLuong;
+
 
         const soTien =
-            data.soTien !==
-                undefined
-                ? Number(
-                    data.soTien
+            Number(
+                (
+                    soTienMoiVe *
+                    soLuongHoan
                 )
-                : conLai;
-
-
+                    .toFixed(
+                        5
+                    )
+            );
         if (
             soTien >
             conLai
@@ -1280,12 +1346,11 @@ class ThanhToanVeAnService {
                         client
                     );
 
-
                 await repository
                     .huyVeTheoPhieu(
                         phieuLayVeId,
                         taiKhoanId,
-                        "Phiếu đã hoàn toàn bộ tiền.",
+                        lyDoHoan,
                         client
                     );
 

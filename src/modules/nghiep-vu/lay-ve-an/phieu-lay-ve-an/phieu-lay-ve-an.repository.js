@@ -146,6 +146,12 @@ class PhieuLayVeAnRepository {
             nguoiThanhToanId:
                 row.nguoi_thanh_toan_id,
 
+            nguoiThanhToanTenDangNhap:
+                row.nguoi_thanh_toan_ten_dang_nhap,
+
+            tenNguoiThanhToan:
+                row.ten_nguoi_thanh_toan,
+
             thoiGianThanhToan:
                 row.thoi_gian_thanh_toan,
 
@@ -230,6 +236,14 @@ class PhieuLayVeAnRepository {
                 p.nguoi_tao_id,
 
                 p.nguoi_thanh_toan_id,
+
+                tktt.ten_dang_nhap
+                    AS nguoi_thanh_toan_ten_dang_nhap,
+
+                nvtt.ho_ten
+                    AS ten_nguoi_thanh_toan,
+
+                p.thoi_gian_thanh_toan,
                 p.thoi_gian_thanh_toan,
 
                 p.nguoi_huy_id,
@@ -264,6 +278,14 @@ class PhieuLayVeAnRepository {
             LEFT JOIN dm_nhan_vien nv
                 ON nv.id =
                    p.nhan_vien_id
+
+            LEFT JOIN dm_tai_khoan tktt
+                ON tktt.id =
+                p.nguoi_thanh_toan_id
+
+            LEFT JOIN dm_nhan_vien nvtt
+                ON nvtt.id =
+                tktt.nhan_vien_id
 
         `;
 
