@@ -1,21 +1,14 @@
 "use strict";
 
-const path =
-    require(
-        "path"
-    );
+const path = require("path");
 
-
-const STORAGE_ROOT =
+const STORAGE_ROOT = path.resolve(
+    process.env.FILE_STORAGE_ROOT ||
     path.resolve(
-        process.env
-            .FILE_STORAGE_ROOT ||
-        path.resolve(
-            __dirname,
-            "../public"
-        )
-    );
-
+        __dirname,
+        "../public"
+    )
+);
 
 module.exports = {
     STORAGE_ROOT

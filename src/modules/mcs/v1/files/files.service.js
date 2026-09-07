@@ -1,26 +1,12 @@
 "use strict";
 
-const fs =
-    require(
-        "fs/promises"
-    );
-
-const path =
-    require(
-        "path"
-    );
-
-const ApiError =
-    require(
-        "../../../../utils/api-error"
-    );
-
+const fs = require("fs/promises");
+const path = require("path");
+const ApiError = require("../../../../utils/api-error");
 const {
     STORAGE_ROOT
-} =
-    require(
-        "../../../../config/storage"
-    );
+} = require("../../../../config/storage");
+
 
 class FilesService {
 
@@ -28,50 +14,30 @@ class FilesService {
         return STORAGE_ROOT;
     }
 
-
     normalizeFilePath(
         value
     ) {
 
-        const filePath =
-            String(
-                value ||
-                ""
+        const filePath = String(value || "")
+            .replaceAll(
+                "\\", "/"
             )
-                .replaceAll(
-                    "\\",
-                    "/"
-                )
-                .replace(
-                    /^\/+/,
-                    ""
-                )
-                .trim();
+            .replace(
+                /^\/+/, ""
+            )
+            .trim();
 
-
-        if (
-            !filePath
-        ) {
-
+        if (!filePath) {
             throw new ApiError(
-                400,
-                "Đường dẫn file không hợp lệ."
+                400, "Đường dẫn file không hợp lệ."
             );
-
         }
 
-
         if (
-            filePath.includes(
-                "\0"
-            ) ||
+            filePath.includes("\0") ||
             filePath
-                .split(
-                    "/"
-                )
-                .includes(
-                    ".."
-                )
+                .split("/")
+                .includes("..")
         ) {
 
             throw new ApiError(
@@ -86,141 +52,99 @@ class FilesService {
 
     }
 
-
-    resolveFile(
-        filePath
-    ) {
-
-        const normalized =
-            this.normalizeFilePath(
-                filePath
+isAllowedPath(filePath) {
+        return [
+            "dl-bao-cao/",
+            "bao-cao/"
+        ]
+            .some(
+                prefix =>
+                    filePath.startsWith(prefix)
             );
+    }
 
+    resolveFile(value) {
+        const normalized = this.normalizeFilePath(
+            value
+        );
 
-        /*
-         * API này trước mắt chỉ cho
-         * đọc dữ liệu báo cáo.
-         */
         if (
-            !normalized.startsWith(
-                "dl-bao-cao/"
+            !this.isAllowedPath(
+                normalized
             )
         ) {
-
             throw new ApiError(
-                403,
-                "Không được phép truy cập file này."
+                403, "Không được phép truy cập file này."
             );
-
         }
 
+        const storageRoot = this.getStorageRoot();
 
-        const storageRoot =
-            this.getStorageRoot();
+        const absolutePath = path.resolve(
+            storageRoot,
+            normalized
+        );
 
-
-        const absolutePath =
-            path.resolve(
-                storageRoot,
-                normalized
-            );
-
-
-        const rootPrefix =
-            storageRoot.endsWith(
-                path.sep
-            )
-                ? storageRoot
-                : storageRoot +
-                  path.sep;
-
+        const rootPrefix = storageRoot.endsWith(
+            path.sep
+        )
+            ? storageRoot
+            : storageRoot +
+              path.sep;
 
         if (
             !absolutePath.startsWith(
                 rootPrefix
             )
         ) {
-
             throw new ApiError(
                 403,
                 "Đường dẫn file không hợp lệ."
             );
-
         }
 
-
         return absolutePath;
-
     }
 
-
-    async getFile(
-        filePath
-    ) {
-
-        const absolutePath =
-            this.resolveFile(
-                filePath
-            );
-
+    async getFile(filePath) {
+        const absolutePath = this.resolveFile(
+            filePath
+        );
 
         try {
+            const stat = await fs.stat(
+                absolutePath
+            );
 
-            const stat =
-                await fs.stat(
-                    absolutePath
-                );
-
-
-            if (
-                !stat.isFile()
-            ) {
-
+            if (!stat.isFile()) {
                 throw new ApiError(
                     404,
                     "File không tồn tại."
                 );
-
             }
 
-
             return absolutePath;
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             if (
                 error instanceof
                 ApiError
             ) {
-
                 throw error;
-
             }
-
 
             if (
                 error?.code ===
                 "ENOENT"
             ) {
-
                 throw new ApiError(
                     404,
                     "File không tồn tại."
                 );
-
             }
 
-
             throw error;
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new FilesService();
+module.exports = new FilesService();

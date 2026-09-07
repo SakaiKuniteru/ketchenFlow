@@ -21,7 +21,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     const canChangePricingFields = (...args) => app.canChangePricingFields(...args);
     const changeDiscountTab = (...args) => app.changeDiscountTab(...args);
     const confirmCurrentPayment = (...args) => app.confirmCurrentPayment(...args);
-    const enhanceQuantityField = (...args) => app.enhanceQuantityField(...args);
+    const enhanceQuantityField =
+    (...args) => {
+
+        if (
+            typeof app
+                .enhanceQuantityField !==
+            "function"
+        ) {
+
+            console.warn(
+                "enhanceQuantityField chưa được khởi tạo."
+            );
+
+            return;
+
+        }
+
+
+        return app
+            .enhanceQuantityField(
+                ...args
+            );
+
+    };
     const handlePay = (...args) => app.handlePay(...args);
     const loadDoiTuongOrderSetting = (...args) => app.loadDoiTuongOrderSetting(...args);
     const loadEmployees = (...args) => app.loadEmployees(...args);

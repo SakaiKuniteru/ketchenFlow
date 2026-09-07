@@ -210,170 +210,6 @@ class PhieuLayVeAnService {
 
     }
 
-    formatNgayBaoCao(
-        value
-    ) {
-        if (!value) {
-            return "";
-        }
-
-        const date =
-            new Date(
-                value
-            );
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-            return String(
-                value
-            );
-        }
-
-        const parts =
-            new Intl.DateTimeFormat(
-                "en-GB",
-                {
-                    timeZone:
-                        "Asia/Ho_Chi_Minh",
-
-                    day:
-                        "2-digit",
-
-                    month:
-                        "2-digit",
-
-                    year:
-                        "numeric"
-                }
-            )
-                .formatToParts(
-                    date
-                );
-
-        const map =
-            Object.fromEntries(
-                parts.map(
-                    item => [
-                        item.type,
-                        item.value
-                    ]
-                )
-            );
-
-        return `${map.day}/${map.month}/${map.year}`;
-    }
-
-    formatNgayGioBaoCao(
-        value
-    ) {
-        if (!value) {
-            return "";
-        }
-
-        const date =
-            new Date(
-                value
-            );
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-            return String(
-                value
-            );
-        }
-
-        const parts =
-            new Intl.DateTimeFormat(
-                "en-GB",
-                {
-                    timeZone:
-                        "Asia/Ho_Chi_Minh",
-
-                    day:
-                        "2-digit",
-
-                    month:
-                        "2-digit",
-
-                    year:
-                        "numeric",
-
-                    hour:
-                        "2-digit",
-
-                    minute:
-                        "2-digit",
-
-                    second:
-                        "2-digit",
-
-                    hour12:
-                        false
-                }
-            )
-                .formatToParts(
-                    date
-                );
-
-        const map =
-            Object.fromEntries(
-                parts.map(
-                    item => [
-                        item.type,
-                        item.value
-                    ]
-                )
-            );
-
-        return `${map.hour}:${map.minute}:${map.second} ${map.day}/${map.month}/${map.year}`;
-    }
-
-    formatGioBaoCao(
-        value
-    ) {
-        if (!value) {
-            return "";
-        }
-
-        return String(
-            value
-        ).slice(
-            0,
-            5
-        );
-    }
-
-    formatTienBaoCao(
-        value
-    ) {
-        const number =
-            Number(
-                value
-            );
-
-        if (
-            !Number.isFinite(
-                number
-            )
-        ) {
-            return "";
-        }
-
-        return number.toLocaleString(
-            "vi-VN",
-            {
-                maximumFractionDigits:
-                    5
-            }
-        );
-    }
-
     async getTongHop(
         query
     ) {
@@ -1281,8 +1117,14 @@ class PhieuLayVeAnService {
     }
 
     async getDuLieuInVe(
-        id
+        id,
+        nguoiInId
     ) {
+        const taiKhoanInId =
+            this.parseNguoiDungId(
+                nguoiInId
+            );
+
         const phieuLayVeAnId =
             this.parseId(
                 id
@@ -1312,57 +1154,132 @@ class PhieuLayVeAnService {
             );
         }
 
-        const data = {
-            ...phieu,
+        const data =
+            inBaoCaoService
+                .normalizeReportData({
 
-            ngay:
-                this.formatNgayBaoCao(
-                    phieu.ngay
-                ),
+                    ...phieu,
 
-            thoiGianBatDau:
-                this.formatGioBaoCao(
-                    phieu.thoiGianBatDau
-                ),
 
-            thoiGianKetThuc:
-                this.formatGioBaoCao(
-                    phieu.thoiGianKetThuc
-                ),
+                    /*
+                    * DATE không có giờ.
+                    */
+                    ngay:
+                        inBaoCaoService
+                            .normalizeDate(
+                                phieu.ngay
+                            ),
 
-            thoiGianThanhToan:
-                this.formatNgayGioBaoCao(
-                    phieu.thoiGianThanhToan
-                ),
 
-            donGia:
-                this.formatTienBaoCao(
-                    phieu.donGia
-                ),
+                    ngaySinhNguoiLayVe:
+                        phieu
+                            .ngaySinhNguoiLayVe
+                            ? inBaoCaoService
+                                .normalizeDate(
+                                    phieu.ngaySinhNguoiLayVe
+                                )
+                            : null,
 
-            tienGoc:
-                this.formatTienBaoCao(
-                    phieu.tienGoc
-                ),
 
-            tongMienGiam:
-                this.formatTienBaoCao(
-                    phieu.tongMienGiam
-                ),
+                    /*
+                    * TIME.
+                    */
+                    thoiGianBatDau:
+                        inBaoCaoService
+                            .normalizeTime(
+                                phieu.thoiGianBatDau
+                            ),
 
-            thanhTien:
-                this.formatTienBaoCao(
-                    phieu.thanhTien
-                ),
 
-            nguoiLayVe:
-                phieu.tenNhanVien ||
-                phieu.hoTenNguoiLayVe ||
-                ""
-        };
+                    thoiGianKetThuc:
+                        inBaoCaoService
+                            .normalizeTime(
+                                phieu.thoiGianKetThuc
+                            ),
+
+
+                    /*
+                    * TIMESTAMP.
+                    */
+                    thoiGianThanhToan:
+                        inBaoCaoService
+                            .normalizeDateTime(
+                                phieu.thoiGianThanhToan
+                            ),
+
+
+                    thoiGianHuy:
+                        phieu
+                            .thoiGianHuy
+                            ? inBaoCaoService
+                                .normalizeDateTime(
+                                    phieu.thoiGianHuy
+                                )
+                            : null,
+
+
+                    createdAt:
+                        inBaoCaoService
+                            .normalizeDateTime(
+                                phieu.createdAt
+                            ),
+
+
+                    updatedAt:
+                        inBaoCaoService
+                            .normalizeDateTime(
+                                phieu.updatedAt
+                            ),
+
+
+                    /*
+                    * Không format tiền.
+                    *
+                    * Repository hiện đã Number(...)
+                    * nên JSON sẽ là 30000,
+                    * không phải "30.000".
+                    */
+                    donGia:
+                        phieu.donGia,
+
+
+                    tienGoc:
+                        phieu.tienGoc,
+
+
+                    tongMienGiam:
+                        phieu.tongMienGiam,
+
+
+                    thanhTien:
+                        phieu.thanhTien,
+
+
+                    /*
+                    * Enum giữ nguyên value.
+                    */
+                    doiTuongLayVe:
+                        phieu.doiTuongLayVe,
+
+
+                    phuongThucThanhToan:
+                        phieu.phuongThucThanhToan,
+
+
+                    trangThai:
+                        phieu.trangThai,
+
+
+                    nguoiLayVe:
+                        phieu.tenNhanVien ||
+                        phieu.hoTenNguoiLayVe ||
+                        ""
+
+                });
 
         return await inBaoCaoService
             .taoBaoCao({
+
                 maBaoCao:
                     "ve_an",
 
@@ -1372,7 +1289,10 @@ class PhieuLayVeAnService {
                 soPhieu:
                     phieu.soPhieu,
 
-                data
+                data,
+
+                nguoiInId: taiKhoanInId
+
             });
     }
 

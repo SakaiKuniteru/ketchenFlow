@@ -1854,156 +1854,62 @@
     }
 
     async function printTicket() {
+
         if (
             !state.phieu?.id ||
             !permission.canPrint(
                 state.permissions
             )
         ) {
+
             return;
+
         }
 
-        let popup =
-            null;
-
-        let objectUrl =
-            null;
 
         try {
-            popup =
-                window.open(
-                    "",
-                    "_blank",
-                    "width=1000,height=800"
-                );
-
-            if (!popup) {
-                throw new Error(
-                    "Trình duyệt đang chặn cửa sổ in."
-                );
-            }
-
-            popup.document.write(`
-                <!doctype html>
-                <html lang="vi">
-                <head>
-                    <meta charset="utf-8">
-                    <title>Đang tạo báo cáo...</title>
-                </head>
-                <body>
-                    Đang tạo báo cáo...
-                </body>
-                </html>
-            `);
-
-            popup.document.close();
 
             setLoading(
                 true
             );
 
+
             if (
                 !window.MCS
-                    ?.api
-                    ?.requestFile
+                    ?.reportPrint
+                    ?.print
             ) {
+
                 throw new Error(
-                    "Chức năng tải file chưa được khởi tạo."
+                    "Chức năng in báo cáo chưa được khởi tạo."
                 );
+
             }
 
-            const file =
-                await window.MCS
-                    .api
-                    .requestFile(
-                        `${API.phieu}/in-ve/${state.phieu.id}`,
-                        {
-                            method:
-                                "GET"
-                        }
-                    );
 
-            if (
-                !file?.blob ||
-                !String(
-                    file.contentType || ""
-                ).includes(
-                    "application/pdf"
-                )
-            ) {
-                throw new Error(
-                    "API in không trả về file PDF hợp lệ."
-                );
-            }
-
-            objectUrl =
-                URL.createObjectURL(
-                    file.blob
+            await window.MCS
+                .reportPrint
+                .print(
+                    `${API.phieu}/in-ve/${state.phieu.id}`
                 );
 
-            popup.location.replace(
-                objectUrl
-            );
-
-            window.setTimeout(
-                () => {
-                    try {
-                        popup.focus();
-                        popup.print();
-                    } catch (
-                        error
-                    ) {
-                        console.warn(
-                            "Không thể tự mở hộp thoại in:",
-                            error
-                        );
-                    }
-                },
-                1000
-            );
-
-            window.setTimeout(
-                () => {
-                    if (
-                        objectUrl
-                    ) {
-                        URL.revokeObjectURL(
-                            objectUrl
-                        );
-
-                        objectUrl =
-                            null;
-                    }
-                },
-                120000
-            );
         } catch (
             error
         ) {
-            if (
-                popup &&
-                !popup.closed
-            ) {
-                popup.close();
-            }
-
-            if (
-                objectUrl
-            ) {
-                URL.revokeObjectURL(
-                    objectUrl
-                );
-            }
 
             showError(
                 error,
                 "Không thể in vé ăn."
             );
+
         } finally {
+
             setLoading(
                 false
             );
+
         }
+
     }
 
     function setPricingFieldsDisabled(disabled) {

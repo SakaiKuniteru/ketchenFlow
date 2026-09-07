@@ -9,7 +9,6 @@ const {
     "../../../../utils/response.util"
 );
 
-
 class PhieuLayVeAnController {
 
     async getTongHop(
@@ -279,51 +278,41 @@ class PhieuLayVeAnController {
         res,
         next
     ) {
+
         try {
+
             const {
                 id
-            } = req.params;
+            } =
+                req.params;
 
-            const file =
+
+            const data =
                 await phieuLayVeAnService
                     .getDuLieuInVe(
-                        id
+                        id,
+                        req.user?.taiKhoanId ||
+                        req.user?.id
                     );
 
-            res.setHeader(
-                "Content-Type",
-                file.contentType
+
+            return successResponse(
+                res,
+                "Lấy thông tin báo cáo vé ăn thành công.",
+                data,
+                200
             );
 
-            res.setHeader(
-                "Content-Disposition",
-                `inline; filename*=UTF-8''${encodeURIComponent(
-                    file.fileName
-                )}`
-            );
-
-            res.setHeader(
-                "Content-Length",
-                String(
-                    file.buffer.length
-                )
-            );
-
-            res.setHeader(
-                "Cache-Control",
-                "no-store"
-            );
-
-            return res.send(
-                file.buffer
-            );
         } catch (
             error
         ) {
+
             next(
                 error
             );
+
         }
+
     }
 
 }

@@ -1,23 +1,9 @@
 "use strict";
 
-const express =
-    require(
-        "express"
-    );
-
-const router =
-    express.Router();
-
-const authenticate =
-    require(
-        "../../../../middlewares/authenticate.middleware"
-    );
-
-const controller =
-    require(
-        "./files.controller"
-    );
-
+const express = require("express");
+const router = express.Router();
+const authenticate = require("../../../../middlewares/authenticate.middleware");
+const controller = require("./files.controller");
 
 router.get(
     /^\/(.+)$/,
@@ -25,6 +11,4 @@ router.get(
     controller.getFile
 );
 
-
-module.exports =
-    router;
+module.exports = router;
