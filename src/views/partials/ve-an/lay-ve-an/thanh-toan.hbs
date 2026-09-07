@@ -95,27 +95,19 @@
 
             </div>
 
-            <button
-                type="button"
-                class="lva-btn lva-btn--danger-soft"
-                data-cancel-qr
-                hidden>
-
-                <i class="fa-solid fa-qrcode"></i>
-
-                Hủy QR Code
-
-            </button>
         </div>
 
-        <div class="lva-action-row">
+        <div class="lva-action-grid">
+
+            <!-- HÀNG 1 - CỐ ĐỊNH -->
 
             <div class="lva-action-slot">
 
                 <button
                     type="button"
                     class="lva-btn lva-btn--outline"
-                    data-print>
+                    data-print
+                    hidden>
 
                     <i class="fa-solid fa-print"></i>
                     In giấy tờ
@@ -123,6 +115,7 @@
                 </button>
 
             </div>
+
 
             <div class="lva-action-slot">
 
@@ -139,6 +132,25 @@
 
             </div>
 
+
+            <div class="lva-action-slot">
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--danger-soft"
+                    data-cancel-payment
+                    hidden>
+
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Hủy thanh toán
+
+                </button>
+
+            </div>
+
+
+            <!-- HÀNG 2 - CỐ ĐỊNH -->
+
             <div class="lva-action-slot">
 
                 <button
@@ -149,6 +161,38 @@
 
                     <i class="fa-solid fa-qrcode"></i>
                     Xem lại QR
+
+                </button>
+
+            </div>
+
+
+            <div class="lva-action-slot">
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--outline"
+                    data-recreate-qr
+                    hidden>
+
+                    <i class="fa-solid fa-rotate"></i>
+                    Cập nhật QR
+
+                </button>
+
+            </div>
+
+
+            <div class="lva-action-slot">
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--danger-soft"
+                    data-cancel-qr
+                    hidden>
+
+                    <i class="fa-solid fa-qrcode"></i>
+                    Hủy QR
 
                 </button>
 
@@ -167,5 +211,147 @@
         </div>
 
     </article>
+
+    <div
+        class="lva-qr-modal"
+        data-qr-modal
+        hidden>
+
+        <div
+            class="lva-qr-modal__backdrop"
+            data-qr-modal-close>
+        </div>
+
+        <section
+            class="lva-qr-modal__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label="QR Code thanh toán">
+
+            <header class="lva-qr-modal__header">
+
+                <div>
+                    <h2>QR Code</h2>
+                    <span data-qr-modal-transaction></span>
+                </div>
+
+                <button
+                    type="button"
+                    class="lva-icon-btn"
+                    data-qr-modal-close>
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </header>
+
+
+            <div class="lva-qr-modal__body">
+
+                <div
+                    class="lva-qr-loading"
+                    data-qr-modal-loading>
+
+                    <div
+                        class="lva-bank-spinner"
+                        aria-hidden="true">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <strong data-qr-modal-loading-text>
+                        Đang tạo QR Code. Vui lòng chờ ngân hàng phản hồi!
+                    </strong>
+
+                </div>
+
+
+                <div
+                    class="lva-qr-content"
+                    data-qr-modal-content
+                    hidden>
+
+                    <img
+                        data-qr-modal-image
+                        alt="QR Code thanh toán">
+
+                    <strong
+                        class="lva-qr-content__amount"
+                        data-qr-modal-amount>
+                    </strong>
+
+                    <div class="lva-qr-content__info">
+
+                        <div>
+                            <span>Mã giao dịch</span>
+                            <strong data-qr-modal-code>-</strong>
+                        </div>
+
+                        <div>
+                            <span>Ngân hàng</span>
+                            <strong data-qr-modal-bank>-</strong>
+                        </div>
+
+                        <div>
+                            <span>Tài khoản</span>
+                            <strong data-qr-modal-account>-</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <footer
+                class="lva-qr-modal__footer"
+                data-qr-modal-actions
+                hidden>
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--danger-soft"
+                    data-qr-modal-cancel>
+
+                    <i class="fa-solid fa-ban"></i>
+                    Hủy QR
+
+                </button>
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--outline"
+                    data-qr-modal-recreate>
+
+                    <i class="fa-solid fa-rotate"></i>
+                    Cập nhật QR
+
+                </button>
+
+                <button
+                    type="button"
+                    class="lva-btn lva-btn--success"
+                    data-qr-modal-confirm>
+
+                    <i class="fa-solid fa-check"></i>
+                    Duyệt
+
+                </button>
+
+            </footer>
+
+        </section>
+
+    </div>
 
 </aside>

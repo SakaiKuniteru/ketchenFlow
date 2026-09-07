@@ -21,6 +21,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const canChangePricingFields = (...args) => app.canChangePricingFields(...args);
     const changeDiscountTab = (...args) => app.changeDiscountTab(...args);
     const confirmCurrentPayment = (...args) => app.confirmCurrentPayment(...args);
+    const closeQrModal =
+        (...args) =>
+            app.closeQrModal(
+                ...args
+            );
+
+    const loadCurrentQr =
+        (...args) =>
+            app.loadCurrentQr(
+                ...args
+            );
+
+    const recreateQr =
+        (...args) =>
+            app.recreateQr(
+                ...args
+            );
     const enhanceQuantityField =
     (...args) => {
 
@@ -273,17 +290,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             markDraftDirty();
         });
 
-        el.viewQr?.addEventListener("click", () => {
-            if (!state.qrPayment) {
-                return;
-            }
+        el.viewQr
+            ?.addEventListener(
+                "click",
+                async () => {
 
-            el.qrPanel.hidden = false;
-            el.qrPanel.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest"
-            });
-        });
+                    await loadCurrentQr();
+
+                }
+            );
+
+
+        el.recreateQr
+            ?.addEventListener(
+                "click",
+                recreateQr
+            );
+
+
+        el.cancelQr
+            ?.addEventListener(
+                "click",
+                cancelQr
+            );
+
+
+        el.cancelPayment
+            ?.addEventListener(
+                "click",
+                openRefundModal
+            );
 
         el.mainPaymentAction?.addEventListener(
             "click",
@@ -316,7 +352,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         el.refundSubmit?.addEventListener("click", submitRefundModal);
 
         el.discountOpen?.addEventListener("click", openDiscountModal);
-        el.cancelQr?.addEventListener("click", cancelQr);
         el.print?.addEventListener("click", printTicket);
         el.cancelPhieu?.addEventListener(
             "click",
@@ -357,6 +392,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             "click",
             createManualDiscount
         );
+
+        root
+            .querySelectorAll(
+                "[data-qr-modal-close]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        closeQrModal
+                    );
+
+                }
+            );
+
+
+        el.qrModalCancel
+            ?.addEventListener(
+                "click",
+                cancelQr
+            );
+
+
+        el.qrModalRecreate
+            ?.addEventListener(
+                "click",
+                recreateQr
+            );
+
+
+        el.qrModalConfirm
+            ?.addEventListener(
+                "click",
+                confirmCurrentPayment
+            );
         bindDiscountSearch();
         bindGiaTriMienGiamInput();
         if (

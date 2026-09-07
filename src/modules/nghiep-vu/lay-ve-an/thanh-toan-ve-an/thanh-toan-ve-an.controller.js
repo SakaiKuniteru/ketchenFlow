@@ -160,6 +160,45 @@ class ThanhToanVeAnController {
 
     }
 
+    async getQr(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const {
+                id
+            } =
+                req.params;
+
+
+            const data =
+                await service
+                    .getQr(
+                        id
+                    );
+
+
+            return successResponse(
+                res,
+                "Lấy mã QR thanh toán thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
 
     async huyQr(
         req,

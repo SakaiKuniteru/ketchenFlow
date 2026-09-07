@@ -107,6 +107,17 @@ router.post(
     controller.taoQr
 );
 
+router.get(
+    "/qr/:id",
+    authenticate,
+    authorize(
+        "Q001041",
+        "Q001043",
+        "Q001045"
+    ),
+    controller.getQr
+);
+
 router.patch(
     "/huy-qr/:id",
     authenticate,

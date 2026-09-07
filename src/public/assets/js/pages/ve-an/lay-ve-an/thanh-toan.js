@@ -16,6 +16,8 @@
         el
     } = app;
 
+    const QR_MIN_LOADING_MS = 1000;
+
     const confirmAction = (...args) => app.confirmAction(...args);
     const escapeHtml = (...args) => app.escapeHtml(...args);
     const fillSelect = (...args) => app.fillSelect(...args);
@@ -312,11 +314,32 @@
         const createdQr =
             isPhieuStatus("Tạo QR");
 
-        /*
-        * IN:
-        * luôn hiện khi có quyền.
-        * Chưa có phiếu thì disable.
-        */
+        const hasQr =
+            Boolean(
+                state.qrPayment?.id
+            );
+
+        const canCancelQr =
+            hasQr &&
+            permission.canCancelQr(
+                state.permissions
+            );
+
+        const canRecreateQr =
+            hasQr &&
+            permission.canCancelQr(
+                state.permissions
+            ) &&
+            permission.canCreateQr(
+                state.permissions
+            );
+
+        const canCancelPayment =
+            paid &&
+            permission.canRefund(
+                state.permissions
+            );
+
         if (el.print) {
             el.print.hidden =
                 !permission.canPrint(
@@ -359,26 +382,45 @@
 
         }
 
-        if (el.viewQr) {
-            el.viewQr.hidden =
-                !state.qrPayment;
+        if (
+            el.cancelPayment
+        ) {
+
+            el.cancelPayment.hidden =
+                !canCancelPayment;
+
         }
+
+
+        if (
+            el.viewQr
+        ) {
+
+            el.viewQr.hidden =
+                !hasQr;
+
+        }
+
+
+        if (
+            el.recreateQr
+        ) {
+
+            el.recreateQr.hidden =
+                !canRecreateQr;
+
+        }
+
 
         if (
             el.cancelQr
         ) {
 
             el.cancelQr.hidden =
-                !state.qrPayment?.id ||
-                !permission.canCancelQr(
-                    state.permissions
-                );
+                !canCancelQr;
 
         }
 
-        /*
-        * ACTION CHÍNH TRÊN ĐẦU
-        */
         if (!el.mainPaymentAction) {
             renderPaymentInfo();
             return;
@@ -388,31 +430,16 @@
         el.mainPaymentAction.disabled = false;
         el.mainPaymentAction.dataset.action = "";
 
-        /*
-        * ĐÃ THANH TOÁN
-        * => HOÀN THANH TOÁN
-        */
         if (
-            paid &&
-            permission.canRefund(
-                state.permissions
-            )
+            paid
         ) {
-            setMainPaymentAction({
-                action: "refund",
-                label: "Hoàn thanh toán",
-                icon: "fa-rotate-left",
-                type: "outline"
-            });
 
             renderPaymentInfo();
+
             return;
+
         }
 
-        /*
-        * ĐÃ TẠO QR
-        * => DUYỆT
-        */
         if (
             createdQr &&
             state.payment?.id &&
@@ -873,6 +900,83 @@
         }
     }
 
+    function delay(
+        milliseconds
+    ) {
+
+        return new Promise(
+            resolve =>
+                window.setTimeout(
+                    resolve,
+                    Math.max(
+                        0,
+                        Number(
+                            milliseconds
+                        ) ||
+                        0
+                    )
+                )
+        );
+
+    }
+
+
+    async function runWithQrBankLoading(
+        task,
+        message =
+            "Đang kết nối ngân hàng. Vui lòng chờ!"
+    ) {
+
+        const startedAt =
+            performance.now();
+
+
+        setQrModalLoading(
+            true,
+            message
+        );
+
+
+        try {
+
+            return await task();
+
+        } finally {
+
+            /*
+            * TEST hiện tại phản hồi quá nhanh:
+            * giữ spinner ít nhất 1 giây.
+            *
+            * Sau này ngân hàng thật mất 2s, 3s...
+            * thì KHÔNG cộng thêm 1 giây.
+            * Spinner chỉ tồn tại bằng đúng thời gian
+            * ngân hàng trả lời.
+            */
+            const elapsed =
+                performance.now() -
+                startedAt;
+
+
+            const remaining =
+                QR_MIN_LOADING_MS -
+                elapsed;
+
+
+            if (
+                remaining >
+                0
+            ) {
+
+                await delay(
+                    remaining
+                );
+
+            }
+
+        }
+
+    }
+
     async function handlePay() {
         try {
             setLoading(true);
@@ -888,38 +992,50 @@
                     Number(state.selectedPaymentMethod)
             );
 
-            if (isQrMethod(method)) {
-                if (!permission.canCreateQr(state.permissions)) {
-                    throw new Error("Bạn không có quyền tạo thanh toán QR.");
+            if (
+                isQrMethod(
+                    method
+                )
+            ) {
+
+                if (
+                    !permission.canCreateQr(
+                        state.permissions
+                    )
+                ) {
+
+                    throw new Error(
+                        "Bạn không có quyền tạo thanh toán QR."
+                    );
+
                 }
 
-                const response = await request(
-                    `${API.payment}/tao-qr`,
-                    "POST",
-                    {
-                        phieuLayVeId: state.phieu.id
-                    }
+
+                /*
+                * Không dùng loading toàn trang nữa.
+                * Modal tự có loading riêng.
+                */
+                setLoading(
+                    false
                 );
 
-                state.qrPayment =
-                    response?.data || null;
 
-                state.payment =
-                    state.qrPayment;
+                await createQrPayment({
+                    openModal:
+                        true
+                });
 
-                await reloadPhieu();
 
-                renderQrPanel();
-                renderSummary();
-                renderStateActions();
+                window.MCS
+                    ?.toast
+                    ?.success
+                    ?.(
+                        "Đã tạo giao dịch QR."
+                    );
 
-                window.MCS?.toast?.success?.(
-                    response?.message ||
-                    "Đã tạo giao dịch QR."
-                );
 
-                startQrPolling();
                 return;
+
             }
 
             if (!permission.canCreatePayment(state.permissions)) {
@@ -968,44 +1084,46 @@
                 response?.data
             );
 
-        /*
-        * loaiGiaoDich = 10:
-        * giao dịch thanh toán.
-        *
-        * Không lấy transaction hoàn tiền làm
-        * payment hiện tại.
-        */
         const payment =
             list.find(
                 item =>
                     Number(
                         item.loaiGiaoDich
-                    ) === 10
+                    ) ===
+                        10 &&
+                    !isCancelledPayment(
+                        item
+                    )
             ) ||
             null;
 
-        state.payment =
-            payment;
+            state.payment =
+                payment;
 
-        const isQr =
-            Number(
-                payment?.phuongThuc
-            ) === 30;
 
-        const daHuy =
-            normalizeSearchText(
-                getEnumLabel(
-                    state.paymentStatuses,
-                    payment?.trangThai
-                )
-            ).includes(
-                "da huy"
-            );
+            state.qrData =
+                null;
 
-        state.qrPayment =
-            isQr && !daHuy
-                ? payment
-                : null;
+
+            const isQr =
+                Number(
+                    payment?.phuongThuc
+                ) ===
+                30;
+
+
+            const paid =
+                Number(
+                    state.phieu?.trangThai
+                ) ===
+                40;
+
+
+            state.qrPayment =
+                isQr &&
+                !paid
+                    ? payment
+                    : null;
     }
 
     async function confirmCurrentPayment() {
@@ -1025,20 +1143,709 @@
                 {}
             );
 
-            state.payment = response?.data || state.payment;
+            state.payment =
+                response?.data ||
+                state.payment;
+
 
             await reloadPhieu();
+
+
+            stopQrPolling();
+
+
+            state.qrPayment =
+                null;
+
+            state.qrData =
+                null;
+
+
+            closeQrModal();
+
+
+            renderQrPanel();
+
             renderSummary();
 
-            window.MCS?.toast?.success?.(
-                response?.message ||
-                "Thanh toán thành công."
-            );
+            renderStateActions();
+
+
+            window.MCS
+                ?.toast
+                ?.success
+                ?.(
+                    response?.message ||
+                    "Thanh toán thành công."
+                );
         } catch (error) {
             showError(error);
         } finally {
             setLoading(false);
         }
+    }
+
+    function setQrModalLoading(
+        loading,
+        message =
+            "Đang kết nối ngân hàng. Vui lòng chờ!"
+    ) {
+
+        if (
+            !el.qrModal
+        ) {
+
+            return;
+
+        }
+
+
+        el.qrModal.classList.toggle(
+            "is-loading",
+            Boolean(
+                loading
+            )
+        );
+
+
+        if (
+            el.qrModalLoading
+        ) {
+
+            el.qrModalLoading.hidden =
+                !loading;
+
+        }
+
+
+        if (
+            el.qrModalLoadingText
+        ) {
+
+            el.qrModalLoadingText.textContent =
+                message;
+
+        }
+
+
+        if (
+            el.qrModalContent
+        ) {
+
+            el.qrModalContent.hidden =
+                loading;
+
+        }
+
+
+        if (
+            el.qrModalActions
+        ) {
+
+            el.qrModalActions.hidden =
+                loading;
+
+        }
+
+    }
+
+    function openQrModal(
+        loading = false,
+        message =
+            "Đang kết nối ngân hàng. Vui lòng chờ!"
+    ) {
+
+        if (
+            !el.qrModal
+        ) {
+
+            return;
+
+        }
+
+
+        el.qrModal.hidden =
+            false;
+
+
+        document.body
+            .classList
+            .add(
+                "lva-qr-modal-open"
+            );
+
+
+        setQrModalLoading(
+            loading,
+            message
+        );
+
+    }
+
+    function closeQrModal() {
+
+        if (
+            el.qrModal
+        ) {
+
+            el.qrModal.hidden =
+                true;
+
+        }
+
+
+        document.body
+            .classList
+            .remove(
+                "lva-qr-modal-open"
+            );
+
+    }
+
+    function renderQrModal() {
+
+        const payment =
+            state.qrPayment;
+
+
+        const qr =
+            state.qrData ||
+            payment?.qrData ||
+            null;
+
+
+        if (
+            !payment ||
+            !qr
+        ) {
+
+            return;
+
+        }
+
+
+        setQrModalLoading(
+            false
+        );
+
+
+        if (
+            el.qrModalImage
+        ) {
+
+            el.qrModalImage.src =
+                qr.qrDataURL ||
+                "";
+
+        }
+
+
+        if (
+            el.qrModalAmount
+        ) {
+
+            el.qrModalAmount.textContent =
+                formatMoney(
+                    payment.soTien ??
+                    state.phieu?.thanhTien ??
+                    0
+                );
+
+        }
+
+
+        if (
+            el.qrModalTransaction
+        ) {
+
+            el.qrModalTransaction.textContent =
+                payment.maGiaoDich ||
+                "";
+
+        }
+
+
+        if (
+            el.qrModalCode
+        ) {
+
+            el.qrModalCode.textContent =
+                payment.maGiaoDich ||
+                "-";
+
+        }
+
+
+        if (
+            el.qrModalBank
+        ) {
+
+            el.qrModalBank.textContent =
+                qr.bankName ||
+                (
+                    qr.provider ===
+                    "TEST"
+                        ? "KITCHENFLOW TEST BANK"
+                        : "VietQR"
+                );
+
+        }
+
+
+        if (
+            el.qrModalAccount
+        ) {
+
+            el.qrModalAccount.textContent =
+                [
+                    qr.accountName,
+                    qr.accountNo
+                ]
+                    .filter(
+                        Boolean
+                    )
+                    .join(
+                        " - "
+                    ) ||
+                "-";
+
+        }
+
+
+        if (
+            el.qrModalCancel
+        ) {
+
+            el.qrModalCancel.hidden =
+                !permission.canCancelQr(
+                    state.permissions
+                );
+
+        }
+
+
+        if (
+            el.qrModalRecreate
+        ) {
+
+            el.qrModalRecreate.hidden =
+                !permission.canCancelQr(
+                    state.permissions
+                ) ||
+                !permission.canCreateQr(
+                    state.permissions
+                );
+
+        }
+
+
+        if (
+            el.qrModalConfirm
+        ) {
+
+            el.qrModalConfirm.hidden =
+                !permission.canConfirmPayment(
+                    state.permissions
+                );
+
+        }
+
+    }
+
+    async function loadCurrentQr() {
+
+        if (
+            !state.qrPayment?.id
+        ) {
+
+            return;
+
+        }
+
+
+        openQrModal(
+            true
+        );
+
+
+        try {
+
+            const response =
+                await runWithQrBankLoading(
+                    () =>
+                        request(
+                            `${API.payment}/qr/${state.qrPayment.id}`
+                        ),
+
+                    "Đang tải thông tin QR Code. Vui lòng chờ!"
+                );
+
+            state.qrPayment =
+                response?.data ||
+                state.qrPayment;
+
+
+            state.payment =
+                state.qrPayment;
+
+
+            state.qrData =
+                response?.data
+                    ?.qrData ||
+                null;
+
+
+            renderQrModal();
+
+        } catch (
+            error
+        ) {
+
+            closeQrModal();
+
+            showError(
+                error
+            );
+
+        }
+
+    }
+
+    async function createQrPayment({
+        openModal = true,
+
+        loadingMessage =
+            "Đang tạo QR Code. Vui lòng chờ ngân hàng phản hồi!"
+    } = {}) {
+
+        if (
+            !state.phieu?.id
+        ) {
+
+            throw new Error(
+                "Phiếu lấy vé chưa được tạo."
+            );
+
+        }
+
+
+        if (
+            openModal
+        ) {
+
+            openQrModal(
+                true,
+                loadingMessage
+            );
+
+        } else {
+
+            setQrModalLoading(
+                true,
+                loadingMessage
+            );
+
+        }
+
+
+        try {
+
+            const response =
+                await runWithQrBankLoading(
+                    () =>
+                        request(
+                            `${API.payment}/tao-qr`,
+                            "POST",
+                            {
+                                phieuLayVeId:
+                                    state.phieu.id
+                            }
+                        ),
+
+                    loadingMessage
+                );
+
+
+            state.qrPayment =
+                response?.data ||
+                null;
+
+
+            state.payment =
+                state.qrPayment;
+
+
+            state.qrData =
+                response?.data
+                    ?.qrData ||
+                null;
+
+
+            await reloadPhieu();
+
+
+            renderQrPanel();
+
+            renderSummary();
+
+            renderStateActions();
+
+
+            /*
+            * Đây chính là bước:
+            * loading -> QR MỚI.
+            */
+            renderQrModal();
+
+
+            startQrPolling();
+
+
+            return state.qrPayment;
+
+        } catch (
+            error
+        ) {
+
+            closeQrModal();
+
+            throw error;
+
+        }
+
+    }
+
+    function isCancelledPayment(
+        payment
+    ) {
+
+        if (
+            !payment
+        ) {
+
+            return false;
+
+        }
+
+
+        const label =
+            normalizeSearchText(
+                getEnumLabel(
+                    state.paymentStatuses,
+                    payment.trangThai
+                )
+            );
+
+
+        return (
+            Number(
+                payment.trangThai
+            ) ===
+                50 ||
+            label ===
+                "da huy"
+        );
+
+    }
+
+    async function cancelCurrentQr({
+        closeModalAfter = true,
+        showToast = true
+    } = {}) {
+
+        if (
+            !state.qrPayment?.id
+        ) {
+
+            return;
+
+        }
+
+
+        await request(
+            `${API.payment}/huy-qr/${state.qrPayment.id}`,
+            "PATCH",
+            {
+                noiDung:
+                    "Hủy QR Code từ màn hình lấy vé ăn."
+            }
+        );
+
+
+        stopQrPolling();
+
+
+        state.qrPayment =
+            null;
+
+        state.payment =
+            null;
+
+        state.qrData =
+            null;
+
+
+        await reloadPhieu();
+
+
+        resetPaymentSelection();
+
+        renderQrPanel();
+
+        renderSummary();
+
+        renderStateActions();
+
+
+        if (
+            closeModalAfter
+        ) {
+
+            closeQrModal();
+
+        }
+
+
+        if (
+            showToast
+        ) {
+
+            window.MCS
+                ?.toast
+                ?.success
+                ?.(
+                    "Hủy QR Code thành công."
+                );
+
+        }
+
+    }
+
+    async function recreateQr() {
+
+        if (
+            !state.qrPayment?.id ||
+            !permission.canCancelQr(
+                state.permissions
+            ) ||
+            !permission.canCreateQr(
+                state.permissions
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const loadingMessage =
+            "Đang cập nhật QR Code. Vui lòng chờ ngân hàng phản hồi!";
+
+
+        /*
+        * QUAN TRỌNG:
+        *
+        * Bấm "Cập nhật QR" ngoài màn hình
+        * thì modal đang đóng.
+        *
+        * Phải mở modal NGAY trước khi
+        * bắt đầu hủy QR cũ.
+        */
+        openQrModal(
+            true,
+            loadingMessage
+        );
+
+
+        try {
+
+            /*
+            * 1. Hủy transaction QR cũ.
+            *
+            * Không đóng modal vì modal
+            * hiện đang dùng để hiển thị loading.
+            */
+            await cancelCurrentQr({
+                closeModalAfter:
+                    false,
+
+                showToast:
+                    false
+            });
+
+
+            /*
+            * 2. Sau khi hủy QR cũ,
+            * cancelCurrentQr() đã reset
+            * phương thức thanh toán.
+            *
+            * Chọn lại QR = 30.
+            */
+            setSelectedPaymentMethod(
+                30
+            );
+
+
+            /*
+            * 3. Sinh transaction mới +
+            * QR Code hoàn toàn mới.
+            *
+            * Modal đã mở nên không mở lại.
+            */
+            const newQrPayment =
+                await createQrPayment({
+                    openModal:
+                        false,
+
+                    loadingMessage
+                });
+
+
+            if (
+                !newQrPayment?.id
+            ) {
+
+                throw new Error(
+                    "Không nhận được giao dịch QR mới."
+                );
+
+            }
+
+
+            /*
+            * createQrPayment()
+            * đã:
+            *
+            * state.qrPayment = QR mới
+            * state.qrData = dữ liệu QR mới
+            * renderQrModal()
+            *
+            * => spinner biến mất
+            * => QR mới hiện ngay.
+            */
+
+
+            window.MCS
+                ?.toast
+                ?.success
+                ?.(
+                    "Đã cập nhật QR Code."
+                );
+
+        } catch (
+            error
+        ) {
+
+            closeQrModal();
+
+
+            showError(
+                error,
+                "Không thể cập nhật QR Code."
+            );
+
+        }
+
     }
 
     function renderQrPanel() {
@@ -1116,90 +1923,47 @@
         }
 
 
-        const execute =
+        confirmAction(
+            "Hủy QR Code",
+
+            "Bạn có chắc chắn muốn hủy QR Code hiện tại?",
+
+            "Hủy QR",
+
+            "danger",
+
             async () => {
 
                 try {
 
-                    setLoading(
+                    setQrModalLoading(
                         true
                     );
 
 
-                    await request(
-                        `${API.payment}/huy-qr/${state.qrPayment.id}`,
-                        "PATCH",
-                        {
-                            noiDung:
-                                "Hủy QR Code từ màn hình lấy vé ăn."
-                        }
-                    );
+                    await cancelCurrentQr({
+                        closeModalAfter:
+                            true,
 
-
-                    stopQrPolling();
-
-
-                    state.qrPayment =
-                        null;
-
-                    state.payment =
-                        null;
-
-
-                    if (
-                        el.qrPanel
-                    ) {
-
-                        el.qrPanel.hidden =
-                            true;
-
-                    }
-
-
-                    await reloadPhieu();
-
-
-                    resetPaymentSelection();
-
-                    renderQrPanel();
-
-                    renderSummary();
-
-                    renderStateActions();
-
-
-                    window.MCS
-                        ?.toast
-                        ?.success
-                        ?.(
-                            "Hủy QR Code thành công."
-                        );
+                        showToast:
+                            true
+                    });
 
                 } catch (
                     error
                 ) {
 
+                    setQrModalLoading(
+                        false
+                    );
+
                     showError(
                         error
                     );
 
-                } finally {
-
-                    setLoading(
-                        false
-                    );
-
                 }
 
-            };
-
-
-        confirmAction(
-            "Hủy QR Code",
-            "Bạn có chắc chắn muốn hủy QR Code hiện tại?",
-            "Hủy QR",
-            "danger",
-            execute
+            }
         );
 
     }
@@ -1238,7 +2002,16 @@
             startQrPolling,
             stopQrPolling,
             cancelQr,
-            isQrMethod
+            isQrMethod,
+            openQrModal,
+            closeQrModal,
+            setQrModalLoading,
+            renderQrModal,
+            loadCurrentQr,
+            createQrPayment,
+            cancelCurrentQr,
+            recreateQr,
+            isCancelledPayment,
         }
     );
 })();

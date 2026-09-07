@@ -20,6 +20,7 @@
     "multer": "^2.2.0",
     "pg": "^8.22.0",
     "pizzip": "^3.2.0",
+    "qrcode": "^1.5.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

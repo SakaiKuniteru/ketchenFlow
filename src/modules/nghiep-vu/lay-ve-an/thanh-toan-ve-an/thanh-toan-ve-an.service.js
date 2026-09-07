@@ -42,6 +42,11 @@ const repository =
         "./thanh-toan-ve-an.repository"
     );
 
+const qrPaymentGateway =
+    require(
+        "./qr-payment.gateway"
+    );
+
 
 class ThanhToanVeAnService {
 
@@ -627,10 +632,7 @@ class ThanhToanVeAnService {
 
                         phuongThuc,
 
-                        soTien:
-                            Number(
-                                phieu.thanh_tien
-                            ),
+                        soTien,
 
                         maGiaoDich:
                             this.taoMaGiaoDich(),
@@ -738,20 +740,21 @@ class ThanhToanVeAnService {
         const maGiaoDich =
             this.taoMaGiaoDich();
 
+        const soTien =
+            Number(
+                phieu.thanh_tien
+            );
 
-        /*
-         * Sau này khi tích hợp ngân hàng/payment gateway:
-         *
-         * const ketQuaQr =
-         *     await paymentService.createQr({
-         *         maGiaoDich,
-         *         soTien: phieu.thanh_tien
-         *     });
-         *
-         * Hiện tại chỉ tạo transaction DB.
-         */
+        const qrData =
+            await qrPaymentGateway
+                .create({
+                    maGiaoDich,
 
+                    soTien,
 
+                    soPhieu:
+                        phieu.so_phieu
+                });
         const id =
             await repository
                 .create(
@@ -822,18 +825,95 @@ class ThanhToanVeAnService {
 
             ...thanhToan,
 
-            qrData: {
-                maGiaoDich,
-                soTien:
-                    Number(
-                        phieu.thanh_tien
-                    )
-            }
+            qrData
 
         };
 
     }
 
+    async getQr(
+        id
+    ) {
+
+        const thanhToanId =
+            this.parseId(
+                id
+            );
+
+
+        const thanhToan =
+            await this.getChiTiet(
+                thanhToanId
+            );
+
+
+        const phuongThucQr =
+            this.getEnumValue(
+                dsPhuongThucThanhToan,
+                "QR Code"
+            );
+
+
+        if (
+            Number(
+                thanhToan.phuongThuc
+            ) !==
+            phuongThucQr
+        ) {
+
+            throw new ApiError(
+                400,
+                "Giao dịch không phải QR Code."
+            );
+
+        }
+
+
+        const daHuy =
+            this.getEnumValue(
+                dsTrangThaiThanhToan,
+                "Đã huỷ"
+            );
+
+
+        if (
+            Number(
+                thanhToan.trangThai
+            ) ===
+            daHuy
+        ) {
+
+            throw new ApiError(
+                400,
+                "QR Code đã bị hủy."
+            );
+
+        }
+
+
+        const qrData =
+            await qrPaymentGateway
+                .create({
+                    maGiaoDich:
+                        thanhToan.maGiaoDich,
+
+                    soTien:
+                        thanhToan.soTien,
+
+                    soPhieu:
+                        thanhToan.soPhieu
+                });
+
+
+        return {
+
+            ...thanhToan,
+
+            qrData
+
+        };
+
+    }
 
     async huyQr(
         id,
@@ -1018,6 +1098,37 @@ class ThanhToanVeAnService {
                 thanhToanId
             );
 
+        const choXuLy =
+            this.getEnumValue(
+                dsTrangThaiThanhToan,
+                "Chờ xử lý"
+            );
+
+
+        const dangXuLy =
+            this.getEnumValue(
+                dsTrangThaiThanhToan,
+                "Đang xử lý"
+            );
+
+
+        if (
+            ![
+                choXuLy,
+                dangXuLy
+            ].includes(
+                Number(
+                    thanhToan.trangThai
+                )
+            )
+        ) {
+
+            throw new ApiError(
+                400,
+                "Giao dịch không còn ở trạng thái có thể duyệt."
+            );
+
+        }
 
         const client =
             await pool.connect();

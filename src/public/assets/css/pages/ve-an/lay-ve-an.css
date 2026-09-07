@@ -722,15 +722,34 @@
     min-width: 140px;
 }
 
-.lva-action-row {
+.lva-action-grid {
     display: grid;
     grid-template-columns:
         repeat(
             3,
             minmax(0, 1fr)
         );
+    grid-template-rows:
+        repeat(
+            2,
+            minmax(
+                42px,
+                auto
+            )
+        );
     gap: 10px;
     margin-top: 14px;
+}
+
+.lva-action-slot {
+    min-width: 0;
+    min-height: 42px;
+}
+
+.lva-action-slot .lva-btn {
+    width: 100%;
+    min-width: 0;
+    height: 100%;
 }
 
 .lva-action-slot {
@@ -752,6 +771,273 @@
     height: auto;
     max-width: calc(100vw - 40px);
     max-height: calc(100vh - 40px);
+}
+
+body.lva-qr-modal-open {
+    overflow: hidden;
+}
+
+.lva-qr-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.lva-qr-modal[hidden] {
+    display: none !important;
+}
+
+.lva-qr-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .58);
+    backdrop-filter: blur(1px);
+}
+
+.lva-qr-modal__dialog {
+    position: relative;
+    z-index: 1;
+    width: 560px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow:
+        0 28px 70px
+        rgba(15, 23, 42, .32);
+}
+
+.lva-qr-modal__header {
+    min-height: 62px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+.lva-qr-modal__header h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.lva-qr-modal__header span {
+    display: block;
+    margin-top: 3px;
+    color: #7a879b;
+    font-size: 12px;
+}
+
+.lva-qr-modal__body {
+    min-height: 390px;
+    padding: 22px;
+    display: grid;
+    place-items: center;
+}
+
+.lva-qr-loading {
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.lva-qr-modal.is-loading
+.lva-qr-modal__dialog {
+    width: 400px;
+}
+
+.lva-qr-modal.is-loading
+.lva-qr-modal__header {
+    display: none;
+}
+
+.lva-qr-modal.is-loading
+.lva-qr-modal__body {
+    min-height: 220px;
+    padding: 34px 28px;
+}
+
+.lva-qr-loading {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 24px;
+    width: 100%;
+    min-height: 150px;
+    text-align: center;
+}
+
+.lva-qr-loading strong {
+    max-width: 300px;
+    color: #172033;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+
+/*
+ * Spinner dạng chấm quay giống popup mẫu.
+ */
+.lva-bank-spinner {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    animation:
+        lva-bank-spinner-rotate
+        1s
+        linear
+        infinite;
+}
+
+.lva-bank-spinner span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    margin:
+        -4.5px
+        0
+        0
+        -4.5px;
+    border-radius: 50%;
+    background: #4da3ff;
+}
+
+.lva-bank-spinner span:nth-child(1) {
+    transform:
+        rotate(0deg)
+        translateY(-20px);
+    opacity: 1;
+}
+
+.lva-bank-spinner span:nth-child(2) {
+    transform:
+        rotate(45deg)
+        translateY(-20px);
+    opacity: .88;
+}
+
+.lva-bank-spinner span:nth-child(3) {
+    transform:
+        rotate(90deg)
+        translateY(-20px);
+    opacity: .76;
+}
+
+.lva-bank-spinner span:nth-child(4) {
+    transform:
+        rotate(135deg)
+        translateY(-20px);
+    opacity: .64;
+}
+
+.lva-bank-spinner span:nth-child(5) {
+    transform:
+        rotate(180deg)
+        translateY(-20px);
+    opacity: .52;
+}
+
+.lva-bank-spinner span:nth-child(6) {
+    transform:
+        rotate(225deg)
+        translateY(-20px);
+    opacity: .40;
+}
+
+.lva-bank-spinner span:nth-child(7) {
+    transform:
+        rotate(270deg)
+        translateY(-20px);
+    opacity: .28;
+}
+
+.lva-bank-spinner span:nth-child(8) {
+    transform:
+        rotate(315deg)
+        translateY(-20px);
+    opacity: .18;
+}
+
+@keyframes lva-bank-spinner-rotate {
+
+    from {
+        transform:
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+.lva-qr-content {
+    width: 100%;
+    text-align: center;
+}
+
+.lva-qr-content > img {
+    display: block;
+    width: min(330px, 78vw);
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.lva-qr-content__amount {
+    display: block;
+    margin-top: 8px;
+    color: #dc2626;
+    font-size: 26px;
+}
+
+.lva-qr-content__info {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #edf1f6;
+    display: grid;
+    gap: 8px;
+    text-align: left;
+}
+
+.lva-qr-content__info > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.lva-qr-content__info span {
+    color: #68758d;
+}
+
+.lva-qr-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    padding: 14px 18px;
+    border-top: 1px solid #e5e9f0;
+    background: #fafbfc;
+}
+
+@media (max-width: 600px) {
+    .lva-qr-modal__footer {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .lva-qr-modal__footer .lva-btn {
+        width: 100%;
+    }
 }
 
 @media (max-width: 760px) {

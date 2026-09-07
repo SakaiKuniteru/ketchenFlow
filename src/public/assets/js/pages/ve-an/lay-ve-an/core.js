@@ -164,6 +164,7 @@
         availableDiscounts: [],
         payment: null,
         qrPayment: null,
+        qrData: null,
         selectedPaymentMethod: null,
         pricePreview: null
     };
@@ -227,6 +228,20 @@
         mainPaymentActionIcon: root.querySelector("[data-payment-main-action-icon]"),
         cancelQr: root.querySelector("[data-cancel-qr]"),
         cancelPhieu: root.querySelector("[data-cancel-phieu]"),
+        cancelPayment:
+            root.querySelector(
+                "[data-cancel-payment]"
+            ),
+
+        recreateQr:
+            root.querySelector(
+                "[data-recreate-qr]"
+            ),
+
+        qrModalLoadingText:
+            root.querySelector(
+                "[data-qr-modal-loading-text]"
+            ),
         cancelPhieuModal: root.querySelector("[data-cancel-phieu-modal]"),
         cancelPhieuReason: byId("lyDoHuyPhieu"),
         cancelPhieuSubmit: root.querySelector("[data-cancel-phieu-submit]"),
@@ -244,6 +259,71 @@
         paymentPayer: root.querySelector("[data-payment-payer]"),
         paymentTime: root.querySelector("[data-payment-time]"),
         viewQr: root.querySelector("[data-view-qr]"),
+
+        qrModal:
+            root.querySelector(
+                "[data-qr-modal]"
+            ),
+
+        qrModalLoading:
+            root.querySelector(
+                "[data-qr-modal-loading]"
+            ),
+
+        qrModalContent:
+            root.querySelector(
+                "[data-qr-modal-content]"
+            ),
+
+        qrModalActions:
+            root.querySelector(
+                "[data-qr-modal-actions]"
+            ),
+
+        qrModalImage:
+            root.querySelector(
+                "[data-qr-modal-image]"
+            ),
+
+        qrModalAmount:
+            root.querySelector(
+                "[data-qr-modal-amount]"
+            ),
+
+        qrModalTransaction:
+            root.querySelector(
+                "[data-qr-modal-transaction]"
+            ),
+
+        qrModalCode:
+            root.querySelector(
+                "[data-qr-modal-code]"
+            ),
+
+        qrModalBank:
+            root.querySelector(
+                "[data-qr-modal-bank]"
+            ),
+
+        qrModalAccount:
+            root.querySelector(
+                "[data-qr-modal-account]"
+            ),
+
+        qrModalCancel:
+            root.querySelector(
+                "[data-qr-modal-cancel]"
+            ),
+
+        qrModalRecreate:
+            root.querySelector(
+                "[data-qr-modal-recreate]"
+            ),
+
+        qrModalConfirm:
+            root.querySelector(
+                "[data-qr-modal-confirm]"
+            ),
 
         refundModal: root.querySelector("[data-refund-modal]"),
         refundQty: byId("soLuongHoan"),
