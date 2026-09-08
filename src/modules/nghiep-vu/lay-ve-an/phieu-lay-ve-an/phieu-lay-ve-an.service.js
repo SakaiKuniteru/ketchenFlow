@@ -654,6 +654,30 @@ class PhieuLayVeAnService {
         };
     }
 
+    async taoSoPhieuMoi(
+        db
+    ) {
+
+        const quyTacSinhMaVeAn =
+            await cauHinhService
+                .getQuyTacSinhMaVeAn();
+
+
+        const nguCanhSinhMaVeAn =
+            this.taoNguCanhSinhMaVeAn(
+                quyTacSinhMaVeAn
+            );
+
+
+        return await phieuLayVeAnRepository
+            .taoSoPhieuTheoQuyTac(
+                nguCanhSinhMaVeAn,
+                db
+            );
+
+    }
+
+
     async create(
         data,
         nguoiTaoId
@@ -801,29 +825,59 @@ class PhieuLayVeAnService {
                 phieuLayVeAnId
             );
 
+        const trangThai =
+            Number(
+                phieu.trangThai
+            );
+
 
         if (
-            Number(
-                phieu.trangThai
-            ) ===
-                40 ||
-            Number(
-                phieu.trangThai
-            ) ===
-                50 ||
-            Number(
-                phieu.trangThai
-            ) ===
-                60
+            trangThai ===
+            50
         ) {
 
             throw new ApiError(
                 400,
-                "Phiếu ở trạng thái hiện tại không được phép cập nhật."
+                "Phiếu đã hủy không được phép cập nhật."
             );
 
         }
 
+
+        const khoaThongTinTinhTien =
+            [
+                -10,
+                10,
+                30,
+                40,
+                60
+            ].includes(
+                trangThai
+            );
+
+        if (
+            khoaThongTinTinhTien
+        ) {
+
+            data = {
+
+                ...data,
+
+                thucDonNgayId:
+                    phieu.thucDonNgayId,
+
+                doiTuongLayVe:
+                    phieu.doiTuongLayVe,
+
+                soLuong:
+                    phieu.soLuong,
+
+                phuongThucThanhToan:
+                    phieu.phuongThucThanhToan
+
+            };
+
+        }
 
         const duLieuTam = {
 
@@ -1144,14 +1198,21 @@ class PhieuLayVeAnService {
         }
 
         if (
-            Number(
-                phieu.trangThai
-            ) !== 40
+            ![
+                40,
+                60
+            ].includes(
+                Number(
+                    phieu.trangThai
+                )
+            )
         ) {
+
             throw new ApiError(
                 400,
                 "Phiếu chưa thanh toán nên chưa thể in vé."
             );
+
         }
 
         const data =

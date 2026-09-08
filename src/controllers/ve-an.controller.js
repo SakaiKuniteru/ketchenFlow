@@ -316,7 +316,16 @@ class VeAnWebController {
                 {
                     title: "Lấy vé ăn",
                     pageDescription: "Lấy vé ăn.",
-                    pageId: String(req.params.id || "")
+                    pageId: String(req.params.id || ""),
+                    breadcrumbs: [
+                        {
+                            label: "Danh sách lấy vé",
+                            path: "/ve-an/danh-sach-lay-ve"
+                        },
+                        {
+                            label: "Lấy vé ăn"
+                        }
+                    ]
                 }
             );
         } catch (error) {

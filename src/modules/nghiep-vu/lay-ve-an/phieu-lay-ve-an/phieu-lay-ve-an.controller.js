@@ -1,30 +1,20 @@
-const phieuLayVeAnService =
-    require(
-        "./phieu-lay-ve-an.service"
-    );
+const phieuLayVeAnService = require("./phieu-lay-ve-an.service");
 
 const {
     successResponse
-} = require(
-    "../../../../utils/response.util"
-);
+} = require("../../../../utils/response.util");
 
 class PhieuLayVeAnController {
-
     async getTongHop(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await phieuLayVeAnService
-                    .getTongHop(
-                        req.query
-                    );
-
+            const data = await phieuLayVeAnService
+                .getTongHop(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -32,32 +22,21 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async getThucDonNgayHopLe(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await phieuLayVeAnService
-                    .getThucDonNgayHopLe();
-
+            const data = await phieuLayVeAnService
+                .getThucDonNgayHopLe();
 
             return successResponse(
                 res,
@@ -65,17 +44,11 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async getGiaVe(
@@ -83,15 +56,11 @@ class PhieuLayVeAnController {
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await phieuLayVeAnService
-                    .getGiaVePreview(
-                        req.query
-                    );
-
+            const data = await phieuLayVeAnService
+                .getGiaVePreview(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -99,17 +68,11 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async getChiTiet(
@@ -117,21 +80,15 @@ class PhieuLayVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await phieuLayVeAnService
-                    .getChiTiet(
-                        id
-                    );
-
+            const data = await phieuLayVeAnService
+                .getChiTiet(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -139,35 +96,24 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async create(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await phieuLayVeAnService
-                    .create(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await phieuLayVeAnService
+                .create(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -175,41 +121,28 @@ class PhieuLayVeAnController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async update(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await phieuLayVeAnService
-                    .update(
-                        id,
-                        req.body
-                    );
-
+            const data = await phieuLayVeAnService
+                .update(
+                    id,
+                    req.body
+                );
 
             return successResponse(
                 res,
@@ -217,42 +150,29 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async huy(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await phieuLayVeAnService
-                    .huy(
-                        id,
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await phieuLayVeAnService
+                .huy(
+                    id,
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -260,17 +180,11 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async inVe(
@@ -278,23 +192,17 @@ class PhieuLayVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await phieuLayVeAnService
-                    .getDuLieuInVe(
-                        id,
-                        req.user?.taiKhoanId ||
-                        req.user?.id
-                    );
-
+            const data = await phieuLayVeAnService
+                .getDuLieuInVe(
+                    id,
+                    req.user?.taiKhoanId ||
+                    req.user?.id
+                );
 
             return successResponse(
                 res,
@@ -302,21 +210,12 @@ class PhieuLayVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new PhieuLayVeAnController();
+module.exports = new PhieuLayVeAnController();

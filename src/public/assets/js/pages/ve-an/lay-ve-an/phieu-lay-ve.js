@@ -42,6 +42,11 @@
     const showError = (...args) => app.showError(...args);
     const stopQrPolling = (...args) => app.stopQrPolling(...args);
     const toPositiveInt = (...args) => app.toPositiveInt(...args);
+    const isFinancialLocked =
+        (...args) =>
+            app.isFinancialLocked(
+                ...args
+            );
 
     async function handleLayVeStorageChange(
         event
@@ -319,7 +324,7 @@
     async function handleDoiTuongLayVeChange() {
 
         if (
-            !canChangePricingFields()
+            !canChangeFinancialFields()
         ) {
 
             restoreDoiTuong();
@@ -445,11 +450,6 @@
             "";
 
         markPageAsCreate();
-
-        setPricingFieldsDisabled(
-            false
-        );
-
 
         if (
             el.soLuong
@@ -1856,11 +1856,72 @@
     async function printTicket() {
 
         if (
-            !state.phieu?.id ||
             !permission.canPrint(
                 state.permissions
             )
         ) {
+
+            return;
+
+        }
+
+
+        const document =
+            state.activePaymentDocument;
+
+
+        if (
+            !document
+        ) {
+
+            return;
+
+        }
+
+
+        let endpoint =
+            null;
+
+
+        if (
+            document.loai ===
+            "PHIEU_HOAN"
+        ) {
+
+            if (
+                !document.thanhToanId
+            ) {
+
+                throw new Error(
+                    "Không xác định được phiếu hoàn cần in."
+                );
+
+            }
+
+
+            endpoint =
+                `${API.payment}/in-phieu-hoan/${document.thanhToanId}`;
+
+        }
+        else if (
+            document.loai ===
+                "PHIEU_THU" &&
+            document.trangThaiHienThi ===
+                "DA_THANH_TOAN"
+        ) {
+
+            endpoint =
+                `${API.phieu}/in-ve/${document.phieuLayVeId}`;
+
+        }
+        else {
+
+            window.MCS
+                ?.toast
+                ?.info
+                ?.(
+                    "Phiếu chưa thanh toán nên chưa thể in."
+                );
 
             return;
 
@@ -1890,7 +1951,7 @@
             await window.MCS
                 .reportPrint
                 .print(
-                    `${API.phieu}/in-ve/${state.phieu.id}`
+                    endpoint
                 );
 
         } catch (
@@ -1899,7 +1960,7 @@
 
             showError(
                 error,
-                "Không thể in vé ăn."
+                "Không thể in giấy tờ."
             );
 
         } finally {
@@ -1912,46 +1973,192 @@
 
     }
 
-    function setPricingFieldsDisabled(disabled) {
-        [
-            el.thucDonNgayId,
-            el.doiTuongLayVe,
-            el.nhanVienId,
-            el.soLuong,
-            el.hoTen,
-            el.ngaySinh,
-            el.gioiTinh,
-            el.phone,
-            el.address,
-            el.unit,
-            el.permanentGuest
-        ].forEach(input => {
-            if (input) {
-                input.disabled = Boolean(disabled);
-            }
-        });
+    function setSmartSelectDisabled(
+        select,
+        disabled
+    ) {
 
-        root.querySelector("[data-qty-minus]")?.toggleAttribute(
-            "disabled",
-            Boolean(disabled)
-        );
+        if (
+            !select
+        ) {
 
-        root.querySelector("[data-qty-plus]")?.toggleAttribute(
-            "disabled",
-            Boolean(disabled)
-        );
-    }
+            return;
 
-    function canChangePricingFields() {
-        if (!state.discounts.length) {
-            return true;
         }
 
-        window.MCS?.toast?.info?.(
-            "Hãy xóa các miễn giảm đã áp dụng trước khi thay đổi bữa ăn, đối tượng hoặc số lượng."
+
+        select.disabled =
+            Boolean(
+                disabled
+            );
+
+
+        const wrapper =
+            select.closest(
+                "[data-smart-select]"
+            );
+
+
+        if (
+            !wrapper
+        ) {
+
+            return;
+
+        }
+
+
+        const smartSelect =
+            wrapper.smartSelect ||
+            window.MCS
+                ?.smartSelect
+                ?.initialize?.(
+                    wrapper
+                );
+
+
+        smartSelect
+            ?.setDisabled?.(
+                Boolean(
+                    disabled
+                )
+            );
+
+
+        smartSelect
+            ?.refresh?.();
+
+    }
+
+    function renderEditLocks() {
+
+        const locked =
+            isFinancialLocked();
+
+
+        /*
+        * Bữa ăn.
+        */
+        setSmartSelectDisabled(
+            el.thucDonNgayId,
+            locked
         );
 
+
+        /*
+        * Đối tượng lấy vé.
+        */
+        setSmartSelectDisabled(
+            el.doiTuongLayVe,
+            locked
+        );
+
+
+        /*
+        * Số lượng.
+        */
+        if (
+            el.soLuong
+        ) {
+
+            el.soLuong.disabled =
+                locked;
+
+        }
+
+
+        root
+            .querySelector(
+                "[data-qty-minus]"
+            )
+            ?.toggleAttribute(
+                "disabled",
+                locked
+            );
+
+
+        root
+            .querySelector(
+                "[data-qty-plus]"
+            )
+            ?.toggleAttribute(
+                "disabled",
+                locked
+            );
+
+
+        /*
+        * Miễn giảm.
+        */
+        if (
+            el.discountOpen
+        ) {
+
+            el.discountOpen.disabled =
+                locked;
+
+        }
+
+
+        root
+            .querySelectorAll(
+                "[data-discount-list] button"
+            )
+            .forEach(
+                button => {
+
+                    button.disabled =
+                        locked;
+
+                }
+            );
+
+
+        /*
+        * PTTT.
+        */
+        el.paymentMethodList
+            ?.querySelectorAll(
+                'input[name="phuongThucThanhToan"]'
+            )
+            .forEach(
+                radio => {
+
+                    radio.disabled =
+                        locked;
+
+                }
+            );
+
+
+        root.classList.toggle(
+            "is-financial-locked",
+            locked
+        );
+
+    }
+
+    function canChangeFinancialFields() {
+
+        if (
+            !isFinancialLocked()
+        ) {
+
+            return true;
+
+        }
+
+
+        window.MCS
+            ?.toast
+            ?.info
+            ?.(
+                "Phiếu hiện tại không được thay đổi thông tin tính tiền."
+            );
+
+
         return false;
+
     }
 
     function restoreSelectedMeal() {
@@ -2399,8 +2606,8 @@
             closeCancelPhieuModal,
             submitCancelPhieu,
             printTicket,
-            setPricingFieldsDisabled,
-            canChangePricingFields,
+            renderEditLocks,
+            canChangeFinancialFields,
             restoreSelectedMeal,
             restoreDoiTuong,
             restoreEmployee,

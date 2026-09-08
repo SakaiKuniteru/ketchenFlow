@@ -151,7 +151,6 @@ class PhieuLayVeMienGiamService {
 
     }
 
-
     validatePhieuChoPhepSua(
         phieu
     ) {
@@ -161,19 +160,23 @@ class PhieuLayVeMienGiamService {
         );
 
 
+        const trangThai =
+            Number(
+                phieu.trang_thai
+            );
+
+
         if (
-            Number(
-                phieu.trang_thai
-            ) ===
-                40 ||
-            Number(
-                phieu.trang_thai
-            ) ===
-                50 ||
-            Number(
-                phieu.trang_thai
-            ) ===
+            [
+                -10,
+                10,
+                30,
+                40,
+                50,
                 60
+            ].includes(
+                trangThai
+            )
         ) {
 
             throw new ApiError(
@@ -184,8 +187,7 @@ class PhieuLayVeMienGiamService {
         }
 
     }
-
-
+    
     async getTongHop(
         query
     ) {

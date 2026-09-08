@@ -47,6 +47,40 @@ class ThanhToanVeAnController {
 
     }
 
+    async getDanhSachPhieu(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const data =
+                await service
+                    .getDanhSachPhieu(
+                        req.params
+                            .phieuLayVeId
+                    );
+
+
+            return successResponse(
+                res,
+                "Lấy danh sách phiếu thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
 
     async getChiTiet(
         req,
@@ -88,6 +122,40 @@ class ThanhToanVeAnController {
 
     }
 
+    async inPhieuHoan(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const data =
+                await service
+                    .getDuLieuInPhieuHoan(
+                        req.params.id,
+                        req.user?.taiKhoanId
+                    );
+
+
+            return successResponse(
+                res,
+                "Lấy dữ liệu in phiếu hoàn thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
 
     async create(
         req,
@@ -321,6 +389,47 @@ class ThanhToanVeAnController {
 
     }
 
+    async huyThanhToan(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const {
+                id
+            } =
+                req.params;
+
+
+            const data =
+                await service
+                    .huyThanhToan(
+                        id,
+                        req.body,
+                        req.user?.taiKhoanId
+                    );
+
+
+            return successResponse(
+                res,
+                "Hủy thanh toán vé ăn thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
 
     async callback(
         req,

@@ -28,7 +28,17 @@
     const request = (...args) => app.request(...args);
     const saveDraft = (...args) => app.saveDraft(...args);
     const setLoading = (...args) => app.setLoading(...args);
-    const setPricingFieldsDisabled = (...args) => app.setPricingFieldsDisabled(...args);
+    const isFinancialLocked =
+        (...args) =>
+            app.isFinancialLocked(
+                ...args
+            );
+
+    const renderEditLocks =
+        (...args) =>
+            app.renderEditLocks(
+                ...args
+            );
     const setSelectValue = (...args) => app.setSelectValue(...args);
     const showError = (...args) => app.showError(...args);
 
@@ -44,6 +54,13 @@
 
         }
 
+        if (
+            isFinancialLocked()
+        ) {
+
+            return;
+
+        }
 
         try {
 
@@ -1066,6 +1083,13 @@
 
         }
 
+        if (
+            isFinancialLocked()
+        ) {
+
+            return;
+
+        }
 
         try {
 
@@ -1296,52 +1320,152 @@
     }
 
     function renderDiscounts() {
-        el.discountList.innerHTML = "";
 
-        if (!state.discounts.length) {
-            el.discountList.innerHTML =
-                '<span class="lva-empty">Chưa có miễn giảm.</span>';
-            setPricingFieldsDisabled(false);
+        if (
+            !el.discountList
+        ) {
+
             return;
+
         }
 
-        setPricingFieldsDisabled(true);
 
-        state.discounts.forEach(item => {
-            const chip = document.createElement("div");
-            chip.className = "lva-discount-chip";
+        el.discountList.innerHTML =
+            "";
 
-            chip.innerHTML = `
-                <i class="fa-regular fa-circle-check"></i>
-                <span>${escapeHtml(
-                    item.tenMienGiam ||
-                    item.tenVoucher ||
-                    item.maMienGiam ||
-                    "Miễn giảm"
-                )}</span>
-                <strong>-${escapeHtml(formatMoney(item.soTienGiam || 0))}</strong>
-            `;
 
-            if (permission.canDeleteDiscount(state.permissions)) {
-                const remove = document.createElement("button");
-                remove.type = "button";
-                remove.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-                remove.title = "Xóa miễn giảm";
+        const locked =
+            isFinancialLocked();
 
-                remove.addEventListener("click", () =>
-                    deleteDiscount(item.id)
+
+        if (
+            !state.discounts.length
+        ) {
+
+            el.discountList.innerHTML =
+                '<span class="lva-empty">Chưa có miễn giảm.</span>';
+
+
+            renderEditLocks();
+
+            return;
+
+        }
+
+
+        state.discounts.forEach(
+            item => {
+
+                const chip =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                chip.className =
+                    "lva-discount-chip";
+
+
+                chip.innerHTML =
+                    `
+                        <i class="fa-regular fa-circle-check"></i>
+
+                        <span>
+                            ${escapeHtml(
+                                item.tenMienGiam ||
+                                item.tenVoucher ||
+                                item.maMienGiam ||
+                                "Miễn giảm"
+                            )}
+                        </span>
+
+                        <strong>
+                            -${escapeHtml(
+                                formatMoney(
+                                    item.soTienGiam ||
+                                    0
+                                )
+                            )}
+                        </strong>
+                    `;
+
+
+                if (
+                    permission.canDeleteDiscount(
+                        state.permissions
+                    )
+                ) {
+
+                    const remove =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    remove.type =
+                        "button";
+
+                    remove.innerHTML =
+                        '<i class="fa-solid fa-xmark"></i>';
+
+                    remove.title =
+                        "Xóa miễn giảm";
+
+                    remove.disabled =
+                        locked;
+
+
+                    remove.addEventListener(
+                        "click",
+                        () => {
+
+                            if (
+                                isFinancialLocked()
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            deleteDiscount(
+                                item.id
+                            );
+
+                        }
+                    );
+
+
+                    chip.appendChild(
+                        remove
+                    );
+
+                }
+
+
+                el.discountList.appendChild(
+                    chip
                 );
 
-                chip.appendChild(remove);
             }
+        );
 
-            el.discountList.appendChild(chip);
-        });
+
+        renderEditLocks();
+
     }
 
     async function deleteDiscount(id) {
         if (!permission.canDeleteDiscount(state.permissions)) {
             return;
+        }
+
+        if (
+            isFinancialLocked()
+        ) {
+
+            return;
+
         }
 
         const execute = async () => {

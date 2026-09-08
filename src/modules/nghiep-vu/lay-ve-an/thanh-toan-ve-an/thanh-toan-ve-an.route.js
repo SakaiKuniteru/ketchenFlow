@@ -11,27 +11,17 @@ const router =
 
     express.Router();
 
-
 const {
-
     createSchema,
-
     taoQrSchema,
-
     huyQrSchema,
-
+    huyThanhToanSchema,
     xacNhanSchema,
-
     hoanTienSchema,
-
     callbackSchema
-
 } = require(
-
     "./thanh-toan-ve-an.validation"
-
 );
-
 
 const validate =
 
@@ -155,12 +145,49 @@ router.post(
     controller.hoanTien
 );
 
+router.patch(
+    "/huy-thanh-toan/:id",
+    authenticate,
+    authorize(
+        "Q001046"
+    ),
+    validate(
+        huyThanhToanSchema
+    ),
+    controller.huyThanhToan
+);
+
 router.post(
     "/callback",
     validate(
         callbackSchema
     ),
     controller.callback
+);
+
+router.get(
+    "/danh-sach-phieu/:phieuLayVeId",
+    authenticate,
+    authorize(
+        "Q001041",
+        "Q001042",
+        "Q001043",
+        "Q001044",
+        "Q001045",
+        "Q001046"
+    ),
+    controller.getDanhSachPhieu
+);
+
+router.get(
+    "/in-phieu-hoan/:id",
+    authenticate,
+    authorize(
+        "Q001036",
+        "Q001041",
+        "Q001046"
+    ),
+    controller.inPhieuHoan
 );
 
 router.get(

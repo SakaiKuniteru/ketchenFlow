@@ -38,64 +38,149 @@
             <strong data-summary-total>-</strong>
         </div>
 
-        <div class="lva-payment-methods" data-payment-section hidden>
-            <h3>Phương thức thanh toán</h3>
-            <div data-payment-method-list></div>
-        </div>
+        <details
+            class="lva-payment-collapse"
+            data-payment-section
+            open
+            hidden>
+
+            <summary class="lva-payment-collapse__summary">
+
+                <span>
+                    Phương thức thanh toán
+                </span>
+
+                <i class="fa-solid fa-chevron-down"></i>
+
+            </summary>
+
+            <div class="lva-payment-collapse__content">
+
+                <div data-payment-method-list></div>
+
+            </div>
+
+        </details>
 
         <div class="lva-ticket-note">
             <i class="fa-solid fa-ticket"></i>
             <span>Sau khi thanh toán thành công, hệ thống sinh vé ăn theo số lượng đã chọn.</span>
         </div>
 
-        <div class="lva-payment-info" data-payment-info hidden>
-            <div class="lva-payment-info__title">Thông tin thanh toán</div>
+        <details
+            class="lva-payment-collapse lva-payment-info-collapse"
+            data-payment-info
+            open
+            hidden>
 
-            <div class="lva-payment-info__content">
+            <summary class="lva-payment-collapse__summary">
 
-                <div>
-                    <span>Trạng thái:</span>
-                    <strong data-payment-status-text>-</strong>
-                </div>
+                <span data-payment-info-title>
+                    Thông tin thanh toán
+                </span>
 
-                <div>
-                    <span>Mã giao dịch:</span>
-                    <strong data-payment-code>-</strong>
-                </div>
+                <i class="fa-solid fa-chevron-down"></i>
 
-                <div>
-                    <span>Phương thức:</span>
-                    <strong data-payment-method-text>-</strong>
-                </div>
+            </summary>
 
-                <div>
-                    <span>Tiền ban đầu:</span>
-                    <strong data-payment-original>-</strong>
-                </div>
+            <div class="lva-payment-collapse__content">
 
-                <div>
-                    <span>Tiền miễn giảm:</span>
-                    <strong data-payment-discount>-</strong>
-                </div>
+                <div class="lva-payment-info__content">
 
-                <div>
-                    <span>Thành tiền:</span>
-                    <strong data-payment-final>-</strong>
-                </div>
+                    <div>
+                        <span>Trạng thái:</span>
+                        <strong data-payment-status-text>-</strong>
+                    </div>
 
-                <div>
-                    <span>Người thanh toán:</span>
-                    <strong data-payment-payer>-</strong>
-                </div>
+                    <div>
+                        <span>Mã giao dịch:</span>
+                        <strong data-payment-code>-</strong>
+                    </div>
 
-                <div>
-                    <span>Thời gian thanh toán:</span>
-                    <strong data-payment-time>-</strong>
+                    <div>
+                        <span>Phương thức:</span>
+                        <strong data-payment-method-text>-</strong>
+                    </div>
+
+                    <div data-payment-original-row>
+                        <span data-payment-original-label>
+                            Tiền ban đầu:
+                        </span>
+
+                        <strong data-payment-original>-</strong>
+                    </div>
+
+                    <div data-payment-discount-row>
+                        <span data-payment-discount-label>
+                            Tiền miễn giảm:
+                        </span>
+
+                        <strong data-payment-discount>-</strong>
+                    </div>
+
+                    <div data-payment-final-row>
+                        <span data-payment-final-label>
+                            Thành tiền:
+                        </span>
+
+                        <strong data-payment-final>-</strong>
+                    </div>
+
+                    <div data-payment-payer-row>
+                        <span data-payment-payer-label>
+                            Người thanh toán:
+                        </span>
+
+                        <strong data-payment-payer>-</strong>
+                    </div>
+
+                    <div data-payment-time-row>
+                        <span data-payment-time-label>
+                            Thời gian thanh toán:
+                        </span>
+
+                        <strong data-payment-time>-</strong>
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
+        </details>
+
+        <details
+            class="lva-payment-collapse"
+            data-payment-documents-section
+            hidden>
+
+            <summary class="lva-payment-collapse__summary">
+
+                <span>
+                    Danh sách phiếu
+                </span>
+
+                <span class="lva-payment-collapse__right">
+
+                    <small data-payment-document-count>
+                        0 phiếu
+                    </small>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+
+                </span>
+
+            </summary>
+
+            <div class="lva-payment-collapse__content">
+
+                <div
+                    class="lva-payment-document-list"
+                    data-payment-document-list>
+                </div>
+
+            </div>
+
+        </details>
 
         <div class="lva-action-grid">
 

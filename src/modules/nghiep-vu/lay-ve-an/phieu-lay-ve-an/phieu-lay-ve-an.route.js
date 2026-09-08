@@ -1,66 +1,16 @@
-const express =
-
-    require(
-
-        "express"
-
-    );
-
-
-const router =
-
-    express.Router();
-
+const express = require("express");
+const router = express.Router();
 
 const {
-
     createSchema,
-
     updateSchema,
-
     huySchema
+} = require("./phieu-lay-ve-an.validation");
 
-} = require(
-
-    "./phieu-lay-ve-an.validation"
-
-);
-
-
-const validate =
-
-    require(
-
-        "../../../../middlewares/validate.middleware"
-
-    );
-
-
-const authenticate =
-
-    require(
-
-        "../../../../middlewares/authenticate.middleware"
-
-    );
-
-
-const authorize =
-
-    require(
-
-        "../../../../middlewares/authorize.middleware"
-
-    );
-
-
-const controller =
-
-    require(
-
-        "./phieu-lay-ve-an.controller"
-
-    );
+const validate = require("../../../../middlewares/validate.middleware");
+const authenticate = require("../../../../middlewares/authenticate.middleware");
+const authorize = require("../../../../middlewares/authorize.middleware");
+const controller = require("./phieu-lay-ve-an.controller");
 
 router.get(
     "/tong-hop",
@@ -92,7 +42,6 @@ router.get(
     ),
     controller.getGiaVe
 );
-
 
 router.get(
     "/in-ve/:id",
@@ -151,6 +100,4 @@ router.patch(
     controller.huy
 );
 
-module.exports =
-
-    router;
+module.exports = router;

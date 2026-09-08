@@ -62,6 +62,24 @@ class ThanhToanVeAnRepository {
             nguoiXacNhanId:
                 row.nguoi_xac_nhan_id,
 
+            nguoiXacNhanTenDangNhap:
+                row.nguoi_xac_nhan_ten_dang_nhap,
+
+            tenNguoiXacNhan:
+                row.ten_nguoi_xac_nhan,
+
+            soLuong:
+                Number(
+                    row.so_luong ||
+                    0
+                ),
+
+            thanhToanGocId:
+                row.thanh_toan_goc_id,
+
+            phieuMoiId:
+                row.phieu_moi_id,
+
             thoiGianThanhToan:
                 row.thoi_gian_thanh_toan,
 
@@ -74,7 +92,6 @@ class ThanhToanVeAnRepository {
         };
 
     }
-
 
     getBaseQuery() {
 
@@ -108,6 +125,16 @@ class ThanhToanVeAnRepository {
 
                 tt.nguoi_xac_nhan_id,
 
+                tkxn.ten_dang_nhap
+                    AS nguoi_xac_nhan_ten_dang_nhap,
+
+                nvxn.ho_ten
+                    AS ten_nguoi_xac_nhan,
+
+                tt.so_luong,
+                tt.thanh_toan_goc_id,
+                tt.phieu_moi_id,
+
                 tt.thoi_gian_thanh_toan,
 
                 tt.created_at,
@@ -118,11 +145,307 @@ class ThanhToanVeAnRepository {
             INNER JOIN nv_phieu_lay_ve_an p
                 ON p.id =
                    tt.phieu_lay_ve_id
+            LEFT JOIN dm_tai_khoan tkxn
+                ON tkxn.id =
+                tt.nguoi_xac_nhan_id
 
+            LEFT JOIN dm_nhan_vien nvxn
+                ON nvxn.id =
+                tkxn.nhan_vien_id
+                
         `;
 
     }
 
+    async getSoLuongDaHoanTheoThanhToan(
+        thanhToanGocId,
+        db = pool
+    ) {
+
+        const result =
+            await db.query(
+                `
+                    SELECT
+                        COALESCE(
+                            SUM(so_luong),
+                            0
+                        )::INTEGER
+                            AS so_luong_da_hoan
+
+                    FROM nv_thanh_toan_ve_an
+
+                    WHERE
+                        thanh_toan_goc_id = $1
+
+                        AND loai_giao_dich = 20
+
+                        AND trang_thai = 30
+                `,
+                [
+                    thanhToanGocId
+                ]
+            );
+
+
+        return Number(
+            result.rows[0]
+                ?.so_luong_da_hoan ||
+            0
+        );
+
+    }
+
+    async getTongDaHoanTheoThanhToan(
+        thanhToanGocId,
+        db = pool
+    ) {
+
+        const result =
+            await db.query(
+                `
+                    SELECT
+                        COALESCE(
+                            SUM(so_tien),
+                            0
+                        ) AS tong_da_hoan
+
+                    FROM nv_thanh_toan_ve_an
+
+                    WHERE
+                        thanh_toan_goc_id = $1
+
+                        AND loai_giao_dich = 20
+
+                        AND trang_thai = 30
+                `,
+                [
+                    thanhToanGocId
+                ]
+            );
+
+
+        return Number(
+            result.rows[0]
+                ?.tong_da_hoan ||
+            0
+        );
+
+    }
+
+    async existsHoanTheoThanhToan(
+        thanhToanGocId,
+        db = pool
+    ) {
+
+        const result =
+            await db.query(
+                `
+                    SELECT EXISTS (
+
+                        SELECT 1
+
+                        FROM nv_thanh_toan_ve_an
+
+                        WHERE
+                            thanh_toan_goc_id = $1
+
+                            AND loai_giao_dich = 20
+
+                            AND trang_thai = 30
+
+                    ) AS "exists"
+                `,
+                [
+                    thanhToanGocId
+                ]
+            );
+
+
+        return Boolean(
+            result.rows[0]
+                ?.exists
+        );
+
+    }
+
+    async existsVeDaSuDung(
+        phieuLayVeId,
+        db = pool
+    ) {
+
+        const sql = `
+
+            SELECT EXISTS (
+
+                SELECT 1
+
+                FROM ct_ve_an
+
+                WHERE
+                    phieu_lay_ve_id = $1
+
+                    AND trang_thai = 20
+
+            ) AS "exists"
+
+        `;
+
+
+        const result =
+            await db.query(
+                sql,
+                [
+                    phieuLayVeId
+                ]
+            );
+
+
+        return Boolean(
+            result.rows[0]
+                ?.exists
+        );
+
+    }
+
+    async resetPhieuThanhToan(
+        phieuLayVeId,
+        trangThai,
+        db = pool
+    ) {
+
+        const sql = `
+
+            UPDATE nv_phieu_lay_ve_an
+
+            SET
+
+                phuong_thuc_thanh_toan =
+                    NULL,
+
+                trang_thai =
+                    $2,
+
+                nguoi_thanh_toan_id =
+                    NULL,
+
+                thoi_gian_thanh_toan =
+                    NULL,
+
+                updated_at =
+                    NOW()
+
+            WHERE
+                id = $1
+
+        `;
+
+
+        await db.query(
+            sql,
+            [
+                phieuLayVeId,
+                trangThai
+            ]
+        );
+
+    }
+
+    async deleteVeChuaSuDungTheoPhieu(
+        phieuLayVeId,
+        db = pool
+    ) {
+
+        const sql = `
+
+            DELETE FROM ct_ve_an
+
+            WHERE
+                phieu_lay_ve_id = $1
+
+                AND trang_thai = 10
+
+        `;
+
+
+        await db.query(
+            sql,
+            [
+                phieuLayVeId
+            ]
+        );
+
+    }
+
+    async huySoLuongVeTheoPhieu(
+        phieuLayVeId,
+        soLuong,
+        nguoiHuyId,
+        lyDoHuy,
+        db = pool
+    ) {
+
+        const sql = `
+
+            WITH danh_sach AS (
+
+                SELECT id
+
+                FROM ct_ve_an
+
+                WHERE
+                    phieu_lay_ve_id = $1
+
+                    AND trang_thai = 10
+
+                ORDER BY
+                    so_thu_tu DESC,
+                    id DESC
+
+                LIMIT $2
+
+            )
+
+            UPDATE ct_ve_an v
+
+            SET
+
+                trang_thai = 30,
+
+                nguoi_huy_id = $3,
+
+                thoi_gian_huy = NOW(),
+
+                ly_do_huy = $4,
+
+                updated_at = NOW()
+
+            FROM danh_sach ds
+
+            WHERE
+                v.id =
+                ds.id
+
+            RETURNING
+                v.id
+
+        `;
+
+
+        const result =
+            await db.query(
+                sql,
+                [
+                    phieuLayVeId,
+                    soLuong,
+                    nguoiHuyId,
+                    lyDoHuy
+                ]
+            );
+
+
+        return result.rows;
+
+    }
 
     async getTongHop(
         query = {}
@@ -248,6 +571,263 @@ class ThanhToanVeAnRepository {
 
     }
 
+    async getDanhSachPhieu(
+        phieuLayVeId
+    ) {
+
+        const sql = `
+
+            WITH selected AS (
+
+                SELECT
+                    COALESCE(
+                        phieu_goc_id,
+                        id
+                    ) AS root_id
+
+                FROM nv_phieu_lay_ve_an
+
+                WHERE id = $1
+
+            ),
+
+            family AS (
+
+                SELECT p.*
+
+                FROM nv_phieu_lay_ve_an p
+
+                CROSS JOIN selected s
+
+                WHERE
+                    (
+                        p.id =
+                            s.root_id
+                        OR
+                        p.phieu_goc_id =
+                            s.root_id
+                    )
+
+                    AND p.trang_thai <>
+                        50
+
+            ),
+
+            phieu_thu AS (
+
+                SELECT
+
+                    'PHIEU_THU'::TEXT
+                        AS "loai",
+
+                    p.id
+                        AS "phieuLayVeId",
+
+                    pay.id
+                        AS "thanhToanId",
+
+                    NULL::BIGINT
+                        AS "thanhToanGocId",
+
+                    NULL::BIGINT
+                        AS "phieuMoiId",
+
+                    p.so_phieu
+                        AS "soPhieu",
+
+                    p.so_luong
+                        AS "soLuong",
+
+                    p.thanh_tien
+                        AS "soTien",
+
+                    pay.phuong_thuc
+                        AS "phuongThuc",
+
+                    pay.ma_giao_dich
+                        AS "maGiaoDich",
+
+                    CASE
+                        WHEN
+                            pay.phuong_thuc = 30
+                        THEN
+                            pay.id
+                        ELSE
+                            NULL
+                    END
+                        AS "qrThanhToanId",
+
+                    CASE
+                        WHEN
+                            p.trang_thai IN (
+                                40,
+                                60
+                            )
+                        THEN
+                            'DA_THANH_TOAN'
+                        ELSE
+                            'CHUA_THANH_TOAN'
+                    END
+                        AS "trangThaiHienThi",
+
+                    COALESCE(
+                        p.thoi_gian_thanh_toan,
+                        p.created_at
+                    )
+                        AS "thoiGian"
+
+                FROM family p
+
+                LEFT JOIN LATERAL (
+
+                    SELECT tt.*
+
+                    FROM nv_thanh_toan_ve_an tt
+
+                WHERE
+                    tt.phieu_lay_ve_id =
+                        p.id
+
+                    AND tt.loai_giao_dich =
+                        10
+
+                    AND (
+                        (
+                            p.trang_thai IN (
+                                40,
+                                60
+                            )
+
+                            AND tt.trang_thai =
+                                30
+                        )
+
+                        OR
+
+                        (
+                            p.trang_thai NOT IN (
+                                40,
+                                60
+                            )
+
+                            AND tt.trang_thai IN (
+                                10,
+                                20
+                            )
+                        )
+                    )
+
+                    ORDER BY
+                        tt.created_at DESC,
+                        tt.id DESC
+
+                    LIMIT 1
+
+                ) pay
+                    ON TRUE
+
+            ),
+
+            phieu_hoan AS (
+
+                SELECT
+
+                    'PHIEU_HOAN'::TEXT
+                        AS "loai",
+
+                    tt.phieu_lay_ve_id
+                        AS "phieuLayVeId",
+
+                    tt.id
+                        AS "thanhToanId",
+
+                    tt.thanh_toan_goc_id
+                        AS "thanhToanGocId",
+
+                    tt.phieu_moi_id
+                        AS "phieuMoiId",
+
+                    p.so_phieu
+                        AS "soPhieu",
+
+                    tt.so_luong
+                        AS "soLuong",
+
+                    tt.so_tien
+                        AS "soTien",
+
+                    tt.phuong_thuc
+                        AS "phuongThuc",
+
+                    tt.ma_giao_dich
+                        AS "maGiaoDich",
+
+                    CASE
+                        WHEN
+                            goc.phuong_thuc = 30
+                        THEN
+                            goc.id
+                        ELSE
+                            NULL
+                    END
+                        AS "qrThanhToanId",
+
+                    'DA_HOAN'::TEXT
+                        AS "trangThaiHienThi",
+
+                    COALESCE(
+                        tt.thoi_gian_thanh_toan,
+                        tt.created_at
+                    )
+                        AS "thoiGian"
+
+                FROM nv_thanh_toan_ve_an tt
+
+                INNER JOIN family p
+                    ON p.id =
+                    tt.phieu_lay_ve_id
+
+                LEFT JOIN nv_thanh_toan_ve_an goc
+                    ON goc.id =
+                    tt.thanh_toan_goc_id
+
+                WHERE
+                    tt.loai_giao_dich =
+                        20
+
+                    AND tt.trang_thai =
+                        30
+
+            )
+
+            SELECT *
+            FROM phieu_thu
+
+            UNION ALL
+
+            SELECT *
+            FROM phieu_hoan
+
+            ORDER BY
+                "thoiGian" DESC,
+                "thanhToanId" DESC
+                    NULLS LAST
+
+        `;
+
+
+        const result =
+            await pool.query(
+                sql,
+                [
+                    phieuLayVeId
+                ]
+            );
+
+
+        return result.rows;
+
+    }
 
     async getChiTiet(
         id,
@@ -288,7 +868,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async getByMaGiaoDich(
         maGiaoDich,
         db = pool
@@ -328,7 +907,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async getPhieuById(
         id,
         db = pool
@@ -340,6 +918,8 @@ class ThanhToanVeAnRepository {
 
                 id,
                 so_phieu,
+
+                phieu_goc_id,
 
                 thuc_don_ngay_id,
 
@@ -379,7 +959,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async existsThanhToanThanhCong(
         phieuLayVeId,
         db = pool
@@ -418,52 +997,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
-    async getTongDaHoan(
-        phieuLayVeId,
-        db = pool
-    ) {
-
-        const sql = `
-
-            SELECT
-
-                COALESCE(
-                    SUM(
-                        so_tien
-                    ),
-                    0
-                ) AS tong_da_hoan
-
-            FROM nv_thanh_toan_ve_an
-
-            WHERE
-                phieu_lay_ve_id = $1
-
-                AND loai_giao_dich = 20
-
-                AND trang_thai = 30
-
-        `;
-
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    phieuLayVeId
-                ]
-            );
-
-
-        return Number(
-            result.rows[0]
-                .tong_da_hoan
-        );
-
-    }
-
-
     async create(
         data,
         db = pool
@@ -480,6 +1013,12 @@ class ThanhToanVeAnRepository {
                 phuong_thuc,
 
                 so_tien,
+
+                so_luong,
+
+                thanh_toan_goc_id,
+
+                phieu_moi_id,
 
                 ma_giao_dich,
 
@@ -515,6 +1054,9 @@ class ThanhToanVeAnRepository {
                 $10,
                 $11,
                 $12,
+                $13,
+                $14,
+                $15,
 
                 NOW(),
                 NOW()
@@ -538,6 +1080,12 @@ class ThanhToanVeAnRepository {
                     data.phuongThuc,
 
                     data.soTien,
+
+                    data.soLuong,
+
+                    data.thanhToanGocId,
+
+                    data.phieuMoiId,
 
                     data.maGiaoDich,
 
@@ -563,6 +1111,159 @@ class ThanhToanVeAnRepository {
 
     }
 
+    async syncThanhToanChoXuLy(
+        id,
+        data,
+        db = pool
+    ) {
+
+        const sql = `
+
+            UPDATE nv_thanh_toan_ve_an
+
+            SET
+
+                so_tien = $2,
+
+                so_luong = $3,
+
+                updated_at = NOW()
+
+            WHERE id = $1
+
+        `;
+
+
+        await db.query(
+            sql,
+            [
+                id,
+                data.soTien,
+                data.soLuong
+            ]
+        );
+
+    }
+
+    async createPhieuSauHoan(
+        {
+            phieuNguonId,
+            soPhieu,
+            soLuong,
+            trangThai,
+            nguoiTaoId,
+            phieuGocId
+        },
+        db = pool
+    ) {
+
+        const result =
+            await db.query(
+                `
+                    INSERT INTO nv_phieu_lay_ve_an (
+
+                        so_phieu,
+
+                        thuc_don_ngay_id,
+                        doi_tuong_lay_ve,
+
+                        nhan_vien_id,
+
+                        ho_ten_nguoi_lay_ve,
+                        ngay_sinh_nguoi_lay_ve,
+                        gioi_tinh_nguoi_lay_ve,
+                        so_dien_thoai_nguoi_lay_ve,
+                        dia_chi_nguoi_lay_ve,
+                        don_vi_nguoi_lay_ve,
+
+                        khach_lau_dai,
+
+                        so_luong,
+
+                        don_gia,
+                        tien_goc,
+                        tong_mien_giam,
+                        thanh_tien,
+
+                        ghi_chu,
+
+                        phuong_thuc_thanh_toan,
+
+                        trang_thai,
+
+                        nguoi_tao_id,
+
+                        phieu_goc_id,
+
+                        created_at,
+                        updated_at
+
+                    )
+
+                    SELECT
+
+                        $2,
+
+                        p.thuc_don_ngay_id,
+                        p.doi_tuong_lay_ve,
+
+                        p.nhan_vien_id,
+
+                        p.ho_ten_nguoi_lay_ve,
+                        p.ngay_sinh_nguoi_lay_ve,
+                        p.gioi_tinh_nguoi_lay_ve,
+                        p.so_dien_thoai_nguoi_lay_ve,
+                        p.dia_chi_nguoi_lay_ve,
+                        p.don_vi_nguoi_lay_ve,
+
+                        p.khach_lau_dai,
+
+                        $3::INTEGER,
+
+                        p.don_gia,
+
+                        p.don_gia * ($3::INTEGER),
+
+                        0,
+
+                        p.don_gia * ($3::INTEGER),
+
+                        p.ghi_chu,
+
+                        NULL,
+
+                        $4,
+
+                        $5,
+
+                        $6,
+
+                        NOW(),
+                        NOW()
+
+                    FROM nv_phieu_lay_ve_an p
+
+                    WHERE
+                        p.id = $1
+
+                    RETURNING id
+                `,
+                [
+                    phieuNguonId,
+                    soPhieu,
+                    soLuong,
+                    trangThai,
+                    nguoiTaoId,
+                    phieuGocId
+                ]
+            );
+
+
+        return result.rows[0]
+            ?.id ||
+            null;
+
+    }
 
     async updateTrangThai(
         id,
@@ -640,7 +1341,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async updatePhieuThanhToan(
         phieuLayVeId,
         phuongThuc,
@@ -680,7 +1380,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async updateTrangThaiPhieu(
         phieuLayVeId,
         trangThai,
@@ -711,7 +1410,6 @@ class ThanhToanVeAnRepository {
         );
 
     }
-
 
     async tangVoucherDaSuDung(
         phieuLayVeId,
@@ -758,7 +1456,6 @@ class ThanhToanVeAnRepository {
         );
 
     }
-
 
     async giamVoucherDaSuDung(
         phieuLayVeId,
@@ -809,7 +1506,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async existsVeTheoPhieu(
         phieuLayVeId,
         db = pool
@@ -843,7 +1539,6 @@ class ThanhToanVeAnRepository {
         return result.rows[0].exists;
 
     }
-
 
     async createVe(
         data,
@@ -914,7 +1609,6 @@ class ThanhToanVeAnRepository {
 
     }
 
-
     async huyVeTheoPhieu(
         phieuLayVeId,
         nguoiHuyId,
@@ -960,6 +1654,4 @@ class ThanhToanVeAnRepository {
 
 }
 
-
-module.exports =
-    new ThanhToanVeAnRepository();
+module.exports = new ThanhToanVeAnRepository();

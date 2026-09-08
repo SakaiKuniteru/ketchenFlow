@@ -20,6 +20,16 @@
             ""
         ).trim();
 
+    const rawPaymentDocumentId =
+        String(
+            new URLSearchParams(
+                window.location.search
+            ).get(
+                "thanhToanId"
+            ) ||
+            ""
+        ).trim();
+
     const pageContext = {
         pageId:
             rawPageId,
@@ -39,6 +49,15 @@
             )
                 ? Number(
                     rawPageId
+                )
+                : null,
+
+        paymentDocumentId:
+            NUMERIC_ID_PATTERN.test(
+                rawPaymentDocumentId
+            )
+                ? Number(
+                    rawPaymentDocumentId
                 )
                 : null
     };
@@ -166,7 +185,14 @@
         qrPayment: null,
         qrData: null,
         selectedPaymentMethod: null,
-        pricePreview: null
+        pricePreview: null,
+        paymentDocuments: [],
+        activePaymentDocument:
+            null,
+
+        familyHasRefund:
+            false,
+        transactionTypes: [],
     };
 
     const el = {
@@ -330,6 +356,75 @@
         refundReason: byId("lyDoHoan"),
         refundMethod: byId("phuongThucHoan"),
         refundSubmit: root.querySelector("[data-refund-submit]"),
+        paymentDocumentsSection:
+            root.querySelector(
+                "[data-payment-documents-section]"
+            ),
+
+        paymentDocumentList:
+            root.querySelector(
+                "[data-payment-document-list]"
+            ),
+
+        paymentDocumentCount:
+            root.querySelector(
+                "[data-payment-document-count]"
+            ),
+
+        paymentInfoTitle:
+            root.querySelector(
+                "[data-payment-info-title]"
+            ),
+
+        paymentOriginalRow:
+            root.querySelector(
+                "[data-payment-original-row]"
+            ),
+
+        paymentOriginalLabel:
+            root.querySelector(
+                "[data-payment-original-label]"
+            ),
+
+        paymentDiscountRow:
+            root.querySelector(
+                "[data-payment-discount-row]"
+            ),
+
+        paymentDiscountLabel:
+            root.querySelector(
+                "[data-payment-discount-label]"
+            ),
+
+        paymentFinalRow:
+            root.querySelector(
+                "[data-payment-final-row]"
+            ),
+
+        paymentFinalLabel:
+            root.querySelector(
+                "[data-payment-final-label]"
+            ),
+
+        paymentPayerRow:
+            root.querySelector(
+                "[data-payment-payer-row]"
+            ),
+
+        paymentPayerLabel:
+            root.querySelector(
+                "[data-payment-payer-label]"
+            ),
+
+        paymentTimeRow:
+            root.querySelector(
+                "[data-payment-time-row]"
+            ),
+
+        paymentTimeLabel:
+            root.querySelector(
+                "[data-payment-time-label]"
+            ),
     };
 
     async function loadDoiTuongOrderSetting() {

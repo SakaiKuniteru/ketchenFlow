@@ -163,24 +163,23 @@ const xacNhanSchema =
 
     });
 
-
 const hoanTienSchema =
     Joi.object({
 
-        phieuLayVeId:
+        thanhToanId:
             Joi.number()
                 .integer()
                 .positive()
                 .required()
                 .messages({
                     "number.base":
-                        "Phiếu lấy vé phải là số.",
+                        "Phiếu thu phải là số.",
                     "number.integer":
-                        "Phiếu lấy vé phải là số nguyên.",
+                        "Phiếu thu phải là số nguyên.",
                     "number.positive":
-                        "Phiếu lấy vé không hợp lệ.",
+                        "Phiếu thu không hợp lệ.",
                     "any.required":
-                        "Phiếu lấy vé là bắt buộc."
+                        "Phiếu thu là bắt buộc."
                 }),
 
         phuongThuc:
@@ -189,17 +188,7 @@ const hoanTienSchema =
                 .valid(
                     ...giaTriPhuongThucThanhToan
                 )
-                .required()
-                .messages({
-                    "number.base":
-                        "Phương thức hoàn tiền phải là số.",
-                    "number.integer":
-                        "Phương thức hoàn tiền phải là số nguyên.",
-                    "any.only":
-                        "Phương thức hoàn tiền không hợp lệ.",
-                    "any.required":
-                        "Phương thức hoàn tiền là bắt buộc."
-                }),
+                .required(),
 
         soLuongHoan:
             Joi.number()
@@ -207,53 +196,46 @@ const hoanTienSchema =
                 .min(1)
                 .required()
                 .messages({
-                    "number.base": "Số lượng hoàn phải là số.",
-                    "number.integer": "Số lượng hoàn phải là số nguyên.",
-                    "number.min": "Số lượng hoàn phải lớn hơn 0.",
-                    "any.required": "Số lượng hoàn là bắt buộc."
+                    "number.base":
+                        "Số lượng hoàn phải là số.",
+                    "number.integer":
+                        "Số lượng hoàn phải là số nguyên.",
+                    "number.min":
+                        "Số lượng hoàn phải lớn hơn 0.",
+                    "any.required":
+                        "Số lượng hoàn là bắt buộc."
                 }),
 
         lyDoHoan:
             Joi.string()
                 .trim()
                 .max(500)
-                .required()
-                .messages({
-                    "string.base": "Lý do hoàn phải là chuỗi.",
-                    "string.empty": "Lý do hoàn không được để trống.",
-                    "string.max": "Lý do hoàn không được vượt quá 500 ký tự.",
-                    "any.required": "Lý do hoàn là bắt buộc."
-                }),
-
-
-        soTien:
-            Joi.number()
-                .positive()
-                .optional()
-                .messages({
-                    "number.base":
-                        "Số tiền hoàn phải là số.",
-                    "number.positive":
-                        "Số tiền hoàn phải lớn hơn 0."
-                }),
+                .required(),
 
         maThamChieu:
             Joi.string()
                 .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
+                .max(100)
+                .allow("", null)
                 .optional(),
 
         maChuanChi:
             Joi.string()
                 .trim()
+                .max(100)
+                .allow("", null)
+                .optional()
+
+    });
+
+const huyThanhToanSchema =
+    Joi.object({
+
+        noiDung:
+            Joi.string()
+                .trim()
                 .max(
-                    100
+                    500
                 )
                 .allow(
                     "",
@@ -262,7 +244,6 @@ const hoanTienSchema =
                 .optional()
 
     });
-
 
 const callbackSchema =
     Joi.object({
@@ -328,5 +309,6 @@ module.exports = {
     huyQrSchema,
     xacNhanSchema,
     hoanTienSchema,
+    huyThanhToanSchema,
     callbackSchema
 };

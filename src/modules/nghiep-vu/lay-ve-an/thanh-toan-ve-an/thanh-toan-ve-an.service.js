@@ -42,9 +42,19 @@ const repository =
         "./thanh-toan-ve-an.repository"
     );
 
+const phieuLayVeAnService =
+    require(
+        "../phieu-lay-ve-an/phieu-lay-ve-an.service"
+    );
+
 const qrPaymentGateway =
     require(
         "./qr-payment.gateway"
+    );
+
+const inBaoCaoService =
+    require(
+        "../../../../services/in-bao-cao/in-bao-cao.service"
     );
 
 
@@ -183,7 +193,6 @@ class ThanhToanVeAnService {
 
     }
 
-
     async getTongHop(
         query
     ) {
@@ -195,6 +204,22 @@ class ThanhToanVeAnService {
 
     }
 
+    async getDanhSachPhieu(
+        phieuLayVeId
+    ) {
+
+        const id =
+            this.parseId(
+                phieuLayVeId
+            );
+
+
+        return await repository
+            .getDanhSachPhieu(
+                id
+            );
+
+    }
 
     async getChiTiet(
         id
@@ -229,6 +254,174 @@ class ThanhToanVeAnService {
 
     }
 
+    async getDuLieuInPhieuHoan(
+        id,
+        nguoiInId
+    ) {
+
+        const thanhToanId =
+            this.parseId(
+                id
+            );
+
+
+        const taiKhoanInId =
+            this.parseTaiKhoanId(
+                nguoiInId
+            );
+
+
+        const giaoDich =
+            await this.getChiTiet(
+                thanhToanId
+            );
+
+
+        const loaiHoanTien =
+            this.getEnumValue(
+                dsLoaiGiaoDich,
+                "Hoàn tiền"
+            );
+
+
+        const thanhCong =
+            this.getEnumValue(
+                dsTrangThaiThanhToan,
+                "Thành công"
+            );
+
+
+        if (
+            Number(
+                giaoDich.loaiGiaoDich
+            ) !==
+                loaiHoanTien ||
+            Number(
+                giaoDich.trangThai
+            ) !==
+                thanhCong
+        ) {
+
+            throw new ApiError(
+                400,
+                "Giao dịch không phải phiếu hoàn thành công."
+            );
+
+        }
+
+
+        const phieu =
+            await phieuLayVeAnService
+                .getChiTiet(
+                    giaoDich.phieuLayVeId
+                );
+
+
+        const data =
+            inBaoCaoService
+                .normalizeReportData({
+
+                    ...phieu,
+
+
+                    phieuHoanId:
+                        giaoDich.id,
+
+                    maPhieuHoan:
+                        giaoDich.maGiaoDich,
+
+                    thanhToanGocId:
+                        giaoDich.thanhToanGocId,
+
+                    phieuMoiId:
+                        giaoDich.phieuMoiId,
+
+                    soLuongHoan:
+                        giaoDich.soLuong,
+
+                    soTienHoan:
+                        giaoDich.soTien,
+
+                    phuongThucHoan:
+                        giaoDich.phuongThuc,
+
+                    lyDoHoan:
+                        giaoDich.noiDungLoi,
+
+                    nguoiHoanId:
+                        giaoDich.nguoiXacNhanId,
+
+                    tenNguoiHoan:
+                        giaoDich.tenNguoiXacNhan ||
+                        giaoDich.nguoiXacNhanTenDangNhap ||
+                        "",
+
+
+                    ngay:
+                        inBaoCaoService
+                            .normalizeDate(
+                                phieu.ngay
+                            ),
+
+
+                    ngaySinhNguoiLayVe:
+                        phieu.ngaySinhNguoiLayVe
+                            ? inBaoCaoService
+                                .normalizeDate(
+                                    phieu.ngaySinhNguoiLayVe
+                                )
+                            : null,
+
+
+                    thoiGianBatDau:
+                        inBaoCaoService
+                            .normalizeTime(
+                                phieu.thoiGianBatDau
+                            ),
+
+
+                    thoiGianKetThuc:
+                        inBaoCaoService
+                            .normalizeTime(
+                                phieu.thoiGianKetThuc
+                            ),
+
+
+                    thoiGianHoan:
+                        inBaoCaoService
+                            .normalizeDateTime(
+                                giaoDich.thoiGianThanhToan ||
+                                giaoDich.createdAt
+                            ),
+
+                    nguoiLayVe:
+                        phieu.tenNhanVien ||
+                        phieu.hoTenNguoiLayVe ||
+                        ""
+
+                });
+
+
+        return await inBaoCaoService
+            .taoBaoCao({
+
+                maBaoCao:
+                    "phieu_hoan_ve_an",
+
+                id:
+                    giaoDich.id,
+
+                soPhieu:
+                    giaoDich.maGiaoDich,
+
+                data,
+
+                nguoiInId:
+                    taiKhoanInId
+
+            });
+
+    }
 
     async getPhieuHopLe(
         id,
@@ -480,6 +673,52 @@ class ThanhToanVeAnService {
                 db
             );
 
+        const phuongThucQr =
+            this.getEnumValue(
+                dsPhuongThucThanhToan,
+                "QR Code"
+            );
+
+
+        if (
+            Number(
+                thanhToan.phuongThuc
+            ) !==
+            phuongThucQr
+        ) {
+
+            await repository
+                .syncThanhToanChoXuLy(
+                    thanhToan.id,
+                    {
+
+                        soTien:
+                            Number(
+                                phieu.thanh_tien
+                            ),
+
+                        soLuong:
+                            Number(
+                                phieu.so_luong
+                            )
+
+                    },
+                    db
+                );
+
+
+            thanhToan.soTien =
+                Number(
+                    phieu.thanh_tien
+                );
+
+
+            thanhToan.soLuong =
+                Number(
+                    phieu.so_luong
+                );
+
+        }
 
         await repository
             .updateTrangThai(
@@ -529,7 +768,6 @@ class ThanhToanVeAnService {
         );
 
     }
-
 
     async create(
         data,
@@ -620,6 +858,7 @@ class ThanhToanVeAnService {
             );
 
 
+        const soTien = Number( phieu.thanh_tien );
         const id =
             await repository
                 .create(
@@ -633,6 +872,17 @@ class ThanhToanVeAnService {
                         phuongThuc,
 
                         soTien,
+
+                        soLuong:
+                            Number(
+                                phieu.so_luong
+                            ),
+
+                        thanhToanGocId:
+                            null,
+
+                        phieuMoiId:
+                            null,
 
                         maGiaoDich:
                             this.taoMaGiaoDich(),
@@ -755,6 +1005,7 @@ class ThanhToanVeAnService {
                     soPhieu:
                         phieu.so_phieu
                 });
+
         const id =
             await repository
                 .create(
@@ -772,6 +1023,17 @@ class ThanhToanVeAnService {
                             Number(
                                 phieu.thanh_tien
                             ),
+
+                        soLuong:
+                            Number(
+                                phieu.so_luong
+                            ),
+
+                        thanhToanGocId:
+                            null,
+
+                        phieuMoiId:
+                            null,
 
                         maGiaoDich,
 
@@ -798,7 +1060,6 @@ class ThanhToanVeAnService {
 
                     }
                 );
-
 
         const trangThaiTaoQr =
             this.getEnumValue(
@@ -1190,56 +1451,92 @@ class ThanhToanVeAnService {
             );
 
 
-        const phieuLayVeId =
-            Number(
-                data.phieuLayVeId
+        const thanhToanId =
+            this.parseId(
+                data.thanhToanId
             );
 
 
-        const phieu =
-            await this.getPhieuHopLe(
-                phieuLayVeId
+        const thanhToan =
+            await this.getChiTiet(
+                thanhToanId
             );
 
 
-        const daThanhToan =
-            await repository
-                .existsThanhToanThanhCong(
-                    phieuLayVeId
-                );
+        const loaiThanhToan =
+            this.getEnumValue(
+                dsLoaiGiaoDich,
+                "Thanh toán"
+            );
+
+
+        const loaiHoanTien =
+            this.getEnumValue(
+                dsLoaiGiaoDich,
+                "Hoàn tiền"
+            );
+
+
+        const thanhCong =
+            this.getEnumValue(
+                dsTrangThaiThanhToan,
+                "Thành công"
+            );
+
+
+        const chuaThanhToan =
+            this.getEnumValue(
+                dsTrangThaiPhieuThu,
+                "Chưa thanh toán"
+            );
 
 
         if (
-            !daThanhToan
+            Number(
+                thanhToan.loaiGiaoDich
+            ) !==
+                loaiThanhToan ||
+            Number(
+                thanhToan.trangThai
+            ) !==
+                thanhCong
         ) {
 
             throw new ApiError(
                 400,
-                "Phiếu chưa có giao dịch thanh toán thành công."
+                "Chỉ được hoàn từ phiếu thu đã thanh toán."
             );
 
         }
 
 
-        const tongDaHoan =
+        const phieuNguon =
+            await this.getPhieuHopLe(
+                thanhToan.phieuLayVeId
+            );
+
+
+        const tongSoLuong =
+            Number(
+                thanhToan.soLuong ||
+                phieuNguon.so_luong
+            );
+
+
+        const soLuongDaHoan =
             await repository
-                .getTongDaHoan(
-                    phieuLayVeId
+                .getSoLuongDaHoanTheoThanhToan(
+                    thanhToanId
                 );
 
 
-        const tongThanhToan =
-            Number(
-                phieu.thanh_tien
-            );
-
-
-        const conLai =
+        const soLuongConLai =
             Math.max(
-                tongThanhToan -
-                tongDaHoan,
+                tongSoLuong -
+                soLuongDaHoan,
                 0
             );
+
 
         const soLuongHoan =
             Number(
@@ -1251,91 +1548,15 @@ class ThanhToanVeAnService {
             !Number.isInteger(
                 soLuongHoan
             ) ||
-            soLuongHoan <=
-                0
-        ) {
-
-            throw new ApiError(
-                400,
-                "Số lượng hoàn không hợp lệ."
-            );
-
-        }
-
-
-        const tongSoLuong =
-            Number(
-                phieu.so_luong
-            );
-
-
-        if (
+            soLuongHoan <
+                1 ||
             soLuongHoan >
-            tongSoLuong
+                soLuongConLai
         ) {
 
             throw new ApiError(
                 400,
-                "Số lượng hoàn không được lớn hơn số lượng vé."
-            );
-
-        }
-
-
-        const lyDoHoan =
-            String(
-                data.lyDoHoan ||
-                ""
-            )
-                .trim();
-
-
-        if (
-            !lyDoHoan
-        ) {
-
-            throw new ApiError(
-                400,
-                "Lý do hoàn là bắt buộc."
-            );
-
-        }
-
-        if (
-            conLai <=
-            0
-        ) {
-
-            throw new ApiError(
-                400,
-                "Phiếu đã được hoàn toàn bộ số tiền."
-            );
-
-        }
-
-        const soTienMoiVe =
-            tongThanhToan /
-            tongSoLuong;
-
-
-        const soTien =
-            Number(
-                (
-                    soTienMoiVe *
-                    soLuongHoan
-                )
-                    .toFixed(
-                        5
-                    )
-            );
-        if (
-            soTien >
-            conLai
-        ) {
-
-            throw new ApiError(
-                400,
-                "Số tiền hoàn vượt quá số tiền còn có thể hoàn."
+                `Chỉ còn ${soLuongConLai} vé có thể hoàn.`
             );
 
         }
@@ -1354,18 +1575,71 @@ class ThanhToanVeAnService {
         );
 
 
-        const loaiHoanTien =
-            this.getEnumValue(
-                dsLoaiGiaoDich,
-                "Hoàn tiền"
+        const lyDoHoan =
+            String(
+                data.lyDoHoan ||
+                ""
+            ).trim();
+
+
+        if (
+            !lyDoHoan
+        ) {
+
+            throw new ApiError(
+                400,
+                "Lý do hoàn là bắt buộc."
+            );
+
+        }
+
+
+        const tongTienThanhToan =
+            Number(
+                thanhToan.soTien
             );
 
 
-        const thanhCong =
-            this.getEnumValue(
-                dsTrangThaiThanhToan,
-                "Thành công"
+        const tongDaHoan =
+            await repository
+                .getTongDaHoanTheoThanhToan(
+                    thanhToanId
+                );
+
+
+        let soTienHoan =
+            Number(
+                (
+                    tongTienThanhToan /
+                    tongSoLuong *
+                    soLuongHoan
+                ).toFixed(
+                    5
+                )
             );
+
+
+        /*
+        * Lần hoàn cuối lấy phần còn lại chính xác,
+        * tránh sai số chia tiền.
+        */
+        if (
+            soLuongDaHoan +
+            soLuongHoan ===
+            tongSoLuong
+        ) {
+
+            soTienHoan =
+                Number(
+                    (
+                        tongTienThanhToan -
+                        tongDaHoan
+                    ).toFixed(
+                        5
+                    )
+                );
+
+        }
 
 
         const client =
@@ -1378,20 +1652,78 @@ class ThanhToanVeAnService {
                 "BEGIN"
             );
 
+            const soPhieuMoi =
+                await phieuLayVeAnService
+                    .taoSoPhieuMoi(
+                        client
+                    );
 
-            const id =
+            const phieuGocId =
+                Number(
+                    phieuNguon.phieu_goc_id ||
+                    phieuNguon.id
+                );
+
+
+            const phieuMoiId =
+                await repository
+                    .createPhieuSauHoan(
+                        {
+                            phieuNguonId:
+                                phieuNguon.id,
+
+                            soPhieu:
+                                soPhieuMoi,
+
+                            soLuong:
+                                soLuongHoan,
+
+                            trangThai:
+                                chuaThanhToan,
+
+                            nguoiTaoId:
+                                taiKhoanId,
+
+                            phieuGocId
+                        },
+                        client
+                    );
+
+
+            if (
+                !phieuMoiId
+            ) {
+
+                throw new ApiError(
+                    500,
+                    "Không tạo được phiếu mới sau hoàn tiền."
+                );
+
+            }
+
+
+            const hoanTienId =
                 await repository
                     .create(
                         {
-
-                            phieuLayVeId,
+                            phieuLayVeId:
+                                phieuNguon.id,
 
                             loaiGiaoDich:
                                 loaiHoanTien,
 
                             phuongThuc,
 
-                            soTien,
+                            soTien:
+                                soTienHoan,
+
+                            soLuong:
+                                soLuongHoan,
+
+                            thanhToanGocId:
+                                thanhToanId,
+
+                            phieuMoiId,
 
                             maGiaoDich:
                                 this.taoMaGiaoDich(),
@@ -1410,7 +1742,7 @@ class ThanhToanVeAnService {
                                 thanhCong,
 
                             noiDungLoi:
-                                null,
+                                lyDoHoan,
 
                             nguoiKhoiTaoId:
                                 taiKhoanId,
@@ -1420,48 +1752,51 @@ class ThanhToanVeAnService {
 
                             thoiGianThanhToan:
                                 new Date()
-
                         },
                         client
                     );
 
 
-            const tongSauHoan =
-                tongDaHoan +
-                soTien;
+            const veDaHuy =
+                await repository
+                    .huySoLuongVeTheoPhieu(
+                        phieuNguon.id,
+                        soLuongHoan,
+                        taiKhoanId,
+                        lyDoHoan,
+                        client
+                    );
 
 
             if (
-                tongSauHoan >=
-                tongThanhToan
+                veDaHuy.length !==
+                soLuongHoan
             ) {
 
-                const trangThaiDaHoan =
-                    this.getEnumValue(
-                        dsTrangThaiPhieuThu,
-                        "Đã hoàn"
-                    );
+                throw new ApiError(
+                    409,
+                    "Không còn đủ vé chưa sử dụng để hoàn."
+                );
+
+            }
 
 
-                await repository
-                    .updateTrangThaiPhieu(
-                        phieuLayVeId,
-                        trangThaiDaHoan,
-                        client
-                    );
-
+            /*
+            * Hoàn hết:
+            * KHÔNG đổi phiếu nguồn sang 60.
+            *
+            * Nó vẫn là dòng Đã thanh toán.
+            * Phiếu hoàn đã là một dòng riêng.
+            */
+            if (
+                soLuongDaHoan +
+                soLuongHoan ===
+                tongSoLuong
+            ) {
 
                 await repository
                     .giamVoucherDaSuDung(
-                        phieuLayVeId,
-                        client
-                    );
-
-                await repository
-                    .huyVeTheoPhieu(
-                        phieuLayVeId,
-                        taiKhoanId,
-                        lyDoHoan,
+                        phieuNguon.id,
                         client
                     );
 
@@ -1473,9 +1808,240 @@ class ThanhToanVeAnService {
             );
 
 
+            return {
+                phieuHoan:
+                    await repository
+                        .getChiTiet(
+                            hoanTienId
+                        ),
+
+                phieuMoiId
+            };
+
+        } catch (
+            error
+        ) {
+
+            await client.query(
+                "ROLLBACK"
+            );
+
+            throw error;
+
+        } finally {
+
+            client.release();
+
+        }
+
+    }
+
+    async huyThanhToan(
+        id,
+        data,
+        nguoiThucHienId
+    ) {
+
+        const thanhToanId =
+            this.parseId(
+                id
+            );
+
+
+        const taiKhoanId =
+            this.parseTaiKhoanId(
+                nguoiThucHienId
+            );
+
+
+        const client =
+            await pool.connect();
+
+
+        try {
+
+            await client.query(
+                "BEGIN"
+            );
+
+
+            const thanhToan =
+                await repository
+                    .getChiTiet(
+                        thanhToanId,
+                        client
+                    );
+
+
+            if (
+                !thanhToan
+            ) {
+
+                throw new ApiError(
+                    404,
+                    "Phiếu thu không tồn tại."
+                );
+
+            }
+
+
+            const loaiThanhToan =
+                this.getEnumValue(
+                    dsLoaiGiaoDich,
+                    "Thanh toán"
+                );
+
+
+            if (
+                Number(
+                    thanhToan.loaiGiaoDich
+                ) !==
+                loaiThanhToan
+            ) {
+
+                throw new ApiError(
+                    400,
+                    "Chỉ được hủy phiếu thu thanh toán."
+                );
+
+            }
+
+
+            const thanhCong =
+                this.getEnumValue(
+                    dsTrangThaiThanhToan,
+                    "Thành công"
+                );
+
+
+            if (
+                Number(
+                    thanhToan.trangThai
+                ) !==
+                thanhCong
+            ) {
+
+                throw new ApiError(
+                    400,
+                    "Phiếu thu không ở trạng thái đã thanh toán."
+                );
+
+            }
+
+            const daCoHoan =
+                await repository
+                    .existsHoanTheoThanhToan(
+                        thanhToanId,
+                        client
+                    );
+
+
+            if (
+                daCoHoan
+            ) {
+
+                throw new ApiError(
+                    409,
+                    "Phiếu đã phát sinh hoàn tiền nên không thể hủy thanh toán."
+                );
+
+            }
+
+            const coVeDaSuDung =
+                await repository
+                    .existsVeDaSuDung(
+                        thanhToan.phieuLayVeId,
+                        client
+                    );
+
+
+            if (
+                coVeDaSuDung
+            ) {
+
+                throw new ApiError(
+                    409,
+                    "Đã có vé được sử dụng nên không thể hủy thanh toán."
+                );
+
+            }
+
+
+            const daHuy =
+                this.getEnumValue(
+                    dsTrangThaiThanhToan,
+                    "Đã huỷ"
+                );
+
+
+            await repository
+                .updateTrangThai(
+                    thanhToanId,
+                    {
+
+                        trangThai:
+                            daHuy,
+
+                        maThamChieu:
+                            null,
+
+                        maChuanChi:
+                            null,
+
+                        noiDungLoi:
+                            String(
+                                data?.noiDung ||
+                                "Hủy thanh toán."
+                            ).trim(),
+
+                        nguoiXacNhanId:
+                            taiKhoanId
+
+                    },
+                    client
+                );
+
+
+            const chuaThanhToan =
+                this.getEnumValue(
+                    dsTrangThaiPhieuThu,
+                    "Chưa thanh toán"
+                );
+
+
+            await repository
+                .resetPhieuThanhToan(
+                    thanhToan.phieuLayVeId,
+                    chuaThanhToan,
+                    client
+                );
+
+
+            /*
+            * Thanh toán đã bị đảo ngược.
+            */
+            await repository
+                .giamVoucherDaSuDung(
+                    thanhToan.phieuLayVeId,
+                    client
+                );
+
+
+            await repository
+                .deleteVeChuaSuDungTheoPhieu(
+                    thanhToan.phieuLayVeId,
+                    client
+                );
+
+
+            await client.query(
+                "COMMIT"
+            );
+
+
             return await repository
                 .getChiTiet(
-                    id
+                    thanhToanId
                 );
 
         } catch (
@@ -1496,7 +2062,6 @@ class ThanhToanVeAnService {
         }
 
     }
-
 
     async callback(
         data

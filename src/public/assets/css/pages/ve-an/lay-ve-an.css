@@ -268,6 +268,15 @@
     margin-top: 15px;
 }
 
+.lva-payment-option:has(input:disabled) {
+    opacity: .58;
+    cursor: not-allowed;
+}
+
+.lva-payment-option:has(input:disabled) * {
+    pointer-events: none;
+}
+
 .lva-btn {
     min-height: 42px;
     border-radius: 8px;
@@ -675,21 +684,6 @@
     width: 100%;
 }
 
-.lva-payment-info {
-    margin-top: 12px;
-    border: 1px solid #dfe5ef;
-    border-radius: 10px;
-    padding: 14px;
-    background: #fff;
-}
-
-.lva-payment-info__title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #172033;
-}
-
 .lva-payment-info__content {
     display: grid;
     gap: 10px;
@@ -750,20 +744,6 @@
     width: 100%;
     min-width: 0;
     height: 100%;
-}
-
-.lva-action-slot {
-    min-width: 0;
-}
-
-.lva-action-slot .lva-btn {
-    width: 100%;
-    min-width: 0;
-}
-
-.lva-payment-info {
-    margin-top: 14px;
-    min-height: 190px;
 }
 
 .lva-modal__dialog--sm {
@@ -1027,6 +1007,179 @@ body.lva-qr-modal-open {
     padding: 14px 18px;
     border-top: 1px solid #e5e9f0;
     background: #fafbfc;
+}
+
+.lva-payment-collapse {
+    margin-top: 14px;
+    border: 1px solid #dfe5ef;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.lva-payment-collapse[hidden] {
+    display: none !important;
+}
+
+.lva-payment-collapse__summary {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    font-weight: 800;
+    color: #172033;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+}
+
+.lva-payment-collapse__summary::-webkit-details-marker {
+    display: none;
+}
+
+.lva-payment-collapse__summary > i,
+.lva-payment-collapse__right > i {
+    transition: transform .2s ease;
+}
+
+.lva-payment-collapse[open]
+.lva-payment-collapse__summary > i,
+.lva-payment-collapse[open]
+.lva-payment-collapse__right > i {
+    transform: rotate(180deg);
+}
+
+.lva-payment-collapse__right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lva-payment-collapse__right small {
+    color: #7b879b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.lva-payment-collapse__content {
+    padding: 0 14px 14px;
+    border-top: 1px solid #edf1f6;
+}
+
+.lva-payment-collapse__content
+[data-payment-method-list] {
+    padding-top: 12px;
+}
+
+.lva-payment-document-list {
+    display: grid;
+    gap: 9px;
+    padding-top: 12px;
+}
+
+.lva-payment-document {
+    display: grid;
+    grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        auto;
+    gap: 11px;
+    align-items: center;
+    padding: 11px 12px;
+    border: 1px solid #e0e6ef;
+    border-radius: 9px;
+    background: #fff;
+}
+
+.lva-payment-document__icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #f3f6fb;
+    color: #1768ff;
+}
+
+.lva-payment-document.is-refund
+.lva-payment-document__icon {
+    background: #fff4f4;
+    color: #c52b20;
+}
+
+.lva-payment-document__main {
+    min-width: 0;
+}
+
+.lva-payment-document__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lva-payment-document__header span {
+    color: #68758d;
+    font-size: 12px;
+}
+
+.lva-payment-document__code {
+    margin-top: 3px;
+    color: #59667d;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lva-payment-document__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 4px;
+    color: #8995a8;
+    font-size: 11px;
+}
+
+.lva-payment-document__amount {
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.lva-payment-document.is-refund
+.lva-payment-document__amount {
+    color: #c52b20;
+}
+
+.lva-payment-document {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.lva-payment-document {
+    cursor: pointer;
+    transition:
+        border-color .18s ease,
+        background .18s ease,
+        transform .18s ease;
+}
+
+a.lva-payment-document:hover {
+    border-color: #a8c5ff;
+    background: #f8faff;
+    transform: translateY(-1px);
+}
+
+.lva-payment-document.is-active {
+    border-color: #1768ff;
+    background: #f6f9ff;
+    cursor: default;
+}
+
+.lva-payment-document.is-active
+.lva-payment-document__header > strong {
+    color: #1768ff;
 }
 
 @media (max-width: 600px) {

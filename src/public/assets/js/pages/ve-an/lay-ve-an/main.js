@@ -18,7 +18,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bindDiscountSearch = (...args) => app.bindDiscountSearch(...args);
     const bindDoiTuongLayVeEvents = (...args) => app.bindDoiTuongLayVeEvents(...args);
     const bindGiaTriMienGiamInput = (...args) => app.bindGiaTriMienGiamInput(...args);
-    const canChangePricingFields = (...args) => app.canChangePricingFields(...args);
+    const canChangeFinancialFields =
+        (...args) =>
+            app.canChangeFinancialFields(
+                ...args
+            );
     const changeDiscountTab = (...args) => app.changeDiscountTab(...args);
     const confirmCurrentPayment = (...args) => app.confirmCurrentPayment(...args);
     const closeQrModal =
@@ -107,7 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const renderStateActions = (...args) => app.renderStateActions(...args);
     const setSelectedPaymentMethod = (...args) => app.setSelectedPaymentMethod(...args);
     const startQrPolling = (...args) => app.startQrPolling(...args);
-
+    const cancelPayment =
+        (...args) =>
+            app.cancelPayment(
+                ...args
+            );
 
     if (!root) {
         return;
@@ -144,6 +152,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadEnum("trangThaiThanhToan", value => {
                 state.paymentStatuses = value;
             }),
+            loadEnum(
+                "loaiGiaoDich",
+                value => {
+
+                    state.transactionTypes =
+                        value;
+
+                }
+            ),
             loadEmployees(),
             loadDoiTuongOrderSetting(),
             loadPaymentVisibleSetting()
@@ -226,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function bindEvents() {
         el.thucDonNgayId?.addEventListener("change", async () => {
-            if (!canChangePricingFields()) {
+            if (!canChangeFinancialFields()) {
                 restoreSelectedMeal();
                 return;
             }
@@ -245,18 +262,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         bindDoiTuongLayVeEvents();
 
-        el.nhanVienId?.addEventListener("change", () => {
-            if (!canChangePricingFields()) {
-                restoreEmployee();
-                return;
-            }
+        el.nhanVienId
+            ?.addEventListener(
+                "change",
+                () => {
 
-            renderEmployee();
-            markDraftDirty();
-        });
+                    renderEmployee();
+
+                    markDraftDirty();
+
+                }
+            );
 
         el.soLuong?.addEventListener("input", () => {
-            if (!canChangePricingFields()) {
+            if (!canChangeFinancialFields()) {
                 el.soLuong.value = String(state.phieu?.soLuong || 1);
                 return;
             }
@@ -267,7 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         root.querySelector("[data-qty-minus]")?.addEventListener("click", () => {
-            if (!canChangePricingFields()) {
+            if (!canChangeFinancialFields()) {
                 return;
             }
 
@@ -279,7 +298,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         root.querySelector("[data-qty-plus]")?.addEventListener("click", () => {
-            if (!canChangePricingFields()) {
+            if (!canChangeFinancialFields()) {
                 return;
             }
 
@@ -312,13 +331,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             ?.addEventListener(
                 "click",
                 cancelQr
-            );
-
-
-        el.cancelPayment
-            ?.addEventListener(
-                "click",
-                openRefundModal
             );
 
         el.mainPaymentAction?.addEventListener(
@@ -427,6 +439,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             ?.addEventListener(
                 "click",
                 confirmCurrentPayment
+            );
+
+        el.cancelPayment
+            ?.addEventListener(
+                "click",
+                cancelPayment
             );
         bindDiscountSearch();
         bindGiaTriMienGiamInput();
