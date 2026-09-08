@@ -1,307 +1,205 @@
 const Joi = require("joi");
 
 const {
-    phuongThucThanhToan:
-        dsPhuongThucThanhToan,
+    phuongThucThanhToan: dsPhuongThucThanhToan,
+    loaiGiaoDich: dsLoaiGiaoDich
+} = require("../../../../constants/enums");
 
-    loaiGiaoDich:
-        dsLoaiGiaoDich
-
-} = require(
-    "../../../../constants/enums"
+const giaTriPhuongThucThanhToan = dsPhuongThucThanhToan.map(
+    item => Number(item.value)
 );
 
+const giaTriLoaiGiaoDich = dsLoaiGiaoDich.map(
+    item => Number(item.value)
+);
 
-const giaTriPhuongThucThanhToan =
-    dsPhuongThucThanhToan.map(
-        item =>
-            Number(
-                item.value
-            )
+const createSchema = Joi.object({
+    phieuLayVeId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Phiếu lấy vé phải là số.",
+            "number.integer": "Phiếu lấy vé phải là số nguyên.",
+            "number.positive": "Phiếu lấy vé không hợp lệ.",
+            "any.required": "Phiếu lấy vé là bắt buộc."
+        }),
+
+    phuongThuc: Joi.number()
+        .integer()
+        .valid(
+            ...giaTriPhuongThucThanhToan
+        )
+        .required()
+        .messages({
+            "number.base": "Phương thức thanh toán phải là số.",
+            "number.integer": "Phương thức thanh toán phải là số nguyên.",
+            "any.only": "Phương thức thanh toán không hợp lệ.",
+            "any.required": "Phương thức thanh toán là bắt buộc."
+        }),
+
+    maThamChieu: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional(),
+
+    maChuanChi: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional()
+});
+
+const taoQrSchema = Joi.object({
+    phieuLayVeId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Phiếu lấy vé phải là số.",
+            "number.integer": "Phiếu lấy vé phải là số nguyên.",
+            "number.positive": "Phiếu lấy vé không hợp lệ.",
+            "any.required": "Phiếu lấy vé là bắt buộc."
+        })
+});
+
+const huyQrSchema = Joi.object({
+    noiDung: Joi.string()
+        .trim()
+        .max(500)
+        .allow(
+            "",
+            null
+        )
+        .optional()
+});
+
+const xacNhanSchema = Joi.object({
+    maThamChieu: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional(),
+
+    maChuanChi: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional()
+});
+
+const hoanTienSchema = Joi.object({
+    thanhToanId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Phiếu thu phải là số.",
+            "number.integer": "Phiếu thu phải là số nguyên.",
+            "number.positive": "Phiếu thu không hợp lệ.",
+            "any.required": "Phiếu thu là bắt buộc."
+        }),
+
+    phuongThuc: Joi.number()
+        .integer()
+        .valid(
+            ...giaTriPhuongThucThanhToan
+        )
+        .required(),
+
+    soLuongHoan: Joi.number()
+        .integer()
+        .min(1)
+        .required()
+        .messages({
+            "number.base": "Số lượng hoàn phải là số.",
+            "number.integer": "Số lượng hoàn phải là số nguyên.",
+            "number.min": "Số lượng hoàn phải lớn hơn 0.",
+            "any.required": "Số lượng hoàn là bắt buộc."
+        }),
+
+    lyDoHoan: Joi.string()
+        .trim()
+        .max(500)
+        .required(),
+
+    maThamChieu: Joi.string()
+        .trim()
+        .max(100)
+        .allow("", null)
+        .optional(),
+
+    maChuanChi: Joi.string()
+        .trim()
+        .max(100)
+        .allow("", null)
+        .optional()
+});
+
+const huyThanhToanSchema = Joi.object({
+    noiDung: Joi.string()
+        .trim()
+        .max(500)
+        .allow(
+            "",
+            null
+        )
+        .optional()
+});
+
+const callbackSchema = Joi.object({
+    maGiaoDich: Joi.string()
+        .trim()
+        .max(100)
+        .required(),
+
+    trangThai: Joi.number()
+        .integer()
+        .required(),
+
+    maThamChieu: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional(),
+
+    maChuanChi: Joi.string()
+        .trim()
+        .max(100)
+        .allow(
+            "",
+            null
+        )
+        .optional(),
+
+    noiDungLoi: Joi.string()
+        .trim()
+        .max(1000)
+        .allow(
+            "",
+            null
+        )
+        .optional()
+})
+    .unknown(
+        true
     );
-
-
-const giaTriLoaiGiaoDich =
-    dsLoaiGiaoDich.map(
-        item =>
-            Number(
-                item.value
-            )
-    );
-
-
-const createSchema =
-    Joi.object({
-
-        phieuLayVeId:
-            Joi.number()
-                .integer()
-                .positive()
-                .required()
-                .messages({
-                    "number.base":
-                        "Phiếu lấy vé phải là số.",
-                    "number.integer":
-                        "Phiếu lấy vé phải là số nguyên.",
-                    "number.positive":
-                        "Phiếu lấy vé không hợp lệ.",
-                    "any.required":
-                        "Phiếu lấy vé là bắt buộc."
-                }),
-
-        phuongThuc:
-            Joi.number()
-                .integer()
-                .valid(
-                    ...giaTriPhuongThucThanhToan
-                )
-                .required()
-                .messages({
-                    "number.base":
-                        "Phương thức thanh toán phải là số.",
-                    "number.integer":
-                        "Phương thức thanh toán phải là số nguyên.",
-                    "any.only":
-                        "Phương thức thanh toán không hợp lệ.",
-                    "any.required":
-                        "Phương thức thanh toán là bắt buộc."
-                }),
-
-        maThamChieu:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional(),
-
-        maChuanChi:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional()
-
-    });
-
-
-const taoQrSchema =
-    Joi.object({
-
-        phieuLayVeId:
-            Joi.number()
-                .integer()
-                .positive()
-                .required()
-                .messages({
-                    "number.base":
-                        "Phiếu lấy vé phải là số.",
-                    "number.integer":
-                        "Phiếu lấy vé phải là số nguyên.",
-                    "number.positive":
-                        "Phiếu lấy vé không hợp lệ.",
-                    "any.required":
-                        "Phiếu lấy vé là bắt buộc."
-                })
-
-    });
-
-
-const huyQrSchema =
-    Joi.object({
-
-        noiDung:
-            Joi.string()
-                .trim()
-                .max(
-                    500
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional()
-
-    });
-
-
-const xacNhanSchema =
-    Joi.object({
-
-        maThamChieu:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional(),
-
-        maChuanChi:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional()
-
-    });
-
-const hoanTienSchema =
-    Joi.object({
-
-        thanhToanId:
-            Joi.number()
-                .integer()
-                .positive()
-                .required()
-                .messages({
-                    "number.base":
-                        "Phiếu thu phải là số.",
-                    "number.integer":
-                        "Phiếu thu phải là số nguyên.",
-                    "number.positive":
-                        "Phiếu thu không hợp lệ.",
-                    "any.required":
-                        "Phiếu thu là bắt buộc."
-                }),
-
-        phuongThuc:
-            Joi.number()
-                .integer()
-                .valid(
-                    ...giaTriPhuongThucThanhToan
-                )
-                .required(),
-
-        soLuongHoan:
-            Joi.number()
-                .integer()
-                .min(1)
-                .required()
-                .messages({
-                    "number.base":
-                        "Số lượng hoàn phải là số.",
-                    "number.integer":
-                        "Số lượng hoàn phải là số nguyên.",
-                    "number.min":
-                        "Số lượng hoàn phải lớn hơn 0.",
-                    "any.required":
-                        "Số lượng hoàn là bắt buộc."
-                }),
-
-        lyDoHoan:
-            Joi.string()
-                .trim()
-                .max(500)
-                .required(),
-
-        maThamChieu:
-            Joi.string()
-                .trim()
-                .max(100)
-                .allow("", null)
-                .optional(),
-
-        maChuanChi:
-            Joi.string()
-                .trim()
-                .max(100)
-                .allow("", null)
-                .optional()
-
-    });
-
-const huyThanhToanSchema =
-    Joi.object({
-
-        noiDung:
-            Joi.string()
-                .trim()
-                .max(
-                    500
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional()
-
-    });
-
-const callbackSchema =
-    Joi.object({
-
-        maGiaoDich:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .required(),
-
-        trangThai:
-            Joi.number()
-                .integer()
-                .required(),
-
-        maThamChieu:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional(),
-
-        maChuanChi:
-            Joi.string()
-                .trim()
-                .max(
-                    100
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional(),
-
-        noiDungLoi:
-            Joi.string()
-                .trim()
-                .max(
-                    1000
-                )
-                .allow(
-                    "",
-                    null
-                )
-                .optional()
-
-    })
-        .unknown(
-            true
-        );
-
 
 module.exports = {
     createSchema,

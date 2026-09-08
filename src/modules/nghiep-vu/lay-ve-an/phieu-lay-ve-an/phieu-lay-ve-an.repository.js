@@ -1,182 +1,63 @@
-const pool =
-    require(
-        "../../../../config/database"
-    );
-
+const pool = require("../../../../config/database");
 
 class PhieuLayVeAnRepository {
-
-    mapPhieuLayVeAn(
-        row
-    ) {
-
-        if (
-            !row
-        ) {
-
+    mapPhieuLayVeAn(row) {
+        if (!row) {
             return null;
-
         }
 
-
         return {
-
-            id:
-                row.id,
-
-            soPhieu:
-                row.so_phieu,
-
-            thucDonNgayId:
-                row.thuc_don_ngay_id,
-
-            ngay:
-                row.ngay,
-
-            thucDonId:
-                row.thuc_don_id,
-
-            maThucDon:
-                row.ma_thuc_don,
-
-            tenThucDon:
-                row.ten_thuc_don,
-
-            coSoId:
-                row.co_so_id,
-
-            maCoSo:
-                row.ma_co_so,
-
-            tenCoSo:
-                row.ten_co_so,
-
-            nhaAnId:
-                row.nha_an_id,
-
-            maNhaAn:
-                row.ma_nha_an,
-
-            tenNhaAn:
-                row.ten_nha_an,
-
-            caAnId:
-                row.ca_an_id,
-
-            maCaAn:
-                row.ma_ca_an,
-
-            tenCaAn:
-                row.ten_ca_an,
-
-            thoiGianBatDau:
-                row.thoi_gian_bat_dau,
-
-            thoiGianKetThuc:
-                row.thoi_gian_ket_thuc,
-
-            doiTuongLayVe:
-                row.doi_tuong_lay_ve,
-
-            nhanVienId:
-                row.nhan_vien_id,
-
-            maNhanVien:
-                row.ma_nhan_vien,
-
-            tenNhanVien:
-                row.ten_nhan_vien,
-
-            hoTenNguoiLayVe:
-                row.ho_ten_nguoi_lay_ve,
-
-            ngaySinhNguoiLayVe:
-                row.ngay_sinh_nguoi_lay_ve,
-
-            gioiTinhNguoiLayVe:
-                row.gioi_tinh_nguoi_lay_ve,
-
-            soDienThoaiNguoiLayVe:
-                row.so_dien_thoai_nguoi_lay_ve,
-
-            diaChiNguoiLayVe:
-                row.dia_chi_nguoi_lay_ve,
-
-            donViNguoiLayVe:
-                row.don_vi_nguoi_lay_ve,
-
-            khachLauDai:
-                row.khach_lau_dai,
-
-            soLuong:
-                row.so_luong,
-
-            donGia:
-                Number(
-                    row.don_gia
-                ),
-
-            tienGoc:
-                Number(
-                    row.tien_goc
-                ),
-
-            tongMienGiam:
-                Number(
-                    row.tong_mien_giam
-                ),
-
-            thanhTien:
-                Number(
-                    row.thanh_tien
-                ),
-
-            ghiChu:
-                row.ghi_chu,
-
-            phuongThucThanhToan:
-                row.phuong_thuc_thanh_toan,
-
-            trangThai:
-                row.trang_thai,
-
-            nguoiTaoId:
-                row.nguoi_tao_id,
-
-            nguoiThanhToanId:
-                row.nguoi_thanh_toan_id,
-
-            nguoiThanhToanTenDangNhap:
-                row.nguoi_thanh_toan_ten_dang_nhap,
-
-            tenNguoiThanhToan:
-                row.ten_nguoi_thanh_toan,
-
-            thoiGianThanhToan:
-                row.thoi_gian_thanh_toan,
-
-            nguoiHuyId:
-                row.nguoi_huy_id,
-
-            thoiGianHuy:
-                row.thoi_gian_huy,
-
-            lyDoHuy:
-                row.ly_do_huy,
-
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            id: row.id,
+            soPhieu: row.so_phieu,
+            thucDonNgayId: row.thuc_don_ngay_id,
+            ngay: row.ngay,
+            thucDonId: row.thuc_don_id,
+            maThucDon: row.ma_thuc_don,
+            tenThucDon: row.ten_thuc_don,
+            coSoId: row.co_so_id,
+            maCoSo: row.ma_co_so,
+            tenCoSo: row.ten_co_so,
+            nhaAnId: row.nha_an_id,
+            maNhaAn: row.ma_nha_an,
+            tenNhaAn: row.ten_nha_an,
+            caAnId: row.ca_an_id,
+            maCaAn: row.ma_ca_an,
+            tenCaAn: row.ten_ca_an,
+            thoiGianBatDau: row.thoi_gian_bat_dau,
+            thoiGianKetThuc: row.thoi_gian_ket_thuc,
+            doiTuongLayVe: row.doi_tuong_lay_ve,
+            nhanVienId: row.nhan_vien_id,
+            maNhanVien: row.ma_nhan_vien,
+            tenNhanVien: row.ten_nhan_vien,
+            hoTenNguoiLayVe: row.ho_ten_nguoi_lay_ve,
+            ngaySinhNguoiLayVe: row.ngay_sinh_nguoi_lay_ve,
+            gioiTinhNguoiLayVe: row.gioi_tinh_nguoi_lay_ve,
+            soDienThoaiNguoiLayVe: row.so_dien_thoai_nguoi_lay_ve,
+            diaChiNguoiLayVe: row.dia_chi_nguoi_lay_ve,
+            donViNguoiLayVe: row.don_vi_nguoi_lay_ve,
+            khachLauDai: row.khach_lau_dai,
+            soLuong: row.so_luong,
+            donGia: Number(row.don_gia),
+            tienGoc: Number(row.tien_goc),
+            tongMienGiam: Number(row.tong_mien_giam),
+            thanhTien: Number(row.thanh_tien),
+            ghiChu: row.ghi_chu,
+            phuongThucThanhToan: row.phuong_thuc_thanh_toan,
+            trangThai: row.trang_thai,
+            nguoiTaoId: row.nguoi_tao_id,
+            nguoiThanhToanId: row.nguoi_thanh_toan_id,
+            nguoiThanhToanTenDangNhap: row.nguoi_thanh_toan_ten_dang_nhap,
+            tenNguoiThanhToan: row.ten_nguoi_thanh_toan,
+            thoiGianThanhToan: row.thoi_gian_thanh_toan,
+            nguoiHuyId: row.nguoi_huy_id,
+            thoiGianHuy: row.thoi_gian_huy,
+            lyDoHuy: row.ly_do_huy,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
         };
-
     }
 
-
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -288,184 +169,112 @@ class PhieuLayVeAnRepository {
                 tktt.nhan_vien_id
 
         `;
-
     }
 
     async getTongHop(
         query = {}
     ) {
-        const conditions =
-            [];
+        const conditions = [];
+        const values = [];
 
-        const values =
-            [];
+        const addNumberCondition = (
+            rawValue,
+            sqlBuilder
+        ) => {
+            if (
+                rawValue === undefined ||
+                rawValue === null ||
+                rawValue === ""
+            ) {
+                return;
+            }
 
-        const addNumberCondition =
-            (
-                rawValue,
-                sqlBuilder
-            ) => {
-                if (
-                    rawValue ===
-                        undefined ||
-                    rawValue ===
-                        null ||
-                    rawValue ===
-                        ""
-                ) {
-                    return;
-                }
+            const value = Number(rawValue);
 
-                const value =
-                    Number(
-                        rawValue
-                    );
+            if (!Number.isFinite(value)) {
+                return;
+            }
 
-                if (
-                    !Number.isFinite(
-                        value
-                    )
-                ) {
-                    return;
-                }
+            values.push(value);
 
-                values.push(
-                    value
-                );
+            conditions.push(
+                sqlBuilder(
+                    `$${values.length}`
+                )
+            );
+        };
 
-                conditions.push(
-                    sqlBuilder(
-                        `$${values.length}`
-                    )
-                );
-            };
+        const addDateTimeCondition = (
+            rawValue,
+            sqlBuilder
+        ) => {
+            if (!rawValue) {
+                return;
+            }
 
-        const addDateTimeCondition =
-            (
-                rawValue,
-                sqlBuilder
-            ) => {
-                if (
-                    !rawValue
-                ) {
-                    return;
-                }
+            values.push(rawValue);
 
-                values.push(
-                    rawValue
-                );
+            conditions.push(
+                sqlBuilder(
+                    `$${values.length}`
+                )
+            );
+        };
 
-                conditions.push(
-                    sqlBuilder(
-                        `$${values.length}`
-                    )
-                );
-            };
-
-
-        /*
-        * Trạng thái phiếu
-        */
         addNumberCondition(
             query.trangThai,
             parameter =>
                 `p.trang_thai = ${parameter}`
         );
 
-
-        /*
-        * Đối tượng lấy vé
-        */
         addNumberCondition(
             query.doiTuongLayVe,
             parameter =>
                 `p.doi_tuong_lay_ve = ${parameter}`
         );
 
-
-        /*
-        * Nhân viên lấy vé
-        */
         addNumberCondition(
             query.nhanVienId,
             parameter =>
                 `p.nhan_vien_id = ${parameter}`
         );
 
-
-        /*
-        * Thực đơn ngày
-        */
         addNumberCondition(
             query.thucDonNgayId,
             parameter =>
                 `p.thuc_don_ngay_id = ${parameter}`
         );
 
-
-        /*
-        * Cơ sở
-        */
         addNumberCondition(
             query.coSoId,
             parameter =>
                 `td.co_so_id = ${parameter}`
         );
 
-
-        /*
-        * Nhà ăn
-        */
         addNumberCondition(
             query.nhaAnId,
             parameter =>
                 `td.nha_an_id = ${parameter}`
         );
 
-
-        /*
-        * Ca ăn
-        */
         addNumberCondition(
             query.caAnId,
             parameter =>
                 `td.ca_an_id = ${parameter}`
         );
 
-
-        /*
-        * Phương thức thanh toán
-        */
         addNumberCondition(
             query.phuongThucThanhToan,
             parameter =>
                 `p.phuong_thuc_thanh_toan = ${parameter}`
         );
 
-
-        /*
-        * Thu ngân.
-        *
-        * Filter đang dùng ID nhân viên.
-        * p.nguoi_thanh_toan_id lại là ID tài khoản.
-        *
-        * getBaseQuery đã:
-        * taiKhoan -> nhanVien = nvtt
-        */
         addNumberCondition(
             query.thuNganId,
             parameter =>
                 `nvtt.id = ${parameter}`
         );
 
-
-        /*
-        * Trạng thái sử dụng vé.
-        *
-        * Một phiếu có thể sinh nhiều ct_ve_an,
-        * nên dùng EXISTS để không làm duplicate
-        * phiếu trong danh sách.
-        */
         addNumberCondition(
             query.trangThaiSuDung,
             parameter =>
@@ -485,10 +294,6 @@ class PhieuLayVeAnRepository {
                 `
         );
 
-
-        /*
-        * Thời gian tạo phiếu
-        */
         addDateTimeCondition(
             query.tuNgayTao,
             parameter =>
@@ -501,10 +306,6 @@ class PhieuLayVeAnRepository {
                 `p.created_at <= ${parameter}::timestamp`
         );
 
-
-        /*
-        * Thời gian thanh toán
-        */
         addDateTimeCondition(
             query.tuNgayThanhToan,
             parameter =>
@@ -517,13 +318,7 @@ class PhieuLayVeAnRepository {
                 `p.thoi_gian_thanh_toan <= ${parameter}::timestamp`
         );
 
-
-        /*
-        * Giữ tương thích filter ngày cũ nếu còn nơi khác sử dụng.
-        */
-        if (
-            query.tuNgay
-        ) {
+        if (query.tuNgay) {
             values.push(
                 query.tuNgay
             );
@@ -533,9 +328,7 @@ class PhieuLayVeAnRepository {
             );
         }
 
-        if (
-            query.denNgay
-        ) {
+        if (query.denNgay) {
             values.push(
                 query.denNgay
             );
@@ -545,16 +338,6 @@ class PhieuLayVeAnRepository {
             );
         }
 
-
-        /*
-        * ==============================
-        * FILTER MIỄN GIẢM
-        * ==============================
-        *
-        * Gom tất cả vào CÙNG một EXISTS
-        * để cùng một record miễn giảm phải
-        * thỏa toàn bộ điều kiện.
-        */
         const discountConditions = [
             `
                 mg_filter.phieu_lay_ve_id =
@@ -562,13 +345,9 @@ class PhieuLayVeAnRepository {
             `
         ];
 
-        let hasDiscountFilter =
-            false;
+        let hasDiscountFilter = false;
 
-
-        if (
-            query.tuNgayMienGiam
-        ) {
+        if (query.tuNgayMienGiam) {
             values.push(
                 query.tuNgayMienGiam
             );
@@ -580,14 +359,10 @@ class PhieuLayVeAnRepository {
                 `
             );
 
-            hasDiscountFilter =
-                true;
+            hasDiscountFilter = true;
         }
 
-
-        if (
-            query.denNgayMienGiam
-        ) {
+        if (query.denNgayMienGiam) {
             values.push(
                 query.denNgayMienGiam
             );
@@ -599,18 +374,13 @@ class PhieuLayVeAnRepository {
                 `
             );
 
-            hasDiscountFilter =
-                true;
+            hasDiscountFilter = true;
         }
 
-
         if (
-            query.loaiMienGiam !==
-                undefined &&
-            query.loaiMienGiam !==
-                null &&
-            query.loaiMienGiam !==
-                ""
+            query.loaiMienGiam !== undefined &&
+            query.loaiMienGiam !== null &&
+            query.loaiMienGiam !== ""
         ) {
             values.push(
                 Number(
@@ -625,14 +395,10 @@ class PhieuLayVeAnRepository {
                 `
             );
 
-            hasDiscountFilter =
-                true;
+            hasDiscountFilter = true;
         }
 
-
-        if (
-            query.nguoiTaoMienGiamId
-        ) {
+        if (query.nguoiTaoMienGiamId) {
             values.push(
                 Number(
                     query.nguoiTaoMienGiamId
@@ -646,14 +412,10 @@ class PhieuLayVeAnRepository {
                 `
             );
 
-            hasDiscountFilter =
-                true;
+            hasDiscountFilter = true;
         }
 
-
-        if (
-            hasDiscountFilter
-        ) {
+        if (hasDiscountFilter) {
             conditions.push(
                 `
                     EXISTS (
@@ -679,11 +441,9 @@ class PhieuLayVeAnRepository {
             );
         }
 
-
         let sql = `
             ${this.getBaseQuery()}
         `;
-
 
         if (
             conditions.length >
@@ -697,7 +457,6 @@ class PhieuLayVeAnRepository {
             `;
         }
 
-
         sql += `
 
             ORDER BY
@@ -706,13 +465,10 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
+        const result = await pool.query(
+            sql,
+            values
+        );
 
         return result.rows.map(
             row =>
@@ -722,10 +478,7 @@ class PhieuLayVeAnRepository {
         );
     }
 
-    async getChiTiet(
-        id
-    ) {
-
+    async getChiTiet(id) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -734,35 +487,26 @@ class PhieuLayVeAnRepository {
             LIMIT 1
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
+        const result = await pool.query(
+            sql,
+            [
+                id
+            ]
+        );
 
         if (
             result.rows.length ===
             0
         ) {
-
             return null;
-
         }
-
 
         return this.mapPhieuLayVeAn(
             result.rows[0]
         );
-
     }
 
-
     async getThucDonNgayHopLe() {
-
         const sql = `
 
             SELECT
@@ -830,74 +574,33 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql
-            );
-
+        const result = await pool.query(
+            sql
+        );
 
         return result.rows.map(
             row => ({
-
-                id:
-                    row.id,
-
-                ngay:
-                    row.ngay,
-
-                thucDonId:
-                    row.thuc_don_id,
-
-                maThucDon:
-                    row.ma_thuc_don,
-
-                tenThucDon:
-                    row.ten_thuc_don,
-
-                coSoId:
-                    row.co_so_id,
-
-                maCoSo:
-                    row.ma_co_so,
-
-                tenCoSo:
-                    row.ten_co_so,
-
-                nhaAnId:
-                    row.nha_an_id,
-
-                maNhaAn:
-                    row.ma_nha_an,
-
-                tenNhaAn:
-                    row.ten_nha_an,
-
-                caAnId:
-                    row.ca_an_id,
-
-                maCaAn:
-                    row.ma_ca_an,
-
-                tenCaAn:
-                    row.ten_ca_an,
-
-                thoiGianBatDau:
-                    row.thoi_gian_bat_dau,
-
-                thoiGianKetThuc:
-                    row.thoi_gian_ket_thuc
-
+                id: row.id,
+                ngay: row.ngay,
+                thucDonId: row.thuc_don_id,
+                maThucDon: row.ma_thuc_don,
+                tenThucDon: row.ten_thuc_don,
+                coSoId: row.co_so_id,
+                maCoSo: row.ma_co_so,
+                tenCoSo: row.ten_co_so,
+                nhaAnId: row.nha_an_id,
+                maNhaAn: row.ma_nha_an,
+                tenNhaAn: row.ten_nha_an,
+                caAnId: row.ca_an_id,
+                maCaAn: row.ma_ca_an,
+                tenCaAn: row.ten_ca_an,
+                thoiGianBatDau: row.thoi_gian_bat_dau,
+                thoiGianKetThuc: row.thoi_gian_ket_thuc
             })
         );
-
     }
 
-
-    async getThucDonNgayById(
-        id
-    ) {
-
+    async getThucDonNgayById(id) {
         const sql = `
 
             SELECT
@@ -925,58 +628,40 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
+        const result = await pool.query(
+            sql,
+            [
+                id
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
 
     async taoSoPhieuTheoQuyTac(
         nguCanh,
         db
     ) {
-        const prefix =
-            String(
-                nguCanh?.prefix ||
-                ""
-            );
+        const prefix = String(
+            nguCanh?.prefix ||
+            ""
+        );
 
-        const doRongDaySo =
-            Number(
-                nguCanh?.doRongDaySo
-            );
+        const doRongDaySo = Number(
+            nguCanh?.doRongDaySo
+        );
 
         if (
             !prefix ||
-            !Number.isInteger(
-                doRongDaySo
-            ) ||
-            doRongDaySo <=
-                0
+            !Number.isInteger(doRongDaySo) ||
+            doRongDaySo <= 0
         ) {
             throw new Error(
                 "Cấu hình sinh mã vé ăn không hợp lệ."
             );
         }
 
-        /*
-        * Khóa riêng theo format + kỳ hiện tại.
-        *
-        * Ví dụ ngày 06:
-        * VA260906
-        *
-        * hai request cùng lúc sẽ phải
-        * lần lượt lấy số.
-        */
         await db.query(
             `
                 SELECT
@@ -991,9 +676,8 @@ class PhieuLayVeAnRepository {
             ]
         );
 
-        const result =
-            await db.query(
-                `
+        const result = await db.query(
+            `
                     SELECT
                         so_phieu
 
@@ -1036,20 +720,18 @@ class PhieuLayVeAnRepository {
 
                     LIMIT 1
                 `,
-                [
-                    prefix,
-                    doRongDaySo
-                ]
-            );
+            [
+                prefix,
+                doRongDaySo
+            ]
+        );
 
         const lastCode =
             result.rows[0]
                 ?.so_phieu ||
             null;
 
-        if (
-            !lastCode
-        ) {
+        if (!lastCode) {
             return (
                 prefix +
                 "1".padStart(
@@ -1059,18 +741,13 @@ class PhieuLayVeAnRepository {
             );
         }
 
-        const lastSuffix =
-            String(
-                lastCode
-            ).slice(
-                prefix.length
-            );
+        const lastSuffix = String(
+            lastCode
+        ).slice(
+            prefix.length
+        );
 
-        if (
-            !/^\d+$/.test(
-                lastSuffix
-            )
-        ) {
+        if (!/^\d+$/.test(lastSuffix)) {
             return (
                 prefix +
                 "1".padStart(
@@ -1080,16 +757,14 @@ class PhieuLayVeAnRepository {
             );
         }
 
-        const currentWidth =
-            Math.max(
-                doRongDaySo,
-                lastSuffix.length
-            );
+        const currentWidth = Math.max(
+            doRongDaySo,
+            lastSuffix.length
+        );
 
-        const currentValue =
-            BigInt(
-                lastSuffix
-            );
+        const currentValue = BigInt(
+            lastSuffix
+        );
 
         const maxValue =
             (
@@ -1103,25 +778,11 @@ class PhieuLayVeAnRepository {
         let nextValue;
         let nextWidth;
 
-        /*
-        * dayso:1:
-        *
-        * 1...9
-        * -> 01
-        *
-        * 01...99
-        * -> 001
-        *
-        * 001...999
-        * -> 0001
-        */
         if (
             currentValue >=
             maxValue
         ) {
-            nextValue =
-                1n;
-
+            nextValue = 1n;
             nextWidth =
                 currentWidth +
                 1;
@@ -1129,18 +790,15 @@ class PhieuLayVeAnRepository {
             nextValue =
                 currentValue +
                 1n;
-
-            nextWidth =
-                currentWidth;
+            nextWidth = currentWidth;
         }
 
-        const suffix =
-            nextValue
-                .toString()
-                .padStart(
-                    nextWidth,
-                    "0"
-                );
+        const suffix = nextValue
+            .toString()
+            .padStart(
+                nextWidth,
+                "0"
+            );
 
         return (
             prefix +
@@ -1148,10 +806,7 @@ class PhieuLayVeAnRepository {
         );
     }
 
-    async getNhanVienById(
-        id
-    ) {
-
+    async getNhanVienById(id) {
         const sql = `
 
             SELECT
@@ -1173,27 +828,21 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
+        const result = await pool.query(
+            sql,
+            [
+                id
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
-
 
     async getGiaVe(
         thucDonNgayId,
         doiTuongLayVe
     ) {
-
         const sql = `
 
             SELECT
@@ -1278,43 +927,36 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    thucDonNgayId,
-                    doiTuongLayVe
-                ]
-            );
-
+        const result = await pool.query(
+            sql,
+            [
+                thucDonNgayId,
+                doiTuongLayVe
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
 
     async create(
         data,
         nguCanhSinhMaVeAn
     ) {
-        const client =
-            await pool.connect();
+        const client = await pool.connect();
 
-        let createdId =
-            null;
+        let createdId = null;
 
         try {
             await client.query(
                 "BEGIN"
             );
 
-            const soPhieu =
-                await this
-                    .taoSoPhieuTheoQuyTac(
-                        nguCanhSinhMaVeAn,
-                        client
-                    );
+            const soPhieu = await this
+                .taoSoPhieuTheoQuyTac(
+                    nguCanhSinhMaVeAn,
+                    client
+                );
 
             const sql = `
                 INSERT INTO nv_phieu_lay_ve_an (
@@ -1395,56 +1037,39 @@ class PhieuLayVeAnRepository {
             `;
 
             const values = [
-
                 soPhieu,
-
                 data.thucDonNgayId,
-
                 data.doiTuongLayVe,
-
                 data.nhanVienId,
-
                 data.hoTenNguoiLayVe,
                 data.ngaySinhNguoiLayVe,
                 data.gioiTinhNguoiLayVe,
                 data.soDienThoaiNguoiLayVe,
                 data.diaChiNguoiLayVe,
                 data.donViNguoiLayVe,
-
                 data.khachLauDai,
-
                 data.soLuong,
-
                 data.donGia,
                 data.tienGoc,
                 data.tongMienGiam,
                 data.thanhTien,
-
                 data.ghiChu,
-
                 data.phuongThucThanhToan,
-
                 data.trangThai,
-
                 data.nguoiTaoId
-
             ];
 
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(
+                sql,
+                values
+            );
 
-            createdId =
-                result.rows[0].id;
+            createdId = result.rows[0].id;
 
             await client.query(
                 "COMMIT"
             );
-        } catch (
-            error
-        ) {
+        } catch (error) {
             await client.query(
                 "ROLLBACK"
             );
@@ -1463,7 +1088,6 @@ class PhieuLayVeAnRepository {
         id,
         data
     ) {
-
         const sql = `
 
             UPDATE nv_phieu_lay_ve_an
@@ -1504,70 +1128,49 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
         const values = [
-
             data.thucDonNgayId,
-
             data.doiTuongLayVe,
-
             data.nhanVienId,
-
             data.hoTenNguoiLayVe,
             data.ngaySinhNguoiLayVe,
             data.gioiTinhNguoiLayVe,
             data.soDienThoaiNguoiLayVe,
             data.diaChiNguoiLayVe,
             data.donViNguoiLayVe,
-
             data.khachLauDai,
-
             data.soLuong,
-
             data.donGia,
             data.tienGoc,
             data.tongMienGiam,
             data.thanhTien,
-
             data.ghiChu,
-
             data.phuongThucThanhToan,
-
             id
-
         ];
 
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
+        const result = await pool.query(
+            sql,
+            values
+        );
 
         if (
             result.rows.length ===
             0
         ) {
-
             return null;
-
         }
-
 
         return await this.getChiTiet(
             result.rows[0].id
         );
-
     }
-
 
     async huy(
         id,
         nguoiHuyId,
         lyDoHuy
     ) {
-
         const sql = `
 
             UPDATE nv_phieu_lay_ve_an
@@ -1590,47 +1193,32 @@ class PhieuLayVeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id,
-                    nguoiHuyId,
-                    lyDoHuy
-                ]
-            );
-
+        const result = await pool.query(
+            sql,
+            [
+                id,
+                nguoiHuyId,
+                lyDoHuy
+            ]
+        );
 
         if (
             result.rows.length ===
             0
         ) {
-
             return null;
-
         }
-
 
         return await this.getChiTiet(
             result.rows[0].id
         );
-
     }
 
-
-    async getDuLieuInVe(
-        id
-    ) {
-
+    async getDuLieuInVe(id) {
         return await this.getChiTiet(
             id
         );
-
     }
-
 }
 
-
-module.exports =
-    new PhieuLayVeAnRepository();
+module.exports = new PhieuLayVeAnRepository();

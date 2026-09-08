@@ -1,9 +1,6 @@
 <aside class="lva-payment">
-
     <article class="lva-card lva-card--sticky">
-
         <div class="lva-card__title-row lva-payment-header">
-
             <div class="lva-card__title">
                 <i class="fa-regular fa-file-lines"></i>
                 <span>Tóm tắt thanh toán</span>
@@ -14,15 +11,9 @@
                 class="lva-btn lva-btn--primary lva-btn--sm"
                 data-payment-main-action
                 hidden>
-
                 <i class="fa-solid fa-credit-card" data-payment-main-action-icon></i>
-
-                <span data-payment-main-action-label>
-                    Thanh toán
-                </span>
-
+                <span data-payment-main-action-label>Thanh toán</span>
             </button>
-
         </div>
 
         <div class="lva-summary">
@@ -43,23 +34,14 @@
             data-payment-section
             open
             hidden>
-
             <summary class="lva-payment-collapse__summary">
-
-                <span>
-                    Phương thức thanh toán
-                </span>
-
+                <span>Phương thức thanh toán</span>
                 <i class="fa-solid fa-chevron-down"></i>
-
             </summary>
 
             <div class="lva-payment-collapse__content">
-
                 <div data-payment-method-list></div>
-
             </div>
-
         </details>
 
         <div class="lva-ticket-note">
@@ -72,21 +54,13 @@
             data-payment-info
             open
             hidden>
-
             <summary class="lva-payment-collapse__summary">
-
-                <span data-payment-info-title>
-                    Thông tin thanh toán
-                </span>
-
+                <span data-payment-info-title>Thông tin thanh toán</span>
                 <i class="fa-solid fa-chevron-down"></i>
-
             </summary>
 
             <div class="lva-payment-collapse__content">
-
                 <div class="lva-payment-info__content">
-
                     <div>
                         <span>Trạng thái:</span>
                         <strong data-payment-status-text>-</strong>
@@ -103,186 +77,120 @@
                     </div>
 
                     <div data-payment-original-row>
-                        <span data-payment-original-label>
-                            Tiền ban đầu:
-                        </span>
-
+                        <span data-payment-original-label>Tiền ban đầu:</span>
                         <strong data-payment-original>-</strong>
                     </div>
 
                     <div data-payment-discount-row>
-                        <span data-payment-discount-label>
-                            Tiền miễn giảm:
-                        </span>
-
+                        <span data-payment-discount-label>Tiền miễn giảm:</span>
                         <strong data-payment-discount>-</strong>
                     </div>
 
                     <div data-payment-final-row>
-                        <span data-payment-final-label>
-                            Thành tiền:
-                        </span>
-
+                        <span data-payment-final-label>Thành tiền:</span>
                         <strong data-payment-final>-</strong>
                     </div>
 
                     <div data-payment-payer-row>
-                        <span data-payment-payer-label>
-                            Người thanh toán:
-                        </span>
-
+                        <span data-payment-payer-label>Người thanh toán:</span>
                         <strong data-payment-payer>-</strong>
                     </div>
 
                     <div data-payment-time-row>
-                        <span data-payment-time-label>
-                            Thời gian thanh toán:
-                        </span>
-
+                        <span data-payment-time-label>Thời gian thanh toán:</span>
                         <strong data-payment-time>-</strong>
                     </div>
-
                 </div>
-
             </div>
-
         </details>
 
         <details
             class="lva-payment-collapse"
             data-payment-documents-section
             hidden>
-
             <summary class="lva-payment-collapse__summary">
-
-                <span>
-                    Danh sách phiếu
-                </span>
+                <span>Danh sách phiếu</span>
 
                 <span class="lva-payment-collapse__right">
-
-                    <small data-payment-document-count>
-                        0 phiếu
-                    </small>
-
+                    <small data-payment-document-count>0 phiếu</small>
                     <i class="fa-solid fa-chevron-down"></i>
-
                 </span>
-
             </summary>
 
             <div class="lva-payment-collapse__content">
-
                 <div
                     class="lva-payment-document-list"
                     data-payment-document-list>
                 </div>
-
             </div>
-
         </details>
 
         <div class="lva-action-grid">
-
-            <!-- HÀNG 1 - CỐ ĐỊNH -->
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--outline"
                     data-print
                     hidden>
-
                     <i class="fa-solid fa-print"></i>
                     In giấy tờ
-
                 </button>
-
             </div>
 
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--danger-soft"
                     data-cancel-phieu
                     hidden>
-
                     <i class="fa-solid fa-ban"></i>
                     Hủy phiếu
-
                 </button>
-
             </div>
 
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--danger-soft"
                     data-cancel-payment
                     hidden>
-
                     <i class="fa-solid fa-rotate-left"></i>
                     Hủy thanh toán
-
                 </button>
-
             </div>
 
-
-            <!-- HÀNG 2 - CỐ ĐỊNH -->
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--outline"
                     data-view-qr
                     hidden>
-
                     <i class="fa-solid fa-qrcode"></i>
                     Xem lại QR
-
                 </button>
-
             </div>
 
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--outline"
                     data-recreate-qr
                     hidden>
-
                     <i class="fa-solid fa-rotate"></i>
                     Cập nhật QR
-
                 </button>
-
             </div>
 
-
             <div class="lva-action-slot">
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--danger-soft"
                     data-cancel-qr
                     hidden>
-
                     <i class="fa-solid fa-qrcode"></i>
                     Hủy QR
-
                 </button>
-
             </div>
-
         </div>
 
         <div class="lva-qr-panel" data-qr-panel hidden>
@@ -294,14 +202,12 @@
                 <span data-qr-code></span>
             </div>
         </div>
-
     </article>
 
     <div
         class="lva-qr-modal"
         data-qr-modal
         hidden>
-
         <div
             class="lva-qr-modal__backdrop"
             data-qr-modal-close>
@@ -312,9 +218,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="QR Code thanh toán">
-
             <header class="lva-qr-modal__header">
-
                 <div>
                     <h2>QR Code</h2>
                     <span data-qr-modal-transaction></span>
@@ -324,24 +228,17 @@
                     type="button"
                     class="lva-icon-btn"
                     data-qr-modal-close>
-
                     <i class="fa-solid fa-xmark"></i>
-
                 </button>
-
             </header>
 
-
             <div class="lva-qr-modal__body">
-
                 <div
                     class="lva-qr-loading"
                     data-qr-modal-loading>
-
                     <div
                         class="lva-bank-spinner"
                         aria-hidden="true">
-
                         <span></span>
                         <span></span>
                         <span></span>
@@ -350,21 +247,17 @@
                         <span></span>
                         <span></span>
                         <span></span>
-
                     </div>
 
                     <strong data-qr-modal-loading-text>
                         Đang tạo QR Code. Vui lòng chờ ngân hàng phản hồi!
                     </strong>
-
                 </div>
-
 
                 <div
                     class="lva-qr-content"
                     data-qr-modal-content
                     hidden>
-
                     <img
                         data-qr-modal-image
                         alt="QR Code thanh toán">
@@ -375,7 +268,6 @@
                     </strong>
 
                     <div class="lva-qr-content__info">
-
                         <div>
                             <span>Mã giao dịch</span>
                             <strong data-qr-modal-code>-</strong>
@@ -390,53 +282,38 @@
                             <span>Tài khoản</span>
                             <strong data-qr-modal-account>-</strong>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
 
             <footer
                 class="lva-qr-modal__footer"
                 data-qr-modal-actions
                 hidden>
-
                 <button
                     type="button"
                     class="lva-btn lva-btn--danger-soft"
                     data-qr-modal-cancel>
-
                     <i class="fa-solid fa-ban"></i>
                     Hủy QR
-
                 </button>
 
                 <button
                     type="button"
                     class="lva-btn lva-btn--outline"
                     data-qr-modal-recreate>
-
                     <i class="fa-solid fa-rotate"></i>
                     Cập nhật QR
-
                 </button>
 
                 <button
                     type="button"
                     class="lva-btn lva-btn--success"
                     data-qr-modal-confirm>
-
                     <i class="fa-solid fa-check"></i>
                     Duyệt
-
                 </button>
-
             </footer>
-
         </section>
-
     </div>
-
 </aside>

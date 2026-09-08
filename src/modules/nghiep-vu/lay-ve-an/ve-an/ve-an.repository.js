@@ -1,141 +1,52 @@
-const pool =
-    require(
-        "../../../../config/database"
-    );
-
+const pool = require("../../../../config/database");
 
 class VeAnRepository {
-
-    mapVeAn(
-        row
-    ) {
-
-        if (
-            !row
-        ) {
-
+    mapVeAn(row) {
+        if (!row) {
             return null;
-
         }
 
-
         return {
-
-            id:
-                row.id,
-
-            phieuLayVeId:
-                row.phieu_lay_ve_id,
-
-            soPhieu:
-                row.so_phieu,
-
-            thucDonNgayId:
-                row.thuc_don_ngay_id,
-
-            ngay:
-                row.ngay,
-
-            thucDonId:
-                row.thuc_don_id,
-
-            maThucDon:
-                row.ma_thuc_don,
-
-            tenThucDon:
-                row.ten_thuc_don,
-
-            coSoId:
-                row.co_so_id,
-
-            maCoSo:
-                row.ma_co_so,
-
-            tenCoSo:
-                row.ten_co_so,
-
-            nhaAnId:
-                row.nha_an_id,
-
-            maNhaAn:
-                row.ma_nha_an,
-
-            tenNhaAn:
-                row.ten_nha_an,
-
-            caAnId:
-                row.ca_an_id,
-
-            maCaAn:
-                row.ma_ca_an,
-
-            tenCaAn:
-                row.ten_ca_an,
-
-            thoiGianBatDau:
-                row.thoi_gian_bat_dau,
-
-            thoiGianKetThuc:
-                row.thoi_gian_ket_thuc,
-
-            soThuTu:
-                row.so_thu_tu,
-
-            maVe:
-                row.ma_ve,
-
-            qrToken:
-                row.qr_token,
-
-            trangThai:
-                row.trang_thai,
-
-            thoiGianSuDung:
-                row.thoi_gian_su_dung,
-
-            nguoiXacNhanId:
-                row.nguoi_xac_nhan_id,
-
-            nguoiHuyId:
-                row.nguoi_huy_id,
-
-            thoiGianHuy:
-                row.thoi_gian_huy,
-
-            lyDoHuy:
-                row.ly_do_huy,
-
-            doiTuongLayVe:
-                row.doi_tuong_lay_ve,
-
-            nhanVienId:
-                row.nhan_vien_id,
-
-            maNhanVien:
-                row.ma_nhan_vien,
-
-            tenNhanVien:
-                row.ten_nhan_vien,
-
-            hoTenNguoiLayVe:
-                row.ho_ten_nguoi_lay_ve,
-
-            soDienThoaiNguoiLayVe:
-                row.so_dien_thoai_nguoi_lay_ve,
-
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            id: row.id,
+            phieuLayVeId: row.phieu_lay_ve_id,
+            soPhieu: row.so_phieu,
+            thucDonNgayId: row.thuc_don_ngay_id,
+            ngay: row.ngay,
+            thucDonId: row.thuc_don_id,
+            maThucDon: row.ma_thuc_don,
+            tenThucDon: row.ten_thuc_don,
+            coSoId: row.co_so_id,
+            maCoSo: row.ma_co_so,
+            tenCoSo: row.ten_co_so,
+            nhaAnId: row.nha_an_id,
+            maNhaAn: row.ma_nha_an,
+            tenNhaAn: row.ten_nha_an,
+            caAnId: row.ca_an_id,
+            maCaAn: row.ma_ca_an,
+            tenCaAn: row.ten_ca_an,
+            thoiGianBatDau: row.thoi_gian_bat_dau,
+            thoiGianKetThuc: row.thoi_gian_ket_thuc,
+            soThuTu: row.so_thu_tu,
+            maVe: row.ma_ve,
+            qrToken: row.qr_token,
+            trangThai: row.trang_thai,
+            thoiGianSuDung: row.thoi_gian_su_dung,
+            nguoiXacNhanId: row.nguoi_xac_nhan_id,
+            nguoiHuyId: row.nguoi_huy_id,
+            thoiGianHuy: row.thoi_gian_huy,
+            lyDoHuy: row.ly_do_huy,
+            doiTuongLayVe: row.doi_tuong_lay_ve,
+            nhanVienId: row.nhan_vien_id,
+            maNhanVien: row.ma_nhan_vien,
+            tenNhanVien: row.ten_nhan_vien,
+            hoTenNguoiLayVe: row.ho_ten_nguoi_lay_ve,
+            soDienThoaiNguoiLayVe: row.so_dien_thoai_nguoi_lay_ve,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
         };
-
     }
 
-
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -231,94 +142,58 @@ class VeAnRepository {
                    p.nhan_vien_id
 
         `;
-
     }
-
 
     async getTongHop(
         query = {}
     ) {
+        const conditions = [];
+        const values = [];
 
-        const conditions =
-            [];
-
-        const values =
-            [];
-
-
-        if (
-            query.phieuLayVeId
-        ) {
-
+        if (query.phieuLayVeId) {
             values.push(
-                Number(
-                    query.phieuLayVeId
-                )
+                Number(query.phieuLayVeId)
             );
 
             conditions.push(
                 `v.phieu_lay_ve_id = $${values.length}`
             );
-
         }
 
-
-        if (
-            query.thucDonNgayId
-        ) {
-
+        if (query.thucDonNgayId) {
             values.push(
-                Number(
-                    query.thucDonNgayId
-                )
+                Number(query.thucDonNgayId)
             );
 
             conditions.push(
                 `v.thuc_don_ngay_id = $${values.length}`
             );
-
         }
-
 
         if (
             query.trangThai !==
             undefined
         ) {
-
             values.push(
-                Number(
-                    query.trangThai
-                )
+                Number(query.trangThai)
             );
 
             conditions.push(
                 `v.trang_thai = $${values.length}`
             );
-
         }
 
-
-        if (
-            query.maVe
-        ) {
-
+        if (query.maVe) {
             values.push(
-                String(
-                    query.maVe
-                ).trim()
+                String(query.maVe).trim()
             );
 
             conditions.push(
                 `UPPER(v.ma_ve) = UPPER($${values.length})`
             );
-
         }
 
-
-        if (
-            query.tuNgay
-        ) {
-
+        if (query.tuNgay) {
             values.push(
                 query.tuNgay
             );
@@ -326,14 +201,9 @@ class VeAnRepository {
             conditions.push(
                 `tdn.ngay >= $${values.length}::date`
             );
-
         }
 
-
-        if (
-            query.denNgay
-        ) {
-
+        if (query.denNgay) {
             values.push(
                 query.denNgay
             );
@@ -341,29 +211,23 @@ class VeAnRepository {
             conditions.push(
                 `tdn.ngay <= $${values.length}::date`
             );
-
         }
-
 
         let sql = `
             ${this.getBaseQuery()}
         `;
 
-
         if (
             conditions.length >
             0
         ) {
-
             sql += `
                 WHERE
                     ${conditions.join(
                         "\nAND "
                     )}
             `;
-
         }
-
 
         sql += `
 
@@ -377,13 +241,10 @@ class VeAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
+        const result = await pool.query(
+            sql,
+            values
+        );
 
         return result.rows.map(
             row =>
@@ -391,15 +252,12 @@ class VeAnRepository {
                     row
                 )
         );
-
     }
-
 
     async getChiTiet(
         id,
         db = pool
     ) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -408,38 +266,29 @@ class VeAnRepository {
             LIMIT 1
         `;
 
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
+        const result = await db.query(
+            sql,
+            [
+                id
+            ]
+        );
 
         if (
             result.rows.length ===
             0
         ) {
-
             return null;
-
         }
-
 
         return this.mapVeAn(
             result.rows[0]
         );
-
     }
-
 
     async getByQrToken(
         qrToken,
         db = pool
     ) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -448,32 +297,24 @@ class VeAnRepository {
             LIMIT 1
         `;
 
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    qrToken
-                ]
-            );
-
+        const result = await db.query(
+            sql,
+            [
+                qrToken
+            ]
+        );
 
         if (
             result.rows.length ===
             0
         ) {
-
             return null;
-
         }
-
 
         return this.mapVeAn(
             result.rows[0]
         );
-
     }
-
 
     async xacNhanSuDung(
         id,
@@ -481,7 +322,6 @@ class VeAnRepository {
         trangThai,
         db = pool
     ) {
-
         const sql = `
 
             UPDATE ct_ve_an
@@ -502,23 +342,18 @@ class VeAnRepository {
 
         `;
 
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    id,
-                    trangThai,
-                    nguoiXacNhanId
-                ]
-            );
-
+        const result = await db.query(
+            sql,
+            [
+                id,
+                trangThai,
+                nguoiXacNhanId
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
-
 
     async huy(
         id,
@@ -527,7 +362,6 @@ class VeAnRepository {
         trangThai,
         db = pool
     ) {
-
         const sql = `
 
             UPDATE ct_ve_an
@@ -550,31 +384,25 @@ class VeAnRepository {
 
         `;
 
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    id,
-                    trangThai,
-                    nguoiHuyId,
-                    lyDoHuy
-                ]
-            );
-
+        const result = await db.query(
+            sql,
+            [
+                id,
+                trangThai,
+                nguoiHuyId,
+                lyDoHuy
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
-
 
     async hetHan(
         id,
         trangThai,
         db = pool
     ) {
-
         const sql = `
 
             UPDATE ct_ve_an
@@ -591,24 +419,17 @@ class VeAnRepository {
 
         `;
 
-
-        const result =
-            await db.query(
-                sql,
-                [
-                    id,
-                    trangThai
-                ]
-            );
-
+        const result = await db.query(
+            sql,
+            [
+                id,
+                trangThai
+            ]
+        );
 
         return result.rows[0] ||
             null;
-
     }
-
 }
 
-
-module.exports =
-    new VeAnRepository();
+module.exports = new VeAnRepository();

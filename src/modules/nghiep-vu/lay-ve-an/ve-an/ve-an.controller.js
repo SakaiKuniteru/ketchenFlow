@@ -1,32 +1,20 @@
-const service =
-    require(
-        "./ve-an.service"
-    );
-
+const service = require("./ve-an.service");
 
 const {
     successResponse
-} = require(
-    "../../../../utils/response.util"
-);
-
+} = require("../../../../utils/response.util");
 
 class VeAnController {
-
     async getTongHop(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getTongHop(
-                        req.query
-                    );
-
+            const data = await service
+                .getTongHop(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -34,40 +22,27 @@ class VeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async getChiTiet(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .getChiTiet(
-                        id
-                    );
-
+            const data = await service
+                .getChiTiet(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -75,34 +50,23 @@ class VeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async kiemTra(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .kiemTra(
-                        req.body
-                    );
-
+            const data = await service
+                .kiemTra(
+                    req.body
+                );
 
             return successResponse(
                 res,
@@ -110,35 +74,24 @@ class VeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async xacNhanSuDung(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .xacNhanSuDung(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .xacNhanSuDung(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -146,42 +99,29 @@ class VeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async huy(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .huy(
-                        id,
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .huy(
+                    id,
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -189,21 +129,12 @@ class VeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new VeAnController();
+module.exports = new VeAnController();

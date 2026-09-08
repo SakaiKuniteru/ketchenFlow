@@ -149,21 +149,14 @@ window.MCS.navigationItems = [
         label: "Danh sách lấy vé",
         group: "Vé ăn",
         url: "/ve-an/danh-sach-lay-ve",
-        permission: [
-            "Q001032",
-            "Q001033",
-            "Q001034"
-        ]
+        permission: "Q000030"
     },
 
     {
         label: "Lấy vé",
         group: "Vé ăn",
         url: "/ve-an/lay-ve-an",
-        permission: [
-            "Q001033",
-            "Q001034"
-        ]
+        permission: "Q000031"
     },
 
     {

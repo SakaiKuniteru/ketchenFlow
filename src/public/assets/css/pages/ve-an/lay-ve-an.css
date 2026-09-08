@@ -589,10 +589,6 @@
     }
 }
 
-/* =========================================================
- * Tích hợp common forms/* của KitchenFlow
- * ======================================================= */
-
 .lva-page [hidden],
 .lva-modal[hidden] {
     display: none !important;
@@ -861,10 +857,6 @@ body.lva-qr-modal-open {
     line-height: 1.5;
 }
 
-
-/*
- * Spinner dạng chấm quay giống popup mẫu.
- */
 .lva-bank-spinner {
     position: relative;
     width: 52px;

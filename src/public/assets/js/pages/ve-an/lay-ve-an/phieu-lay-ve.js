@@ -1,8 +1,7 @@
 "use strict";
 
 (() => {
-    const app =
-        window.KitchenFlowLayVeAn;
+    const app = window.KitchenFlowLayVeAn;
 
     if (!app) {
         return;
@@ -42,189 +41,122 @@
     const showError = (...args) => app.showError(...args);
     const stopQrPolling = (...args) => app.stopQrPolling(...args);
     const toPositiveInt = (...args) => app.toPositiveInt(...args);
-    const isFinancialLocked =
-        (...args) =>
-            app.isFinancialLocked(
-                ...args
-            );
+    const isFinancialLocked = (...args) => app.isFinancialLocked(...args);
 
-    async function handleLayVeStorageChange(
-        event
-    ) {
-
+    async function handleLayVeStorageChange(event) {
         if (
             event.key ===
             DAILY_MEAL_STORAGE_KEY
         ) {
-
             restoreDailyMealSelection();
-
             renderMeal();
-
 
             await loadGiaVePreview(
                 false
             );
 
-
             renderSummary();
-
             return;
-
         }
-
 
         if (
             event.key ===
             TAKER_TYPE_STORAGE_KEY
         ) {
-
             restoreDoiTuongSelection();
-
             renderPersonMode();
-
 
             await loadGiaVePreview(
                 false
             );
 
-
             renderSummary();
-
         }
-
     }
 
     function bindDoiTuongLayVeEvents() {
-
-        const select =
-            el.doiTuongLayVe;
-
+        const select = el.doiTuongLayVe;
 
         if (
             !select ||
-            select.dataset
-                .layVeDoiTuongBound ===
+            select.dataset.layVeDoiTuongBound ===
                 "true"
         ) {
-
             return;
-
         }
 
+        select.dataset.layVeDoiTuongBound = "true";
 
-        select.dataset
-            .layVeDoiTuongBound =
-            "true";
+        let timer = null;
 
-
-        let timer =
-            null;
-
-
-        const scheduleSync =
-            () => {
-
-                if (
+        const scheduleSync = () => {
+            if (timer) {
+                clearTimeout(
                     timer
-                ) {
+                );
+            }
 
-                    clearTimeout(
-                        timer
-                    );
+            timer = setTimeout(
+                async () => {
+                    timer = null;
 
-                }
+                    syncDoiTuongFromSmartSelect();
 
-
-                timer =
-                    setTimeout(
-                        async () => {
-
-                            timer =
-                                null;
-
-
-                            syncDoiTuongFromSmartSelect();
-
-
-                            await handleDoiTuongLayVeChange();
-
-                        },
-                        0
-                    );
-
-            };
-
+                    await handleDoiTuongLayVeChange();
+                },
+                0
+            );
+        };
 
         select.addEventListener(
             "change",
             scheduleSync
         );
 
-
         select.addEventListener(
             "input",
             scheduleSync
         );
 
-
-        const smartSelectRoot =
-            select.closest(
-                "[data-smart-select]"
-            );
-
+        const smartSelectRoot = select.closest(
+            "[data-smart-select]"
+        );
 
         smartSelectRoot
             ?.addEventListener(
                 "click",
                 scheduleSync
             );
-
     }
 
     function syncDoiTuongFromSmartSelect() {
-
-        const select =
-            el.doiTuongLayVe;
-
+        const select = el.doiTuongLayVe;
 
         if (!select) {
-
             return "";
-
         }
 
-
-        const smartSelectRoot =
-            select.closest(
-                "[data-smart-select]"
-            );
-
+        const smartSelectRoot = select.closest(
+            "[data-smart-select]"
+        );
 
         if (!smartSelectRoot) {
-
             return select.value;
-
         }
 
+        const display = smartSelectRoot.querySelector(
+            [
+                ".smart-select__value",
+                "[data-smart-select-value]",
+                ".smart-select__placeholder"
+            ].join(
+                ","
+            )
+        );
 
-        const display =
-            smartSelectRoot.querySelector(
-                [
-                    ".smart-select__value",
-                    "[data-smart-select-value]",
-                    ".smart-select__placeholder"
-                ].join(
-                    ","
-                )
-            );
-
-
-        const displayText =
-            normalizeSearchText(
-                display?.textContent
-            );
-
+        const displayText = normalizeSearchText(
+            display?.textContent
+        );
 
         if (
             !displayText ||
@@ -232,36 +164,24 @@
                 "chon doi tuong"
             )
         ) {
-
             return select.value;
-
         }
 
+        const selectedItem = state.doiTuong.find(
+            item =>
+                normalizeSearchText(
+                    item.label
+                ) ===
+                displayText
+        );
 
-        const selectedItem =
-            state.doiTuong.find(
-                item =>
-                    normalizeSearchText(
-                        item.label
-                    ) ===
-                    displayText
-            );
-
-
-        if (
-            !selectedItem
-        ) {
-
+        if (!selectedItem) {
             return select.value;
-
         }
 
-
-        const value =
-            String(
-                selectedItem.value
-            );
-
+        const value = String(
+            selectedItem.value
+        );
 
         Array
             .from(
@@ -270,47 +190,33 @@
             )
             .forEach(
                 option => {
-
                     option.selected =
                         option.value ===
                         value;
-
                 }
             );
 
-
-        select.value =
-            value;
-
+        select.value = value;
 
         return value;
-
     }
 
     function rememberDoiTuongSelection(
-        selectedValue =
-            null
+        selectedValue = null
     ) {
-
         const rawValue =
             selectedValue !==
                 null
                 ? selectedValue
                 : syncDoiTuongFromSmartSelect();
 
-
-        const value =
-            toPositiveInt(
-                rawValue
-            );
-
+        const value = toPositiveInt(
+            rawValue
+        );
 
         if (!value) {
-
             return;
-
         }
-
 
         localStorage.setItem(
             TAKER_TYPE_STORAGE_KEY,
@@ -318,64 +224,44 @@
                 value
             )
         );
-
     }
 
     async function handleDoiTuongLayVeChange() {
-
         if (
             !canChangeFinancialFields()
         ) {
-
             restoreDoiTuong();
-
             return;
-
         }
 
-
-        const value =
-            syncDoiTuongFromSmartSelect();
-
+        const value = syncDoiTuongFromSmartSelect();
 
         rememberDoiTuongSelection(
             value
         );
 
-
         renderPersonMode(
             value
         );
-
 
         await loadGiaVePreview(
             true
         );
 
-
         renderSummary();
-
-
         markDraftDirty();
-
     }
 
     function handleNewTicket() {
-
-        const execute =
-            async () => {
-
-                await resetForNewTicket();
-
-            };
-
+        const execute = async () => {
+            await resetForNewTicket();
+        };
 
         if (
             state.phieu ||
             state.payment ||
             state.discounts.length
         ) {
-
             confirmAction(
                 "Lấy vé mới",
                 "Bỏ thông tin đang nhập để chuyển sang người lấy vé mới?",
@@ -385,81 +271,40 @@
             );
 
             return;
-
         }
 
-
         execute();
-
     }
 
     async function resetForNewTicket() {
-
         stopQrPolling();
-
-
         closeDiscountModal();
-
         closeRefundModal();
-
         closeCancelPhieuModal();
 
-
-        if (
-            el.paymentInfo
-        ) {
-
-            el.paymentInfo.hidden =
-                true;
-
+        if (el.paymentInfo) {
+            el.paymentInfo.hidden = true;
         }
 
-
-        if (
-            el.qrPanel
-        ) {
-
-            el.qrPanel.hidden =
-                true;
-
+        if (el.qrPanel) {
+            el.qrPanel.hidden = true;
         }
 
+        state.phieu = null;
+        state.discounts = [];
+        state.availableDiscounts = [];
+        state.payment = null;
+        state.qrPayment = null;
+        state.pricePreview = null;
+        state.selectedPaymentMethod = null;
 
-        state.phieu =
-            null;
-
-        state.discounts =
-            [];
-
-        state.availableDiscounts =
-            [];
-
-        state.payment =
-            null;
-
-        state.qrPayment =
-            null;
-
-        state.pricePreview =
-            null;
-
-        state.selectedPaymentMethod =
-            null;
-        
-        root.dataset.phieuId =
-            "";
+        root.dataset.phieuId = "";
 
         markPageAsCreate();
 
-        if (
-            el.soLuong
-        ) {
-
-            el.soLuong.value =
-                "1";
-
+        if (el.soLuong) {
+            el.soLuong.value = "1";
         }
-
 
         setSelectValue(
             el.nhanVienId,
@@ -467,40 +312,17 @@
             false
         );
 
-
         clearEmployeeInfo();
-
-
-        clearTextField(
-            el.noteEmployee
-        );
-
-
-        clearTextField(
-            el.hoTen
-        );
-
-        clearTextField(
-            el.phone
-        );
-
-        clearTextField(
-            el.address
-        );
-
-        clearTextField(
-            el.unit
-        );
-
-        clearTextField(
-            el.noteGuest
-        );
-
+        clearTextField(el.noteEmployee);
+        clearTextField(el.hoTen);
+        clearTextField(el.phone);
+        clearTextField(el.address);
+        clearTextField(el.unit);
+        clearTextField(el.noteGuest);
 
         clearDateField(
             "ngaySinhNguoiLayVe"
         );
-
 
         setSelectValue(
             el.gioiTinh,
@@ -508,63 +330,29 @@
             false
         );
 
-
-        if (
-            el.permanentGuest
-        ) {
-
-            el.permanentGuest.checked =
-                false;
-
+        if (el.permanentGuest) {
+            el.permanentGuest.checked = false;
         }
 
-
         renderDiscounts();
-
-
         renderQrPanel();
-
-
         resetPaymentSelection();
 
-
-        /*
-        * KHÔNG xóa hai lựa chọn này:
-        *
-        * - thực đơn ngày
-        * - đối tượng lấy vé
-        *
-        * vì user muốn giữ thao tác.
-        */
         restoreDailyMealSelection();
-
-
         restoreDoiTuongSelection();
-
-
         renderMeal();
-
-
         renderPersonMode();
-
-
         renderEmployee();
-
 
         await loadGiaVePreview(
             false
         );
 
-
         renderSummary();
-
-
         renderStateActions();
-
     }
 
     function clearEmployeeInfo() {
-
         [
             el.employeeCode,
             el.employeeName,
@@ -574,55 +362,33 @@
         ]
             .forEach(
                 element => {
-
-                    if (
-                        element
-                    ) {
-
-                        element.textContent =
-                            "-";
-
+                    if (element) {
+                        element.textContent = "-";
                     }
-
                 }
             );
-
     }
 
-    function clearTextField(
-        input
-    ) {
+    function clearTextField(input) {
+        if (!input) {
+            return;
+        }
+
+        input.value = "";
+    }
+
+    function clearDateField(id) {
+        const input = document.getElementById(
+            id
+        );
 
         if (!input) {
             return;
         }
 
-
-        input.value =
-            "";
-
-    }
-
-    function clearDateField(
-        id
-    ) {
-
-        const input =
-            document.getElementById(
-                id
-            );
-
-
-        if (!input) {
-            return;
-        }
-
-
-        const field =
-            input.closest(
-                "[data-form-field]"
-            );
-
+        const field = input.closest(
+            "[data-form-field]"
+        );
 
         const datePickerRoot =
             input.closest(
@@ -632,39 +398,23 @@
                 "[data-date-picker]"
             );
 
-
         const hiddenInput =
             field?.querySelector(
                 "[data-date-value]"
             ) ||
             input;
 
+        const displayInput = field?.querySelector(
+            "[data-date-input]"
+        );
 
-        const displayInput =
-            field?.querySelector(
-                "[data-date-input]"
-            );
-
-
-        if (
-            hiddenInput
-        ) {
-
-            hiddenInput.value =
-                "";
-
+        if (hiddenInput) {
+            hiddenInput.value = "";
         }
 
-
-        if (
-            displayInput
-        ) {
-
-            displayInput.value =
-                "";
-
+        if (displayInput) {
+            displayInput.value = "";
         }
-
 
         (
             datePickerRoot?.datePicker ||
@@ -675,7 +425,6 @@
                 "",
                 false
             );
-
     }
 
     function renderMeal() {
@@ -709,10 +458,7 @@
         }
     }
 
-    function getDoiTuongByValue(
-        value
-    ) {
-
+    function getDoiTuongByValue(value) {
         return state.doiTuong.find(
             item =>
                 String(
@@ -723,33 +469,20 @@
                 )
         ) ||
         null;
-
     }
 
-    function isNhanVienDoiTuong(
-        value
-    ) {
+    function isNhanVienDoiTuong(value) {
+        const item = getDoiTuongByValue(
+            value
+        );
 
-        const item =
-            getDoiTuongByValue(
-                value
-            );
-
-
-        if (
-            !item
-        ) {
-
+        if (!item) {
             return false;
-
         }
 
-
-        const label =
-            normalizeSearchText(
-                item.label
-            );
-
+        const label = normalizeSearchText(
+            item.label
+        );
 
         return (
             Number(
@@ -762,14 +495,11 @@
                 "nhan vien"
             )
         );
-
     }
 
     function renderPersonMode(
-        selectedValue =
-            null
+        selectedValue = null
     ) {
-
         const value =
             selectedValue !==
                 null
@@ -782,40 +512,23 @@
                     ""
                 );
 
+        const hasValue = Boolean(
+            value
+        );
 
-        const hasValue =
-            Boolean(
-                value
-            );
+        const isEmployee = isNhanVienDoiTuong(
+            value
+        );
 
-
-        const isEmployee =
-            isNhanVienDoiTuong(
-                value
-            );
-
-
-        el.employeeSelectField.hidden =
-            !isEmployee;
-
-
-        el.employeeInfo.hidden =
-            !isEmployee;
-
-
+        el.employeeSelectField.hidden = !isEmployee;
+        el.employeeInfo.hidden = !isEmployee;
         el.guestForm.hidden =
             !hasValue ||
             isEmployee;
 
-
-        if (
-            isEmployee
-        ) {
-
+        if (isEmployee) {
             renderEmployee();
-
         }
-
     }
 
     function renderEmployee() {
@@ -941,29 +654,22 @@
         renderStateActions();
     }
 
-    async function loadExistingPhieu(
-        id
-    ) {
-        const phieuId =
-            toPositiveInt(
-                id
-            );
+    async function loadExistingPhieu(id) {
+        const phieuId = toPositiveInt(
+            id
+        );
 
-        if (
-            !phieuId
-        ) {
+        if (!phieuId) {
             throw new Error(
                 "ID phiếu lấy vé không hợp lệ."
             );
         }
 
-        const response =
-            await request(
-                `${API.phieu}/${phieuId}`
-            );
+        const response = await request(
+            `${API.phieu}/${phieuId}`
+        );
 
-        const phieu =
-            response?.data;
+        const phieu = response?.data;
 
         if (
             !phieu ||
@@ -974,8 +680,7 @@
             );
         }
 
-        state.phieu =
-            phieu;
+        state.phieu = phieu;
 
         state.pricePreview =
             Number.isFinite(
@@ -984,17 +689,15 @@
                 )
             )
                 ? {
-                    donGia:
-                        Number(
-                            phieu.donGia
-                        )
+                    donGia: Number(
+                        phieu.donGia
+                    )
                 }
                 : null;
 
-        root.dataset.phieuId =
-            String(
-                phieu.id
-            );
+        root.dataset.phieuId = String(
+            phieu.id
+        );
 
         ensureExistingMeal(
             phieu
@@ -1015,66 +718,51 @@
         return phieu;
     }
 
-    function ensureExistingMeal(
-        phieu
-    ) {
-        const id =
-            toPositiveInt(
-                phieu?.thucDonNgayId
-            );
+    function ensureExistingMeal(phieu) {
+        const id = toPositiveInt(
+            phieu?.thucDonNgayId
+        );
 
-        if (
-            !id
-        ) {
+        if (!id) {
             return;
         }
 
-        const exists =
-            state.thucDonNgay
-                .some(
-                    item =>
-                        Number(
-                            item.id
-                        ) ===
-                        Number(
-                            id
-                        )
-                );
+        const exists = state.thucDonNgay
+            .some(
+                item =>
+                    Number(
+                        item.id
+                    ) ===
+                    Number(
+                        id
+                    )
+            );
 
-        if (
-            !exists
-        ) {
+        if (!exists) {
             state.thucDonNgay.unshift({
                 id,
-
                 ngay:
                     phieu.ngay ||
                     phieu.ngaySuDung ||
                     null,
-
                 thucDonId:
                     phieu.thucDonId ||
                     null,
-
                 tenThucDon:
                     phieu.tenThucDon ||
                     phieu.maThucDon ||
                     "Thực đơn",
-
                 tenNhaAn:
                     phieu.tenNhaAn ||
                     phieu.maNhaAn ||
                     "Nhà ăn",
-
                 tenCaAn:
                     phieu.tenCaAn ||
                     phieu.maCaAn ||
                     "Ca ăn",
-
                 thoiGianBatDau:
                     phieu.thoiGianBatDau ||
                     null,
-
                 thoiGianKetThuc:
                     phieu.thoiGianKetThuc ||
                     null
@@ -1087,10 +775,9 @@
             item =>
                 item.id,
             item => {
-                const date =
-                    formatDate(
-                        item.ngay
-                    );
+                const date = formatDate(
+                    item.ngay
+                );
 
                 const ca =
                     item.tenCaAn ||
@@ -1106,56 +793,43 @@
         );
     }
 
-    function ensureExistingEmployee(
-        phieu
-    ) {
-        const id =
-            toPositiveInt(
-                phieu?.nhanVienId
-            );
+    function ensureExistingEmployee(phieu) {
+        const id = toPositiveInt(
+            phieu?.nhanVienId
+        );
 
-        if (
-            !id
-        ) {
+        if (!id) {
             return;
         }
 
-        const exists =
-            state.employees
-                .some(
-                    item =>
-                        Number(
-                            item.id
-                        ) ===
-                        Number(
-                            id
-                        )
-                );
+        const exists = state.employees
+            .some(
+                item =>
+                    Number(
+                        item.id
+                    ) ===
+                    Number(
+                        id
+                    )
+            );
 
-        if (
-            !exists
-        ) {
+        if (!exists) {
             state.employees.unshift({
                 id,
-
                 maNhanVien:
                     phieu.maNhanVien ||
                     "",
-
                 hoTen:
                     phieu.tenNhanVien ||
                     phieu.hoTenNhanVien ||
                     phieu.hoTenNguoiLayVe ||
                     "",
-
                 tenPhongBan:
                     phieu.tenPhongBan ||
                     "",
-
                 tenCoSo:
                     phieu.tenCoSo ||
                     "",
-
                 soDienThoai:
                     phieu.soDienThoai ||
                     phieu.soDienThoaiNguoiLayVe ||
@@ -1172,7 +846,6 @@
                 [
                     item.maNhanVien ||
                         item.ma_nhan_vien,
-
                     item.hoTen ||
                         item.tenNhanVien ||
                         item.ho_ten
@@ -1186,9 +859,7 @@
         );
     }
 
-    function hydratePhieuForm(
-        phieu
-    ) {
+    function hydratePhieuForm(phieu) {
         setSelectValue(
             el.thucDonNgayId,
             phieu.thucDonNgayId ??
@@ -1203,24 +874,18 @@
             false
         );
 
-        if (
-            el.soLuong
-        ) {
-            el.soLuong.value =
-                String(
-                    phieu.soLuong ||
-                    1
-                );
+        if (el.soLuong) {
+            el.soLuong.value = String(
+                phieu.soLuong ||
+                1
+            );
         }
 
-        const isEmployee =
-            isNhanVienDoiTuong(
-                phieu.doiTuongLayVe
-            );
+        const isEmployee = isNhanVienDoiTuong(
+            phieu.doiTuongLayVe
+        );
 
-        if (
-            isEmployee
-        ) {
+        if (isEmployee) {
             setSelectValue(
                 el.nhanVienId,
                 phieu.nhanVienId ??
@@ -1228,49 +893,37 @@
                 false
             );
 
-            if (
-                el.noteEmployee
-            ) {
+            if (el.noteEmployee) {
                 el.noteEmployee.value =
                     phieu.ghiChu ||
                     "";
             }
         } else {
-            if (
-                el.hoTen
-            ) {
+            if (el.hoTen) {
                 el.hoTen.value =
                     phieu.hoTenNguoiLayVe ||
                     "";
             }
 
-            if (
-                el.phone
-            ) {
+            if (el.phone) {
                 el.phone.value =
                     phieu.soDienThoaiNguoiLayVe ||
                     "";
             }
 
-            if (
-                el.address
-            ) {
+            if (el.address) {
                 el.address.value =
                     phieu.diaChiNguoiLayVe ||
                     "";
             }
 
-            if (
-                el.unit
-            ) {
+            if (el.unit) {
                 el.unit.value =
                     phieu.donViNguoiLayVe ||
                     "";
             }
 
-            if (
-                el.noteGuest
-            ) {
+            if (el.noteGuest) {
                 el.noteGuest.value =
                     phieu.ghiChu ||
                     "";
@@ -1288,9 +941,7 @@
                 false
             );
 
-            if (
-                el.permanentGuest
-            ) {
+            if (el.permanentGuest) {
                 el.permanentGuest.checked =
                     phieu.khachLauDai ===
                         true ||
@@ -1316,14 +967,11 @@
         id,
         value
     ) {
-        const input =
-            document.getElementById(
-                id
-            );
+        const input = document.getElementById(
+            id
+        );
 
-        if (
-            !input
-        ) {
+        if (!input) {
             return;
         }
 
@@ -1333,10 +981,9 @@
             ) ||
             "";
 
-        const field =
-            input.closest(
-                "[data-form-field]"
-            );
+        const field = input.closest(
+            "[data-form-field]"
+        );
 
         const datePickerRoot =
             input.closest(
@@ -1352,10 +999,9 @@
             ) ||
             input;
 
-        const displayInput =
-            field?.querySelector(
-                "[data-date-input]"
-            );
+        const displayInput = field?.querySelector(
+            "[data-date-input]"
+        );
 
         const datePicker =
             datePickerRoot?.datePicker ||
@@ -1366,12 +1012,11 @@
             datePicker
                 ?.setValue
         ) {
-            const parts =
-                normalized
-                    .split("-")
-                    .map(
-                        Number
-                    );
+            const parts = normalized
+                .split("-")
+                .map(
+                    Number
+                );
 
             if (
                 parts.length ===
@@ -1380,21 +1025,18 @@
                     Number.isFinite
                 )
             ) {
-                const date =
-                    new Date(
-                        parts[0],
-                        parts[1] - 1,
-                        parts[2]
-                    );
+                const date = new Date(
+                    parts[0],
+                    parts[1] - 1,
+                    parts[2]
+                );
 
                 try {
                     datePicker.setValue(
                         date,
                         false
                     );
-                } catch (
-                    error
-                ) {
+                } catch (error) {
                     console.warn(
                         "Không đồng bộ được date picker ngày sinh.",
                         error
@@ -1403,16 +1045,11 @@
             }
         }
 
-        if (
-            hiddenInput
-        ) {
-            hiddenInput.value =
-                normalized;
+        if (hiddenInput) {
+            hiddenInput.value = normalized;
         }
 
-        if (
-            displayInput
-        ) {
+        if (displayInput) {
             displayInput.value =
                 normalized
                     ? formatDate(
@@ -1423,58 +1060,46 @@
     }
 
     async function saveDraft() {
-        const payload =
-            buildPhieuPayload();
+        const payload = buildPhieuPayload();
 
         validatePhieuPayload(
             payload
         );
 
-        const canCreate =
-            permission.canCreatePhieu(
-                state.permissions
-            );
+        const canCreate = permission.canCreatePhieu(
+            state.permissions
+        );
 
-        const canUpdate =
-            permission.canUpdatePhieu(
-                state.permissions
-            );
+        const canUpdate = permission.canUpdatePhieu(
+            state.permissions
+        );
 
-        const isCreating =
-            !state.phieu;
+        const isCreating = !state.phieu;
 
         let response;
 
-        if (
-            isCreating
-        ) {
-            if (
-                !canCreate
-            ) {
+        if (isCreating) {
+            if (!canCreate) {
                 throw new Error(
                     "Bạn không có quyền tạo phiếu lấy vé ăn."
                 );
             }
 
-            response =
-                await request(
-                    `${API.phieu}/them-moi`,
-                    "POST",
-                    payload
-                );
+            response = await request(
+                `${API.phieu}/them-moi`,
+                "POST",
+                payload
+            );
         } else {
-            if (
-                !canUpdate
-            ) {
+            if (!canUpdate) {
                 return state.phieu;
             }
 
-            response =
-                await request(
-                    `${API.phieu}/cap-nhat/${state.phieu.id}`,
-                    "PATCH",
-                    payload
-                );
+            response = await request(
+                `${API.phieu}/cap-nhat/${state.phieu.id}`,
+                "PATCH",
+                payload
+            );
         }
 
         state.phieu =
@@ -1484,8 +1109,7 @@
         state.pricePreview =
             state.phieu
                 ? {
-                    donGia:
-                        state.phieu.donGia
+                    donGia: state.phieu.donGia
                 }
                 : state.pricePreview;
 
@@ -1508,32 +1132,23 @@
     }
 
     function buildPhieuPayload() {
+        const doiTuong = Number(
+            el.doiTuongLayVe
+                ?.value
+        );
 
-        const doiTuong =
-            Number(
-                el.doiTuongLayVe
-                    ?.value
-            );
-
-
-        const isEmployee =
-            isNhanVienDoiTuong(
-                doiTuong
-            );
-
+        const isEmployee = isNhanVienDoiTuong(
+            doiTuong
+        );
 
         return {
-
-            thucDonNgayId:
-                toPositiveInt(
-                    el.thucDonNgayId
-                        ?.value
-                ),
-
+            thucDonNgayId: toPositiveInt(
+                el.thucDonNgayId
+                    ?.value
+            ),
             doiTuongLayVe:
                 doiTuong ||
                 null,
-
             nhanVienId:
                 isEmployee
                     ? toPositiveInt(
@@ -1541,7 +1156,6 @@
                             ?.value
                     )
                     : null,
-
             hoTenNguoiLayVe:
                 isEmployee
                     ? null
@@ -1549,7 +1163,6 @@
                         el.hoTen
                             ?.value
                     ),
-
             ngaySinhNguoiLayVe:
                 isEmployee
                     ? null
@@ -1557,7 +1170,6 @@
                         el.ngaySinh
                             ?.value
                     ),
-
             gioiTinhNguoiLayVe:
                 isEmployee
                     ? null
@@ -1565,7 +1177,6 @@
                         el.gioiTinh
                             ?.value
                     ),
-
             soDienThoaiNguoiLayVe:
                 isEmployee
                     ? null
@@ -1573,7 +1184,6 @@
                         el.phone
                             ?.value
                     ),
-
             diaChiNguoiLayVe:
                 isEmployee
                     ? null
@@ -1581,7 +1191,6 @@
                         el.address
                             ?.value
                     ),
-
             donViNguoiLayVe:
                 isEmployee
                     ? null
@@ -1589,7 +1198,6 @@
                         el.unit
                             ?.value
                     ),
-
             khachLauDai:
                 isEmployee
                     ? false
@@ -1597,34 +1205,27 @@
                         el.permanentGuest
                             ?.checked
                     ),
-
-            soLuong:
-                Math.max(
-                    1,
-                    Math.floor(
-                        Number(
-                            el.soLuong
-                                ?.value ||
-                            1
-                        )
+            soLuong: Math.max(
+                1,
+                Math.floor(
+                    Number(
+                        el.soLuong
+                            ?.value ||
+                        1
                     )
-                ),
-
-            ghiChu:
-                nullableText(
-                    isEmployee
-                        ? el.noteEmployee
-                            ?.value
-                        : el.noteGuest
-                            ?.value
-                ),
-
+                )
+            ),
+            ghiChu: nullableText(
+                isEmployee
+                    ? el.noteEmployee
+                        ?.value
+                    : el.noteGuest
+                        ?.value
+            ),
             phuongThucThanhToan:
                 state.selectedPaymentMethod ??
                 null
-
         };
-
     }
 
     function validatePhieuPayload(payload) {
@@ -1672,7 +1273,6 @@
     }
 
     async function openCancelPhieuModal() {
-
         if (
             !permission.canCancelPhieu(
                 state.permissions
@@ -1681,101 +1281,54 @@
             return;
         }
 
-
-        /*
-        * Chưa có record phiếu trong DB:
-        * lưu draft trước khi thực hiện hủy.
-        */
         if (
             !state.phieu?.id
         ) {
-
             try {
-
-                setLoading(
-                    true
-                );
-
+                setLoading(true);
 
                 await saveDraft();
-
-            } catch (
-                error
-            ) {
-
+            } catch (error) {
                 showError(
                     error
                 );
 
                 return;
-
             } finally {
-
-                setLoading(
-                    false
-                );
-
+                setLoading(false);
             }
-
         }
 
-
-        if (
-            el.cancelPhieuReason
-        ) {
-
-            el.cancelPhieuReason.value =
-                "";
-
+        if (el.cancelPhieuReason) {
+            el.cancelPhieuReason.value = "";
         }
 
-
-        if (
-            el.cancelPhieuModal
-        ) {
-
-            el.cancelPhieuModal.hidden =
-                false;
-
+        if (el.cancelPhieuModal) {
+            el.cancelPhieuModal.hidden = false;
         }
-
     }
 
     function closeCancelPhieuModal() {
-
-        if (
-            el.cancelPhieuModal
-        ) {
-
-            el.cancelPhieuModal.hidden =
-                true;
-
+        if (el.cancelPhieuModal) {
+            el.cancelPhieuModal.hidden = true;
         }
-
     }
 
     function submitCancelPhieu() {
-
         if (
             !state.phieu?.id
         ) {
             return;
         }
 
+        const reason = String(
+            el.cancelPhieuReason
+                ?.value ||
+            ""
+        )
+            .trim();
 
-        const reason =
-            String(
-                el.cancelPhieuReason
-                    ?.value ||
-                ""
-            )
-                .trim();
-
-
-        if (
-            !reason
-        ) {
-
+        if (!reason) {
             showError(
                 new Error(
                     "Vui lòng nhập lý do hủy phiếu."
@@ -1783,66 +1336,40 @@
             );
 
             return;
-
         }
 
+        const execute = async () => {
+            try {
+                setLoading(true);
 
-        const execute =
-            async () => {
+                const response = await request(
+                    `${API.phieu}/huy/${state.phieu.id}`,
+                    "PATCH",
+                    {
+                        lyDoHuy: reason
+                    }
+                );
 
-                try {
+                closeCancelPhieuModal();
 
-                    setLoading(
-                        true
+                await resetForNewTicket();
+
+                window.MCS
+                    ?.toast
+                    ?.success
+                    ?.(
+                        response?.message ||
+                        "Hủy phiếu thành công."
                     );
-
-
-                    const response =
-                        await request(
-                            `${API.phieu}/huy/${state.phieu.id}`,
-                            "PATCH",
-                            {
-                                lyDoHuy:
-                                    reason
-                            }
-                        );
-
-                    closeCancelPhieuModal();
-
-
-                    await resetForNewTicket();
-
-
-                    window.MCS
-                        ?.toast
-                        ?.success
-                        ?.(
-                            response?.message ||
-                            "Hủy phiếu thành công."
-                        );
-
-                } catch (
+            } catch (error) {
+                showError(
                     error
-                ) {
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
 
-                    showError(
-                        error
-                    );
-
-                } finally {
-
-                    setLoading(
-                        false
-                    );
-
-                }
-
-            };
-
-
-        /*
-        * XÁC NHẬN nằm SAU khi đã nhập lý do.
-        */
         confirmAction(
             "Hủy phiếu lấy vé",
             "Bạn có chắc chắn muốn hủy phiếu này?",
@@ -1850,58 +1377,39 @@
             "danger",
             execute
         );
-
     }
 
     async function printTicket() {
-
         if (
             !permission.canPrint(
                 state.permissions
             )
         ) {
-
             return;
-
         }
 
+        const document = state.activePaymentDocument;
 
-        const document =
-            state.activePaymentDocument;
-
-
-        if (
-            !document
-        ) {
-
+        if (!document) {
             return;
-
         }
 
-
-        let endpoint =
-            null;
-
+        let endpoint = null;
 
         if (
             document.loai ===
             "PHIEU_HOAN"
         ) {
-
             if (
                 !document.thanhToanId
             ) {
-
                 throw new Error(
                     "Không xác định được phiếu hoàn cần in."
                 );
-
             }
-
 
             endpoint =
                 `${API.payment}/in-phieu-hoan/${document.thanhToanId}`;
-
         }
         else if (
             document.loai ===
@@ -1909,13 +1417,10 @@
             document.trangThaiHienThi ===
                 "DA_THANH_TOAN"
         ) {
-
             endpoint =
                 `${API.phieu}/in-ve/${document.phieuLayVeId}`;
-
         }
         else {
-
             window.MCS
                 ?.toast
                 ?.info
@@ -1924,89 +1429,55 @@
                 );
 
             return;
-
         }
 
-
         try {
-
-            setLoading(
-                true
-            );
-
+            setLoading(true);
 
             if (
                 !window.MCS
                     ?.reportPrint
                     ?.print
             ) {
-
                 throw new Error(
                     "Chức năng in báo cáo chưa được khởi tạo."
                 );
-
             }
-
 
             await window.MCS
                 .reportPrint
                 .print(
                     endpoint
                 );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             showError(
                 error,
                 "Không thể in giấy tờ."
             );
-
         } finally {
-
-            setLoading(
-                false
-            );
-
+            setLoading(false);
         }
-
     }
 
     function setSmartSelectDisabled(
         select,
         disabled
     ) {
-
-        if (
-            !select
-        ) {
-
+        if (!select) {
             return;
-
         }
 
+        select.disabled = Boolean(
+            disabled
+        );
 
-        select.disabled =
-            Boolean(
-                disabled
-            );
+        const wrapper = select.closest(
+            "[data-smart-select]"
+        );
 
-
-        const wrapper =
-            select.closest(
-                "[data-smart-select]"
-            );
-
-
-        if (
-            !wrapper
-        ) {
-
+        if (!wrapper) {
             return;
-
         }
-
 
         const smartSelect =
             wrapper.smartSelect ||
@@ -2016,7 +1487,6 @@
                     wrapper
                 );
 
-
         smartSelect
             ?.setDisabled?.(
                 Boolean(
@@ -2024,48 +1494,26 @@
                 )
             );
 
-
         smartSelect
             ?.refresh?.();
-
     }
 
     function renderEditLocks() {
+        const locked = isFinancialLocked();
 
-        const locked =
-            isFinancialLocked();
-
-
-        /*
-        * Bữa ăn.
-        */
         setSmartSelectDisabled(
             el.thucDonNgayId,
             locked
         );
 
-
-        /*
-        * Đối tượng lấy vé.
-        */
         setSmartSelectDisabled(
             el.doiTuongLayVe,
             locked
         );
 
-
-        /*
-        * Số lượng.
-        */
-        if (
-            el.soLuong
-        ) {
-
-            el.soLuong.disabled =
-                locked;
-
+        if (el.soLuong) {
+            el.soLuong.disabled = locked;
         }
-
 
         root
             .querySelector(
@@ -2076,7 +1524,6 @@
                 locked
             );
 
-
         root
             .querySelector(
                 "[data-qty-plus]"
@@ -2086,19 +1533,9 @@
                 locked
             );
 
-
-        /*
-        * Miễn giảm.
-        */
-        if (
-            el.discountOpen
-        ) {
-
-            el.discountOpen.disabled =
-                locked;
-
+        if (el.discountOpen) {
+            el.discountOpen.disabled = locked;
         }
-
 
         root
             .querySelectorAll(
@@ -2106,48 +1543,32 @@
             )
             .forEach(
                 button => {
-
-                    button.disabled =
-                        locked;
-
+                    button.disabled = locked;
                 }
             );
 
-
-        /*
-        * PTTT.
-        */
         el.paymentMethodList
             ?.querySelectorAll(
                 'input[name="phuongThucThanhToan"]'
             )
             .forEach(
                 radio => {
-
-                    radio.disabled =
-                        locked;
-
+                    radio.disabled = locked;
                 }
             );
-
 
         root.classList.toggle(
             "is-financial-locked",
             locked
         );
-
     }
 
     function canChangeFinancialFields() {
-
         if (
             !isFinancialLocked()
         ) {
-
             return true;
-
         }
-
 
         window.MCS
             ?.toast
@@ -2156,9 +1577,7 @@
                 "Phiếu hiện tại không được thay đổi thông tin tính tiền."
             );
 
-
         return false;
-
     }
 
     function restoreSelectedMeal() {
@@ -2213,131 +1632,95 @@
     }
 
     function rememberDailyMealSelection() {
-
-        const value =
-            toPositiveInt(
-                el.thucDonNgayId?.value
-            );
-
+        const value = toPositiveInt(
+            el.thucDonNgayId?.value
+        );
 
         if (!value) {
-
             localStorage.removeItem(
                 DAILY_MEAL_STORAGE_KEY
             );
 
             return;
-
         }
-
 
         localStorage.setItem(
             DAILY_MEAL_STORAGE_KEY,
             JSON.stringify({
-                date:
-                    getTodayKey(),
-
-                thucDonNgayId:
-                    value
+                date: getTodayKey(),
+                thucDonNgayId: value
             })
         );
-
     }
 
     function restoreDailyMealSelection() {
-
         if (
             !el.thucDonNgayId
         ) {
-
             return;
-
         }
 
-
-        let stored =
-            null;
-
+        let stored = null;
 
         try {
-
-            stored =
-                JSON.parse(
-                    localStorage.getItem(
-                        DAILY_MEAL_STORAGE_KEY
-                    ) ||
-                    "null"
-                );
-
+            stored = JSON.parse(
+                localStorage.getItem(
+                    DAILY_MEAL_STORAGE_KEY
+                ) ||
+                "null"
+            );
         } catch {
-
             localStorage.removeItem(
                 DAILY_MEAL_STORAGE_KEY
             );
 
             return;
-
         }
-
 
         if (
             !stored ||
             stored.date !==
                 getTodayKey()
         ) {
-
             localStorage.removeItem(
                 DAILY_MEAL_STORAGE_KEY
             );
 
             return;
-
         }
 
+        const value = String(
+            stored.thucDonNgayId ||
+            ""
+        );
 
-        const value =
-            String(
-                stored.thucDonNgayId ||
-                ""
+        const exists = Array.from(
+            el.thucDonNgayId.options ||
+            []
+        )
+            .some(
+                option =>
+                    option.value ===
+                    value
             );
-
-
-        const exists =
-            Array.from(
-                el.thucDonNgayId.options ||
-                []
-            )
-                .some(
-                    option =>
-                        option.value ===
-                        value
-                );
-
 
         if (!exists) {
-
             localStorage.removeItem(
                 DAILY_MEAL_STORAGE_KEY
             );
 
             return;
-
         }
-
 
         setSelectValue(
             el.thucDonNgayId,
             value,
             false
         );
-
     }
 
     function getDefaultDoiTuongValue() {
-
-        const first =
-            getOrderedDoiTuong()[0];
-
+        const first = getOrderedDoiTuong()[0];
 
         return first?.value !==
             undefined
@@ -2345,66 +1728,41 @@
                 first.value
             )
             : "";
-
     }
 
     function restoreDoiTuongSelection() {
-
         if (
             !el.doiTuongLayVe
         ) {
-
             return;
-
         }
 
+        const storedValue = localStorage.getItem(
+            TAKER_TYPE_STORAGE_KEY
+        );
 
-        const storedValue =
-            localStorage.getItem(
-                TAKER_TYPE_STORAGE_KEY
-            );
+        let value = storedValue;
 
+        const exists = state.doiTuong.some(
+            item =>
+                String(
+                    item.value
+                ) ===
+                String(
+                    storedValue
+                )
+        );
 
-        let value =
-            storedValue;
-
-
-        const exists =
-            state.doiTuong.some(
-                item =>
-                    String(
-                        item.value
-                    ) ===
-                    String(
-                        storedValue
-                    )
-            );
-
-
-        /*
-        * Nếu trước đây user đã chọn thì ưu tiên
-        * lựa chọn đã nhớ.
-        *
-        * Chỉ khi chưa có lựa chọn cũ mới dùng
-        * phần tử đầu theo thiết lập.
-        */
         if (
             !storedValue ||
             !exists
         ) {
-
-            value =
-                getDefaultDoiTuongValue();
-
+            value = getDefaultDoiTuongValue();
         }
-
 
         if (!value) {
-
             return;
-
         }
-
 
         setSelectValue(
             el.doiTuongLayVe,
@@ -2412,11 +1770,9 @@
             false
         );
 
-
         renderPersonMode(
             value
         );
-
 
         localStorage.setItem(
             TAKER_TYPE_STORAGE_KEY,
@@ -2424,7 +1780,6 @@
                 value
             )
         );
-
     }
 
     async function loadGiaVePreview(

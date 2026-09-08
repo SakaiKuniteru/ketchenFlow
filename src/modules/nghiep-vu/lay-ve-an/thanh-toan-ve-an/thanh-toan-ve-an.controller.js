@@ -1,32 +1,20 @@
-const service =
-    require(
-        "./thanh-toan-ve-an.service"
-    );
-
+const service = require("./thanh-toan-ve-an.service");
 
 const {
     successResponse
-} = require(
-    "../../../../utils/response.util"
-);
-
+} = require("../../../../utils/response.util");
 
 class ThanhToanVeAnController {
-
     async getTongHop(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getTongHop(
-                        req.query
-                    );
-
+            const data = await service
+                .getTongHop(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -34,17 +22,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async getDanhSachPhieu(
@@ -52,16 +34,12 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getDanhSachPhieu(
-                        req.params
-                            .phieuLayVeId
-                    );
-
+            const data = await service
+                .getDanhSachPhieu(
+                    req.params
+                        .phieuLayVeId
+                );
 
             return successResponse(
                 res,
@@ -69,17 +47,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async getChiTiet(
@@ -87,21 +59,15 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .getChiTiet(
-                        id
-                    );
-
+            const data = await service
+                .getChiTiet(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -109,17 +75,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async inPhieuHoan(
@@ -127,16 +87,12 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getDuLieuInPhieuHoan(
-                        req.params.id,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .getDuLieuInPhieuHoan(
+                    req.params.id,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -144,17 +100,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async create(
@@ -162,16 +112,12 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .create(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .create(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -179,35 +125,24 @@ class ThanhToanVeAnController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async taoQr(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .taoQr(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .taoQr(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -215,17 +150,11 @@ class ThanhToanVeAnController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async getQr(
@@ -233,21 +162,15 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .getQr(
-                        id
-                    );
-
+            const data = await service
+                .getQr(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -255,17 +178,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async huyQr(
@@ -273,23 +190,17 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .huyQr(
-                        id,
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .huyQr(
+                    id,
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -297,42 +208,29 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async xacNhan(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .xacNhan(
-                        id,
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .xacNhan(
+                    id,
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -340,35 +238,24 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async hoanTien(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .hoanTien(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .hoanTien(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -376,17 +263,11 @@ class ThanhToanVeAnController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async huyThanhToan(
@@ -394,23 +275,17 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .huyThanhToan(
-                        id,
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .huyThanhToan(
+                    id,
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -418,17 +293,11 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
 
     async callback(
@@ -436,15 +305,11 @@ class ThanhToanVeAnController {
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .callback(
-                        req.body
-                    );
-
+            const data = await service
+                .callback(
+                    req.body
+                );
 
             return successResponse(
                 res,
@@ -452,21 +317,12 @@ class ThanhToanVeAnController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new ThanhToanVeAnController();
+module.exports = new ThanhToanVeAnController();

@@ -1,8 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const app =
-        window.KitchenFlowLayVeAn;
+    const app = window.KitchenFlowLayVeAn;
 
     if (!app) {
         return;
@@ -18,54 +17,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bindDiscountSearch = (...args) => app.bindDiscountSearch(...args);
     const bindDoiTuongLayVeEvents = (...args) => app.bindDoiTuongLayVeEvents(...args);
     const bindGiaTriMienGiamInput = (...args) => app.bindGiaTriMienGiamInput(...args);
-    const canChangeFinancialFields =
-        (...args) =>
-            app.canChangeFinancialFields(
-                ...args
-            );
+    const canChangeFinancialFields = (...args) => app.canChangeFinancialFields(...args);
     const changeDiscountTab = (...args) => app.changeDiscountTab(...args);
     const confirmCurrentPayment = (...args) => app.confirmCurrentPayment(...args);
-    const closeQrModal =
-        (...args) =>
-            app.closeQrModal(
-                ...args
-            );
+    const closeQrModal = (...args) => app.closeQrModal(...args);
+    const loadCurrentQr = (...args) => app.loadCurrentQr(...args);
+    const recreateQr = (...args) => app.recreateQr(...args);
 
-    const loadCurrentQr =
-        (...args) =>
-            app.loadCurrentQr(
-                ...args
-            );
-
-    const recreateQr =
-        (...args) =>
-            app.recreateQr(
-                ...args
-            );
-    const enhanceQuantityField =
-    (...args) => {
-
+    const enhanceQuantityField = (...args) => {
         if (
             typeof app
                 .enhanceQuantityField !==
             "function"
         ) {
-
             console.warn(
                 "enhanceQuantityField chưa được khởi tạo."
             );
 
             return;
-
         }
-
 
         return app
             .enhanceQuantityField(
                 ...args
             );
-
     };
+
     const handlePay = (...args) => app.handlePay(...args);
     const loadDoiTuongOrderSetting = (...args) => app.loadDoiTuongOrderSetting(...args);
     const loadEmployees = (...args) => app.loadEmployees(...args);
@@ -111,11 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const renderStateActions = (...args) => app.renderStateActions(...args);
     const setSelectedPaymentMethod = (...args) => app.setSelectedPaymentMethod(...args);
     const startQrPolling = (...args) => app.startQrPolling(...args);
-    const cancelPayment =
-        (...args) =>
-            app.cancelPayment(
-                ...args
-            );
+    const cancelPayment = (...args) => app.cancelPayment(...args);
 
     if (!root) {
         return;
@@ -148,17 +121,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadEnum("trangThaiPhieuThu", value => {
                 state.phieuStatuses = value;
             }),
-
             loadEnum("trangThaiThanhToan", value => {
                 state.paymentStatuses = value;
             }),
             loadEnum(
                 "loaiGiaoDich",
                 value => {
-
-                    state.transactionTypes =
-                        value;
-
+                    state.transactionTypes = value;
                 }
             ),
             loadEmployees(),
@@ -168,9 +137,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         renderOptions();
         enhanceQuantityField();
-        if (
-            isExistingPage()
-        ) {
+
+        if (isExistingPage()) {
             await loadExistingPhieu(
                 app.pageContext.recordId
             );
@@ -207,6 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     existingPaymentMethod
                 );
             }
+
             renderMeal();
             renderPersonMode(
                 state.phieu?.doiTuongLayVe
@@ -216,12 +185,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             renderSummary();
             renderPermissionActions();
             renderStateActions();
+
             if (state.qrPayment?.id) {
                 startQrPolling();
             }
-        }
-
-        else if (isCreatePage()) {
+        } else if (isCreatePage()) {
             restoreDailyMealSelection();
             restoreDoiTuongSelection();
             renderMeal();
@@ -230,9 +198,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             await loadGiaVePreview(false);
             renderSummary();
             renderPermissionActions();
+        } else {
+            throw new Error("Đường dẫn phiếu lấy vé không hợp lệ.");
         }
-
-        else { throw new Error("Đường dẫn phiếu lấy vé không hợp lệ."); }
 
         bindEvents();
     } catch (error) {
@@ -266,11 +234,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             ?.addEventListener(
                 "change",
                 () => {
-
                     renderEmployee();
-
                     markDraftDirty();
-
                 }
             );
 
@@ -293,6 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.soLuong.value = String(
                 Math.max(1, Number(el.soLuong.value || 1) - 1)
             );
+
             renderSummary();
             markDraftDirty();
         });
@@ -305,6 +271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.soLuong.value = String(
                 Math.max(1, Number(el.soLuong.value || 1) + 1)
             );
+
             renderSummary();
             markDraftDirty();
         });
@@ -313,19 +280,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             ?.addEventListener(
                 "click",
                 async () => {
-
                     await loadCurrentQr();
-
                 }
             );
-
 
         el.recreateQr
             ?.addEventListener(
                 "click",
                 recreateQr
             );
-
 
         el.cancelQr
             ?.addEventListener(
@@ -362,9 +325,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         el.refundSubmit?.addEventListener("click", submitRefundModal);
-
         el.discountOpen?.addEventListener("click", openDiscountModal);
         el.print?.addEventListener("click", printTicket);
+
         el.cancelPhieu?.addEventListener(
             "click",
             openCancelPhieuModal
@@ -376,12 +339,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             )
             .forEach(
                 button => {
-
                     button.addEventListener(
                         "click",
                         closeCancelPhieuModal
                     );
-
                 }
             );
 
@@ -400,6 +361,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 changeDiscountTab(button.dataset.discountTab)
             );
         });
+
         el.discountCreate?.addEventListener(
             "click",
             createManualDiscount
@@ -411,15 +373,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             )
             .forEach(
                 button => {
-
                     button.addEventListener(
                         "click",
                         closeQrModal
                     );
-
                 }
             );
-
 
         el.qrModalCancel
             ?.addEventListener(
@@ -427,13 +386,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 cancelQr
             );
 
-
         el.qrModalRecreate
             ?.addEventListener(
                 "click",
                 recreateQr
             );
-
 
         el.qrModalConfirm
             ?.addEventListener(
@@ -446,16 +403,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "click",
                 cancelPayment
             );
+
         bindDiscountSearch();
         bindGiaTriMienGiamInput();
-        if (
-            isCreatePage()
-        ) {
+
+        if (isCreatePage()) {
             window.addEventListener(
                 "storage",
                 handleLayVeStorageChange
             );
         }
-    
     }
 });

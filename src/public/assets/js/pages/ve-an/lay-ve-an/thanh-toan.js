@@ -1,8 +1,7 @@
 "use strict";
 
 (() => {
-    const app =
-        window.KitchenFlowLayVeAn;
+    const app = window.KitchenFlowLayVeAn;
 
     if (!app) {
         return;
@@ -28,13 +27,7 @@
     const normalizeSearchText = (...args) => app.normalizeSearchText(...args);
     const reloadPhieu = (...args) => app.reloadPhieu(...args);
     const renderSummary = (...args) => app.renderSummary(...args);
-
-    const renderEditLocks =
-        (...args) =>
-            app.renderEditLocks(
-                ...args
-            );
-
+    const renderEditLocks = (...args) => app.renderEditLocks(...args);
     const request = (...args) => app.request(...args);
     const saveDraft = (...args) => app.saveDraft(...args);
     const setLoading = (...args) => app.setLoading(...args);
@@ -43,50 +36,31 @@
     const toPositiveInt = (...args) => app.toPositiveInt(...args);
 
     function resetPaymentSelection() {
+        const radios = el.paymentMethodList
+            ?.querySelectorAll(
+                'input[name="phuongThucThanhToan"]'
+            );
 
-        const radios =
-            el.paymentMethodList
-                ?.querySelectorAll(
-                    'input[name="phuongThucThanhToan"]'
-                );
-
-
-        if (
-            !radios?.length
-        ) {
-
-            state.selectedPaymentMethod =
-                null;
-
+        if (!radios?.length) {
+            state.selectedPaymentMethod = null;
             return;
-
         }
-
 
         radios.forEach(
             (
                 radio,
                 index
             ) => {
-
-                radio.checked =
-                    index === 0;
-
+                radio.checked = index === 0;
             }
         );
 
-
-        const first =
-            radios[0];
-
+        const first = radios[0];
 
         state.selectedPaymentMethod =
             first?.value
-                ? Number(
-                    first.value
-                )
+                ? Number(first.value)
                 : null;
-
 
         el.paymentMethodList
             ?.querySelectorAll(
@@ -94,15 +68,12 @@
             )
             .forEach(
                 option => {
-
                     option.classList
                         .remove(
                             "is-selected"
                         );
-
                 }
             );
-
 
         first
             ?.closest(
@@ -112,12 +83,9 @@
             ?.add(
                 "is-selected"
             );
-
     }
 
-    function setSelectedPaymentMethod(
-        value
-    ) {
+    function setSelectedPaymentMethod(value) {
         if (
             value === null ||
             value === undefined ||
@@ -126,30 +94,23 @@
             return;
         }
 
-        const methodValue =
-            Number(
-                value
-            );
+        const methodValue = Number(value);
 
         if (
-            !Number.isFinite(
-                methodValue
-            )
+            !Number.isFinite(methodValue)
         ) {
             return;
         }
 
-        state.selectedPaymentMethod =
-            methodValue;
+        state.selectedPaymentMethod = methodValue;
 
-        const radios =
-            Array.from(
-                el.paymentMethodList
-                    ?.querySelectorAll(
-                        'input[name="phuongThucThanhToan"]'
-                    ) ||
-                []
-            );
+        const radios = Array.from(
+            el.paymentMethodList
+                ?.querySelectorAll(
+                    'input[name="phuongThucThanhToan"]'
+                ) ||
+            []
+        );
 
         radios.forEach(
             radio => {
@@ -170,50 +131,42 @@
                     option.classList.toggle(
                         "is-selected",
                         Number(
-                            option.dataset
-                                .paymentOption
+                            option.dataset.paymentOption
                         ) ===
                         methodValue
                     );
                 }
             );
     }
+
     function renderPaymentMethods() {
         if (!el.paymentMethodList) {
             return;
         }
 
-        const visible =
-            state.paymentMethods
-                .filter(
-                    item =>
-                        state
-                            .paymentMethodVisibleValues
-                            .includes(
-                                Number(
-                                    item.value
-                                )
-                            )
-                )
-                .filter(
-                    item => {
+        const visible = state.paymentMethods
+            .filter(
+                item =>
+                    state.paymentMethodVisibleValues
+                        .includes(
+                            Number(item.value)
+                        )
+            )
+            .filter(
+                item => {
+                    const isQr = isQrMethod(
+                        item
+                    );
 
-                        const isQr =
-                            isQrMethod(
-                                item
-                            );
-
-
-                        return isQr
-                            ? permission.canCreateQr(
-                                state.permissions
-                            )
-                            : permission.canCreatePayment(
-                                state.permissions
-                            );
-
-                    }
-                );
+                    return isQr
+                        ? permission.canCreateQr(
+                            state.permissions
+                        )
+                        : permission.canCreatePayment(
+                            state.permissions
+                        );
+                }
+            );
 
         el.paymentSection.hidden =
             !permission.canViewPayment(state.permissions) ||
@@ -292,7 +245,6 @@
     }
 
     function renderPermissionActions() {
-
         if (el.discountOpen) {
             el.discountOpen.hidden =
                 !permission.canCreateDiscount(
@@ -304,19 +256,14 @@
     }
 
     function renderStateActions() {
-
         const {
             isRefund,
             isPaid,
             isUnpaid,
             pendingQr
-        } =
-            getDocumentMode();
+        } = getDocumentMode();
 
-
-        const document =
-            state.activePaymentDocument;
-
+        const document = state.activePaymentDocument;
 
         const hasRefundForCurrentPayment =
             isPaid &&
@@ -335,70 +282,50 @@
                     )
             );
 
-
-        const hasQr =
-            Boolean(
-                document
-                    ?.qrThanhToanId
-            );
-
+        const hasQr = Boolean(
+            document?.qrThanhToanId
+        );
 
         const qrMutable =
             hasQr &&
             isUnpaid &&
             pendingQr;
 
-        if (
-            el.print
-        ) {
-
+        if (el.print) {
             el.print.hidden =
                 !permission.canPrint(
                     state.permissions
                 );
-
 
             el.print.disabled =
                 !(
                     isPaid ||
                     isRefund
                 );
-
         }
 
-        if (
-            el.cancelPhieu
-        ) {
-
+        if (el.cancelPhieu) {
             el.cancelPhieu.hidden =
                 !permission.canCancelPhieu(
                     state.permissions
                 ) ||
                 !isUnpaid;
 
-
             /*
             * Phiếu chưa thanh toán sinh ra sau hoàn:
             * không được hủy.
             */
-            el.cancelPhieu.disabled =
-                Boolean(
-                    state.familyHasRefund
-                );
-
+            el.cancelPhieu.disabled = Boolean(
+                state.familyHasRefund
+            );
         }
 
-
-        if (
-            el.cancelPayment
-        ) {
-
+        if (el.cancelPayment) {
             el.cancelPayment.hidden =
                 !isPaid ||
                 !permission.canRefund(
                     state.permissions
                 );
-
 
             /*
             * Đã phát sinh hoàn:
@@ -406,85 +333,49 @@
             */
             el.cancelPayment.disabled =
                 hasRefundForCurrentPayment;
-
         }
 
-
-        if (
-            el.viewQr
-        ) {
-
-            el.viewQr.hidden =
-                !hasQr;
-
-            el.viewQr.disabled =
-                false;
-
+        if (el.viewQr) {
+            el.viewQr.hidden = !hasQr;
+            el.viewQr.disabled = false;
         }
 
-
-        if (
-            el.recreateQr
-        ) {
-
+        if (el.recreateQr) {
             el.recreateQr.hidden =
                 !hasQr ||
                 !permission.canCreateQr(
                     state.permissions
                 );
 
-
             el.recreateQr.disabled =
                 !qrMutable;
-
         }
 
-
-        if (
-            el.cancelQr
-        ) {
-
+        if (el.cancelQr) {
             el.cancelQr.hidden =
                 !hasQr ||
                 !permission.canCancelQr(
                     state.permissions
                 );
 
-
             el.cancelQr.disabled =
                 !qrMutable;
-
         }
 
-
-        if (
-            !el.mainPaymentAction
-        ) {
-
+        if (!el.mainPaymentAction) {
             renderEditLocks();
-
             renderPaymentInfo();
-
             return;
-
         }
 
-
-        el.mainPaymentAction.hidden =
-            true;
-
-        el.mainPaymentAction.disabled =
-            false;
-
-        el.mainPaymentAction.dataset.action =
-            "";
-
+        el.mainPaymentAction.hidden = true;
+        el.mainPaymentAction.disabled = false;
+        el.mainPaymentAction.dataset.action = "";
 
         const refundableQty =
             isPaid
                 ? getRefundableQuantity()
                 : 0;
-
 
         /*
         * ĐÃ THANH TOÁN
@@ -492,27 +383,17 @@
         */
         if (
             isPaid &&
-            refundableQty >
-                0 &&
+            refundableQty > 0 &&
             permission.canRefund(
                 state.permissions
             )
         ) {
-
             setMainPaymentAction({
-                action:
-                    "refund",
-
-                label:
-                    "Hoàn thanh toán",
-
-                icon:
-                    "fa-rotate-left",
-
-                type:
-                    "outline"
+                action: "refund",
+                label: "Hoàn thanh toán",
+                icon: "fa-rotate-left",
+                type: "outline"
             });
-
         }
 
         /*
@@ -526,21 +407,12 @@
                 state.permissions
             )
         ) {
-
             setMainPaymentAction({
-                action:
-                    "confirm",
-
-                label:
-                    "Duyệt",
-
-                icon:
-                    "fa-check",
-
-                type:
-                    "success"
+                action: "confirm",
+                label: "Duyệt",
+                icon: "fa-check",
+                type: "success"
             });
-
         }
 
         /*
@@ -558,102 +430,59 @@
                 )
             )
         ) {
-
             setMainPaymentAction({
-                action:
-                    "pay",
-
-                label:
-                    "Thanh toán",
-
-                icon:
-                    "fa-credit-card",
-
-                type:
-                    "primary"
+                action: "pay",
+                label: "Thanh toán",
+                icon: "fa-credit-card",
+                type: "primary"
             });
-
         }
-
 
         /*
         * Phiếu hoàn chỉ xem.
         */
-        if (
-            isRefund
-        ) {
-
-            el.mainPaymentAction.hidden =
-                true;
-
+        if (isRefund) {
+            el.mainPaymentAction.hidden = true;
         }
 
-
         renderEditLocks();
-
         renderPaymentInfo();
-
     }
 
     function cancelPayment() {
-
-        if (
-            !state.payment?.id
-        ) {
-
+        if (!state.payment?.id) {
             return;
-
         }
-
 
         confirmAction(
             "Hủy thanh toán",
-
             "Bạn có chắc chắn muốn hủy thanh toán? Phiếu sẽ quay lại trạng thái chưa thanh toán.",
-
             "Hủy thanh toán",
-
             "danger",
-
             async () => {
-
                 try {
-
-                    setLoading(
-                        true
-                    );
-
+                    setLoading(true);
 
                     await request(
                         `${API.payment}/huy-thanh-toan/${state.payment.id}`,
                         "PATCH",
                         {
-                            noiDung:
-                                "Hủy thanh toán từ màn hình lấy vé ăn."
+                            noiDung: "Hủy thanh toán từ màn hình lấy vé ăn."
                         }
                     );
 
-
                     stopQrPolling();
 
-
-                    state.qrPayment =
-                        null;
-
-                    state.qrData =
-                        null;
+                    state.qrPayment = null;
+                    state.qrData = null;
 
                     await reloadPhieu();
-
                     await reloadPaymentState();
+
                     resetPaymentSelection();
-
                     renderQrPanel();
-
                     renderSummary();
-
                     renderStateActions();
-
 
                     window.MCS
                         ?.toast
@@ -661,26 +490,15 @@
                         ?.(
                             "Đã hủy thanh toán. Phiếu đã quay lại trạng thái chưa thanh toán."
                         );
-
-                } catch (
-                    error
-                ) {
-
+                } catch (error) {
                     showError(
                         error
                     );
-
                 } finally {
-
-                    setLoading(
-                        false
-                    );
-
+                    setLoading(false);
                 }
-
             }
         );
-
     }
 
     function setMainPaymentAction({
@@ -709,8 +527,7 @@
         );
 
         if (el.mainPaymentActionLabel) {
-            el.mainPaymentActionLabel.textContent =
-                label;
+            el.mainPaymentActionLabel.textContent = label;
         }
 
         if (el.mainPaymentActionIcon) {
@@ -720,76 +537,52 @@
     }
 
     function renderPaymentInfo() {
-
-        if (
-            !el.paymentInfo
-        ) {
-
+        if (!el.paymentInfo) {
             return;
-
         }
 
-
-        const phieu =
-            state.phieu;
-
-        const document =
-            state.activePaymentDocument;
-
+        const phieu = state.phieu;
+        const document = state.activePaymentDocument;
 
         const payment =
-            document
-                ?.transaction ||
+            document?.transaction ||
             state.payment;
-            
+
         el.paymentInfo.hidden =
             !phieu?.id ||
             !payment;
-
 
         if (
             !phieu ||
             !payment
         ) {
-
             return;
-
         }
 
         const isRefund =
             document?.loai ===
             "PHIEU_HOAN";
 
-        const method =
-            state.paymentMethods.find(
-                item =>
-                    Number(
-                        item.value
-                    ) ===
-                    Number(
-                        payment.phuongThuc
-                    )
-            );
-
+        const method = state.paymentMethods.find(
+            item =>
+                Number(
+                    item.value
+                ) ===
+                Number(
+                    payment.phuongThuc
+                )
+        );
 
         /*
         * =============================
         * PHIẾU HOÀN
         * =============================
         */
-        if (
-            isRefund
-        ) {
-
-            if (
-                el.paymentInfoTitle
-            ) {
-
+        if (isRefund) {
+            if (el.paymentInfoTitle) {
                 el.paymentInfoTitle.textContent =
                     "Thông tin phiếu hoàn";
-
             }
-
 
             el.paymentStatusText.textContent =
                 Number(
@@ -805,68 +598,42 @@
                         "-"
                     );
 
-
             el.paymentCode.textContent =
                 payment.maGiaoDich ||
                 "-";
-
 
             el.paymentMethodText.textContent =
                 method?.label ||
                 method?.name ||
                 "-";
 
-
-            if (
-                el.paymentOriginalLabel
-            ) {
-
+            if (el.paymentOriginalLabel) {
                 el.paymentOriginalLabel.textContent =
                     "Số tiền hoàn:";
-
             }
-
 
             el.paymentOriginal.textContent =
                 formatMoney(
                     payment.soTien
                 );
 
-
-            if (
-                el.paymentDiscountLabel
-            ) {
-
+            if (el.paymentDiscountLabel) {
                 el.paymentDiscountLabel.textContent =
                     "Lý do hoàn:";
-
             }
-
 
             el.paymentDiscount.textContent =
                 payment.noiDungLoi ||
                 "-";
 
-
-            if (
-                el.paymentFinalRow
-            ) {
-
-                el.paymentFinalRow.hidden =
-                    true;
-
+            if (el.paymentFinalRow) {
+                el.paymentFinalRow.hidden = true;
             }
 
-
-            if (
-                el.paymentPayerLabel
-            ) {
-
+            if (el.paymentPayerLabel) {
                 el.paymentPayerLabel.textContent =
                     "Người hoàn:";
-
             }
-
 
             el.paymentPayer.textContent =
                 payment.tenNguoiXacNhan ||
@@ -877,16 +644,10 @@
                         : "-"
                 );
 
-
-            if (
-                el.paymentTimeLabel
-            ) {
-
+            if (el.paymentTimeLabel) {
                 el.paymentTimeLabel.textContent =
                     "Thời gian hoàn:";
-
             }
-
 
             el.paymentTime.textContent =
                 formatDateTime(
@@ -894,11 +655,8 @@
                     payment.createdAt
                 );
 
-
             return;
-
         }
-
 
         /*
         * =============================
@@ -906,75 +664,39 @@
         * =============================
         */
 
-        if (
-            el.paymentInfoTitle
-        ) {
-
+        if (el.paymentInfoTitle) {
             el.paymentInfoTitle.textContent =
                 "Thông tin thanh toán";
-
         }
 
-
-        if (
-            el.paymentOriginalLabel
-        ) {
-
+        if (el.paymentOriginalLabel) {
             el.paymentOriginalLabel.textContent =
                 "Tiền ban đầu:";
-
         }
 
-
-        if (
-            el.paymentDiscountLabel
-        ) {
-
+        if (el.paymentDiscountLabel) {
             el.paymentDiscountLabel.textContent =
                 "Tiền miễn giảm:";
-
         }
 
-
-        if (
-            el.paymentFinalLabel
-        ) {
-
+        if (el.paymentFinalLabel) {
             el.paymentFinalLabel.textContent =
                 "Thành tiền:";
-
         }
 
-
-        if (
-            el.paymentFinalRow
-        ) {
-
-            el.paymentFinalRow.hidden =
-                false;
-
+        if (el.paymentFinalRow) {
+            el.paymentFinalRow.hidden = false;
         }
 
-
-        if (
-            el.paymentPayerLabel
-        ) {
-
+        if (el.paymentPayerLabel) {
             el.paymentPayerLabel.textContent =
                 "Người thanh toán:";
-
         }
 
-
-        if (
-            el.paymentTimeLabel
-        ) {
-
+        if (el.paymentTimeLabel) {
             el.paymentTimeLabel.textContent =
                 "Thời gian thanh toán:";
-
         }
-
 
         let statusText =
             getEnumLabel(
@@ -982,7 +704,6 @@
                 payment.trangThai
             ) ||
             "-";
-
 
         if (
             Number(
@@ -993,10 +714,7 @@
                 "Đã thanh toán"
             )
         ) {
-
-            statusText =
-                "Đã thanh toán";
-
+            statusText = "Đã thanh toán";
         } else if (
             Number(
                 phieu.trangThai
@@ -1006,10 +724,7 @@
                 "Đã hoàn"
             )
         ) {
-
-            statusText =
-                "Đã hoàn";
-
+            statusText = "Đã hoàn";
         } else if (
             Number(
                 phieu.trangThai
@@ -1022,25 +737,16 @@
                 "Đã huỷ"
             )
         ) {
-
-            statusText =
-                "Đã hủy";
-
+            statusText = "Đã hủy";
         } else if (
             isPhieuStatus(
                 "Tạo QR"
             )
         ) {
-
-            statusText =
-                "Đã tạo QR";
-
+            statusText = "Đã tạo QR";
         }
 
-
-        el.paymentStatusText.textContent =
-            statusText;
-
+        el.paymentStatusText.textContent = statusText;
 
         el.paymentCode.textContent =
             payment.maGiaoDich ||
@@ -1048,12 +754,10 @@
             payment.maChuanChi ||
             "-";
 
-
         el.paymentMethodText.textContent =
             method?.label ||
             method?.name ||
             "-";
-
 
         el.paymentOriginal.textContent =
             Number.isFinite(
@@ -1067,7 +771,6 @@
                     )
                 )
                 : "-";
-
 
         el.paymentDiscount.textContent =
             Number.isFinite(
@@ -1089,7 +792,6 @@
                 )
                 : "-";
 
-
         el.paymentFinal.textContent =
             Number.isFinite(
                 Number(
@@ -1103,7 +805,6 @@
                 )
                 : "-";
 
-
         el.paymentPayer.textContent =
             phieu.tenNguoiThanhToan ||
             phieu.nguoiThanhToanTenDangNhap ||
@@ -1111,14 +812,12 @@
             payment.nguoiXacNhanTenDangNhap ||
             "-";
 
-
         el.paymentTime.textContent =
             formatDateTime(
                 phieu.thoiGianThanhToan ||
                 payment.thoiGianThanhToan ||
                 payment.createdAt
             );
-
     }
 
     function formatDateTime(value) {
@@ -1126,8 +825,7 @@
             return "-";
         }
 
-        const date =
-            new Date(value);
+        const date = new Date(value);
 
         if (
             Number.isNaN(
@@ -1145,59 +843,30 @@
                         "0"
                     );
 
-        const hh =
-            pad(
-                date.getHours()
-            );
-
-        const mm =
-            pad(
-                date.getMinutes()
-            );
-
-        const ss =
-            pad(
-                date.getSeconds()
-            );
-
-        const dd =
-            pad(
-                date.getDate()
-            );
-
-        const month =
-            pad(
-                date.getMonth() + 1
-            );
-
-        const yyyy =
-            date.getFullYear();
+        const hh = pad(date.getHours());
+        const mm = pad(date.getMinutes());
+        const ss = pad(date.getSeconds());
+        const dd = pad(date.getDate());
+        const month = pad(date.getMonth() + 1);
+        const yyyy = date.getFullYear();
 
         return `${hh}:${mm}:${ss} ${dd}/${month}/${yyyy}`;
     }
 
     function openRefundModal() {
-
         if (
             !permission.canRefund(
                 state.permissions
             )
         ) {
-
             return;
-
         }
 
-
-        const soLuongConLai =
-            getRefundableQuantity();
-
+        const soLuongConLai = getRefundableQuantity();
 
         if (
-            soLuongConLai <=
-            0
+            soLuongConLai <= 0
         ) {
-
             showError(
                 new Error(
                     "Phiếu đã hoàn toàn bộ vé."
@@ -1205,48 +874,31 @@
             );
 
             return;
-
         }
-
 
         fillSelect(
             el.refundMethod,
-
             state.paymentMethods
                 .filter(
                     item =>
-                        state
-                            .paymentMethodVisibleValues
+                        state.paymentMethodVisibleValues
                             .includes(
-                                Number(
-                                    item.value
-                                )
+                                Number(item.value)
                             )
                 ),
-
-            item =>
-                item.value,
-
-            item =>
-                item.label
+            item => item.value,
+            item => item.label
         );
 
+        el.refundQty.value = String(
+            soLuongConLai
+        );
 
-        el.refundQty.value =
-            String(
-                soLuongConLai
-            );
+        el.refundQty.max = String(
+            soLuongConLai
+        );
 
-
-        el.refundQty.max =
-            String(
-                soLuongConLai
-            );
-
-
-        el.refundReason.value =
-            "";
-
+        el.refundReason.value = "";
 
         setSelectValue(
             el.refundMethod,
@@ -1254,31 +906,21 @@
             false
         );
 
-
-        el.refundModal.hidden =
-            false;
-
+        el.refundModal.hidden = false;
     }
 
     function getRefundableQuantity() {
-
-        const document =
-            state.activePaymentDocument;
-
+        const document = state.activePaymentDocument;
 
         if (
             document?.loai !==
                 "PHIEU_THU" ||
-            document
-                ?.trangThaiHienThi !==
+            document?.trangThaiHienThi !==
                 "DA_THANH_TOAN" ||
             !document?.thanhToanId
         ) {
-
             return 0;
-
         }
-
 
         const daHoan =
             (
@@ -1309,7 +951,6 @@
                     0
                 );
 
-
         return Math.max(
             Number(
                 document.soLuong ||
@@ -1318,7 +959,6 @@
             daHoan,
             0
         );
-
     }
 
     function closeRefundModal() {
@@ -1328,18 +968,13 @@
     }
 
     async function submitRefundModal() {
-
-        const document =
-            state.activePaymentDocument;
-
+        const document = state.activePaymentDocument;
 
         if (
             document?.loai !==
                 "PHIEU_THU" ||
-            !document
-                ?.thanhToanId
+            !document?.thanhToanId
         ) {
-
             showError(
                 new Error(
                     "Không xác định được phiếu thu cần hoàn."
@@ -1347,50 +982,34 @@
             );
 
             return;
-
         }
 
-
-        const soLuongHoan =
-            Math.floor(
-                Number(
-                    el.refundQty
-                        ?.value ||
-                    0
-                )
-            );
-
-
-        const soLuongConLai =
-            getRefundableQuantity();
-
-
-        const lyDoHoan =
-            String(
-                el.refundReason
-                    ?.value ||
-                ""
-            ).trim();
-
-
-        const phuongThucHoan =
+        const soLuongHoan = Math.floor(
             Number(
-                el.refundMethod
-                    ?.value ||
-                10
-            );
+                el.refundQty?.value ||
+                0
+            )
+        );
 
+        const soLuongConLai = getRefundableQuantity();
+
+        const lyDoHoan = String(
+            el.refundReason?.value ||
+            ""
+        ).trim();
+
+        const phuongThucHoan = Number(
+            el.refundMethod?.value ||
+            10
+        );
 
         if (
             !Number.isInteger(
                 soLuongHoan
             ) ||
-            soLuongHoan <
-                1 ||
-            soLuongHoan >
-                soLuongConLai
+            soLuongHoan < 1 ||
+            soLuongHoan > soLuongConLai
         ) {
-
             showError(
                 new Error(
                     `Số lượng hoàn phải từ 1 đến ${soLuongConLai}.`
@@ -1398,14 +1017,9 @@
             );
 
             return;
-
         }
 
-
-        if (
-            !lyDoHoan
-        ) {
-
+        if (!lyDoHoan) {
             showError(
                 new Error(
                     "Vui lòng nhập lý do hoàn."
@@ -1413,42 +1027,25 @@
             );
 
             return;
-
         }
 
-
         try {
+            setLoading(true);
 
-            setLoading(
-                true
+            const response = await request(
+                `${API.payment}/hoan-tien`,
+                "POST",
+                {
+                    thanhToanId: Number(
+                        document.thanhToanId
+                    ),
+                    soLuongHoan,
+                    lyDoHoan,
+                    phuongThuc: phuongThucHoan
+                }
             );
 
-
-            const response =
-                await request(
-                    `${API.payment}/hoan-tien`,
-                    "POST",
-                    {
-
-                        thanhToanId:
-                            Number(
-                                document
-                                    .thanhToanId
-                            ),
-
-                        soLuongHoan,
-
-                        lyDoHoan,
-
-                        phuongThuc:
-                            phuongThucHoan
-
-                    }
-                );
-
-
             closeRefundModal();
-
 
             window.MCS
                 ?.toast
@@ -1457,13 +1054,9 @@
                     "Hoàn thanh toán thành công."
                 );
 
-
-            const phieuMoiId =
-                Number(
-                    response?.data
-                        ?.phieuMoiId
-                );
-
+            const phieuMoiId = Number(
+                response?.data?.phieuMoiId
+            );
 
             /*
             * Hoàn xong luôn chuyển sang
@@ -1473,51 +1066,30 @@
                 Number.isInteger(
                     phieuMoiId
                 ) &&
-                phieuMoiId >
-                    0
+                phieuMoiId > 0
             ) {
-
                 window.location.href =
                     `/ve-an/lay-ve-an/${phieuMoiId}`;
 
                 return;
-
             }
 
-
             await reloadPhieu();
-
             await reloadPaymentState();
 
-
             renderQrPanel();
-
             renderSummary();
-
             renderStateActions();
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             showError(
                 error
             );
-
         } finally {
-
-            setLoading(
-                false
-            );
-
+            setLoading(false);
         }
-
     }
 
-    function delay(
-        milliseconds
-    ) {
-
+    function delay(milliseconds) {
         return new Promise(
             resolve =>
                 window.setTimeout(
@@ -1531,31 +1103,22 @@
                     )
                 )
         );
-
     }
 
     async function runWithQrBankLoading(
         task,
-        message =
-            "Đang kết nối ngân hàng. Vui lòng chờ!"
+        message = "Đang kết nối ngân hàng. Vui lòng chờ!"
     ) {
-
-        const startedAt =
-            performance.now();
-
+        const startedAt = performance.now();
 
         setQrModalLoading(
             true,
             message
         );
 
-
         try {
-
             return await task();
-
         } finally {
-
             /*
             * TEST hiện tại phản hồi quá nhanh:
             * giữ spinner ít nhất 1 giây.
@@ -1569,25 +1132,18 @@
                 performance.now() -
                 startedAt;
 
-
             const remaining =
                 QR_MIN_LOADING_MS -
                 elapsed;
 
-
             if (
-                remaining >
-                0
+                remaining > 0
             ) {
-
                 await delay(
                     remaining
                 );
-
             }
-
         }
-
     }
 
     async function handlePay() {
@@ -1610,34 +1166,25 @@
                     method
                 )
             ) {
-
                 if (
                     !permission.canCreateQr(
                         state.permissions
                     )
                 ) {
-
                     throw new Error(
                         "Bạn không có quyền tạo thanh toán QR."
                     );
-
                 }
-
 
                 /*
                 * Không dùng loading toàn trang nữa.
                 * Modal tự có loading riêng.
                 */
-                setLoading(
-                    false
-                );
-
+                setLoading(false);
 
                 await createQrPayment({
-                    openModal:
-                        true
+                    openModal: true
                 });
-
 
                 window.MCS
                     ?.toast
@@ -1646,9 +1193,7 @@
                         "Đã tạo giao dịch QR."
                     );
 
-
                 return;
-
             }
 
             if (!permission.canCreatePayment(state.permissions)) {
@@ -1682,68 +1227,42 @@
     }
 
     async function reloadPaymentState() {
-
-        if (
-            !state.phieu?.id
-        ) {
-
-            state.payment =
-                null;
-
-            state.qrPayment =
-                null;
-
-            state.qrData =
-                null;
-
-            state.paymentDocuments =
-                [];
-
-            state.activePaymentDocument =
-                null;
-
-            state.familyHasRefund =
-                false;
-
+        if (!state.phieu?.id) {
+            state.payment = null;
+            state.qrPayment = null;
+            state.qrData = null;
+            state.paymentDocuments = [];
+            state.activePaymentDocument = null;
+            state.familyHasRefund = false;
 
             renderPaymentDocuments();
             renderPaymentInfo();
             renderEditLocks();
 
             return;
-
         }
-
 
         const [
             transactionResponse,
             documentResponse
-        ] =
-            await Promise.all([
-                request(
-                    `${API.payment}/tong-hop?phieuLayVeId=${state.phieu.id}`
-                ),
+        ] = await Promise.all([
+            request(
+                `${API.payment}/tong-hop?phieuLayVeId=${state.phieu.id}`
+            ),
+            request(
+                `${API.payment}/danh-sach-phieu/${state.phieu.id}`
+            )
+        ]);
 
-                request(
-                    `${API.payment}/danh-sach-phieu/${state.phieu.id}`
-                )
-            ]);
+        const transactions = normalizeList(
+            transactionResponse?.data
+        );
 
+        const documents = normalizeList(
+            documentResponse?.data
+        );
 
-        const transactions =
-            normalizeList(
-                transactionResponse?.data
-            );
-
-
-        const documents =
-            normalizeList(
-                documentResponse?.data
-            );
-
-        state.paymentDocuments =
-            documents;
-
+        state.paymentDocuments = documents;
 
         state.familyHasRefund =
             documents.some(
@@ -1752,13 +1271,9 @@
                     "PHIEU_HOAN"
             );
 
-
-        const requestedRefundId =
-            Number(
-                app.pageContext
-                    ?.paymentDocumentId
-            );
-
+        const requestedRefundId = Number(
+            app.pageContext?.paymentDocumentId
+        );
 
         const currentReceipt =
             documents.find(
@@ -1774,13 +1289,11 @@
             ) ||
             null;
 
-
         const requestedRefund =
             Number.isInteger(
                 requestedRefundId
             ) &&
-            requestedRefundId >
-                0
+            requestedRefundId > 0
                 ? documents.find(
                     item =>
                         item.loai ===
@@ -1793,80 +1306,58 @@
                 null
                 : null;
 
-            const activeSummary =
-                requestedRefund ||
-                currentReceipt;
+        const activeSummary =
+            requestedRefund ||
+            currentReceipt;
 
-
-            let activeTransaction =
-                null;
-
-
-            if (
-                activeSummary
-                    ?.thanhToanId
-            ) {
-
-                activeTransaction =
-                    transactions.find(
-                        item =>
-                            Number(
-                                item.id
-                            ) ===
-                            Number(
-                                activeSummary
-                                    .thanhToanId
-                            )
-                    ) ||
-                    null;
-
-
-                if (
-                    !activeTransaction
-                ) {
-
-                    const transactionDetailResponse =
-                        await request(
-                            `${API.payment}/${activeSummary.thanhToanId}`
-                        );
-
-
-                    activeTransaction =
-                        transactionDetailResponse
-                            ?.data ||
-                        null;
-
-                }
-
-            }
-
-            state.activePaymentDocument =
-                activeSummary
-                    ? {
-                        ...activeSummary,
-
-                        transaction:
-                            activeTransaction
-                    }
-                    : null;
-
-            state.payment =
-                activeSummary
-                    ?.loai ===
-                    "PHIEU_THU"
-                    ? activeTransaction
-                    : null;
+        let activeTransaction = null;
 
         if (
-            app.pageContext
-                ?.paymentDocumentId &&
-            !requestedRefund
+            activeSummary?.thanhToanId
         ) {
-
-            app.pageContext
-                .paymentDocumentId =
+            activeTransaction =
+                transactions.find(
+                    item =>
+                        Number(
+                            item.id
+                        ) ===
+                        Number(
+                            activeSummary.thanhToanId
+                        )
+                ) ||
                 null;
 
+            if (!activeTransaction) {
+                const transactionDetailResponse =
+                    await request(
+                        `${API.payment}/${activeSummary.thanhToanId}`
+                    );
+
+                activeTransaction =
+                    transactionDetailResponse?.data ||
+                    null;
+            }
+        }
+
+        state.activePaymentDocument =
+            activeSummary
+                ? {
+                    ...activeSummary,
+                    transaction: activeTransaction
+                }
+                : null;
+
+        state.payment =
+            activeSummary?.loai ===
+                "PHIEU_THU"
+                ? activeTransaction
+                : null;
+
+        if (
+            app.pageContext?.paymentDocumentId &&
+            !requestedRefund
+        ) {
+            app.pageContext.paymentDocumentId = null;
 
             window.history
                 .replaceState(
@@ -1876,9 +1367,7 @@
                         state.phieu.id
                     )}`
                 );
-
         }
-
 
         /*
         * QR của dòng đang xem.
@@ -1886,17 +1375,11 @@
         * Với dòng hoàn, backend trả
         * qrThanhToanId của phiếu thu nguồn.
         */
-        const qrThanhToanId =
-            Number(
-                state.activePaymentDocument
-                    ?.qrThanhToanId
-            );
+        const qrThanhToanId = Number(
+            state.activePaymentDocument?.qrThanhToanId
+        );
 
-
-        if (
-            qrThanhToanId
-        ) {
-
+        if (qrThanhToanId) {
             state.qrPayment =
                 transactions.find(
                     item =>
@@ -1911,79 +1394,52 @@
                     )
                 )?.data ||
                 null;
-
         } else {
-
-            state.qrPayment =
-                null;
-
+            state.qrPayment = null;
         }
 
         if (
-            state.activePaymentDocument
-                ?.loai ===
+            state.activePaymentDocument?.loai ===
                 "PHIEU_THU" &&
-            state.activePaymentDocument
-                ?.trangThaiHienThi ===
+            state.activePaymentDocument?.trangThaiHienThi ===
                 "CHUA_THANH_TOAN" &&
-            !state.activePaymentDocument
-                ?.thanhToanId
+            !state.activePaymentDocument?.thanhToanId
         ) {
-
-            state.payment =
-                null;
-
-            state.qrPayment =
-                null;
-
+            state.payment = null;
+            state.qrPayment = null;
         }
 
-        state.qrData =
-            null;
-
+        state.qrData = null;
 
         renderPaymentDocuments();
-
         renderPaymentInfo();
-
         renderQrPanel();
-
         renderEditLocks();
-
     }
 
     function getDocumentMode() {
+        const document = state.activePaymentDocument;
 
-        const document =
-            state.activePaymentDocument;
-
-
-        const hasDocument =
-            Boolean(
-                document
-            );
-
+        const hasDocument = Boolean(
+            document
+        );
 
         const isRefund =
             document?.loai ===
             "PHIEU_HOAN";
 
-
         const isPaid =
             document?.loai ===
                 "PHIEU_THU" &&
-            document
-                ?.trangThaiHienThi ===
+            document?.trangThaiHienThi ===
                 "DA_THANH_TOAN";
-
 
         const isUnpaid =
             hasDocument
                 ? (
                     document.loai ===
                         "PHIEU_THU" &&
-                    document
-                        .trangThaiHienThi ===
+                    document.trangThaiHienThi ===
                         "CHUA_THANH_TOAN"
                 )
                 : (
@@ -1994,19 +1450,16 @@
                         20
                     ].includes(
                         Number(
-                            state.phieu
-                                ?.trangThai ||
+                            state.phieu?.trangThai ||
                             0
                         )
                     )
                 );
 
-
         const pendingQr =
             isUnpaid &&
             Number(
-                state.qrPayment
-                    ?.phuongThuc
+                state.qrPayment?.phuongThuc
             ) ===
                 30 &&
             [
@@ -2014,11 +1467,9 @@
                 20
             ].includes(
                 Number(
-                    state.qrPayment
-                        ?.trangThai
+                    state.qrPayment?.trangThai
                 )
             );
-
 
         return {
             isRefund,
@@ -2026,25 +1477,18 @@
             isUnpaid,
             pendingQr
         };
-
     }
 
     function isFinancialLocked() {
-
         const {
             isRefund,
             isPaid,
             pendingQr
-        } =
-            getDocumentMode();
+        } = getDocumentMode();
 
-
-        const phieuStatus =
-            Number(
-                state.phieu
-                    ?.trangThai
-            );
-
+        const phieuStatus = Number(
+            state.phieu?.trangThai
+        );
 
         const lockedByPhieuStatus =
             [
@@ -2057,7 +1501,6 @@
                 phieuStatus
             );
 
-
         return (
             isRefund ||
             isPaid ||
@@ -2067,20 +1510,15 @@
                 lockedByPhieuStatus
             )
         );
-
     }
 
     function renderPaymentDocuments() {
-
         if (
             !el.paymentDocumentList ||
             !el.paymentDocumentsSection
         ) {
-
             return;
-
         }
-
 
         const list =
             Array.isArray(
@@ -2089,33 +1527,19 @@
                 ? state.paymentDocuments
                 : [];
 
-
         el.paymentDocumentsSection.hidden =
             list.length ===
             0;
 
-
-        if (
-            el.paymentDocumentCount
-        ) {
-
+        if (el.paymentDocumentCount) {
             el.paymentDocumentCount.textContent =
                 `${list.length} phiếu`;
-
         }
 
-
-        if (
-            !list.length
-        ) {
-
-            el.paymentDocumentList.innerHTML =
-                "";
-
+        if (!list.length) {
+            el.paymentDocumentList.innerHTML = "";
             return;
-
         }
-
 
         const refunds =
             list
@@ -2140,7 +1564,6 @@
                         ).getTime()
                 );
 
-
         const refundIndexes =
             new Map(
                 refunds.map(
@@ -2156,80 +1579,55 @@
                 )
             );
 
-
         const statusMap = {
-
-            DA_THANH_TOAN:
-                "Đã thanh toán",
-
-            DA_HOAN:
-                "Đã hoàn",
-
-            CHUA_THANH_TOAN:
-                "Chưa thanh toán"
-
+            DA_THANH_TOAN: "Đã thanh toán",
+            DA_HOAN: "Đã hoàn",
+            CHUA_THANH_TOAN: "Chưa thanh toán"
         };
 
-
-        const active =
-            state.activePaymentDocument;
-
+        const active = state.activePaymentDocument;
 
         const isCurrent =
             item => {
-
                 if (
                     item.loai ===
                     "PHIEU_HOAN"
                 ) {
-
                     return (
                         active?.loai ===
                             "PHIEU_HOAN" &&
                         Number(
-                            active
-                                .thanhToanId
+                            active.thanhToanId
                         ) ===
                         Number(
-                            item
-                                .thanhToanId
+                            item.thanhToanId
                         )
                     );
-
                 }
-
 
                 return (
                     active?.loai ===
                         "PHIEU_THU" &&
                     Number(
-                        active
-                            .phieuLayVeId
+                        active.phieuLayVeId
                     ) ===
                     Number(
-                        item
-                            .phieuLayVeId
+                        item.phieuLayVeId
                     )
                 );
-
             };
-
 
         el.paymentDocumentList.innerHTML =
             list
                 .map(
                     item => {
-
                         const isRefund =
                             item.loai ===
                             "PHIEU_HOAN";
 
-
-                        const activeItem =
-                            isCurrent(
-                                item
-                            );
-
+                        const activeItem = isCurrent(
+                            item
+                        );
 
                         const title =
                             isRefund
@@ -2243,7 +1641,6 @@
                                 }`
                                 : "Phiếu thu";
 
-
                         const method =
                             getEnumLabel(
                                 state.paymentMethods,
@@ -2251,13 +1648,11 @@
                             ) ||
                             "-";
 
-
                         const status =
                             statusMap[
                                 item.trangThaiHienThi
                             ] ||
                             "-";
-
 
                         const content =
                             `
@@ -2357,15 +1752,11 @@
 
                             `;
 
-
                         /*
                         * Dòng đang xem:
                         * ARTICLE, KHÔNG CLICK.
                         */
-                        if (
-                            activeItem
-                        ) {
-
+                        if (activeItem) {
                             return `
 
                                 <article
@@ -2385,9 +1776,7 @@
                                 </article>
 
                             `;
-
                         }
-
 
                         /*
                         * Phiếu hoàn:
@@ -2411,7 +1800,6 @@
                                     item.phieuLayVeId
                                 )}`;
 
-
                         return `
 
                             <a
@@ -2431,13 +1819,11 @@
                             </a>
 
                         `;
-
                     }
                 )
                 .join(
                     ""
                 );
-
     }
 
     async function confirmCurrentPayment() {
@@ -2461,29 +1847,18 @@
                 response?.data ||
                 state.payment;
 
-
             await reloadPhieu();
-
 
             stopQrPolling();
 
-
             await reloadPaymentState();
 
-
-            state.qrData =
-                null;
-
+            state.qrData = null;
 
             closeQrModal();
-
-
             renderQrPanel();
-
             renderSummary();
-
             renderStateActions();
-
 
             window.MCS
                 ?.toast
@@ -2501,18 +1876,11 @@
 
     function setQrModalLoading(
         loading,
-        message =
-            "Đang kết nối ngân hàng. Vui lòng chờ!"
+        message = "Đang kết nối ngân hàng. Vui lòng chờ!"
     ) {
-
-        if (
-            !el.qrModal
-        ) {
-
+        if (!el.qrModal) {
             return;
-
         }
-
 
         el.qrModal.classList.toggle(
             "is-loading",
@@ -2521,66 +1889,32 @@
             )
         );
 
-
-        if (
-            el.qrModalLoading
-        ) {
-
-            el.qrModalLoading.hidden =
-                !loading;
-
+        if (el.qrModalLoading) {
+            el.qrModalLoading.hidden = !loading;
         }
 
-
-        if (
-            el.qrModalLoadingText
-        ) {
-
-            el.qrModalLoadingText.textContent =
-                message;
-
+        if (el.qrModalLoadingText) {
+            el.qrModalLoadingText.textContent = message;
         }
 
-
-        if (
-            el.qrModalContent
-        ) {
-
-            el.qrModalContent.hidden =
-                loading;
-
+        if (el.qrModalContent) {
+            el.qrModalContent.hidden = loading;
         }
 
-
-        if (
-            el.qrModalActions
-        ) {
-
-            el.qrModalActions.hidden =
-                loading;
-
+        if (el.qrModalActions) {
+            el.qrModalActions.hidden = loading;
         }
-
     }
 
     function openQrModal(
         loading = false,
-        message =
-            "Đang kết nối ngân hàng. Vui lòng chờ!"
+        message = "Đang kết nối ngân hàng. Vui lòng chờ!"
     ) {
-
-        if (
-            !el.qrModal
-        ) {
-
+        if (!el.qrModal) {
             return;
-
         }
 
-
-        el.qrModal.hidden =
-            false;
-
+        el.qrModal.hidden = false;
 
         document.body
             .classList
@@ -2588,112 +1922,69 @@
                 "lva-qr-modal-open"
             );
 
-
         setQrModalLoading(
             loading,
             message
         );
-
     }
 
     function closeQrModal() {
-
-        if (
-            el.qrModal
-        ) {
-
-            el.qrModal.hidden =
-                true;
-
+        if (el.qrModal) {
+            el.qrModal.hidden = true;
         }
-
 
         document.body
             .classList
             .remove(
                 "lva-qr-modal-open"
             );
-
     }
 
     function renderQrModal() {
-
-        const payment =
-            state.qrPayment;
-
+        const payment = state.qrPayment;
 
         const qr =
             state.qrData ||
             payment?.qrData ||
             null;
 
-
         if (
             !payment ||
             !qr
         ) {
-
             return;
-
         }
 
+        setQrModalLoading(false);
 
-        setQrModalLoading(
-            false
-        );
-
-
-        if (
-            el.qrModalImage
-        ) {
-
+        if (el.qrModalImage) {
             el.qrModalImage.src =
                 qr.qrDataURL ||
                 "";
-
         }
 
-
-        if (
-            el.qrModalAmount
-        ) {
-
+        if (el.qrModalAmount) {
             el.qrModalAmount.textContent =
                 formatMoney(
                     payment.soTien ??
                     state.phieu?.thanhTien ??
                     0
                 );
-
         }
 
-
-        if (
-            el.qrModalTransaction
-        ) {
-
+        if (el.qrModalTransaction) {
             el.qrModalTransaction.textContent =
                 payment.maGiaoDich ||
                 "";
-
         }
 
-
-        if (
-            el.qrModalCode
-        ) {
-
+        if (el.qrModalCode) {
             el.qrModalCode.textContent =
                 payment.maGiaoDich ||
                 "-";
-
         }
 
-
-        if (
-            el.qrModalBank
-        ) {
-
+        if (el.qrModalBank) {
             el.qrModalBank.textContent =
                 qr.bankName ||
                 (
@@ -2702,14 +1993,9 @@
                         ? "KITCHENFLOW TEST BANK"
                         : "VietQR"
                 );
-
         }
 
-
-        if (
-            el.qrModalAccount
-        ) {
-
+        if (el.qrModalAccount) {
             el.qrModalAccount.textContent =
                 [
                     qr.accountName,
@@ -2722,25 +2008,18 @@
                         " - "
                     ) ||
                 "-";
-
         }
 
         const {
             isUnpaid,
             pendingQr
-        } =
-            getDocumentMode();
-
+        } = getDocumentMode();
 
         const qrMutable =
             isUnpaid &&
             pendingQr;
 
-
-        if (
-            el.qrModalCancel
-        ) {
-
+        if (el.qrModalCancel) {
             el.qrModalCancel.hidden =
                 !permission.canCancelQr(
                     state.permissions
@@ -2748,14 +2027,9 @@
 
             el.qrModalCancel.disabled =
                 !qrMutable;
-
         }
 
-
-        if (
-            el.qrModalRecreate
-        ) {
-
+        if (el.qrModalRecreate) {
             el.qrModalRecreate.hidden =
                 !permission.canCancelQr(
                     state.permissions
@@ -2766,14 +2040,9 @@
 
             el.qrModalRecreate.disabled =
                 !qrMutable;
-
         }
 
-
-        if (
-            el.qrModalConfirm
-        ) {
-
+        if (el.qrModalConfirm) {
             el.qrModalConfirm.hidden =
                 !permission.canConfirmPayment(
                     state.permissions
@@ -2781,36 +2050,23 @@
 
             el.qrModalConfirm.disabled =
                 !qrMutable;
-
         }
-
     }
 
     async function loadCurrentQr() {
-
-        if (
-            !state.qrPayment?.id
-        ) {
-
+        if (!state.qrPayment?.id) {
             return;
-
         }
 
-
-        openQrModal(
-            true
-        );
-
+        openQrModal(true);
 
         try {
-
             const response =
                 await runWithQrBankLoading(
                     () =>
                         request(
                             `${API.payment}/qr/${state.qrPayment.id}`
                         ),
-
                     "Đang tải thông tin QR Code. Vui lòng chờ!"
                 );
 
@@ -2818,72 +2074,46 @@
                 response?.data ||
                 state.qrPayment;
 
-
             state.payment =
                 state.qrPayment;
 
-
             state.qrData =
-                response?.data
-                    ?.qrData ||
+                response?.data?.qrData ||
                 null;
 
-
             renderQrModal();
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             closeQrModal();
 
             showError(
                 error
             );
-
         }
-
     }
 
     async function createQrPayment({
         openModal = true,
-
-        loadingMessage =
-            "Đang tạo QR Code. Vui lòng chờ ngân hàng phản hồi!"
+        loadingMessage = "Đang tạo QR Code. Vui lòng chờ ngân hàng phản hồi!"
     } = {}) {
-
-        if (
-            !state.phieu?.id
-        ) {
-
+        if (!state.phieu?.id) {
             throw new Error(
                 "Phiếu lấy vé chưa được tạo."
             );
-
         }
 
-
-        if (
-            openModal
-        ) {
-
+        if (openModal) {
             openQrModal(
                 true,
                 loadingMessage
             );
-
         } else {
-
             setQrModalLoading(
                 true,
                 loadingMessage
             );
-
         }
 
-
         try {
-
             const response =
                 await runWithQrBankLoading(
                     () =>
@@ -2891,94 +2121,61 @@
                             `${API.payment}/tao-qr`,
                             "POST",
                             {
-                                phieuLayVeId:
-                                    state.phieu.id
+                                phieuLayVeId: state.phieu.id
                             }
                         ),
-
                     loadingMessage
                 );
-
 
             state.qrPayment =
                 response?.data ||
                 null;
 
-
             state.payment =
                 state.qrPayment;
 
             const createdQrData =
-                response?.data
-                    ?.qrData ||
+                response?.data?.qrData ||
                 null;
 
-
             state.qrData =
                 createdQrData;
-
 
             await reloadPhieu();
-
             await reloadPaymentState();
-
 
             state.qrData =
                 createdQrData;
-
 
             if (
                 state.qrPayment &&
                 createdQrData
             ) {
-
                 state.qrPayment = {
                     ...state.qrPayment,
-
-                    qrData:
-                        createdQrData
+                    qrData: createdQrData
                 };
-
             }
 
-
             renderQrPanel();
-
             renderSummary();
-
             renderStateActions();
             renderQrModal();
 
-
             startQrPolling();
 
-
             return state.qrPayment;
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             closeQrModal();
 
             throw error;
-
         }
-
     }
 
-    function isCancelledPayment(
-        payment
-    ) {
-
-        if (
-            !payment
-        ) {
-
+    function isCancelledPayment(payment) {
+        if (!payment) {
             return false;
-
         }
-
 
         const label =
             normalizeSearchText(
@@ -2988,7 +2185,6 @@
                 )
             );
 
-
         return (
             Number(
                 payment.trangThai
@@ -2997,85 +2193,53 @@
             label ===
                 "da huy"
         );
-
     }
 
     async function cancelCurrentQr({
         closeModalAfter = true,
         showToast = true
     } = {}) {
-
-        if (
-            !state.qrPayment?.id
-        ) {
-
+        if (!state.qrPayment?.id) {
             return;
-
         }
-
 
         await request(
             `${API.payment}/huy-qr/${state.qrPayment.id}`,
             "PATCH",
             {
-                noiDung:
-                    "Hủy QR Code từ màn hình lấy vé ăn."
+                noiDung: "Hủy QR Code từ màn hình lấy vé ăn."
             }
         );
 
-
         stopQrPolling();
 
-
-        state.qrPayment =
-            null;
-
-        state.payment =
-            null;
-
-        state.qrData =
-            null;
+        state.qrPayment = null;
+        state.payment = null;
+        state.qrData = null;
 
         await reloadPhieu();
-
         await reloadPaymentState();
 
-
         resetPaymentSelection();
-
         renderQrPanel();
-
         renderSummary();
-
         renderStateActions();
 
-
-        if (
-            closeModalAfter
-        ) {
-
+        if (closeModalAfter) {
             closeQrModal();
-
         }
 
-
-        if (
-            showToast
-        ) {
-
+        if (showToast) {
             window.MCS
                 ?.toast
                 ?.success
                 ?.(
                     "Hủy QR Code thành công."
                 );
-
         }
-
     }
 
     async function recreateQr() {
-
         if (
             !state.qrPayment?.id ||
             !permission.canCancelQr(
@@ -3085,15 +2249,11 @@
                 state.permissions
             )
         ) {
-
             return;
-
         }
-
 
         const loadingMessage =
             "Đang cập nhật QR Code. Vui lòng chờ ngân hàng phản hồi!";
-
 
         /*
         * QUAN TRỌNG:
@@ -3109,9 +2269,7 @@
             loadingMessage
         );
 
-
         try {
-
             /*
             * 1. Hủy transaction QR cũ.
             *
@@ -3119,13 +2277,9 @@
             * hiện đang dùng để hiển thị loading.
             */
             await cancelCurrentQr({
-                closeModalAfter:
-                    false,
-
-                showToast:
-                    false
+                closeModalAfter: false,
+                showToast: false
             });
-
 
             /*
             * 2. Sau khi hủy QR cũ,
@@ -3138,7 +2292,6 @@
                 30
             );
 
-
             /*
             * 3. Sinh transaction mới +
             * QR Code hoàn toàn mới.
@@ -3147,23 +2300,15 @@
             */
             const newQrPayment =
                 await createQrPayment({
-                    openModal:
-                        false,
-
+                    openModal: false,
                     loadingMessage
                 });
 
-
-            if (
-                !newQrPayment?.id
-            ) {
-
+            if (!newQrPayment?.id) {
                 throw new Error(
                     "Không nhận được giao dịch QR mới."
                 );
-
             }
-
 
             /*
             * createQrPayment()
@@ -3177,35 +2322,24 @@
             * => QR mới hiện ngay.
             */
 
-
             window.MCS
                 ?.toast
                 ?.success
                 ?.(
                     "Đã cập nhật QR Code."
                 );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             closeQrModal();
-
 
             showError(
                 error,
                 "Không thể cập nhật QR Code."
             );
-
         }
-
     }
 
     function renderQrPanel() {
-
-        const payment =
-            state.qrPayment;
-
+        const payment = state.qrPayment;
 
         const isPendingQr =
             Boolean(
@@ -3228,29 +2362,17 @@
             ) !==
                 40;
 
-
-        if (
-            !isPendingQr
-        ) {
-
-            el.qrPanel.hidden =
-                true;
-
+        if (!isPendingQr) {
+            el.qrPanel.hidden = true;
             return;
-
         }
 
-
-        el.qrPanel.hidden =
-            false;
-
+        el.qrPanel.hidden = false;
 
         el.qrCode.textContent =
-            payment?.qrData
-                ?.maGiaoDich ||
+            payment?.qrData?.maGiaoDich ||
             payment?.maGiaoDich ||
             "";
-
     }
 
     let qrPollTimer = null;
@@ -3269,9 +2391,7 @@
             ) ===
                 30
         ) {
-
             return;
-
         }
 
         qrPollTimer = window.setInterval(
@@ -3314,49 +2434,31 @@
     }
 
     function cancelQr() {
-
         if (
             !state.qrPayment?.id ||
             !permission.canCancelQr(
                 state.permissions
             )
         ) {
-
             return;
-
         }
-
 
         confirmAction(
             "Hủy QR Code",
-
             "Bạn có chắc chắn muốn hủy QR Code hiện tại?",
-
             "Hủy QR",
-
             "danger",
-
             async () => {
-
                 try {
-
                     setQrModalLoading(
                         true
                     );
 
-
                     await cancelCurrentQr({
-                        closeModalAfter:
-                            true,
-
-                        showToast:
-                            true
+                        closeModalAfter: true,
+                        showToast: true
                     });
-
-                } catch (
-                    error
-                ) {
-
+                } catch (error) {
                     setQrModalLoading(
                         false
                     );
@@ -3364,12 +2466,9 @@
                     showError(
                         error
                     );
-
                 }
-
             }
         );
-
     }
 
     function isQrMethod(item) {

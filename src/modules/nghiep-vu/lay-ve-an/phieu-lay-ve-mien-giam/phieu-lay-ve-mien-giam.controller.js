@@ -1,32 +1,20 @@
-const service =
-    require(
-        "./phieu-lay-ve-mien-giam.service"
-    );
-
+const service = require("./phieu-lay-ve-mien-giam.service");
 
 const {
     successResponse
-} = require(
-    "../../../../utils/response.util"
-);
-
+} = require("../../../../utils/response.util");
 
 class PhieuLayVeMienGiamController {
-
     async getTongHop(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getTongHop(
-                        req.query
-                    );
-
+            const data = await service
+                .getTongHop(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -34,34 +22,23 @@ class PhieuLayVeMienGiamController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async getKhaDung(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .getKhaDung(
-                        req.query
-                    );
-
+            const data = await service
+                .getKhaDung(
+                    req.query
+                );
 
             return successResponse(
                 res,
@@ -69,40 +46,27 @@ class PhieuLayVeMienGiamController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async getChiTiet(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .getChiTiet(
-                        id
-                    );
-
+            const data = await service
+                .getChiTiet(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -110,35 +74,24 @@ class PhieuLayVeMienGiamController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async apDung(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .apDung(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .apDung(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -146,35 +99,24 @@ class PhieuLayVeMienGiamController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async create(
         req,
         res,
         next
     ) {
-
         try {
-
-            const data =
-                await service
-                    .create(
-                        req.body,
-                        req.user?.taiKhoanId
-                    );
-
+            const data = await service
+                .create(
+                    req.body,
+                    req.user?.taiKhoanId
+                );
 
             return successResponse(
                 res,
@@ -182,41 +124,28 @@ class PhieuLayVeMienGiamController {
                 data,
                 201
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async update(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .update(
-                        id,
-                        req.body
-                    );
-
+            const data = await service
+                .update(
+                    id,
+                    req.body
+                );
 
             return successResponse(
                 res,
@@ -224,40 +153,27 @@ class PhieuLayVeMienGiamController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 
     async delete(
         req,
         res,
         next
     ) {
-
         try {
-
             const {
                 id
-            } =
-                req.params;
+            } = req.params;
 
-
-            const data =
-                await service
-                    .delete(
-                        id
-                    );
-
+            const data = await service
+                .delete(
+                    id
+                );
 
             return successResponse(
                 res,
@@ -265,21 +181,12 @@ class PhieuLayVeMienGiamController {
                 data,
                 200
             );
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             next(
                 error
             );
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new PhieuLayVeMienGiamController();
+module.exports = new PhieuLayVeMienGiamController();

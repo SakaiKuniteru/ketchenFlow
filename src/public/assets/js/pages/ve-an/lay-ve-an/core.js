@@ -1,9 +1,7 @@
 "use strict";
 
 (() => {
-    const app =
-        window.KitchenFlowLayVeAn =
-        window.KitchenFlowLayVeAn || {};
+    const app = window.KitchenFlowLayVeAn = window.KitchenFlowLayVeAn || {};
 
     const normalizeSearchText = (...args) => app.normalizeSearchText(...args);
     const renderPaymentMethods = (...args) => app.renderPaymentMethods(...args);
@@ -11,29 +9,24 @@
     const root = document.querySelector("[data-lay-ve-an-page]");
     const permission = window.LayVeAn?.permission;
 
-    const NUMERIC_ID_PATTERN =
-        /^[1-9]\d*$/;
+    const NUMERIC_ID_PATTERN = /^[1-9]\d*$/;
 
-    const rawPageId =
-        String(
-            root?.dataset.pageId ||
-            ""
-        ).trim();
+    const rawPageId = String(
+        root?.dataset.pageId ||
+        ""
+    ).trim();
 
-    const rawPaymentDocumentId =
-        String(
-            new URLSearchParams(
-                window.location.search
-            ).get(
-                "thanhToanId"
-            ) ||
-            ""
-        ).trim();
+    const rawPaymentDocumentId = String(
+        new URLSearchParams(
+            window.location.search
+        ).get(
+            "thanhToanId"
+        ) ||
+        ""
+    ).trim();
 
     const pageContext = {
-        pageId:
-            rawPageId,
-
+        pageId: rawPageId,
         mode:
             !rawPageId
                 ? "create"
@@ -42,7 +35,6 @@
                 )
                     ? "detail"
                     : "invalid",
-
         recordId:
             NUMERIC_ID_PATTERN.test(
                 rawPageId
@@ -51,7 +43,6 @@
                     rawPageId
                 )
                 : null,
-
         paymentDocumentId:
             NUMERIC_ID_PATTERN.test(
                 rawPaymentDocumentId
@@ -72,9 +63,7 @@
             "create";
     }
 
-    function replacePageUrl(
-        id
-    ) {
+    function replacePageUrl(id) {
         window.history.replaceState(
             window.history.state,
             "",
@@ -82,41 +71,22 @@
         );
     }
 
-    function markPageAsExisting(
-        id
-    ) {
-        const recordId =
-            Number(
-                id
-            );
+    function markPageAsExisting(id) {
+        const recordId = Number(id);
 
         if (
-            !Number.isInteger(
-                recordId
-            ) ||
+            !Number.isInteger(recordId) ||
             recordId <= 0
         ) {
             return;
         }
 
-        pageContext.pageId =
-            String(
-                recordId
-            );
+        pageContext.pageId = String(recordId);
+        pageContext.mode = "detail";
+        pageContext.recordId = recordId;
 
-        pageContext.mode =
-            "detail";
-
-        pageContext.recordId =
-            recordId;
-
-        if (
-            root
-        ) {
-            root.dataset.pageId =
-                String(
-                    recordId
-                );
+        if (root) {
+            root.dataset.pageId = String(recordId);
         }
 
         replacePageUrl(
@@ -125,20 +95,12 @@
     }
 
     function markPageAsCreate() {
-        pageContext.pageId =
-            "";
+        pageContext.pageId = "";
+        pageContext.mode = "create";
+        pageContext.recordId = null;
 
-        pageContext.mode =
-            "create";
-
-        pageContext.recordId =
-            null;
-
-        if (
-            root
-        ) {
-            root.dataset.pageId =
-                "";
+        if (root) {
+            root.dataset.pageId = "";
         }
 
         window.history.replaceState(
@@ -159,12 +121,8 @@
         paymentVisibleSetting: "/api/mcs/v1/thiet-lap/gia-tri?ma=PHUONG_THUC_THANH_TOAN_HIEN_THI"
     };
 
-    const DAILY_MEAL_STORAGE_KEY =
-        "kitchenflow.lay-ve-an.thuc-don-ngay";
-
-
-    const TAKER_TYPE_STORAGE_KEY =
-        "kitchenflow.lay-ve-an.doi-tuong-lay-ve";
+    const DAILY_MEAL_STORAGE_KEY = "kitchenflow.lay-ve-an.thuc-don-ngay";
+    const TAKER_TYPE_STORAGE_KEY = "kitchenflow.lay-ve-an.doi-tuong-lay-ve";
 
     const state = {
         permissions: new Set(),
@@ -187,11 +145,8 @@
         selectedPaymentMethod: null,
         pricePreview: null,
         paymentDocuments: [],
-        activePaymentDocument:
-            null,
-
-        familyHasRefund:
-            false,
+        activePaymentDocument: null,
+        familyHasRefund: false,
         transactionTypes: [],
     };
 
@@ -200,11 +155,9 @@
         doiTuongLayVe: byId("doiTuongLayVe"),
         nhanVienId: byId("nhanVienId"),
         soLuong: byId("soLuong"),
-
         employeeSelectField: root.querySelector("[data-employee-select-field]"),
         employeeInfo: root.querySelector("[data-employee-info]"),
         guestForm: root.querySelector("[data-guest-form]"),
-
         hoTen: byId("hoTenNguoiLayVe"),
         ngaySinh: byId("ngaySinhNguoiLayVe"),
         gioiTinh: byId("gioiTinhNguoiLayVe"),
@@ -214,7 +167,6 @@
         permanentGuest: byId("khachLauDai"),
         noteEmployee: byId("ghiChuNhanVien"),
         noteGuest: byId("ghiChuKhach"),
-
         mealDetail: root.querySelector("[data-meal-detail]"),
         mealDate: root.querySelector("[data-meal-date]"),
         mealName: root.querySelector("[data-meal-name]"),
@@ -222,59 +174,42 @@
         mealShift: root.querySelector("[data-meal-shift]"),
         mealTime: root.querySelector("[data-meal-time]"),
         viewMenu: root.querySelector("[data-view-menu]"),
-
         employeeCode: root.querySelector("[data-employee-code]"),
         employeeName: root.querySelector("[data-employee-name]"),
         employeeDepartment: root.querySelector("[data-employee-department]"),
         employeeSite: root.querySelector("[data-employee-site]"),
         employeePhone: root.querySelector("[data-employee-phone]"),
-
         summaryTicket: root.querySelector("[data-summary-ticket]"),
         summaryQty: root.querySelector("[data-summary-qty]"),
         summaryPrice: root.querySelector("[data-summary-price]"),
         summaryOriginal: root.querySelector("[data-summary-original]"),
         summaryDiscount: root.querySelector("[data-summary-discount]"),
         summaryTotal: root.querySelector("[data-summary-total]"),
-
         paymentSection: root.querySelector("[data-payment-section]"),
         paymentMethodList: root.querySelector("[data-payment-method-list]"),
         qrPanel: root.querySelector("[data-qr-panel]"),
         qrCode: root.querySelector("[data-qr-code]"),
-
         discountOpen: root.querySelector("[data-discount-open]"),
         discountList: root.querySelector("[data-discount-list]"),
         discountModal: root.querySelector("[data-discount-modal]"),
         discountAvailable: root.querySelector("[data-discount-available]"),
         discountCreate: root.querySelector("[data-discount-create]"),
         discountType: byId("loaiMienGiam"),
-
         print: root.querySelector("[data-print]"),
         mainPaymentAction: root.querySelector("[data-payment-main-action]"),
         mainPaymentActionLabel: root.querySelector("[data-payment-main-action-label]"),
         mainPaymentActionIcon: root.querySelector("[data-payment-main-action-icon]"),
         cancelQr: root.querySelector("[data-cancel-qr]"),
         cancelPhieu: root.querySelector("[data-cancel-phieu]"),
-        cancelPayment:
-            root.querySelector(
-                "[data-cancel-payment]"
-            ),
-
-        recreateQr:
-            root.querySelector(
-                "[data-recreate-qr]"
-            ),
-
-        qrModalLoadingText:
-            root.querySelector(
-                "[data-qr-modal-loading-text]"
-            ),
+        cancelPayment: root.querySelector("[data-cancel-payment]"),
+        recreateQr: root.querySelector("[data-recreate-qr]"),
+        qrModalLoadingText: root.querySelector("[data-qr-modal-loading-text]"),
         cancelPhieuModal: root.querySelector("[data-cancel-phieu-modal]"),
         cancelPhieuReason: byId("lyDoHuyPhieu"),
         cancelPhieuSubmit: root.querySelector("[data-cancel-phieu-submit]"),
         newTicket: root.querySelector("[data-new-ticket]"),
         newTicketLabel: root.querySelector("[data-new-ticket-label]"),
         discountSearch: byId("mienGiamSearch"),
-
         paymentInfo: root.querySelector("[data-payment-info]"),
         paymentStatusText: root.querySelector("[data-payment-status-text]"),
         paymentCode: root.querySelector("[data-payment-code]"),
@@ -285,340 +220,179 @@
         paymentPayer: root.querySelector("[data-payment-payer]"),
         paymentTime: root.querySelector("[data-payment-time]"),
         viewQr: root.querySelector("[data-view-qr]"),
-
-        qrModal:
-            root.querySelector(
-                "[data-qr-modal]"
-            ),
-
-        qrModalLoading:
-            root.querySelector(
-                "[data-qr-modal-loading]"
-            ),
-
-        qrModalContent:
-            root.querySelector(
-                "[data-qr-modal-content]"
-            ),
-
-        qrModalActions:
-            root.querySelector(
-                "[data-qr-modal-actions]"
-            ),
-
-        qrModalImage:
-            root.querySelector(
-                "[data-qr-modal-image]"
-            ),
-
-        qrModalAmount:
-            root.querySelector(
-                "[data-qr-modal-amount]"
-            ),
-
-        qrModalTransaction:
-            root.querySelector(
-                "[data-qr-modal-transaction]"
-            ),
-
-        qrModalCode:
-            root.querySelector(
-                "[data-qr-modal-code]"
-            ),
-
-        qrModalBank:
-            root.querySelector(
-                "[data-qr-modal-bank]"
-            ),
-
-        qrModalAccount:
-            root.querySelector(
-                "[data-qr-modal-account]"
-            ),
-
-        qrModalCancel:
-            root.querySelector(
-                "[data-qr-modal-cancel]"
-            ),
-
-        qrModalRecreate:
-            root.querySelector(
-                "[data-qr-modal-recreate]"
-            ),
-
-        qrModalConfirm:
-            root.querySelector(
-                "[data-qr-modal-confirm]"
-            ),
-
+        qrModal: root.querySelector("[data-qr-modal]"),
+        qrModalLoading: root.querySelector("[data-qr-modal-loading]"),
+        qrModalContent: root.querySelector("[data-qr-modal-content]"),
+        qrModalActions: root.querySelector("[data-qr-modal-actions]"),
+        qrModalImage: root.querySelector("[data-qr-modal-image]"),
+        qrModalAmount: root.querySelector("[data-qr-modal-amount]"),
+        qrModalTransaction: root.querySelector("[data-qr-modal-transaction]"),
+        qrModalCode: root.querySelector("[data-qr-modal-code]"),
+        qrModalBank: root.querySelector("[data-qr-modal-bank]"),
+        qrModalAccount: root.querySelector("[data-qr-modal-account]"),
+        qrModalCancel: root.querySelector("[data-qr-modal-cancel]"),
+        qrModalRecreate: root.querySelector("[data-qr-modal-recreate]"),
+        qrModalConfirm: root.querySelector("[data-qr-modal-confirm]"),
         refundModal: root.querySelector("[data-refund-modal]"),
         refundQty: byId("soLuongHoan"),
         refundReason: byId("lyDoHoan"),
         refundMethod: byId("phuongThucHoan"),
         refundSubmit: root.querySelector("[data-refund-submit]"),
-        paymentDocumentsSection:
-            root.querySelector(
-                "[data-payment-documents-section]"
-            ),
-
-        paymentDocumentList:
-            root.querySelector(
-                "[data-payment-document-list]"
-            ),
-
-        paymentDocumentCount:
-            root.querySelector(
-                "[data-payment-document-count]"
-            ),
-
-        paymentInfoTitle:
-            root.querySelector(
-                "[data-payment-info-title]"
-            ),
-
-        paymentOriginalRow:
-            root.querySelector(
-                "[data-payment-original-row]"
-            ),
-
-        paymentOriginalLabel:
-            root.querySelector(
-                "[data-payment-original-label]"
-            ),
-
-        paymentDiscountRow:
-            root.querySelector(
-                "[data-payment-discount-row]"
-            ),
-
-        paymentDiscountLabel:
-            root.querySelector(
-                "[data-payment-discount-label]"
-            ),
-
-        paymentFinalRow:
-            root.querySelector(
-                "[data-payment-final-row]"
-            ),
-
-        paymentFinalLabel:
-            root.querySelector(
-                "[data-payment-final-label]"
-            ),
-
-        paymentPayerRow:
-            root.querySelector(
-                "[data-payment-payer-row]"
-            ),
-
-        paymentPayerLabel:
-            root.querySelector(
-                "[data-payment-payer-label]"
-            ),
-
-        paymentTimeRow:
-            root.querySelector(
-                "[data-payment-time-row]"
-            ),
-
-        paymentTimeLabel:
-            root.querySelector(
-                "[data-payment-time-label]"
-            ),
+        paymentDocumentsSection: root.querySelector("[data-payment-documents-section]"),
+        paymentDocumentList: root.querySelector("[data-payment-document-list]"),
+        paymentDocumentCount: root.querySelector("[data-payment-document-count]"),
+        paymentInfoTitle: root.querySelector("[data-payment-info-title]"),
+        paymentOriginalRow: root.querySelector("[data-payment-original-row]"),
+        paymentOriginalLabel: root.querySelector("[data-payment-original-label]"),
+        paymentDiscountRow: root.querySelector("[data-payment-discount-row]"),
+        paymentDiscountLabel: root.querySelector("[data-payment-discount-label]"),
+        paymentFinalRow: root.querySelector("[data-payment-final-row]"),
+        paymentFinalLabel: root.querySelector("[data-payment-final-label]"),
+        paymentPayerRow: root.querySelector("[data-payment-payer-row]"),
+        paymentPayerLabel: root.querySelector("[data-payment-payer-label]"),
+        paymentTimeRow: root.querySelector("[data-payment-time-row]"),
+        paymentTimeLabel: root.querySelector("[data-payment-time-label]"),
     };
 
     async function loadDoiTuongOrderSetting() {
-
         try {
+            const response = await request(
+                API.doiTuongOrderSetting
+            );
 
-            const response =
-                await request(
-                    API.doiTuongOrderSetting
-                );
+            const giaTri = Number(
+                response?.data
+                    ?.giaTri
+            );
 
-
-            const giaTri =
-                Number(
-                    response?.data
-                        ?.giaTri
-                );
-
-
-            state.doiTuongOrderRule =
-                [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ].includes(
-                    giaTri
-                )
-                    ? giaTri
-                    : 1;
-
-        } catch (
-            error
-        ) {
-
+            state.doiTuongOrderRule = [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ].includes(
+                giaTri
+            )
+                ? giaTri
+                : 1;
+        } catch (error) {
             console.warn(
                 "Không tải được thiết lập thứ tự đối tượng lấy vé.",
                 error
             );
 
-
-            state.doiTuongOrderRule =
-                1;
-
+            state.doiTuongOrderRule = 1;
         }
-
     }
 
     async function loadPaymentVisibleSetting() {
-
         try {
+            const response = await request(
+                API.paymentVisibleSetting
+            );
 
-            const response =
-                await request(
-                    API.paymentVisibleSetting
-                );
+            const value = response?.data
+                ?.giaTri;
 
-
-            const value =
-                response?.data
-                    ?.giaTri;
-
-
-            const values =
-                Array.isArray(
-                    value
+            const values = Array.isArray(
+                value
+            )
+                ? value
+                : String(
+                    value ??
+                    ""
                 )
-                    ? value
-                    : String(
-                        value ??
-                        ""
-                    )
-                        .split(
-                            ","
-                        );
+                    .split(
+                        ","
+                    );
 
+            const normalized = [
+                ...new Set(
+                    values
+                        .map(
+                            item =>
+                                Number(
+                                    item
+                                )
+                        )
+                        .filter(
+                            item =>
+                                [
+                                    10,
+                                    20,
+                                    30
+                                ].includes(
+                                    item
+                                )
+                        )
+                )
+            ];
 
-            const normalized =
-                [
-                    ...new Set(
-                        values
-                            .map(
-                                item =>
-                                    Number(
-                                        item
-                                    )
-                            )
-                            .filter(
-                                item =>
-                                    [
-                                        10,
-                                        20,
-                                        30
-                                    ].includes(
-                                        item
-                                    )
-                            )
-                    )
+            state.paymentMethodVisibleValues = normalized.length
+                ? normalized
+                : [
+                    10,
+                    20,
+                    30
                 ];
-
-
-            state.paymentMethodVisibleValues =
-                normalized.length
-                    ? normalized
-                    : [
-                        10,
-                        20,
-                        30
-                    ];
-
-        } catch (
-            error
-        ) {
-
+        } catch (error) {
             console.warn(
                 "Không tải được thiết lập phương thức thanh toán.",
                 error
             );
 
-
-            state.paymentMethodVisibleValues =
-                [
-                    10,
-                    20,
-                    30
-                ];
-
+            state.paymentMethodVisibleValues = [
+                10,
+                20,
+                30
+            ];
         }
-
     }
 
     function getDoiTuongOrder() {
-
         const ORDER_MAP = {
-
-            1:
-                [
-                    10,
-                    20,
-                    30
-                ],
-
-            2:
-                [
-                    10,
-                    30,
-                    20
-                ],
-
-            3:
-                [
-                    20,
-                    10,
-                    30
-                ],
-
-            4:
-                [
-                    20,
-                    30,
-                    10
-                ],
-
-            5:
-                [
-                    30,
-                    10,
-                    20
-                ],
-
-            6:
-                [
-                    30,
-                    20,
-                    10
-                ]
-
+            1: [
+                10,
+                20,
+                30
+            ],
+            2: [
+                10,
+                30,
+                20
+            ],
+            3: [
+                20,
+                10,
+                30
+            ],
+            4: [
+                20,
+                30,
+                10
+            ],
+            5: [
+                30,
+                10,
+                20
+            ],
+            6: [
+                30,
+                20,
+                10
+            ]
         };
-
 
         return ORDER_MAP[
             state.doiTuongOrderRule
         ] ||
         ORDER_MAP[1];
-
     }
 
     function getOrderedDoiTuong() {
-
-        const order =
-            getDoiTuongOrder();
-
+        const order = getDoiTuongOrder();
 
         return [
             ...state.doiTuong
@@ -628,22 +402,17 @@
                     a,
                     b
                 ) => {
+                    const aIndex = order.indexOf(
+                        Number(
+                            a.value
+                        )
+                    );
 
-                    const aIndex =
-                        order.indexOf(
-                            Number(
-                                a.value
-                            )
-                        );
-
-
-                    const bIndex =
-                        order.indexOf(
-                            Number(
-                                b.value
-                            )
-                        );
-
+                    const bIndex = order.indexOf(
+                        Number(
+                            b.value
+                        )
+                    );
 
                     return (
                         (
@@ -657,10 +426,8 @@
                                 : bIndex
                         )
                     );
-
                 }
             );
-
     }
 
     function getEnumLabel(list, value) {
@@ -773,13 +540,9 @@
         value,
         triggerChange = false
     ) {
-
         if (!select) {
-
             return;
-
         }
-
 
         const selected =
             value === null ||
@@ -789,7 +552,6 @@
                     value
                 );
 
-
         Array
             .from(
                 select.options ||
@@ -797,24 +559,17 @@
             )
             .forEach(
                 option => {
-
                     option.selected =
                         option.value ===
                         selected;
-
                 }
             );
 
+        select.value = selected;
 
-        select.value =
-            selected;
-
-
-        const smartSelectRoot =
-            select.closest(
-                "[data-smart-select]"
-            );
-
+        const smartSelectRoot = select.closest(
+            "[data-smart-select]"
+        );
 
         const smartSelect =
             smartSelectRoot
@@ -828,10 +583,8 @@
                     )
             );
 
-
         smartSelect
             ?.refresh?.();
-
 
         smartSelect
             ?.setValue?.(
@@ -839,23 +592,16 @@
                 false
             );
 
-
-        if (
-            triggerChange
-        ) {
-
+        if (triggerChange) {
             select.dispatchEvent(
                 new Event(
                     "change",
                     {
-                        bubbles:
-                            true
+                        bubbles: true
                     }
                 )
             );
-
         }
-
     }
 
     function fillSelect(
@@ -869,8 +615,7 @@
         }
 
         const current = select.value;
-        const firstText =
-            select.options[0]?.textContent || "Chọn...";
+        const firstText = select.options[0]?.textContent || "Chọn...";
 
         select.innerHTML = "";
 

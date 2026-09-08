@@ -435,6 +435,7 @@ CREATE TABLE nv_phieu_lay_ve_an (
     nguoi_huy_id INTEGER,
     thoi_gian_huy TIMESTAMP,
     ly_do_huy VARCHAR(500),
+    phieu_goc_id BIGINT,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     updated_at TIMESTAMP DEFAULT now() NOT NULL,
     CONSTRAINT chk_nv_phieu_lay_ve_an_doi_tuong CHECK (
@@ -552,6 +553,9 @@ CREATE TABLE nv_thanh_toan_ve_an (
     loai_giao_dich INTEGER NOT NULL,
     phuong_thuc INTEGER NOT NULL,
     so_tien NUMERIC(18, 6) NOT NULL,
+    so_luong INTEGER,
+    thanh_toan_goc_id BIGINT,
+    phieu_moi_id BIGINT,
     ma_giao_dich VARCHAR(100),
     ma_tham_chieu VARCHAR(100),
     ma_chuan_chi VARCHAR(100),
@@ -1129,6 +1133,10 @@ ALTER TABLE nv_phieu_lay_ve_an
     ADD CONSTRAINT fk_nv_phieu_lay_ve_an_nguoi_huy
     FOREIGN KEY (nguoi_huy_id)
     REFERENCES dm_tai_khoan (id);
+ALTER TABLE nv_phieu_lay_ve_an
+    ADD CONSTRAINT fk_nv_phieu_lay_ve_an_phieu_goc
+    FOREIGN KEY (phieu_goc_id)
+    REFERENCES nv_phieu_lay_ve_an (id);
 ALTER TABLE ct_phieu_lay_ve_mien_giam
     ADD CONSTRAINT fk_ct_phieu_lay_ve_mien_giam_phieu
     FOREIGN KEY (phieu_lay_ve_id)
@@ -1153,6 +1161,14 @@ ALTER TABLE ct_phieu_lay_ve_mien_giam
 ALTER TABLE nv_thanh_toan_ve_an
     ADD CONSTRAINT fk_nv_thanh_toan_ve_an_phieu
     FOREIGN KEY (phieu_lay_ve_id)
+    REFERENCES nv_phieu_lay_ve_an (id);
+ALTER TABLE nv_thanh_toan_ve_an
+    ADD CONSTRAINT fk_nv_thanh_toan_ve_an_thanh_toan_goc
+    FOREIGN KEY (thanh_toan_goc_id)
+    REFERENCES nv_thanh_toan_ve_an (id);
+ALTER TABLE nv_thanh_toan_ve_an
+    ADD CONSTRAINT fk_nv_thanh_toan_ve_an_phieu_moi
+    FOREIGN KEY (phieu_moi_id)
     REFERENCES nv_phieu_lay_ve_an (id);
 ALTER TABLE nv_thanh_toan_ve_an
     ADD CONSTRAINT fk_nv_thanh_toan_ve_an_nguoi_khoi_tao
@@ -1598,6 +1614,15 @@ CREATE INDEX idx_dm_gia_ve_an_lookup
 CREATE UNIQUE INDEX uq_nv_thanh_toan_ve_an_ma_giao_dich
     ON nv_thanh_toan_ve_an (ma_giao_dich)
     WHERE ma_giao_dich IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_nv_phieu_lay_ve_an_phieu_goc
+    ON nv_phieu_lay_ve_an(phieu_goc_id);
+
+CREATE INDEX IF NOT EXISTS idx_nv_thanh_toan_ve_an_thanh_toan_goc
+    ON nv_thanh_toan_ve_an(thanh_toan_goc_id);
+
+CREATE INDEX IF NOT EXISTS idx_nv_thanh_toan_ve_an_phieu_moi
+    ON nv_thanh_toan_ve_an(phieu_moi_id);
 
 CREATE UNIQUE INDEX uq_nv_dot_binh_chon_thuc_don_ngay_hieu_luc
     ON nv_dot_binh_chon (thuc_don_ngay_id)
