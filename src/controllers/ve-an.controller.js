@@ -296,8 +296,6 @@ class VeAnWebController {
                     pageDescription: "Danh sách lấy vé ăn.",
                     listPage,
                     breadcrumbs: [
-                        { label: "Trang chủ", href: "/" },
-                        { label: "Vé ăn" },
                         { label: "Danh sách lấy vé" }
                     ]
                 }

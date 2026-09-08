@@ -1380,17 +1380,23 @@
     }
 
     async function printTicket() {
-        if (
-            !permission.canPrint(
-                state.permissions
-            )
-        ) {
-            return;
-        }
-
         const document = state.activePaymentDocument;
 
         if (!document) {
+            return;
+        }
+
+        const canPrintCurrent =
+            document.loai ===
+                "PHIEU_HOAN"
+                ? permission.canPrintRefund(
+                    state.permissions
+                )
+                : permission.canPrint(
+                    state.permissions
+                );
+
+        if (!canPrintCurrent) {
             return;
         }
 
@@ -1785,6 +1791,13 @@
     async function loadGiaVePreview(
         notifyWhenMissing = false
     ) {
+        if (
+            !permission.canLoadPrice(state.permissions)
+        ) {
+            state.pricePreview = null;
+            renderSummary();
+            return null;
+        }
         const thucDonNgayId = toPositiveInt(
             el.thucDonNgayId?.value
         );

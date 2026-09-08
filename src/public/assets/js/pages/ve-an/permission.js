@@ -5,6 +5,9 @@ window.LayVeAn = window.LayVeAn || {};
 
 window.LayVeAn.permission = (() => {
     const CODES = Object.freeze({
+        PAGE_LIST: "Q000030",
+        PAGE_TAKE: "Q000031",
+
         PHIEU_VIEW: "Q001032",
         PHIEU_CREATE: "Q001033",
         PHIEU_UPDATE: "Q001034",
@@ -26,7 +29,21 @@ window.LayVeAn.permission = (() => {
         TICKET_VIEW: "Q001047",
         TICKET_CHECK: "Q001048",
         TICKET_USE: "Q001049",
-        TICKET_CANCEL: "Q001050"
+        TICKET_CANCEL: "Q001050",
+
+        PHIEU_VALID_MEAL: "Q001051",
+        PHIEU_PRICE: "Q001052",
+
+        DISCOUNT_AVAILABLE: "Q001053",
+        DISCOUNT_APPLY: "Q001054",
+        DISCOUNT_DETAIL: "Q001055",
+
+        PAYMENT_QR_VIEW: "Q001056",
+        PAYMENT_DOCUMENT_LIST: "Q001058",
+        PAYMENT_REFUND_PRINT: "Q001059",
+        PAYMENT_DETAIL: "Q001060",
+
+        TICKET_DETAIL: "Q001061"
     });
 
     let cache = null;
@@ -57,7 +74,9 @@ window.LayVeAn.permission = (() => {
         if (Array.isArray(data.dsQuyen)) {
             data.dsQuyen.forEach(item => {
                 const code = normalize(
-                    item?.maQuyen ?? item?.ma_quyen ?? item
+                    item?.maQuyen ??
+                    item?.ma_quyen ??
+                    item
                 );
 
                 if (code) {
@@ -93,33 +112,46 @@ window.LayVeAn.permission = (() => {
 
     function has(permissions, code) {
         return permissions instanceof Set &&
-            permissions.has(normalize(code));
+            permissions.has(
+                normalize(code)
+            );
     }
 
     function hasAny(permissions, ...codes) {
-        return codes.some(code => has(permissions, code));
-    }
-
-    function canAccessPage(permissions) {
-        return hasAny(
-            permissions,
-            CODES.PHIEU_VIEW,
-            CODES.PHIEU_CREATE,
-            CODES.PHIEU_UPDATE
+        return codes.some(
+            code => has(
+                permissions,
+                code
+            )
         );
     }
 
-    function canCreatePhieu(permissions) {
-        // Backend route /them-moi cho phép Q001033 hoặc Q001034.
-        return hasAny(
-            permissions,
-            CODES.PHIEU_CREATE,
-            CODES.PHIEU_UPDATE
+    function showNoPermission(root) {
+        if (root) {
+            root.hidden = true;
+        }
+
+        const noPermission = document.querySelector(
+            "[data-catalog-no-permission]"
         );
+
+        if (noPermission) {
+            noPermission.hidden = false;
+        }
     }
 
-    function canUpdatePhieu(permissions) {
-        return has(permissions, CODES.PHIEU_UPDATE);
+    function hideNoPermission(root) {
+        if (root) {
+            root.hidden = false;
+        }
+
+        const noPermission = document.querySelector(
+            "[data-catalog-no-permission]"
+        );
+
+        if (noPermission) {
+            noPermission.hidden = true;
+        }
     }
 
     return {
@@ -127,47 +159,214 @@ window.LayVeAn.permission = (() => {
         load,
         has,
         hasAny,
-        canAccessPage,
-        canCreatePhieu,
-        canUpdatePhieu,
-        canCancelPhieu: p => has(p, CODES.PHIEU_CANCEL),
-        canPrint: p => has(p, CODES.PHIEU_PRINT),
+        showNoPermission,
+        hideNoPermission,
 
-        canViewDiscount: p => hasAny(
-            p,
-            CODES.DISCOUNT_VIEW,
-            CODES.DISCOUNT_CREATE,
-            CODES.DISCOUNT_UPDATE
-        ),
-        canCreateDiscount: p => hasAny(
-            p,
-            CODES.DISCOUNT_CREATE,
-            CODES.DISCOUNT_UPDATE
-        ),
-        canUpdateDiscount: p => has(p, CODES.DISCOUNT_UPDATE),
-        canDeleteDiscount: p => has(p, CODES.DISCOUNT_DELETE),
+        canAccessListPage: p =>
+            has(
+                p,
+                CODES.PAGE_LIST
+            ),
 
-        canViewPayment: p => hasAny(
-            p,
-            CODES.PAYMENT_VIEW,
-            CODES.PAYMENT_CREATE,
-            CODES.PAYMENT_QR_CREATE,
-            CODES.PAYMENT_QR_CANCEL,
-            CODES.PAYMENT_CONFIRM,
-            CODES.PAYMENT_REFUND
-        ),
-        canCreatePayment: p => has(p, CODES.PAYMENT_CREATE),
-        canCreateQr: p => has(p, CODES.PAYMENT_QR_CREATE),
-        canCancelQr: p => has(p, CODES.PAYMENT_QR_CANCEL),
-        canConfirmPayment: p => has(p, CODES.PAYMENT_CONFIRM),
-        canRefund: p => has(p, CODES.PAYMENT_REFUND),
+        canAccessTakePage: p =>
+            has(
+                p,
+                CODES.PAGE_TAKE
+            ),
 
-        canViewTicket: p => hasAny(
-            p,
-            CODES.TICKET_VIEW,
-            CODES.TICKET_CHECK,
-            CODES.TICKET_USE,
-            CODES.TICKET_CANCEL
-        )
+        canAccessPage: p =>
+            has(
+                p,
+                CODES.PAGE_TAKE
+            ),
+
+        canViewPhieu: p =>
+            hasAny(
+                p,
+                CODES.PHIEU_VIEW,
+                CODES.PHIEU_CREATE,
+                CODES.PHIEU_UPDATE
+            ),
+
+        canCreatePhieu: p =>
+            hasAny(
+                p,
+                CODES.PHIEU_CREATE,
+                CODES.PHIEU_UPDATE
+            ),
+
+        canUpdatePhieu: p =>
+            has(
+                p,
+                CODES.PHIEU_UPDATE
+            ),
+
+        canCancelPhieu: p =>
+            has(
+                p,
+                CODES.PHIEU_CANCEL
+            ),
+
+        canPrint: p =>
+            has(
+                p,
+                CODES.PHIEU_PRINT
+            ),
+
+        canLoadValidMeals: p =>
+            has(
+                p,
+                CODES.PHIEU_VALID_MEAL
+            ),
+
+        canLoadPrice: p =>
+            has(
+                p,
+                CODES.PHIEU_PRICE
+            ),
+
+        canViewDiscount: p =>
+            has(
+                p,
+                CODES.DISCOUNT_VIEW
+            ),
+
+        canCreateDiscount: p =>
+            hasAny(
+                p,
+                CODES.DISCOUNT_CREATE,
+                CODES.DISCOUNT_UPDATE
+            ),
+
+        canUpdateDiscount: p =>
+            has(
+                p,
+                CODES.DISCOUNT_UPDATE
+            ),
+
+        canDeleteDiscount: p =>
+            has(
+                p,
+                CODES.DISCOUNT_DELETE
+            ),
+
+        canLoadAvailableDiscount: p =>
+            has(
+                p,
+                CODES.DISCOUNT_AVAILABLE
+            ),
+
+        canApplyDiscount: p =>
+            has(
+                p,
+                CODES.DISCOUNT_APPLY
+            ),
+
+        canViewDiscountDetail: p =>
+            hasAny(
+                p,
+                CODES.DISCOUNT_DETAIL,
+                CODES.DISCOUNT_CREATE,
+                CODES.DISCOUNT_UPDATE
+            ),
+
+        canViewPayment: p =>
+            has(
+                p,
+                CODES.PAYMENT_VIEW
+            ),
+
+        canCreatePayment: p =>
+            has(
+                p,
+                CODES.PAYMENT_CREATE
+            ),
+
+        canCreateQr: p =>
+            has(
+                p,
+                CODES.PAYMENT_QR_CREATE
+            ),
+
+        canCancelQr: p =>
+            has(
+                p,
+                CODES.PAYMENT_QR_CANCEL
+            ),
+
+        canConfirmPayment: p =>
+            has(
+                p,
+                CODES.PAYMENT_CONFIRM
+            ),
+
+        canRefund: p =>
+            has(
+                p,
+                CODES.PAYMENT_REFUND
+            ),
+
+        canCancelPayment: p =>
+            has(
+                p,
+                CODES.PAYMENT_REFUND
+            ),
+
+        canViewQr: p =>
+            hasAny(
+                p,
+                CODES.PAYMENT_QR_VIEW,
+                CODES.PAYMENT_QR_CREATE,
+                CODES.PAYMENT_QR_CANCEL,
+                CODES.PAYMENT_CONFIRM
+            ),
+
+        canViewPaymentDocuments: p =>
+            has(
+                p,
+                CODES.PAYMENT_DOCUMENT_LIST
+            ),
+
+        canPrintRefund: p =>
+            has(
+                p,
+                CODES.PAYMENT_REFUND_PRINT
+            ),
+
+        canViewPaymentDetail: p =>
+            has(
+                p,
+                CODES.PAYMENT_DETAIL
+            ),
+
+        canViewTicket: p =>
+            has(
+                p,
+                CODES.TICKET_VIEW
+            ),
+
+        canCheckTicket: p =>
+            has(
+                p,
+                CODES.TICKET_CHECK
+            ),
+
+        canUseTicket: p =>
+            has(
+                p,
+                CODES.TICKET_USE
+            ),
+
+        canCancelTicket: p =>
+            has(
+                p,
+                CODES.TICKET_CANCEL
+            ),
+
+        canViewTicketDetail: p =>
+            has(
+                p,
+                CODES.TICKET_DETAIL
+            )
     };
 })();

@@ -7,6 +7,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    const root = document.querySelector(
+        '[data-data-list-page][data-module="danh-sach-lay-ve"]'
+    );
+
+    const permissions = await permission.load();
+
+    if (!permission.canAccessListPage(permissions)) {
+        permission.showNoPermission(root);
+        return;
+    }
+
+    permission.hideNoPermission(root);
+
     const DOI_TUONG = {
         10: "Nhân viên",
         20: "Đối tác",
@@ -22,8 +35,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     await window.MCS.pages.createDataListPage({
         moduleName: "danh-sach-lay-ve",
         permission,
-        canView: permissions => permission.canAccessPage(permissions),
-        canCreate: permissions => permission.canCreatePhieu(permissions),
+        canView: () => true,
+        canCreate: currentPermissions => permission.canAccessTakePage(currentPermissions),
         pageSize: 20,
         searchId: "layVeListSearch",
         searchKeys: [
@@ -42,6 +55,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
 
         getRowUrl(record) {
+            if (
+                !permission.canViewPhieu(permissions)
+            ) {
+                return "";
+            }
+
             return record?.id
                 ? `/ve-an/lay-ve-an/${record.id}`
                 : "";

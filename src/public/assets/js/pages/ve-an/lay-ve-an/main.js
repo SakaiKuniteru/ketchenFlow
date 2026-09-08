@@ -99,10 +99,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         state.permissions = await permission.load();
 
-        if (!permission.canAccessPage(state.permissions)) {
+        if (
+            !permission.canAccessTakePage(state.permissions)
+        ) {
             showNoPermission();
             return;
         }
+
+        app.hideNoPermission();
 
         await Promise.all([
             loadThucDonNgay(),
@@ -139,16 +143,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         enhanceQuantityField();
 
         if (isExistingPage()) {
-            await loadExistingPhieu(
-                app.pageContext.recordId
-            );
-
+            if (
+                !permission.canViewPhieu(state.permissions)
+            ) {
+                showNoPermission();
+                return;
+            }
+            await loadExistingPhieu(app.pageContext.recordId);
             const tasks = [
                 reloadDiscounts()
             ];
 
             if (
                 permission.canViewPayment(
+                    state.permissions
+                ) ||
+                permission.canViewPaymentDocuments(
+                    state.permissions
+                ) ||
+                permission.canViewPaymentDetail(
                     state.permissions
                 )
             ) {

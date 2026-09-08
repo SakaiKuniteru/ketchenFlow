@@ -463,6 +463,13 @@
     }
 
     async function loadThucDonNgay() {
+        if (
+            !permission.canLoadValidMeals(state.permissions)
+        ) {
+            state.thucDonNgay = [];
+            return;
+        }
+
         const response = await request(
             `${API.phieu}/thuc-don-ngay-hop-le`
         );
@@ -843,12 +850,11 @@
     }
 
     function showNoPermission() {
-        root.innerHTML = `
-            <div class="lva-no-permission">
-                <h2>Không đủ quyền truy cập</h2>
-                <p>Bạn không có quyền xem hoặc thao tác trên chức năng lấy vé ăn.</p>
-            </div>
-        `;
+        permission.showNoPermission(root);
+    }
+
+    function hideNoPermission() {
+        permission.hideNoPermission(root);
     }
 
     Object.assign(
@@ -893,7 +899,8 @@
             setLoading,
             showError,
             confirmAction,
-            showNoPermission
+            showNoPermission,
+            hideNoPermission
         }
     );
 })();

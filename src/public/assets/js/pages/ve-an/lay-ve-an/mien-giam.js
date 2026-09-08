@@ -167,6 +167,18 @@
         }
 
         if (el.discountCreate) {
+            const canSave =
+                manual
+                    ? permission.canUpdateDiscount(
+                        state.permissions
+                    )
+                    : permission.canCreateDiscount(
+                        state.permissions
+                    );
+
+            el.discountCreate.hidden =
+                !canSave;
+
             el.discountCreate.textContent =
                 manual
                     ? "Cập nhật miễn giảm"
@@ -426,7 +438,7 @@
     async function loadAvailableDiscounts() {
         if (
             !state.phieu ||
-            !permission.canViewDiscount(
+            !permission.canLoadAvailableDiscount(
                 state.permissions
             )
         ) {
@@ -549,6 +561,14 @@
 
                 row.className = "lva-available-item";
 
+                const canAction = isApplied
+                    ? permission.canDeleteDiscount(
+                        state.permissions
+                    )
+                    : permission.canApplyDiscount(
+                        state.permissions
+                    );
+
                 row.innerHTML =
                     `
                         <div>
@@ -569,44 +589,30 @@
 
                         </div>
 
-                        <button
-                            type="button"
-                            class="
-                                lva-btn
-                                ${isApplied
-                                    ? (
-                                        permission.canDeleteDiscount(
-                                            state.permissions
-                                        )
+                        ${canAction
+                            ? `
+                                <button
+                                    type="button"
+                                    class="
+                                        lva-btn
+                                        ${isApplied
                                             ? "lva-btn--danger-soft"
-                                            : "lva-btn--outline"
-                                    )
-                                    : "lva-btn--primary"
-                                }
-                                lva-btn--sm
-                            "
-                            data-voucher-action
-                            ${isApplied &&
-                                !permission.canDeleteDiscount(
-                                    state.permissions
-                                )
-                                    ? "disabled"
-                                    : ""
-                            }>
+                                            : "lva-btn--primary"
+                                        }
+                                        lva-btn--sm
+                                    "
+                                    data-voucher-action>
 
-                            ${
-                                isApplied
-                                    ? (
-                                        permission.canDeleteDiscount(
-                                            state.permissions
-                                        )
+                                    ${
+                                        isApplied
                                             ? "Hủy bỏ"
-                                            : "Đã áp dụng"
-                                    )
-                                    : "Áp dụng"
-                            }
+                                            : "Áp dụng"
+                                    }
 
-                        </button>
+                                </button>
+                            `
+                            : ""
+                        }
                     `;
 
                 row.querySelector(
@@ -633,6 +639,14 @@
 
                             try {
                                 setLoading(true);
+
+                                if (
+                                    !permission.canApplyDiscount(
+                                        state.permissions
+                                    )
+                                ) {
+                                    return;
+                                }
 
                                 await request(
                                     `${API.discount}/ap-dung`,
@@ -752,13 +766,6 @@
     }
 
     async function createManualDiscount() {
-        if (
-            !permission.canCreateDiscount(
-                state.permissions
-            )
-        ) {
-            return;
-        }
 
         if (isFinancialLocked()) {
             return;
@@ -769,6 +776,23 @@
             await saveDraft();
             await reloadDiscounts();
             const manual = getManualDiscount();
+            if (
+                manual &&
+                !permission.canUpdateDiscount(
+                    state.permissions
+                )
+            ) {
+                return;
+            }
+
+            if (
+                !manual &&
+                !permission.canCreateDiscount(
+                    state.permissions
+                )
+            ) {
+                return;
+            }
             const data = {
                 maMienGiam: nullableText(
                     byId(

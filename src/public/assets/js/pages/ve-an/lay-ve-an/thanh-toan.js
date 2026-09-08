@@ -169,8 +169,8 @@
             );
 
         el.paymentSection.hidden =
-            !permission.canViewPayment(state.permissions) ||
-            visible.length === 0;
+            visible.length ===
+            0;
 
         el.paymentMethodList.innerHTML = "";
 
@@ -245,11 +245,30 @@
     }
 
     function renderPermissionActions() {
-        if (el.discountOpen) {
-            el.discountOpen.hidden =
-                !permission.canCreateDiscount(
+        if (el.newTicket) {
+            el.newTicket.hidden =
+                !permission.canCreatePhieu(
                     state.permissions
                 );
+        }
+
+        if (el.discountOpen) {
+            const canManual =
+                permission.canCreateDiscount(
+                    state.permissions
+                );
+
+            const canAvailable =
+                permission.canLoadAvailableDiscount(
+                    state.permissions
+                ) &&
+                permission.canApplyDiscount(
+                    state.permissions
+                );
+
+            el.discountOpen.hidden =
+                !canManual &&
+                !canAvailable;
         }
 
         renderStateActions();
@@ -292,15 +311,19 @@
             pendingQr;
 
         if (el.print) {
-            el.print.hidden =
-                !permission.canPrint(
+            const canPrintDocument = isRefund
+                ? permission.canPrintRefund(
+                    state.permissions
+                )
+                : permission.canPrint(
                     state.permissions
                 );
 
+            el.print.hidden = !canPrintDocument;
+
             el.print.disabled =
                 !(
-                    isPaid ||
-                    isRefund
+                    isPaid || isRefund
                 );
         }
 
@@ -311,10 +334,6 @@
                 ) ||
                 !isUnpaid;
 
-            /*
-            * Phiếu chưa thanh toán sinh ra sau hoàn:
-            * không được hủy.
-            */
             el.cancelPhieu.disabled = Boolean(
                 state.familyHasRefund
             );
@@ -323,20 +342,21 @@
         if (el.cancelPayment) {
             el.cancelPayment.hidden =
                 !isPaid ||
-                !permission.canRefund(
+                !permission.canCancelPayment(
                     state.permissions
                 );
 
-            /*
-            * Đã phát sinh hoàn:
-            * vẫn nhìn thấy nút nhưng disable.
-            */
             el.cancelPayment.disabled =
                 hasRefundForCurrentPayment;
         }
 
         if (el.viewQr) {
-            el.viewQr.hidden = !hasQr;
+            el.viewQr.hidden =
+                !hasQr ||
+                !permission.canViewQr(
+                    state.permissions
+                );
+
             el.viewQr.disabled = false;
         }
 
@@ -377,10 +397,6 @@
                 ? getRefundableQuantity()
                 : 0;
 
-        /*
-        * ĐÃ THANH TOÁN
-        * => hoàn phần còn lại.
-        */
         if (
             isPaid &&
             refundableQty > 0 &&
@@ -396,10 +412,6 @@
             });
         }
 
-        /*
-        * CHƯA THANH TOÁN nhưng đã có
-        * transaction chờ xử lý.
-        */
         else if (
             isUnpaid &&
             state.payment?.id &&
@@ -415,9 +427,6 @@
             });
         }
 
-        /*
-        * CHƯA THANH TOÁN bình thường.
-        */
         else if (
             isUnpaid &&
             !state.payment?.id &&
@@ -438,9 +447,6 @@
             });
         }
 
-        /*
-        * Phiếu hoàn chỉ xem.
-        */
         if (isRefund) {
             el.mainPaymentAction.hidden = true;
         }
@@ -450,7 +456,12 @@
     }
 
     function cancelPayment() {
-        if (!state.payment?.id) {
+        if (
+            !state.payment?.id ||
+            !permission.canCancelPayment(
+                state.permissions
+            )
+        ) {
             return;
         }
 
@@ -1242,16 +1253,35 @@
             return;
         }
 
+        const canLoadTransactions =
+            permission.canViewPayment(
+                state.permissions
+            );
+
+        const canLoadDocuments =
+            permission.canViewPaymentDocuments(
+                state.permissions
+            );
+
         const [
             transactionResponse,
             documentResponse
         ] = await Promise.all([
-            request(
-                `${API.payment}/tong-hop?phieuLayVeId=${state.phieu.id}`
-            ),
-            request(
-                `${API.payment}/danh-sach-phieu/${state.phieu.id}`
-            )
+            canLoadTransactions
+                ? request(
+                    `${API.payment}/tong-hop?phieuLayVeId=${state.phieu.id}`
+                )
+                : Promise.resolve({
+                    data: []
+                }),
+
+            canLoadDocuments
+                ? request(
+                    `${API.payment}/danh-sach-phieu/${state.phieu.id}`
+                )
+                : Promise.resolve({
+                    data: []
+                })
         ]);
 
         const transactions = normalizeList(
@@ -1327,7 +1357,12 @@
                 ) ||
                 null;
 
-            if (!activeTransaction) {
+            if (
+                !activeTransaction &&
+                permission.canViewPaymentDetail(
+                    state.permissions
+                )
+            ) {
                 const transactionDetailResponse =
                     await request(
                         `${API.payment}/${activeSummary.thanhToanId}`
@@ -1369,12 +1404,6 @@
                 );
         }
 
-        /*
-        * QR của dòng đang xem.
-        *
-        * Với dòng hoàn, backend trả
-        * qrThanhToanId của phiếu thu nguồn.
-        */
         const qrThanhToanId = Number(
             state.activePaymentDocument?.qrThanhToanId
         );
@@ -1388,12 +1417,34 @@
                         ) ===
                         qrThanhToanId
                 ) ||
-                (
-                    await request(
-                        `${API.payment}/${qrThanhToanId}`
-                    )
-                )?.data ||
                 null;
+
+            if (
+                !state.qrPayment &&
+                permission.canViewPaymentDetail(
+                    state.permissions
+                )
+            ) {
+                state.qrPayment =
+                    (
+                        await request(
+                            `${API.payment}/${qrThanhToanId}`
+                        )
+                    )?.data ||
+                    null;
+            }
+
+            if (
+                !state.qrPayment &&
+                permission.canViewQr(
+                    state.permissions
+                )
+            ) {
+                state.qrPayment = {
+                    id: qrThanhToanId,
+                    phuongThuc: 30
+                };
+            }
         } else {
             state.qrPayment = null;
         }
@@ -1517,6 +1568,16 @@
             !el.paymentDocumentList ||
             !el.paymentDocumentsSection
         ) {
+            return;
+        }
+
+        if (
+            !permission.canViewPaymentDocuments(
+                state.permissions
+            )
+        ) {
+            el.paymentDocumentsSection.hidden = true;
+            el.paymentDocumentList.innerHTML = "";
             return;
         }
 
@@ -2054,7 +2115,12 @@
     }
 
     async function loadCurrentQr() {
-        if (!state.qrPayment?.id) {
+        if (
+            !state.qrPayment?.id ||
+            !permission.canViewQr(
+                state.permissions
+            )
+        ) {
             return;
         }
 
