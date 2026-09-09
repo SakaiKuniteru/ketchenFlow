@@ -1,0 +1,26 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Runtime data
+src/public/uploads/
+src/public/dl-bao-cao/
+src/public/bao-cao/
+dl-bao-cao/
+
+# Logs
+*.log
+logs/
+
+# Coverage and temporary files
+coverage/
+tmp/
+temp/
