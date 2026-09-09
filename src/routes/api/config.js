@@ -181,6 +181,43 @@ const routes = [
         )
     ],
 
+    // DANH MỤC ĐẶT HÀNG
+
+    [
+        "/dm-nhom-san-pham",
+        require(
+            "../../modules/danh-muc/dat-hang/nhom-san-pham/nhom-san-pham.route"
+        )
+    ],
+
+    [
+        "/dm-san-pham",
+        require(
+            "../../modules/danh-muc/dat-hang/san-pham/san-pham.route"
+        )
+    ],
+
+    [
+        "/dm-dia-diem-nhan-hang",
+        require(
+            "../../modules/danh-muc/dat-hang/dia-diem-nhan-hang/dia-diem-nhan-hang.route"
+        )
+    ],
+
+    [
+        "/dm-khung-gio-nhan-hang",
+        require(
+            "../../modules/danh-muc/dat-hang/khung-gio-nhan-hang/khung-gio-nhan-hang.route"
+        )
+    ],
+
+    [
+        "/dm-voucher-don-hang",
+        require(
+            "../../modules/danh-muc/dat-hang/voucher-don-hang/voucher-don-hang.route"
+        )
+    ],
+
     [
     "/files",
         require(

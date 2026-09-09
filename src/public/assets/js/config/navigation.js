@@ -160,6 +160,13 @@ window.MCS.navigationItems = [
     },
 
     {
+        label: "Xác nhận sử dụng vé",
+        group: "Vé ăn",
+        url: "/ve-an/xac-nhan-su-dung-ve",
+        permission: "Q001047"
+    },
+
+    {
         label: "Danh mục Chính sách",
         group: "Chính sách",
         url: "/chuong-trinh/chinh-sach",
