@@ -11,11 +11,19 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         canCreate = null,
         pageSize = 12,
         searchKeys = [],
+        selectable = false,
+        isRowSelectable = null,
+        getSelectionGroupKey = null,
+        isRowClickable = null,
         getRowUrl = null,
+        renderRowActions = null,
+        onRowClick = null,
+        onSelectionChange = null,
         onCreate = null,
         onExport = null,
         formatCell = null,
         getSummary = null,
+        defaultFilters = {},
         mapListResponse = response => normalizeList(response?.data)
     } = options;
 
@@ -31,6 +39,8 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         permissions: new Set(),
         allData: [],
         visibleData: [],
+        selectedIds: new Set(),
+        selectionGroupKey: null,
         page: 1,
         pageSize,
         keyword: "",
@@ -46,6 +56,8 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         filterPanel: root.querySelector("[data-list-filter-panel]"),
         filterApply: root.querySelector("[data-list-filter-apply]"),
         filterReset: root.querySelector("[data-list-filter-reset]"),
+        selectAll: root.querySelector("[data-list-select-all] input[type='checkbox']") || root.querySelector("input[data-list-select-all]"),
+        rowCheckboxTemplate: root.querySelector("[data-list-row-checkbox-template]"),
         search: root.querySelector("[data-list-search], .search-picker--data-list input, input[type='search']")
     };
 
@@ -59,21 +71,25 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         typeof canView === "function" &&
         !canView(state.permissions)
     ) {
-        root.innerHTML = `
-            <div class="data-list-no-permission">
-                <h2>Không đủ quyền truy cập</h2>
-                <p>Bạn không có quyền xem danh sách này.</p>
-            </div>
-        `;
-        return null;
-    }
+        window.MCS
+                ?.noPermission
+                ?.show(root);
+            return null;
+
+        }
+
+        window.MCS
+            ?.noPermission
+            ?.hide(root);
 
     bindActions();
     bindSearch();
     bindFilter();
     bindSort();
+    bindSelection();
     initializePagination();
     await loadFilterOptions();
+    applyDefaultFilters();
     await loadData();
 
     async function loadData() {
@@ -84,6 +100,7 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
             const response = await window.MCS.api.request(endpoint);
 
             state.allData = mapListResponse(response) || [];
+            state.selectedIds.clear();
             state.page = 1;
             applySearch();
             renderSummary();
@@ -101,21 +118,152 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
     }
 
     function buildListEndpoint() {
-        const base = root.dataset.listEndpoint || "";
-        const params = new URLSearchParams();
 
-        root.querySelectorAll("[data-list-filter-field]").forEach(field => {
-            const name = field.dataset.filterName;
-            const input = getFilterControl(field);
-            const value = String(input?.value || "").trim();
+        const base =
+            root.dataset
+                .listEndpoint ||
+            "";
 
-            if (name && value) {
-                params.set(name, value);
+
+        const params =
+            new URLSearchParams();
+
+
+        root
+            .querySelectorAll(
+                "[data-list-filter-field]"
+            )
+            .forEach(
+                field => {
+
+                    const name =
+                        field.dataset
+                            .filterName;
+
+
+                    if (
+                        !name
+                    ) {
+                        return;
+                    }
+
+
+                    const values =
+                        getFilterValues(
+                            field
+                        );
+
+
+                    values.forEach(
+                        value => {
+
+                            params.append(
+                                name,
+                                value
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        const query =
+            params.toString();
+
+
+        return query
+            ? `${base}?${query}`
+            : base;
+
+    }
+
+    function getFilterValues(
+        field
+    ) {
+
+        if (
+            !field
+        ) {
+            return [];
+        }
+
+
+        const input =
+            getFilterControl(
+                field
+            );
+
+
+        if (
+            !input
+        ) {
+            return [];
+        }
+
+
+        if (
+            input.tagName ===
+                "SELECT" &&
+            input.multiple
+        ) {
+
+            const options =
+                Array.from(
+                    input.options ||
+                    []
+                );
+
+
+            const allOption =
+                options.find(
+                    option =>
+                        option.value ===
+                        "__ALL__"
+                );
+
+
+            if (
+                allOption
+                    ?.selected
+            ) {
+                return [];
             }
-        });
 
-        const query = params.toString();
-        return query ? `${base}?${query}` : base;
+
+            return options
+                .filter(
+                    option =>
+                        option.selected &&
+                        option.value &&
+                        option.value !==
+                            "__ALL__"
+                )
+                .map(
+                    option =>
+                        String(
+                            option.value
+                        )
+                );
+
+        }
+
+
+        const value =
+            String(
+                input.value ||
+                ""
+            )
+                .trim();
+
+
+        return value
+            ? [
+                value
+            ]
+            : [];
+
     }
 
     function bindActions() {
@@ -256,9 +404,64 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
                     new Event("change", { bubbles: true })
                 );
 
-                const smartRoot = field.querySelector("[data-smart-select]");
-                smartRoot?.smartSelect?.setValue?.("", false);
-                smartRoot?.smartSelect?.refresh?.();
+                const smartRoot =
+                    field.querySelector(
+                        "[data-smart-select]"
+                    );
+
+
+                const smartSelect =
+                    smartRoot?.smartSelect ||
+                    (
+                        smartRoot &&
+                        window.MCS
+                            ?.smartSelect
+                            ?.initialize?.(
+                                smartRoot
+                            )
+                    );
+
+
+                if (
+                    input?.tagName ===
+                        "SELECT" &&
+                    input.multiple
+                ) {
+
+                    if (
+                        field.dataset
+                            .filterAllowAll ===
+                        "true"
+                    ) {
+
+                        smartSelect
+                            ?.setAll?.(
+                                true,
+                                false
+                            );
+
+                    } else {
+
+                        smartSelect
+                            ?.clear?.(
+                                false
+                            );
+
+                    }
+
+                } else {
+
+                    smartSelect
+                        ?.setValue?.(
+                            "",
+                            false
+                        );
+
+                }
+
+
+                smartSelect
+                    ?.refresh?.();
 
                 const dateRoot = field.querySelector(
                     "[data-date-picker]"
@@ -284,9 +487,528 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
                     );
                 }
             });
-
+            applyDefaultFilters();
             await loadData();
         });
+    }
+
+    function getRecordId(
+        record
+    ) {
+
+        const id =
+            record?.id;
+
+        if (
+            id === null ||
+            id === undefined ||
+            id === ""
+        ) {
+            return "";
+        }
+
+        return String(
+            id
+        );
+
+    }
+
+    function getRecordById(
+        id
+    ) {
+
+        const normalizedId =
+            String(
+                id ||
+                ""
+            );
+
+
+        return state.allData
+            .find(
+                record =>
+                    getRecordId(
+                        record
+                    ) ===
+                    normalizedId
+            ) ||
+            null;
+
+    }
+
+    function getSelectedRecords() {
+
+        return state.visibleData
+            .filter(
+                record =>
+                    state.selectedIds
+                        .has(
+                            getRecordId(
+                                record
+                            )
+                        )
+            );
+
+    }
+
+    function clearSelection() {
+
+        state.selectedIds
+            .clear();
+
+        state.selectionGroupKey =
+            null;
+
+        syncSelection();
+
+    }
+
+    function syncSelection() {
+
+        if (
+            !selectable
+        ) {
+            return;
+        }
+
+
+        const selectedRecords =
+            getSelectedRecords();
+
+
+        if (
+            selectedRecords.length >
+            0 &&
+            typeof getSelectionGroupKey ===
+                "function"
+        ) {
+
+            state.selectionGroupKey =
+                String(
+                    getSelectionGroupKey(
+                        selectedRecords[0]
+                    )
+                );
+
+        } else if (
+            selectedRecords.length ===
+            0
+        ) {
+
+            state.selectionGroupKey =
+                null;
+
+        }
+
+
+        const checkboxes =
+            Array.from(
+                root.querySelectorAll(
+                    "[data-list-row-select]"
+                )
+            );
+
+
+        checkboxes.forEach(
+            checkbox => {
+
+                const id =
+                    String(
+                        checkbox.dataset
+                            .recordId ||
+                        ""
+                    );
+
+
+                const record =
+                    getRecordById(
+                        id
+                    );
+
+
+                if (
+                    !record
+                ) {
+                    return;
+                }
+
+
+                const selected =
+                    state.selectedIds
+                        .has(
+                            id
+                        );
+
+
+                let allowed =
+                    typeof isRowSelectable !==
+                        "function" ||
+                    isRowSelectable(
+                        record,
+                        state.permissions,
+                        state
+                    );
+
+
+                if (
+                    allowed &&
+                    state.selectionGroupKey !==
+                        null &&
+                    typeof getSelectionGroupKey ===
+                        "function"
+                ) {
+
+                    const recordGroupKey =
+                        String(
+                            getSelectionGroupKey(
+                                record
+                            )
+                        );
+
+
+                    allowed =
+                        recordGroupKey ===
+                        state.selectionGroupKey;
+
+                }
+
+
+                checkbox.checked =
+                    selected;
+
+                checkbox.disabled =
+                    !allowed;
+
+
+                checkbox
+                    .closest(
+                        "tr"
+                    )
+                    ?.classList
+                    .toggle(
+                        "is-selected",
+                        selected
+                    );
+
+            }
+        );
+
+
+        const enabled =
+            checkboxes.filter(
+                checkbox =>
+                    !checkbox.disabled
+            );
+
+
+        const selectedCount =
+            enabled.filter(
+                checkbox =>
+                    checkbox.checked
+            ).length;
+
+
+        if (
+            el.selectAll
+        ) {
+
+            el.selectAll.checked =
+                enabled.length >
+                    0 &&
+                selectedCount ===
+                    enabled.length;
+
+            el.selectAll.indeterminate =
+                selectedCount >
+                    0 &&
+                selectedCount <
+                    enabled.length;
+
+            el.selectAll.disabled =
+                enabled.length ===
+                    0;
+
+        }
+
+
+        if (
+            typeof onSelectionChange ===
+            "function"
+        ) {
+
+            onSelectionChange(
+                selectedRecords,
+                state
+            );
+
+        }
+
+    }
+
+    function bindSelection() {
+
+        if (
+            !selectable
+        ) {
+            return;
+        }
+
+
+        el.selectAll
+            ?.addEventListener(
+                "change",
+                () => {
+
+                    const checked =
+                        el.selectAll
+                            .checked;
+
+
+                    if (
+                        !checked
+                    ) {
+
+                        state.selectedIds
+                            .clear();
+
+                        state.selectionGroupKey =
+                            null;
+
+                        syncSelection();
+
+                        return;
+
+                    }
+
+
+                    const checkboxes =
+                        Array.from(
+                            root.querySelectorAll(
+                                "[data-list-row-select]"
+                            )
+                        );
+
+
+                    let groupKey =
+                        state.selectionGroupKey;
+
+
+                    /*
+                    * Chưa chọn dòng nào.
+                    * Lấy trạng thái của checkbox hợp lệ đầu tiên
+                    * làm nhóm selection.
+                    */
+                    if (
+                        groupKey ===
+                            null &&
+                        typeof getSelectionGroupKey ===
+                            "function"
+                    ) {
+
+                        const first =
+                            checkboxes.find(
+                                checkbox =>
+                                    !checkbox.disabled
+                            );
+
+
+                        const record =
+                            first
+                                ? getRecordById(
+                                    first.dataset
+                                        .recordId
+                                )
+                                : null;
+
+
+                        if (
+                            record
+                        ) {
+
+                            groupKey =
+                                String(
+                                    getSelectionGroupKey(
+                                        record
+                                    )
+                                );
+
+                            state.selectionGroupKey =
+                                groupKey;
+
+                        }
+
+                    }
+
+
+                    checkboxes.forEach(
+                        checkbox => {
+
+                            const id =
+                                String(
+                                    checkbox.dataset
+                                        .recordId ||
+                                    ""
+                                );
+
+
+                            const record =
+                                getRecordById(
+                                    id
+                                );
+
+
+                            if (
+                                !record
+                            ) {
+                                return;
+                            }
+
+
+                            let allowed =
+                                typeof isRowSelectable !==
+                                    "function" ||
+                                isRowSelectable(
+                                    record,
+                                    state.permissions,
+                                    state
+                                );
+
+
+                            if (
+                                allowed &&
+                                groupKey !==
+                                    null &&
+                                typeof getSelectionGroupKey ===
+                                    "function"
+                            ) {
+
+                                allowed =
+                                    String(
+                                        getSelectionGroupKey(
+                                            record
+                                        )
+                                    ) ===
+                                    groupKey;
+
+                            }
+
+
+                            if (
+                                allowed
+                            ) {
+
+                                state.selectedIds
+                                    .add(
+                                        id
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    syncSelection();
+
+                }
+            );
+
+
+        el.body
+            ?.addEventListener(
+                "change",
+                event => {
+
+                    const checkbox =
+                        event.target
+                            .closest?.(
+                                "[data-list-row-select]"
+                            );
+
+
+                    if (
+                        !checkbox ||
+                        checkbox.disabled
+                    ) {
+                        return;
+                    }
+
+
+                    const id =
+                        String(
+                            checkbox.dataset
+                                .recordId ||
+                            ""
+                        );
+
+
+                    const record =
+                        getRecordById(
+                            id
+                        );
+
+
+                    if (
+                        !id ||
+                        !record
+                    ) {
+                        return;
+                    }
+
+
+                    if (
+                        checkbox.checked
+                    ) {
+
+                        if (
+                            state.selectionGroupKey ===
+                                null &&
+                            typeof getSelectionGroupKey ===
+                                "function"
+                        ) {
+
+                            state.selectionGroupKey =
+                                String(
+                                    getSelectionGroupKey(
+                                        record
+                                    )
+                                );
+
+                        }
+
+
+                        state.selectedIds
+                            .add(
+                                id
+                            );
+
+                    } else {
+
+                        state.selectedIds
+                            .delete(
+                                id
+                            );
+
+
+                        if (
+                            state.selectedIds
+                                .size ===
+                            0
+                        ) {
+
+                            state.selectionGroupKey =
+                                null;
+
+                        }
+
+                    }
+
+
+                    syncSelection();
+
+                }
+            );
+
     }
 
     function bindSort() {
@@ -526,7 +1248,10 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
                                 "id",
                             field.dataset
                                 .filterLabelKey ||
-                                "name"
+                                "name",
+                            field.dataset
+                                .filterAllowAll ===
+                                "true"
                         );
 
                         bindFilterSelectOverlay(
@@ -785,6 +1510,127 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         );
     }
 
+    function applyDefaultFilters() {
+
+        Object
+            .entries(
+                defaultFilters ||
+                {}
+            )
+            .forEach(
+                (
+                    [
+                        name,
+                        rawValues
+                    ]
+                ) => {
+
+                    const field =
+                        Array
+                            .from(
+                                root.querySelectorAll(
+                                    "[data-list-filter-field]"
+                                )
+                            )
+                            .find(
+                                item =>
+                                    item.dataset
+                                        .filterName ===
+                                    name
+                            );
+
+
+                    if (
+                        !field
+                    ) {
+                        return;
+                    }
+
+
+                    const select =
+                        field.querySelector(
+                            "select"
+                        );
+
+
+                    if (
+                        !select
+                    ) {
+                        return;
+                    }
+
+
+                    const values =
+                        (
+                            Array.isArray(
+                                rawValues
+                            )
+                                ? rawValues
+                                : [
+                                    rawValues
+                                ]
+                        )
+                            .filter(
+                                value =>
+                                    value !==
+                                        null &&
+                                    value !==
+                                        undefined &&
+                                    value !==
+                                        ""
+                            )
+                            .map(
+                                value =>
+                                    String(
+                                        value
+                                    )
+                            );
+
+
+                    const smartRoot =
+                        select.closest(
+                            "[data-smart-select]"
+                        );
+
+
+                    const smartSelect =
+                        smartRoot?.smartSelect ||
+                        (
+                            smartRoot &&
+                            window.MCS
+                                ?.smartSelect
+                                ?.initialize?.(
+                                    smartRoot
+                                )
+                        );
+
+
+                    if (
+                        select.multiple
+                    ) {
+
+                        smartSelect
+                            ?.setValues?.(
+                                values,
+                                false
+                            );
+
+                    } else {
+
+                        smartSelect
+                            ?.setValue?.(
+                                values[0] ||
+                                "",
+                                false
+                            );
+
+                    }
+
+                }
+            );
+
+    }
+
     function applySearch() {
         let records = [
             ...state.allData
@@ -844,85 +1690,513 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
         }
     }
 
-    function renderRows(rows, startIndex) {
-        if (!el.body) {
+    function createRowCheckbox(
+        record,
+        allowed
+    ) {
+
+        if (
+            !el.rowCheckboxTemplate
+        ) {
+            return null;
+        }
+
+
+        const fragment =
+            el.rowCheckboxTemplate
+                .content
+                .cloneNode(
+                    true
+                );
+
+
+        const wrapper =
+            fragment.querySelector(
+                ".data-list-selection-control"
+            );
+
+
+        const checkbox =
+            fragment.querySelector(
+                "input[type='checkbox']"
+            );
+
+
+        if (
+            !wrapper ||
+            !checkbox
+        ) {
+            return null;
+        }
+
+
+        const recordId =
+            getRecordId(
+                record
+            );
+
+
+        const inputId =
+            `dataListRowCheckbox_${recordId}`;
+
+
+        checkbox.id =
+            inputId;
+
+        checkbox.name =
+            "dataListSelectedIds";
+
+        checkbox.value =
+            recordId;
+
+        checkbox.dataset
+            .listRowSelect =
+            "";
+
+        checkbox.dataset
+            .recordId =
+            recordId;
+
+        checkbox.checked =
+            state.selectedIds
+                .has(
+                    recordId
+                );
+
+        checkbox.disabled =
+            !allowed;
+
+
+        checkbox.setAttribute(
+            "aria-label",
+            `Chọn vé ${
+                record?.maVe ||
+                recordId
+            }`
+        );
+
+
+        wrapper
+            .querySelector(
+                "label[for]"
+            )
+            ?.setAttribute(
+                "for",
+                inputId
+            );
+
+
+        return wrapper;
+
+    }
+
+    function renderRows(
+        rows,
+        startIndex
+    ) {
+
+        if (
+            !el.body
+        ) {
             return;
         }
 
-        el.body.innerHTML = "";
 
-        const columns = Array.from(
-            root.querySelectorAll("[data-list-column]")
-        ).map(column => ({
-            key: column.dataset.columnKey,
-            type: column.dataset.columnType || "text"
-        }));
+        el.body.innerHTML =
+            "";
 
-        if (!rows.length) {
-            const tr = document.createElement("tr");
-            const td = document.createElement("td");
+        const columns =
+            Array.from(
+                root.querySelectorAll(
+                    "[data-list-column]"
+                )
+            )
+                .map(
+                    column => ({
+                        key:
+                            column.dataset
+                                .columnKey,
 
-            td.className = "data-list-table__empty";
-            td.colSpan = columns.length + (root.querySelector(".data-list-table__index") ? 1 : 0);
-            td.textContent = "Không có dữ liệu.";
+                        type:
+                            column.dataset
+                                .columnType ||
+                            "text",
 
-            tr.appendChild(td);
-            el.body.appendChild(tr);
+                        width:
+                            column.style
+                                .width ||
+                            ""
+                    })
+                );
+        const hasIndex =
+            Boolean(
+                root.querySelector(
+                    ".data-list-table__index"
+                )
+            );
+
+
+        const hasActions =
+            Boolean(
+                root.querySelector(
+                    "[data-list-row-actions-column]"
+                )
+            );
+
+
+        if (
+            !rows.length
+        ) {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+            const td =
+                document.createElement(
+                    "td"
+                );
+
+
+            td.className =
+                "data-list-table__empty";
+
+
+            td.colSpan =
+                columns.length +
+                (
+                    selectable
+                        ? 1
+                        : 0
+                ) +
+                (
+                    hasIndex
+                        ? 1
+                        : 0
+                ) +
+                (
+                    hasActions
+                        ? 1
+                        : 0
+                );
+
+
+            td.textContent =
+                "Không có dữ liệu.";
+
+
+            tr.appendChild(
+                td
+            );
+
+            el.body.appendChild(
+                tr
+            );
+
+
+            syncSelection();
+
             return;
+
         }
 
-        rows.forEach((record, rowIndex) => {
-            const tr = document.createElement("tr");
-            tr.dataset.recordId = record?.id ?? "";
 
-            if (root.querySelector(".data-list-table__index")) {
-                const indexCell = document.createElement("td");
+        rows.forEach(
+            (
+                record,
+                rowIndex
+            ) => {
 
-                indexCell.textContent = String(startIndex + rowIndex + 1);
-                indexCell.className = "data-list-table__index";
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
 
-                tr.appendChild(indexCell);
-            }
 
-            columns.forEach(column => {
-                const td = document.createElement("td");
-                const value = resolveValue(record, column.key);
+                const recordId =
+                    getRecordId(
+                        record
+                    );
 
-                const rendered = formatCell
-                    ? formatCell(column, value, record)
-                    : defaultFormat(column.type, value);
+
+                tr.dataset.recordId =
+                    recordId;
 
                 if (
-                    rendered &&
-                    typeof rendered === "object" &&
-                    rendered.html !== undefined
+                    selectable
                 ) {
-                    td.innerHTML = rendered.html;
-                } else {
-                    td.textContent = rendered ?? "-";
+
+                    const selectCell =
+                        document.createElement(
+                            "td"
+                        );
+
+                    selectCell.className = "catalog-table__cell catalog-table__cell--center data-list-table__selection";
+
+                    const allowed =
+                        typeof isRowSelectable !==
+                            "function" ||
+                        isRowSelectable(
+                            record,
+                            state.permissions,
+                            state
+                        );
+
+
+                    const checkbox =
+                        createRowCheckbox(
+                            record,
+                            allowed
+                        );
+
+
+                    if (
+                        checkbox
+                    ) {
+
+                        selectCell.appendChild(
+                            checkbox
+                        );
+
+                    }
+
+
+                    tr.appendChild(
+                        selectCell
+                    );
+
                 }
 
-                tr.appendChild(td);
-            });
+                if (
+                    hasIndex
+                ) {
 
-            if (typeof getRowUrl === "function") {
-                tr.classList.add("is-clickable");
+                    const indexCell =
+                        document.createElement(
+                            "td"
+                        );
 
-                tr.addEventListener("click", event => {
-                    if (event.target.closest("button, a, input, select, textarea")) {
-                        return;
+
+                    indexCell.textContent =
+                        String(
+                            startIndex +
+                            rowIndex +
+                            1
+                        );
+
+                    indexCell.className = "catalog-table__cell catalog-table__cell--index catalog-table__cell--center data-list-table__index";
+
+                    tr.appendChild(
+                        indexCell
+                    );
+
+                }
+
+
+                /*
+                * CỘT DỮ LIỆU
+                */
+                columns.forEach(
+                    column => {
+
+                        const td =
+                            document.createElement(
+                                "td"
+                            );
+
+                        td.className = "catalog-table__cell catalog-table__cell--center";
+
+                        if (
+                            column.width
+                        ) {
+
+                            td.style.width =
+                                column.width;
+
+                            td.style.minWidth =
+                                column.width;
+
+                        }
+
+                        const value =
+                            resolveValue(
+                                record,
+                                column.key
+                            );
+
+
+                        const rendered =
+                            formatCell
+                                ? formatCell(
+                                    column,
+                                    value,
+                                    record
+                                )
+                                : defaultFormat(
+                                    column.type,
+                                    value
+                                );
+
+
+                        if (
+                            rendered &&
+                            typeof rendered ===
+                                "object" &&
+                            rendered.html !==
+                                undefined
+                        ) {
+
+                            td.innerHTML =
+                                rendered.html;
+
+                        } else {
+
+                            td.textContent =
+                                rendered ??
+                                "-";
+
+                        }
+
+
+                        tr.appendChild(
+                            td
+                        );
+
+                    }
+                );
+
+
+                /*
+                * CỘT THAO TÁC CUỐI
+                */
+                if (
+                    hasActions
+                ) {
+
+                    const actionCell =
+                        document.createElement(
+                            "td"
+                        );
+
+
+                    actionCell.className = "catalog-table__cell catalog-table__cell--center data-list-table__actions-sticky";
+
+
+                    if (
+                        typeof renderRowActions ===
+                        "function"
+                    ) {
+
+                        actionCell.innerHTML =
+                            renderRowActions(
+                                record,
+                                state.permissions
+                            ) ||
+                            "";
+
                     }
 
-                    const url = getRowUrl(record);
 
-                    if (url) {
-                        window.location.href = url;
-                    }
-                });
+                    tr.appendChild(
+                        actionCell
+                    );
+
+                }
+
+
+                /*
+                * CLICK DÒNG
+                */
+                const rowClickable =
+                    typeof onRowClick ===
+                        "function" &&
+                    (
+                        typeof isRowClickable !==
+                            "function" ||
+                        isRowClickable(
+                            record,
+                            state.permissions
+                        )
+                    );
+
+
+                if (
+                    rowClickable ||
+                    typeof getRowUrl ===
+                        "function"
+                ) {
+
+                    tr.classList.add(
+                        "is-clickable"
+                    );
+
+
+                    tr.addEventListener(
+                        "click",
+                        event => {
+
+                            if (
+                                event.target.closest(
+                                    "button, a, input, select, textarea, label"
+                                )
+                            ) {
+                                return;
+                            }
+
+
+                            if (
+                                rowClickable
+                            ) {
+
+                                onRowClick(
+                                    record
+                                );
+
+                                return;
+
+                            }
+
+
+                            if (
+                                typeof getRowUrl !==
+                                "function"
+                            ) {
+                                return;
+                            }
+
+
+                            const url =
+                                getRowUrl(
+                                    record
+                                );
+
+
+                            if (
+                                url
+                            ) {
+
+                                window.location.href =
+                                    url;
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                el.body.appendChild(
+                    tr
+                );
+
             }
+        );
 
-            el.body.appendChild(tr);
-        });
+
+        syncSelection();
+
     }
 
     function renderSummary() {
@@ -986,8 +2260,23 @@ window.MCS.pages.createDataListPage = async function createDataListPage(options 
 
     return {
         state,
-        reload: loadData,
-        render
+
+        reload:
+            loadData,
+
+        render,
+
+        setLoading,
+
+        getSelectedRecords,
+
+        clearSelection,
+
+        getVisibleRecords() {
+            return [
+                ...state.visibleData
+            ];
+        }
     };
 };
 
@@ -1018,52 +2307,153 @@ function resolveValue(record, path) {
         );
 }
 
-function fillSelect(select, items, valueKey, labelKey) {
-    if (!select) {
+function fillSelect(
+    select,
+    items,
+    valueKey,
+    labelKey,
+    allowAll = false
+) {
+
+    if (
+        !select
+    ) {
         return;
     }
 
-    const placeholder = select.options?.[0]?.textContent || "Chọn...";
-    select.innerHTML = "";
 
-    const empty = document.createElement("option");
+    const placeholder =
+        select.options?.[0]
+            ?.textContent ||
+        "Chọn...";
 
-    empty.value = "";
-    empty.textContent = placeholder;
 
-    select.appendChild(empty);
+    select.innerHTML =
+        "";
 
-    items.forEach(item => {
-        const value = resolveValue(item, valueKey);
 
-        const label =
-            resolveValue(item, labelKey) ??
-            item?.label ??
-            item?.name ??
-            item?.ten ??
-            item?.hoTen ??
-            item?.tenNhanVien ??
-            value;
+    const empty =
+        document.createElement(
+            "option"
+        );
 
-        if (value === undefined || value === null) {
-            return;
+
+    empty.value =
+        "";
+
+    empty.textContent =
+        placeholder;
+
+
+    select.appendChild(
+        empty
+    );
+
+
+    if (
+        allowAll
+    ) {
+
+        const all =
+            document.createElement(
+                "option"
+            );
+
+
+        all.value =
+            "__ALL__";
+
+        all.textContent =
+            "Tất cả";
+
+
+        select.appendChild(
+            all
+        );
+
+    }
+
+
+    items.forEach(
+        item => {
+
+            const value =
+                resolveValue(
+                    item,
+                    valueKey
+                );
+
+
+            const label =
+                resolveValue(
+                    item,
+                    labelKey
+                ) ??
+                item?.label ??
+                item?.name ??
+                item?.ten ??
+                item?.hoTen ??
+                item?.tenNhanVien ??
+                value;
+
+
+            if (
+                value ===
+                    undefined ||
+                value ===
+                    null
+            ) {
+                return;
+            }
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                String(
+                    value
+                );
+
+            option.textContent =
+                String(
+                    label ??
+                    value
+                );
+
+
+            select.appendChild(
+                option
+            );
+
         }
+    );
 
-        const option = document.createElement("option");
 
-        option.value = String(value);
-        option.textContent = String(label ?? value);
+    const smartRoot =
+        select.closest(
+            "[data-smart-select]"
+        );
 
-        select.appendChild(option);
-    });
-
-    const smartRoot = select.closest("[data-smart-select]");
 
     const smartSelect =
         smartRoot?.smartSelect ||
-        (smartRoot && window.MCS.smartSelect?.initialize?.(smartRoot));
+        (
+            smartRoot &&
+            window.MCS
+                .smartSelect
+                ?.initialize?.(
+                    smartRoot
+                )
+        );
 
-    smartSelect?.refresh?.();
+
+    smartSelect
+        ?.refresh?.();
+
 }
 
 function defaultFormat(type, value) {

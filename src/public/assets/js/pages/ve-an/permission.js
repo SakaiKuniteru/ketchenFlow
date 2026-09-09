@@ -30,7 +30,6 @@ window.LayVeAn.permission = (() => {
         TICKET_CHECK: "Q001048",
         TICKET_USE: "Q001049",
         TICKET_CANCEL: "Q001050",
-
         PHIEU_VALID_MEAL: "Q001051",
         PHIEU_PRICE: "Q001052",
 
@@ -43,7 +42,11 @@ window.LayVeAn.permission = (() => {
         PAYMENT_REFUND_PRINT: "Q001059",
         PAYMENT_DETAIL: "Q001060",
 
-        TICKET_DETAIL: "Q001061"
+        TICKET_DETAIL: "Q001061",
+        TICKET_BULK_USE: "Q001062",
+        TICKET_BULK_CANCEL: "Q001063",
+        TICKET_BULK_UNCONFIRM: "Q001064",
+        TICKET_BULK_UNCANCEL: "Q001065"
     });
 
     let cache = null;
@@ -345,6 +348,14 @@ window.LayVeAn.permission = (() => {
                 CODES.TICKET_VIEW
             ),
 
+        canViewTicketList:
+            p =>
+                has(
+                    p,
+                    CODES.TICKET_VIEW
+                ),
+
+
         canCheckTicket: p =>
             has(
                 p,
@@ -367,6 +378,30 @@ window.LayVeAn.permission = (() => {
             has(
                 p,
                 CODES.TICKET_DETAIL
+            ),
+
+        canBulkUseTicket: p =>
+            has(
+                p,
+                CODES.TICKET_BULK_USE
+            ),
+
+        canBulkCancelTicket: p =>
+            has(
+                p,
+                CODES.TICKET_BULK_CANCEL
+            ),
+
+        canBulkUnconfirmTicket: p =>
+            has(
+                p,
+                CODES.TICKET_BULK_UNCONFIRM
+            ),
+
+        canBulkUncancelTicket: p =>
+            has(
+                p,
+                CODES.TICKET_BULK_UNCANCEL
             )
     };
 })();

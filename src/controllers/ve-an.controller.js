@@ -305,6 +305,714 @@ class VeAnWebController {
         }
     }
 
+    async xacNhanSuDungVe(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const columns = [
+
+                column(
+                    "maVe",
+                    "Mã vé",
+                    {
+                        width:
+                            "150px"
+                    }
+                ),
+
+                column(
+                    "soPhieu",
+                    "Mã phiếu",
+                    {
+                        width:
+                            "150px"
+                    }
+                ),
+
+                column(
+                    "nguoiLayVe",
+                    "Người lấy vé",
+                    {
+                        width:
+                            "190px"
+                    }
+                ),
+
+                column(
+                    "doiTuongLayVe",
+                    "Đối tượng",
+                    {
+                        width:
+                            "120px"
+                    }
+                ),
+
+                column(
+                    "tenCoSo",
+                    "Cơ sở",
+                    {
+                        width:
+                            "150px"
+                    }
+                ),
+
+                column(
+                    "tenNhaAn",
+                    "Nhà ăn",
+                    {
+                        width:
+                            "150px"
+                    }
+                ),
+
+                column(
+                    "tenCaAn",
+                    "Ca ăn",
+                    {
+                        width:
+                            "120px"
+                    }
+                ),
+
+                column(
+                    "ngay",
+                    "Ngày sử dụng",
+                    {
+                        type:
+                            "date",
+
+                        width:
+                            "135px"
+                    }
+                ),
+
+                column(
+                    "khungGio",
+                    "Khung giờ",
+                    {
+                        width:
+                            "135px",
+
+                        sortable:
+                            false
+                    }
+                ),
+
+                column(
+                    "tenThucDon",
+                    "Thực đơn",
+                    {
+                        width:
+                            "190px"
+                    }
+                ),
+
+                column(
+                    "trangThai",
+                    "Trạng thái",
+                    {
+                        width:
+                            "150px"
+                    }
+                ),
+
+                column(
+                    "thoiGianSuDung",
+                    "Thời gian sử dụng",
+                    {
+                        type:
+                            "datetime",
+
+                        width:
+                            "180px"
+                    }
+                )
+
+            ];
+
+            const filters = [
+
+                {
+                    type:
+                        "dateRange",
+
+                    label:
+                        "Ngày sử dụng",
+
+                    from: {
+                        id:
+                            "filterVeTuNgay",
+
+                        name:
+                            "tuNgay",
+
+                        label:
+                            "Từ ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy",
+
+                        showTime:
+                            false,
+
+                        defaultToday:
+                            true
+                    },
+
+                    to: {
+                        id:
+                            "filterVeDenNgay",
+
+                        name:
+                            "denNgay",
+
+                        label:
+                            "Đến ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy",
+
+                        showTime:
+                            false,
+
+                        defaultToday:
+                            true
+                    }
+                },
+
+                {
+                    type:
+                        "dateRange",
+
+                    label:
+                        "Thời gian tạo",
+
+                    from: {
+                        id:
+                            "filterVeTuNgayTao",
+
+                        name:
+                            "tuNgayTao",
+
+                        label:
+                            "Từ ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy hh:mm:ss",
+
+                        showTime:
+                            true,
+
+                        defaultToday:
+                            false,
+
+                        defaultTime:
+                            "00:00:00"
+                    },
+
+                    to: {
+                        id:
+                            "filterVeDenNgayTao",
+
+                        name:
+                            "denNgayTao",
+
+                        label:
+                            "Đến ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy hh:mm:ss",
+
+                        showTime:
+                            true,
+
+                        defaultToday:
+                            false,
+
+                        defaultTime:
+                            "23:59:59"
+                    }
+                },
+
+                {
+                    type:
+                        "dateRange",
+
+                    label:
+                        "Thời gian thanh toán",
+
+                    from: {
+                        id:
+                            "filterVeTuNgayThanhToan",
+
+                        name:
+                            "tuNgayThanhToan",
+
+                        label:
+                            "Từ ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy hh:mm:ss",
+
+                        showTime:
+                            true,
+
+                        defaultToday:
+                            false,
+
+                        defaultTime:
+                            "00:00:00"
+                    },
+
+                    to: {
+                        id:
+                            "filterVeDenNgayThanhToan",
+
+                        name:
+                            "denNgayThanhToan",
+
+                        label:
+                            "Đến ngày",
+
+                        placeholder:
+                            "dd/mm/yyyy hh:mm:ss",
+
+                        showTime:
+                            true,
+
+                        defaultToday:
+                            false,
+
+                        defaultTime:
+                            "23:59:59"
+                    }
+                },
+
+                {
+                    type:
+                        "select",
+
+                    id:
+                        "filterTrangThaiVe",
+
+                    name:
+                        "trangThai",
+
+                    label:
+                        "Trạng thái vé",
+
+                    placeholder:
+                        "Chọn trạng thái vé",
+
+                    source:
+                        "/api/mcs/v1/enums?name=trangThaiVe",
+
+                    mode:
+                        "multiple",
+
+                    multiple:
+                        true,
+
+                    allowAll:
+                        true,
+
+                    valueKey:
+                        "value",
+
+                    labelKey:
+                        "name"
+                },
+
+                {
+                    type:
+                        "select",
+
+                    id:
+                        "filterTrangThaiThanhToanVe",
+
+                    name:
+                        "trangThaiThanhToan",
+
+                    label:
+                        "Trạng thái thanh toán",
+
+                    placeholder:
+                        "Chọn trạng thái thanh toán",
+
+                    source:
+                        "/api/mcs/v1/enums?name=trangThaiPhieuThu",
+
+                    mode:
+                        "multiple",
+
+                    multiple:
+                        true,
+
+                    allowAll:
+                        true,
+
+                    valueKey:
+                        "value",
+
+                    labelKey:
+                        "name"
+                },
+
+                {
+                    type:
+                        "select",
+
+                    id:
+                        "filterVeCoSoId",
+
+                    name:
+                        "coSoId",
+
+                    label:
+                        "Cơ sở",
+
+                    placeholder:
+                        "Chọn cơ sở",
+
+                    source:
+                        "/api/mcs/v1/dm-co-so/tong-hop?active=true",
+
+                    mode:
+                        "multiple",
+
+                    multiple:
+                        true,
+
+                    allowAll:
+                        true,
+
+                    valueKey:
+                        "id",
+
+                    labelKey:
+                        "tenCoSo"
+                },
+
+                {
+                    type:
+                        "select",
+
+                    id:
+                        "filterVeNhaAnId",
+
+                    name:
+                        "nhaAnId",
+
+                    label:
+                        "Nhà ăn",
+
+                    placeholder:
+                        "Chọn nhà ăn",
+
+                    source:
+                        "/api/mcs/v1/dm-nha-an/tong-hop?active=true",
+
+                    mode:
+                        "multiple",
+
+                    multiple:
+                        true,
+
+                    allowAll:
+                        true,
+
+                    valueKey:
+                        "id",
+
+                    labelKey:
+                        "tenNhaAn"
+                },
+
+                {
+                    type:
+                        "select",
+
+                    id:
+                        "filterVeCaAnId",
+
+                    name:
+                        "caAnId",
+
+                    label:
+                        "Ca ăn",
+
+                    placeholder:
+                        "Chọn ca ăn",
+
+                    source:
+                        "/api/mcs/v1/dm-ca-an/tong-hop?active=true",
+
+                    mode:
+                        "multiple",
+
+                    multiple:
+                        true,
+
+                    allowAll:
+                        true,
+
+                    valueKey:
+                        "id",
+
+                    labelKey:
+                        "tenCaAn"
+                }
+
+            ];
+
+            const normalizedFilters =
+                filters.map(
+                    filter => ({
+                        ...filter,
+
+                        isDateRange:
+                            filter.type ===
+                            "dateRange",
+
+                        isSelect:
+                            filter.type ===
+                            "select",
+
+                        isInput:
+                            filter.type ===
+                            "input",
+
+                        isNumber:
+                            filter.type ===
+                            "number"
+                    })
+                );
+
+
+            const listPage = {
+
+                moduleName:
+                    "xac-nhan-su-dung-ve",
+
+                title:
+                    "Xác nhận sử dụng vé",
+
+                description:
+                    "Kiểm tra và xác nhận vé ăn khi người dùng sử dụng vé.",
+
+                listEndpoint:
+                    "/api/mcs/v1/ct-ve-an/tong-hop",
+
+                showIndex:
+                    true,
+
+                showSearch:
+                    true,
+
+                selectable:
+                    true,
+
+                showRowActions:
+                    true,
+
+                searchId:
+                    "xacNhanSuDungVeSearch",
+
+                searchPlaceholder:
+                    "Tìm theo mã vé, mã phiếu, người lấy vé...",
+
+
+                actions: [
+
+                    {
+                        action:
+                            "filter",
+
+                        label:
+                            "Bộ lọc",
+
+                        icon:
+                            "fa-solid fa-filter",
+
+                        className:
+                            "data-list-btn--outline"
+                    }
+
+                ],
+
+                bulkActions: [
+
+                    {
+                        action:
+                            "confirm",
+
+                        label:
+                            "Xác nhận",
+
+                        icon:
+                            "fa-solid fa-circle-check",
+
+                        className:
+                            "data-list-btn--success"
+                    },
+
+                    {
+                        action:
+                            "unconfirm",
+
+                        label:
+                            "Hủy xác nhận",
+
+                        icon:
+                            "fa-solid fa-rotate-left",
+
+                        className:
+                            "data-list-btn--outline"
+                    },
+
+                    {
+                        action:
+                            "cancel",
+
+                        label:
+                            "Hủy",
+
+                        icon:
+                            "fa-solid fa-ban",
+
+                        className:
+                            "data-list-btn--danger"
+                    },
+
+                    {
+                        action:
+                            "uncancel",
+
+                        label:
+                            "Hủy hủy",
+
+                        icon:
+                            "fa-solid fa-arrow-rotate-left",
+
+                        className:
+                            "data-list-btn--outline"
+                    }
+
+                ],
+
+                summaryCards: [
+
+                    {
+                        key:
+                            "total",
+
+                        label:
+                            "Tổng vé",
+
+                        description:
+                            "Tổng số vé trong danh sách",
+
+                        theme:
+                            "primary",
+
+                        icon:
+                            "fa-solid fa-ticket"
+                    },
+
+                    {
+                        key:
+                            "unused",
+
+                        label:
+                            "Chưa sử dụng",
+
+                        description:
+                            "Vé đang chờ xác nhận",
+
+                        theme:
+                            "warning",
+
+                        icon:
+                            "fa-regular fa-clock"
+                    },
+
+                    {
+                        key:
+                            "used",
+
+                        label:
+                            "Đã sử dụng",
+
+                        description:
+                            "Vé đã được xác nhận",
+
+                        theme:
+                            "success",
+
+                        icon:
+                            "fa-regular fa-circle-check"
+                    }
+
+                ],
+
+
+                columns,
+
+                filters:
+                    normalizedFilters,
+
+
+                /*
+                * columns
+                * + checkbox
+                * + STT
+                * + thao tác
+                */
+                colspan:
+                    columns.length +
+                    3
+
+            };
+
+
+            return renderPage(
+                req,
+                res,
+                "pages/ve-an/xac-nhan-su-dung-ve",
+                {
+                    title:
+                        "Xác nhận sử dụng vé",
+
+                    pageDescription:
+                        "Danh sách xác nhận sử dụng vé ăn.",
+
+                    listPage,
+
+                    breadcrumbs: [
+                        {
+                            label:
+                                "Xác nhận sử dụng vé"
+                        }
+                    ]
+                }
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+
+    }
+
     async layVeAn(req, res, next) {
         try {
             return renderPage(

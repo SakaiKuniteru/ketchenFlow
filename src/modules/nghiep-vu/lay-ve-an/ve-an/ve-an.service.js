@@ -64,19 +64,73 @@ class VeAnService {
         return Number(item.value);
     }
 
-    validateTrangThaiVe(value) {
-        const hopLe = dsTrangThaiVe.some(
-            item =>
-                Number(item.value) ===
-                Number(value)
-        );
+    validateTrangThaiVe(
+        value
+    ) {
 
-        if (!hopLe) {
+        const values =
+            (
+                Array.isArray(
+                    value
+                )
+                    ? value
+                    : String(
+                        value ??
+                        ""
+                    )
+                        .split(
+                            ","
+                        )
+            )
+                .flatMap(
+                    item =>
+                        String(
+                            item
+                        )
+                            .split(
+                                ","
+                            )
+                )
+                .map(
+                    item =>
+                        Number(
+                            item
+                        )
+                )
+                .filter(
+                    item =>
+                        Number.isFinite(
+                            item
+                        )
+                );
+
+
+        const hopLe =
+            values.length >
+                0 &&
+            values.every(
+                current =>
+                    dsTrangThaiVe.some(
+                        item =>
+                            Number(
+                                item.value
+                            ) ===
+                            current
+                    )
+            );
+
+
+        if (
+            !hopLe
+        ) {
+
             throw new ApiError(
                 400,
                 "Trạng thái vé không hợp lệ."
             );
+
         }
+
     }
 
     async getTongHop(query) {
@@ -460,6 +514,106 @@ class VeAnService {
         }
     }
 
+    async xacNhanSuDungHangLoat(
+        data,
+        nguoiXacNhanId
+    ) {
+
+        const taiKhoanId =
+            this.parseTaiKhoanId(
+                nguoiXacNhanId
+            );
+
+
+        const thanhCong =
+            [];
+
+        const thatBai =
+            [];
+
+
+        for (
+            const rawId
+            of data.ids
+        ) {
+
+            const id =
+                this.parseId(
+                    rawId
+                );
+
+
+            try {
+
+                const ve =
+                    await this.getChiTiet(
+                        id
+                    );
+
+
+                if (
+                    !ve?.qrToken
+                ) {
+
+                    throw new ApiError(
+                        400,
+                        "Vé không có QR token."
+                    );
+
+                }
+
+
+                await this.xacNhanSuDung(
+                    {
+                        qrToken:
+                            ve.qrToken
+                    },
+                    taiKhoanId
+                );
+
+
+                thanhCong.push(
+                    id
+                );
+
+            } catch (
+                error
+            ) {
+
+                thatBai.push({
+
+                    id,
+
+                    message:
+                        error?.message ||
+                        "Không thể xác nhận sử dụng vé."
+
+                });
+
+            }
+
+        }
+
+
+        return {
+
+            tongSo:
+                data.ids.length,
+
+            soThanhCong:
+                thanhCong.length,
+
+            soThatBai:
+                thatBai.length,
+
+            thanhCong,
+
+            thatBai
+
+        };
+
+    }
+
     async huy(
         id,
         data,
@@ -516,6 +670,365 @@ class VeAnService {
             .getChiTiet(
                 veAnId
             );
+    }
+
+    async huyHangLoat(
+        data,
+        nguoiHuyId
+    ) {
+
+        const taiKhoanId =
+            this.parseTaiKhoanId(
+                nguoiHuyId
+            );
+
+
+        const thanhCong =
+            [];
+
+        const thatBai =
+            [];
+
+
+        for (
+            const rawId
+            of data.ids
+        ) {
+
+            const id =
+                this.parseId(
+                    rawId
+                );
+
+
+            try {
+
+                await this.huy(
+                    id,
+                    {
+                        lyDoHuy:
+                            data.lyDoHuy
+                    },
+                    taiKhoanId
+                );
+
+
+                thanhCong.push(
+                    id
+                );
+
+            } catch (
+                error
+            ) {
+
+                thatBai.push({
+
+                    id,
+
+                    message:
+                        error?.message ||
+                        "Không thể hủy vé."
+
+                });
+
+            }
+
+        }
+
+
+        return {
+
+            tongSo:
+                data.ids.length,
+
+            soThanhCong:
+                thanhCong.length,
+
+            soThatBai:
+                thatBai.length,
+
+            thanhCong,
+
+            thatBai
+
+        };
+
+    }
+
+    async huyXacNhan(
+        id
+    ) {
+
+        const veAnId =
+            this.parseId(
+                id
+            );
+
+
+        const ve =
+            await this.getChiTiet(
+                veAnId
+            );
+
+
+        const daSuDung =
+            this.getEnumValue(
+                dsTrangThaiVe,
+                "Đã sử dụng"
+            );
+
+
+        if (
+            Number(
+                ve.trangThai
+            ) !==
+            daSuDung
+        ) {
+
+            throw new ApiError(
+                400,
+                "Chỉ được hủy xác nhận vé đã sử dụng."
+            );
+
+        }
+
+
+        const chuaSuDung =
+            this.getEnumValue(
+                dsTrangThaiVe,
+                "Chưa sử dụng"
+            );
+
+
+        const result =
+            await repository
+                .huyXacNhan(
+                    veAnId,
+                    daSuDung,
+                    chuaSuDung
+                );
+
+
+        if (
+            !result
+        ) {
+
+            throw new ApiError(
+                409,
+                "Trạng thái vé đã thay đổi, vui lòng tải lại dữ liệu."
+            );
+
+        }
+
+
+        return await repository
+            .getChiTiet(
+                veAnId
+            );
+
+    }
+
+    async huyHuy(
+        id
+    ) {
+
+        const veAnId =
+            this.parseId(
+                id
+            );
+
+
+        const ve =
+            await this.getChiTiet(
+                veAnId
+            );
+
+
+        const daHuy =
+            this.getEnumValue(
+                dsTrangThaiVe,
+                "Đã huỷ"
+            );
+
+
+        if (
+            Number(
+                ve.trangThai
+            ) !==
+            daHuy
+        ) {
+
+            throw new ApiError(
+                400,
+                "Chỉ được hủy hủy đối với vé đã hủy."
+            );
+
+        }
+
+
+        const chuaSuDung =
+            this.getEnumValue(
+                dsTrangThaiVe,
+                "Chưa sử dụng"
+            );
+
+
+        const result =
+            await repository
+                .huyHuy(
+                    veAnId,
+                    daHuy,
+                    chuaSuDung
+                );
+
+
+        if (
+            !result
+        ) {
+
+            throw new ApiError(
+                409,
+                "Trạng thái vé đã thay đổi, vui lòng tải lại dữ liệu."
+            );
+
+        }
+
+
+        return await repository
+            .getChiTiet(
+                veAnId
+            );
+
+    }
+
+    async huyXacNhanHangLoat(
+        data
+    ) {
+
+        const thanhCong =
+            [];
+
+        const thatBai =
+            [];
+
+
+        for (
+            const rawId
+            of data.ids
+        ) {
+
+            const id =
+                this.parseId(
+                    rawId
+                );
+
+
+            try {
+
+                await this.huyXacNhan(
+                    id
+                );
+
+
+                thanhCong.push(
+                    id
+                );
+
+            } catch (
+                error
+            ) {
+
+                thatBai.push({
+                    id,
+                    message:
+                        error?.message ||
+                        "Không thể hủy xác nhận vé."
+                });
+
+            }
+
+        }
+
+
+        return {
+            tongSo:
+                data.ids.length,
+
+            soThanhCong:
+                thanhCong.length,
+
+            soThatBai:
+                thatBai.length,
+
+            thanhCong,
+            thatBai
+        };
+
+    }
+
+    async huyHuyHangLoat(
+        data
+    ) {
+
+        const thanhCong =
+            [];
+
+        const thatBai =
+            [];
+
+
+        for (
+            const rawId
+            of data.ids
+        ) {
+
+            const id =
+                this.parseId(
+                    rawId
+                );
+
+
+            try {
+
+                await this.huyHuy(
+                    id
+                );
+
+
+                thanhCong.push(
+                    id
+                );
+
+            } catch (
+                error
+            ) {
+
+                thatBai.push({
+                    id,
+                    message:
+                        error?.message ||
+                        "Không thể hủy trạng thái hủy của vé."
+                });
+
+            }
+
+        }
+
+
+        return {
+            tongSo:
+                data.ids.length,
+
+            soThanhCong:
+                thanhCong.length,
+
+            soThatBai:
+                thatBai.length,
+
+            thanhCong,
+            thatBai
+        };
+
     }
 }
 

@@ -81,6 +81,40 @@ class VeAnController {
         }
     }
 
+    async xacNhanSuDungHangLoat(
+        req,
+        res,
+        next
+    ) {
+        try {
+
+            const data =
+                await service
+                    .xacNhanSuDungHangLoat(
+                        req.body,
+                        req.user?.taiKhoanId ||
+                        req.user?.id
+                    );
+
+
+            return successResponse(
+                res,
+                "Xử lý xác nhận sử dụng vé hàng loạt thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+    }
+
     async xacNhanSuDung(
         req,
         res,
@@ -90,7 +124,7 @@ class VeAnController {
             const data = await service
                 .xacNhanSuDung(
                     req.body,
-                    req.user?.taiKhoanId
+                    req.user?.taiKhoanId || req.user?.id
                 );
 
             return successResponse(
@@ -120,7 +154,7 @@ class VeAnController {
                 .huy(
                     id,
                     req.body,
-                    req.user?.taiKhoanId
+                    req.user?.taiKhoanId || req.user?.id
                 );
 
             return successResponse(
@@ -133,6 +167,104 @@ class VeAnController {
             next(
                 error
             );
+        }
+    }
+
+    async huyHangLoat(
+        req,
+        res,
+        next
+    ) {
+        try {
+
+            const data =
+                await service
+                    .huyHangLoat(
+                        req.body,
+                        req.user?.taiKhoanId ||
+                        req.user?.id
+                    );
+
+
+            return successResponse(
+                res,
+                "Xử lý hủy vé hàng loạt thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+    }
+
+    async huyXacNhanHangLoat(
+        req,
+        res,
+        next
+    ) {
+        try {
+
+            const data =
+                await service
+                    .huyXacNhanHangLoat(
+                        req.body
+                    );
+
+
+            return successResponse(
+                res,
+                "Hủy xác nhận sử dụng vé thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
+        }
+    }
+
+    async huyHuyHangLoat(
+        req,
+        res,
+        next
+    ) {
+        try {
+
+            const data =
+                await service
+                    .huyHuyHangLoat(
+                        req.body
+                    );
+
+
+            return successResponse(
+                res,
+                "Hủy trạng thái hủy vé thành công.",
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
         }
     }
 }

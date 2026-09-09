@@ -1,8 +1,28 @@
-<link rel="stylesheet" href="/assets/css/components/data-list-page.css">
+<main
+    class="data-list-page"
+    data-data-list-page
+    data-module="{{listPage.moduleName}}"
+    data-list-endpoint="{{listPage.listEndpoint}}">
 
-{{> common/data-list-page}}
+    {{> common/data-list/header
+        listPage=listPage
+    }}
+
+    {{> common/data-list/summary
+        listPage=listPage
+    }}
+
+    {{> common/data-list/data-card
+        listPage=listPage
+    }}
+
+    {{> common/data-list/filter
+        listPage=listPage
+    }}
+
+</main>
+
 {{> catalog/no-permission}}
 
 <script src="/assets/js/pages/ve-an/permission.js"></script>
-<script src="/assets/js/common/data-list-page.js"></script>
 <script src="/assets/js/pages/ve-an/danh-sach-lay-ve.js"></script>

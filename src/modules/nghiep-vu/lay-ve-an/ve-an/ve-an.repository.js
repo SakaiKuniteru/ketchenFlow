@@ -30,6 +30,8 @@ class VeAnRepository {
             maVe: row.ma_ve,
             qrToken: row.qr_token,
             trangThai: row.trang_thai,
+            trangThaiThanhToan: row.trang_thai_thanh_toan,
+            thoiGianThanhToan: row.thoi_gian_thanh_toan,
             thoiGianSuDung: row.thoi_gian_su_dung,
             nguoiXacNhanId: row.nguoi_xac_nhan_id,
             nguoiHuyId: row.nguoi_huy_id,
@@ -90,6 +92,11 @@ class VeAnRepository {
 
                 v.trang_thai,
 
+                p.trang_thai
+                    AS trang_thai_thanh_toan,
+
+                p.thoi_gian_thanh_toan,
+
                 v.thoi_gian_su_dung,
 
                 v.nguoi_xac_nhan_id,
@@ -147,87 +154,330 @@ class VeAnRepository {
     async getTongHop(
         query = {}
     ) {
-        const conditions = [];
-        const values = [];
 
-        if (query.phieuLayVeId) {
-            values.push(
-                Number(query.phieuLayVeId)
-            );
+        const conditions =
+            [];
 
-            conditions.push(
-                `v.phieu_lay_ve_id = $${values.length}`
-            );
-        }
+        const values =
+            [];
 
-        if (query.thucDonNgayId) {
-            values.push(
-                Number(query.thucDonNgayId)
-            );
 
-            conditions.push(
-                `v.thuc_don_ngay_id = $${values.length}`
-            );
-        }
+        const addNumberCondition =
+            (
+                rawValue,
+                builder
+            ) => {
+
+                if (
+                    rawValue ===
+                        undefined ||
+                    rawValue ===
+                        null ||
+                    rawValue ===
+                        ""
+                ) {
+                    return;
+                }
+
+
+                const value =
+                    Number(
+                        rawValue
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        value
+                    )
+                ) {
+                    return;
+                }
+
+
+                values.push(
+                    value
+                );
+
+
+                conditions.push(
+                    builder(
+                        `$${values.length}`
+                    )
+                );
+
+            };
+
+        const normalizeNumberValues =
+            rawValue => {
+
+                if (
+                    rawValue ===
+                        undefined ||
+                    rawValue ===
+                        null ||
+                    rawValue ===
+                        ""
+                ) {
+                    return [];
+                }
+
+
+                const rawItems =
+                    Array.isArray(
+                        rawValue
+                    )
+                        ? rawValue
+                        : String(
+                            rawValue
+                        )
+                            .split(
+                                ","
+                            );
+
+
+                return [
+                    ...new Set(
+                        rawItems
+                            .flatMap(
+                                item =>
+                                    String(
+                                        item
+                                    )
+                                        .split(
+                                            ","
+                                        )
+                            )
+                            .map(
+                                item =>
+                                    String(
+                                        item
+                                    )
+                                        .trim()
+                            )
+                            .filter(
+                                item =>
+                                    item !==
+                                    ""
+                            )
+                            .map(
+                                item =>
+                                    Number(
+                                        item
+                                    )
+                            )
+                            .filter(
+                                item =>
+                                    Number.isFinite(
+                                        item
+                                    )
+                            )
+                    )
+                ];
+
+            };
+
+        const addNumberListCondition =
+            (
+                rawValue,
+                column
+            ) => {
+
+                if (
+                    rawValue ===
+                        undefined ||
+                    rawValue ===
+                        null ||
+                    rawValue ===
+                        ""
+                ) {
+                    return;
+                }
+
+
+                const numbers =
+                    normalizeNumberValues(
+                        rawValue
+                    );
+
+
+                if (
+                    !numbers.length
+                ) {
+                    return;
+                }
+
+
+                values.push(
+                    numbers
+                );
+
+
+                conditions.push(
+                    `${column} = ANY($${values.length}::int[])`
+                );
+
+            };
+
+        const addDateCondition =
+            (
+                rawValue,
+                builder
+            ) => {
+
+                if (
+                    !rawValue
+                ) {
+                    return;
+                }
+
+
+                values.push(
+                    rawValue
+                );
+
+
+                conditions.push(
+                    builder(
+                        `$${values.length}`
+                    )
+                );
+
+            };
+
+
+        addNumberCondition(
+            query.phieuLayVeId,
+            parameter =>
+                `v.phieu_lay_ve_id = ${parameter}`
+        );
+
+
+        addNumberCondition(
+            query.thucDonNgayId,
+            parameter =>
+                `v.thuc_don_ngay_id = ${parameter}`
+        );
+
+
+        addNumberListCondition(
+            query.trangThai,
+            "v.trang_thai"
+        );
+
+
+        addNumberListCondition(
+            query.trangThaiThanhToan,
+            "p.trang_thai"
+        );
+
+
+        addNumberListCondition(
+            query.coSoId,
+            "td.co_so_id"
+        );
+
+
+        addNumberListCondition(
+            query.nhaAnId,
+            "td.nha_an_id"
+        );
+
+
+        addNumberListCondition(
+            query.caAnId,
+            "td.ca_an_id"
+        );
+
 
         if (
-            query.trangThai !==
-            undefined
+            query.maVe
         ) {
+
             values.push(
-                Number(query.trangThai)
+                String(
+                    query.maVe
+                ).trim()
             );
 
-            conditions.push(
-                `v.trang_thai = $${values.length}`
-            );
-        }
-
-        if (query.maVe) {
-            values.push(
-                String(query.maVe).trim()
-            );
 
             conditions.push(
                 `UPPER(v.ma_ve) = UPPER($${values.length})`
             );
+
         }
 
-        if (query.tuNgay) {
-            values.push(
-                query.tuNgay
-            );
 
-            conditions.push(
-                `tdn.ngay >= $${values.length}::date`
-            );
-        }
+        /*
+        * Ngày sử dụng.
+        */
+        addDateCondition(
+            query.tuNgay,
+            parameter =>
+                `tdn.ngay >= ${parameter}::date`
+        );
 
-        if (query.denNgay) {
-            values.push(
-                query.denNgay
-            );
 
-            conditions.push(
-                `tdn.ngay <= $${values.length}::date`
-            );
-        }
+        addDateCondition(
+            query.denNgay,
+            parameter =>
+                `tdn.ngay <= ${parameter}::date`
+        );
+
+
+        /*
+        * Thời gian tạo vé.
+        */
+        addDateCondition(
+            query.tuNgayTao,
+            parameter =>
+                `v.created_at >= ${parameter}::timestamp`
+        );
+
+
+        addDateCondition(
+            query.denNgayTao,
+            parameter =>
+                `v.created_at <= ${parameter}::timestamp`
+        );
+
+
+        /*
+        * Thời gian thanh toán.
+        */
+        addDateCondition(
+            query.tuNgayThanhToan,
+            parameter =>
+                `p.thoi_gian_thanh_toan >= ${parameter}::timestamp`
+        );
+
+
+        addDateCondition(
+            query.denNgayThanhToan,
+            parameter =>
+                `p.thoi_gian_thanh_toan <= ${parameter}::timestamp`
+        );
+
 
         let sql = `
             ${this.getBaseQuery()}
         `;
 
+
         if (
             conditions.length >
             0
         ) {
+
             sql += `
                 WHERE
                     ${conditions.join(
                         "\nAND "
                     )}
             `;
+
         }
+
 
         sql += `
 
@@ -241,10 +491,13 @@ class VeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+
+        const result =
+            await pool.query(
+                sql,
+                values
+            );
+
 
         return result.rows.map(
             row =>
@@ -252,6 +505,7 @@ class VeAnRepository {
                     row
                 )
         );
+
     }
 
     async getChiTiet(
@@ -396,6 +650,99 @@ class VeAnRepository {
 
         return result.rows[0] ||
             null;
+    }
+
+async huyXacNhan(
+    id,
+    trangThaiHienTai,
+    trangThaiMoi,
+    db = pool
+) {
+
+    const sql = `
+
+        UPDATE ct_ve_an
+
+        SET
+
+            trang_thai = $3,
+
+            thoi_gian_su_dung = NULL,
+
+            nguoi_xac_nhan_id = NULL,
+
+            updated_at = NOW()
+
+        WHERE id = $1
+          AND trang_thai = $2
+
+        RETURNING id
+
+    `;
+
+
+    const result =
+        await db.query(
+            sql,
+            [
+                id,
+                trangThaiHienTai,
+                trangThaiMoi
+            ]
+        );
+
+
+    return result.rows[0] ||
+        null;
+
+}
+
+
+    async huyHuy(
+        id,
+        trangThaiHienTai,
+        trangThaiMoi,
+        db = pool
+    ) {
+
+        const sql = `
+
+            UPDATE ct_ve_an
+
+            SET
+
+                trang_thai = $3,
+
+                nguoi_huy_id = NULL,
+
+                thoi_gian_huy = NULL,
+
+                ly_do_huy = NULL,
+
+                updated_at = NOW()
+
+            WHERE id = $1
+            AND trang_thai = $2
+
+            RETURNING id
+
+        `;
+
+
+        const result =
+            await db.query(
+                sql,
+                [
+                    id,
+                    trangThaiHienTai,
+                    trangThaiMoi
+                ]
+            );
+
+
+        return result.rows[0] ||
+            null;
+
     }
 
     async hetHan(

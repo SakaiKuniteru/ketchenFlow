@@ -4,7 +4,11 @@ const router = express.Router();
 const {
     kiemTraSchema,
     xacNhanSuDungSchema,
-    huySchema
+    huySchema,
+    xacNhanSuDungHangLoatSchema,
+    huyHangLoatSchema,
+    huyXacNhanHangLoatSchema,
+    huyHuyHangLoatSchema
 } = require("./ve-an.validation");
 
 const validate = require("../../../../middlewares/validate.middleware");
@@ -35,12 +39,49 @@ router.post(
     controller.xacNhanSuDung
 );
 
+router.post(
+    "/xac-nhan-su-dung-hang-loat",
+    authenticate,
+    authorize("Q001062"),
+    validate(xacNhanSuDungHangLoatSchema),
+    controller.xacNhanSuDungHangLoat
+);
+
 router.patch(
     "/huy/:id",
     authenticate,
     authorize("Q001050"),
     validate(huySchema),
     controller.huy
+);
+
+router.patch(
+    "/huy-hang-loat",
+    authenticate,
+    authorize("Q001063"),
+    validate(huyHangLoatSchema),
+    controller.huyHangLoat
+);
+
+router.patch(
+    "/huy-xac-nhan-hang-loat",
+    authenticate,
+    authorize("Q001064"),
+    validate(
+        huyXacNhanHangLoatSchema
+    ),
+    controller.huyXacNhanHangLoat
+);
+
+
+router.patch(
+    "/huy-huy-hang-loat",
+    authenticate,
+    authorize("Q001065"),
+    validate(
+        huyHuyHangLoatSchema
+    ),
+    controller.huyHuyHangLoat
 );
 
 router.get(

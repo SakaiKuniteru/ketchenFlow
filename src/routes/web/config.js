@@ -197,6 +197,11 @@ const veAnRoutes = [
     },
     {
         method: "get",
+        path: "/ve-an/xac-nhan-su-dung-ve",
+        handler: veAnWebController.xacNhanSuDungVe
+    },
+    {
+        method: "get",
         path: "/ve-an/lay-ve-an/:id",
         handler: veAnWebController.layVeAn
     },

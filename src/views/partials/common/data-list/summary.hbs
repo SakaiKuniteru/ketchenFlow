@@ -1,0 +1,27 @@
+{{#if listPage.summaryCards.length}}
+    <section class="data-list-summary">
+        {{#each listPage.summaryCards}}
+            <article
+                class="data-list-summary__card"
+                data-summary-key="{{key}}">
+
+                <div class="data-list-summary__icon data-list-summary__icon--{{theme}}">
+                    <i class="{{icon}}"></i>
+                </div>
+
+                <div>
+                    <span>{{label}}</span>
+
+                    <strong data-summary-value>
+                        0
+                    </strong>
+
+                    {{#if description}}
+                        <small>{{description}}</small>
+                    {{/if}}
+                </div>
+
+            </article>
+        {{/each}}
+    </section>
+{{/if}}

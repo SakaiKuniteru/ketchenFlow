@@ -1,0 +1,26 @@
+<header class="data-list-page__header">
+    <div>
+        <h1>{{listPage.title}}</h1>
+
+        {{#if listPage.description}}
+            <p>{{listPage.description}}</p>
+        {{/if}}
+    </div>
+
+    <div class="data-list-page__actions">
+        {{#each listPage.actions}}
+            <button
+                type="button"
+                class="data-list-btn {{className}}"
+                data-list-action="{{action}}"
+                {{#if hidden}}hidden{{/if}}>
+
+                {{#if icon}}
+                    <i class="{{icon}}"></i>
+                {{/if}}
+
+                <span>{{label}}</span>
+            </button>
+        {{/each}}
+    </div>
+</header>
