@@ -24,3 +24,10 @@ logs/
 coverage/
 tmp/
 temp/
+
+database/
+
+docs/
+scripts/
+
+kitchenflow_schemas.sql
