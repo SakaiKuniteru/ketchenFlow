@@ -1,76 +1,177 @@
-"use strict";
-
-const service = require("./khung-gio-nhan-hang.service");
+const khungGioNhanHangService =
+    require(
+        "./khung-gio-nhan-hang.service"
+    );
 
 const {
     successResponse
-} = require("../../../../utils/response.util");
+} = require(
+    "../../../../utils/response.util"
+);
 
-class Controller {
+
+class KhungGioNhanHangController {
+
     async getTongHop(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const data =
+                await khungGioNhanHangService
+                    .getTongHop(
+                        req.query
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Lấy danh sách khung giờ nhận hàng thành công.",
-                await service.getTongHop(q.query)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
+
+    async getKhungGioKhaDung(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const data =
+                await khungGioNhanHangService
+                    .getKhungGioKhaDung(
+                        req.query
+                    );
+
+            return successResponse(
+                res,
+                "Lấy danh sách khung giờ có thể nhận hàng thành công.",
+                data,
+                200
+            );
+
+        } catch (error) {
+
+            next(error);
+
+        }
+
+    }
+
 
     async getChiTiet(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const {
+                id
+            } = req.params;
+
+            const data =
+                await khungGioNhanHangService
+                    .getChiTiet(
+                        id
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Lấy chi tiết khung giờ nhận hàng thành công.",
-                await service.getChiTiet(q.params.id)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 
     async create(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const data =
+                await khungGioNhanHangService
+                    .create(
+                        req.body
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Thêm khung giờ nhận hàng thành công.",
-                await service.create(q.body),
+                data,
                 201
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 
     async update(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const {
+                id
+            } = req.params;
+
+            const data =
+                await khungGioNhanHangService
+                    .update(
+                        id,
+                        req.body
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Cập nhật khung giờ nhận hàng thành công.",
-                await service.update(q.params.id, q.body)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 }
 
-module.exports = new Controller();
+
+module.exports =
+    new KhungGioNhanHangController();

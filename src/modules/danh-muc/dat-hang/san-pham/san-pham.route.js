@@ -6,7 +6,7 @@ const authorize = require("../../../../middlewares/authorize.middleware");
 const validate = require("../../../../middlewares/validate.middleware");
 const controller = require("./san-pham.controller");
 const uploadImportExcel = require("../../../../middlewares/upload-import-excel.middleware");
-const excel = require("./san-pham.excel");
+// const excel = require("./san-pham.excel");
 
 const {
     createSchema,
@@ -22,20 +22,20 @@ router.get(
     controller.getTongHop
 );
 
-router.get(
-    "/xuat-du-lieu",
-    authenticate,
-    authorize("Q100001"),
-    excel.exportData
-);
+// router.get(
+//     "/xuat-du-lieu",
+//     authenticate,
+//     authorize("Q100001"),
+//     excel.exportData
+// );
 
-router.post(
-    "/import-du-lieu",
-    authenticate,
-    authorize("Q100002"),
-    uploadImportExcel.single("file"),
-    excel.importData
-);
+// router.post(
+//     "/import-du-lieu",
+//     authenticate,
+//     authorize("Q100002"),
+//     uploadImportExcel.single("file"),
+//     excel.importData
+// );
 
 router.get(
     "/:id",

@@ -23,6 +23,7 @@ const MA_THIET_LAP = {
     THU_TU_DOI_TUONG_LAY_VE: "THU_TU_DOI_TUONG_LAY_VE",
     PHUONG_THUC_THANH_TOAN_HIEN_THI: "PHUONG_THUC_THANH_TOAN_HIEN_THI",
     DINH_DANG_MA_VE_AN: "DINH_DANG_MA_VE_AN",
+    SO_PHUT_DAT_HANG_TRUOC: "SO_PHUT_DAT_HANG_TRUOC"
 };
 
 class CauHinhService {
@@ -151,6 +152,12 @@ class CauHinhService {
                 return {
                     ma: maThietLap,
                     giaTri: await this.getDinhDangMaVeAn()
+                };
+
+            case MA_THIET_LAP.SO_PHUT_DAT_HANG_TRUOC:
+                return {
+                    ma: maThietLap,
+                    giaTri: await this.getSoPhutDatHangTruoc()
                 };
 
                     default: return this.resolveMacDinh(thietLap);
@@ -1193,6 +1200,61 @@ class CauHinhService {
             .dinhDang;
     }
 
+    async getSoPhutDatHangTruoc() {
+
+        const MAC_DINH =
+            20;
+
+        const thietLap =
+            await cauHinhRepository
+                .getThietLapByMa(
+                    MA_THIET_LAP
+                        .SO_PHUT_DAT_HANG_TRUOC
+                );
+
+        if (
+            !thietLap ||
+            thietLap.active !== true
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+        const giaTri =
+            String(
+                thietLap.gia_tri ??
+                ""
+            ).trim();
+
+        if (
+            !/^\d+$/.test(
+                giaTri
+            )
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+        const soPhut =
+            Number(giaTri);
+
+        if (
+            !Number.isInteger(
+                soPhut
+            ) ||
+            soPhut < 0 ||
+            soPhut > 1440
+        ) {
+
+            return MAC_DINH;
+
+        }
+
+        return soPhut;
+
+    }
 }
 
 module.exports = new CauHinhService();
