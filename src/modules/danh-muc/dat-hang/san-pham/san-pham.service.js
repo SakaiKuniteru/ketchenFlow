@@ -2,10 +2,20 @@
 
 const ApiError = require("../../../../utils/api-error");
 const repository = require("./san-pham.repository");
+const { loaiSanPham } = require("../../../../constants/enums");
+
+function enrich(item) {
+    if (!item) return item;
+    return {
+        ...item,
+        thongTinLoaiSanPham: loaiSanPham.find(option => Number(option.value) === Number(item.loaiSanPham)) || null
+    };
+}
 
 class SanPhamService {
-    getTongHop(q) {
-        return repository.getTongHop(q);
+    async getTongHop(q) {
+        const items = await repository.getTongHop(q);
+        return items.map(enrich);
     }
 
     async getChiTiet(id) {
@@ -18,7 +28,7 @@ class SanPhamService {
             );
         }
 
-        return x;
+        return enrich(x);
     }
 
     normalize(
@@ -117,7 +127,7 @@ class SanPhamService {
 
         await this.validate(d);
 
-        return repository.save(d);
+        return enrich(await repository.save(d));
     }
 
     async update(
@@ -132,10 +142,10 @@ class SanPhamService {
             id
         );
 
-        return repository.save(
+        return enrich(await repository.save(
             d,
             id
-        );
+        ));
     }
 }
 

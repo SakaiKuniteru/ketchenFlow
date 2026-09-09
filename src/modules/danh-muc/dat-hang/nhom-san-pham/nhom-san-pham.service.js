@@ -2,16 +2,26 @@
 
 const ApiError = require("../../../../utils/api-error");
 const repository = require("./nhom-san-pham.repository");
+const { loaiSanPham } = require("../../../../constants/enums");
+
+function enrich(item) {
+    if (!item) return item;
+    return {
+        ...item,
+        thongTinLoaiSanPham: loaiSanPham.find(option => Number(option.value) === Number(item.loaiSanPham)) || null
+    };
+}
 
 class NhomSanPhamService {
-    getTongHop(query) {
-        return repository.getTongHop(query);
+    async getTongHop(query) {
+        const items = await repository.getTongHop(query);
+        return items.map(enrich);
     }
 
     async getChiTiet(id) {
         const item = await repository.getChiTiet(id);
         if (!item) throw new ApiError(404, "Nhóm sản phẩm không tồn tại.");
-        return item;
+        return enrich(item);
     }
 
     async validateTrung(data, excludeId = null) {
@@ -37,14 +47,14 @@ class NhomSanPhamService {
     async create(data) {
         const normalized = this.normalize(data);
         await this.validateTrung(normalized);
-        return repository.create(normalized);
+        return enrich(await repository.create(normalized));
     }
 
     async update(id, data) {
         const current = await this.getChiTiet(id);
         const normalized = this.normalize(data, current);
         await this.validateTrung(normalized, id);
-        return repository.update(id, normalized);
+        return enrich(await repository.update(id, normalized));
     }
 }
 

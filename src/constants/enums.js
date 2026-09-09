@@ -563,6 +563,17 @@ const TRANG_THAI_SU_DUNG_VOUCHER_DON_HANG = [
     }
 ];
 
+const LOAI_DIA_DIEM_NHAN_HANG = [
+    {
+        value: 10,
+        name: "Địa điểm cố định"
+    },
+    {
+        value: 20,
+        name: "Địa điểm ghi nhớ"
+    }
+];
+
 module.exports = {
     "loaiSanPham": LOAI_SAN_PHAM,
     "loaiGiamVoucherDonHang": LOAI_GIAM_VOUCHER_DON_HANG,
@@ -594,5 +605,6 @@ module.exports = {
     "trangThaiVe": TRANG_THAI_VE,
     "trangThaiPhieuNhapXuat": TRANG_THAI_PHIEU_NHAP_XUAT,
     "trangThaiBinhChon": TRANG_THAI_BINH_CHON,
-    "loaiBinhChon": LOAI_BINH_CHON
+    "loaiBinhChon": LOAI_BINH_CHON,
+    loaiDiaDiemNhanHang: LOAI_DIA_DIEM_NHAN_HANG
 };

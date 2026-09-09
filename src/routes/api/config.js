@@ -237,6 +237,27 @@ const routes = [
     // NGHIỆP VỤ
 
     [
+        "/dat-hang/catalog",
+        require(
+            "../../modules/nghiep-vu/dat-hang/catalog/catalog.route"
+        )
+    ],
+
+    [
+        "/nv-don-hang",
+        require(
+            "../../modules/nghiep-vu/dat-hang/don-hang/don-hang.route"
+        )
+    ],
+
+    [
+        "/nv-thanh-toan-don-hang",
+        require(
+            "../../modules/nghiep-vu/dat-hang/thanh-toan/thanh-toan-don-hang.route"
+        )
+    ],
+
+    [
         "/thuc-don",
         require(
             "../../modules/nghiep-vu/thuc-don/thuc-don.route"

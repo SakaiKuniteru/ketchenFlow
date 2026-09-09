@@ -2,10 +2,21 @@
 
 const ApiError = require("../../../../utils/api-error"),
     repository = require("./voucher-don-hang.repository");
+const enums = require("../../../../constants/enums");
+
+function enrich(item) {
+    if (!item) return item;
+    return {
+        ...item,
+        thongTinLoaiGiam: enums.loaiGiamVoucherDonHang.find(option => Number(option.value) === Number(item.loaiGiam)) || null,
+        thongTinPhamViApDung: enums.phamViApDungVoucherDonHang.find(option => Number(option.value) === Number(item.phamViApDung)) || null
+    };
+}
 
 class VoucherDonHangService {
-    getTongHop(q) {
-        return repository.getTongHop(q);
+    async getTongHop(q) {
+        const items = await repository.getTongHop(q);
+        return items.map(enrich);
     }
 
     async getChiTiet(id) {
@@ -18,7 +29,7 @@ class VoucherDonHangService {
             );
         }
 
-        return x;
+        return enrich(x);
     }
 
     normalize(
@@ -153,7 +164,7 @@ class VoucherDonHangService {
 
         await this.validate(d);
 
-        return repository.save(d);
+        return enrich(await repository.save(d));
     }
 
     async update(
@@ -168,10 +179,10 @@ class VoucherDonHangService {
             id
         );
 
-        return repository.save(
+        return enrich(await repository.save(
             d,
             id
-        );
+        ));
     }
 }
 

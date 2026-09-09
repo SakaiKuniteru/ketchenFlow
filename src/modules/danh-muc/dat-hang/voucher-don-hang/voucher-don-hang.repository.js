@@ -11,6 +11,15 @@ const relationMap = {
     nhanVienIds: ["ct_voucher_don_hang_nhan_vien", "nhan_vien_id"]
 };
 
+const relationDetails = {
+    dsNhomSanPham: ["ct_voucher_don_hang_nhom_san_pham", "nhom_san_pham_id", "dm_nhom_san_pham", "ma_nhom_san_pham", "ten_nhom_san_pham"],
+    dsSanPham: ["ct_voucher_don_hang_san_pham", "san_pham_id", "dm_san_pham", "ma_san_pham", "ten_san_pham"],
+    dsCoSo: ["ct_voucher_don_hang_co_so", "co_so_id", "dm_co_so", "ma_co_so", "ten_co_so"],
+    dsPhongBan: ["ct_voucher_don_hang_phong_ban", "phong_ban_id", "dm_phong_ban", "ma_phong_ban", "ten_phong_ban"],
+    dsChucVu: ["ct_voucher_don_hang_chuc_vu", "chuc_vu_id", "dm_chuc_vu", "ma_chuc_vu", "ten_chuc_vu"],
+    dsNhanVien: ["ct_voucher_don_hang_nhan_vien", "nhan_vien_id", "dm_nhan_vien", "ma_nhan_vien", "ho_ten"]
+};
+
 class VoucherDonHangRepository {
     map(r) {
         if (!r) {
@@ -100,6 +109,23 @@ class VoucherDonHangRepository {
             );
 
             item[key] = x.rows.map(row => Number(row.id));
+        }
+
+        for (const [key, [relationTable, foreignKey, masterTable, codeColumn, nameColumn]] of Object.entries(relationDetails)) {
+            const details = await client.query(
+                `
+                    SELECT
+                        dm.id,
+                        dm.${codeColumn} AS "ma",
+                        dm.${nameColumn} AS "ten"
+                    FROM ${relationTable} relation
+                    JOIN ${masterTable} dm ON dm.id = relation.${foreignKey}
+                    WHERE relation.voucher_don_hang_id = $1
+                    ORDER BY dm.${nameColumn}
+                `,
+                [id]
+            );
+            item[key] = details.rows;
         }
 
         return item;
