@@ -1,2 +1,145 @@
-// "use strict";
-// const repository=require("./san-pham.repository");const{createExportFile}=require("../../../../helpers/excel/excel-export");const{sendExcel}=require("../../../../helpers/excel/excel-response");function taoDongExport(x){return{id:x.id,maSanPham:x.maSanPham,tenSanPham:x.tenSanPham,nhomSanPhamId:x.nhomSanPhamId,tenNhomSanPham:x.tenNhomSanPham,loaiSanPham:x.loaiSanPham,monAnId:x.monAnId,tenMonAn:x.tenMonAn,donViTinhId:x.donViTinhId,tenDonViTinh:x.tenDonViTinh,giaBan:x.giaBan,moTa:x.moTa,hinhAnh:x.hinhAnh,choPhepDat:x.choPhepDat,laSanPhamMoi:x.laSanPhamMoi,laSanPhamNoiBat:x.laSanPhamNoiBat,soLuongToiThieu:x.soLuongToiThieu,soLuongToiDa:x.soLuongToiDa,buocSoLuong:x.buocSoLuong,thoiGianChuanBiPhut:x.thoiGianChuanBiPhut,thuTuHienThi:x.thuTuHienThi,active:x.active};}async function xuLyExport(query={}){return createExportFile({maBaoCao:"dm_san_pham",headerRowNumber:3,templateRowNumber:5,dataStartRowNumber:5,data:(await repository.getTongHop(query)).map(taoDongExport)});}async function exportData(req,res,next){try{return sendExcel(res,await xuLyExport(req.query));}catch(error){return next(error);}}module.exports={exportData,xuLyExport,taoDongExport};
+"use strict";
+
+const {
+    createExportFile
+} = require(
+    "../../../../helpers/excel/excel-export"
+);
+
+const sanPhamRepository =
+    require(
+        "./san-pham.repository"
+    );
+
+
+const MA_BAO_CAO =
+    "dm_san_pham";
+
+const HEADER_ROW =
+    3;
+
+const TEMPLATE_ROW =
+    5;
+
+const DATA_START_ROW =
+    5;
+
+
+function mapExportItem(
+    item
+) {
+
+    return {
+
+        id:
+            item.id,
+
+        maSanPham:
+            item.maSanPham,
+
+        tenSanPham:
+            item.tenSanPham,
+
+        nhomSanPhamId:
+            item.nhomSanPhamId,
+
+        tenNhomSanPham:
+            item.tenNhomSanPham,
+
+        loaiSanPham:
+            item.loaiSanPham,
+
+        donViTinhId:
+            item.donViTinhId,
+
+        tenDonViTinh:
+            item.tenDonViTinh,
+
+        giaBan:
+            item.giaBan,
+
+        moTa:
+            item.moTa,
+
+        hinhAnh:
+            item.hinhAnh,
+
+        choPhepDat:
+            item.choPhepDat,
+
+        laSanPhamMoi:
+            item.laSanPhamMoi,
+
+        laSanPhamNoiBat:
+            item.laSanPhamNoiBat,
+
+        soLuongToiThieu:
+            item.soLuongToiThieu,
+
+        soLuongToiDa:
+            item.soLuongToiDa,
+
+        buocSoLuong:
+            item.buocSoLuong,
+
+        thoiGianChuanBiPhut:
+            item.thoiGianChuanBiPhut,
+
+        thuTuHienThi:
+            item.thuTuHienThi,
+
+        active:
+            item.active
+
+    };
+
+}
+
+
+async function exportSanPham(
+    query = {}
+) {
+
+    const danhSach =
+        await sanPhamRepository
+            .getTongHop(
+                query
+            );
+
+    return createExportFile({
+
+        maBaoCao:
+            MA_BAO_CAO,
+
+        headerRowNumber:
+            HEADER_ROW,
+
+        templateRowNumber:
+            TEMPLATE_ROW,
+
+        dataStartRowNumber:
+            DATA_START_ROW,
+
+        data:
+            danhSach.map(
+                mapExportItem
+            )
+
+    });
+
+}
+
+
+module.exports = {
+
+    MA_BAO_CAO,
+
+    HEADER_ROW,
+
+    TEMPLATE_ROW,
+
+    DATA_START_ROW,
+
+    exportSanPham
+
+};

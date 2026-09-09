@@ -1,76 +1,147 @@
-"use strict";
-
-const service = require("./san-pham.service");
+const sanPhamService =
+    require(
+        "./san-pham.service"
+    );
 
 const {
     successResponse
-} = require("../../../../utils/response.util");
+} = require(
+    "../../../../utils/response.util"
+);
 
-class Controller {
+
+class SanPhamController {
+
     async getTongHop(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const data =
+                await sanPhamService
+                    .getTongHop(
+                        req.query
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Lấy danh sách sản phẩm thành công.",
-                await service.getTongHop(q.query)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 
     async getChiTiet(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const {
+                id
+            } = req.params;
+
+            const data =
+                await sanPhamService
+                    .getChiTiet(
+                        id
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Lấy chi tiết sản phẩm thành công.",
-                await service.getChiTiet(q.params.id)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 
     async create(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const data =
+                await sanPhamService
+                    .create(
+                        req.body
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Thêm sản phẩm thành công.",
-                await service.create(q.body),
+                data,
                 201
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 
     async update(
-        q,
-        s,
-        n
+        req,
+        res,
+        next
     ) {
+
         try {
+
+            const {
+                id
+            } = req.params;
+
+            const data =
+                await sanPhamService
+                    .update(
+                        id,
+                        req.body
+                    );
+
             return successResponse(
-                s,
+                res,
                 "Cập nhật sản phẩm thành công.",
-                await service.update(q.params.id, q.body)
+                data,
+                200
             );
-        } catch (e) {
-            return n(e);
+
+        } catch (error) {
+
+            next(error);
+
         }
+
     }
+
 }
 
-module.exports = new Controller();
+
+module.exports =
+    new SanPhamController();

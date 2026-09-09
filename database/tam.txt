@@ -178,3 +178,19 @@ COMMIT;
 
 
 
+xoá món ăn 
+BEGIN;
+
+ALTER TABLE dm_san_pham
+DROP CONSTRAINT IF EXISTS
+    dm_san_pham_mon_an_id_fkey;
+
+ALTER TABLE dm_san_pham
+DROP COLUMN IF EXISTS
+    mon_an_id;
+
+COMMIT;
+
+
+
+
