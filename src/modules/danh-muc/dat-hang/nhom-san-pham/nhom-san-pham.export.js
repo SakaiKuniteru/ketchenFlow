@@ -1,50 +1,106 @@
-// "use strict";
+"use strict";
 
-// const repository = require("./nhom-san-pham.repository");
-// const { createExportFile } = require("../../../../helpers/excel/excel-export");
-// const { sendExcel } = require("../../../../helpers/excel/excel-response");
+const {
+    createExportFile
+} = require(
+    "../../../../helpers/excel/excel-export"
+);
 
-// const MA_BAO_CAO = "dm_nhom_san_pham";
+const nhomSanPhamRepository =
+    require(
+        "./nhom-san-pham.repository"
+    );
 
-// function taoDongExport(item) {
-//     return {
-//         id: item.id,
-//         maNhomSanPham: item.maNhomSanPham,
-//         tenNhomSanPham: item.tenNhomSanPham,
-//         loaiSanPham: item.loaiSanPham,
-//         moTa: item.moTa,
-//         thuTuHienThi: item.thuTuHienThi,
-//         active: item.active
-//     };
-// }
 
-// async function xuLyExport(query = {}) {
-//     return createExportFile({
-//         maBaoCao: MA_BAO_CAO,
-//         headerRowNumber: 3,
-//         templateRowNumber: 5,
-//         dataStartRowNumber: 5,
-//         data: (await repository.getTongHop(query)).map(taoDongExport)
-//     });
-// }
+const MA_BAO_CAO =
+    "dm_nhom_san_pham";
 
-// async function exportData(
-//     req,
-//     res,
-//     next
-// ) {
-//     try {
-//         return sendExcel(
-//             res,
-//             await xuLyExport(req.query)
-//         );
-//     } catch (error) {
-//         return next(error);
-//     }
-// }
+const HEADER_ROW =
+    3;
 
-// module.exports = {
-//     exportData,
-//     xuLyExport,
-//     taoDongExport
-// };
+const TEMPLATE_ROW =
+    5;
+
+const DATA_START_ROW =
+    5;
+
+
+function mapExportItem(
+    item
+) {
+
+    return {
+
+        id:
+            item.id,
+
+        maNhomSanPham:
+            item.maNhomSanPham,
+
+        tenNhomSanPham:
+            item.tenNhomSanPham,
+
+        loaiSanPham:
+            item.loaiSanPham,
+
+        moTa:
+            item.moTa,
+
+        thuTuHienThi:
+            item.thuTuHienThi,
+
+        active:
+            item.active
+
+    };
+
+}
+
+
+async function exportNhomSanPham(
+    query = {}
+) {
+
+    const danhSach =
+        await nhomSanPhamRepository
+            .getTongHop(
+                query
+            );
+
+    return createExportFile({
+
+        maBaoCao:
+            MA_BAO_CAO,
+
+        headerRowNumber:
+            HEADER_ROW,
+
+        templateRowNumber:
+            TEMPLATE_ROW,
+
+        dataStartRowNumber:
+            DATA_START_ROW,
+
+        data:
+            danhSach.map(
+                mapExportItem
+            )
+
+    });
+
+}
+
+
+module.exports = {
+
+    MA_BAO_CAO,
+
+    HEADER_ROW,
+
+    TEMPLATE_ROW,
+
+    DATA_START_ROW,
+
+    exportNhomSanPham
+
+};
