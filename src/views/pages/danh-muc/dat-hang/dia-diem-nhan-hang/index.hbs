@@ -1,0 +1,26 @@
+{{> catalog/module-page
+    moduleName="dia-diem-nhan-hang"
+    apiBase="/api/mcs/v1/dm-dia-diem-nhan-hang"
+    title="Danh mục địa điểm nhận hàng"
+    description="Quản lý các địa điểm nhận hàng đã ghi nhớ của bạn."
+    searchPlaceholder="Tìm theo mã, tên hoặc địa chỉ..."
+    createButtonLabel="Thêm địa điểm"
+    createButtonId="btnCreateDiaDiemNhanHang"
+    searchInputId="searchDiaDiemNhanHang"
+    tableId="diaDiemNhanHangTable"
+    tableBodyId="diaDiemNhanHangTableBody"
+    paginationId="diaDiemNhanHangPagination"
+    detailPanelId="diaDiemNhanHangDetailPanel"
+    detailContentId="diaDiemNhanHangDetailContent"
+    formId="diaDiemNhanHangForm"
+    formPartial="catalog/forms/dat-hang/dia-diem-nhan-hang-form"
+    detailTitle="Thông tin địa điểm nhận hàng"
+    showEditButton=true
+    showActions=true
+    columns=columns
+}}
+
+{{> scripts/catalog-page
+    folder="dat-hang"
+    page="dia-diem-nhan-hang"
+}}

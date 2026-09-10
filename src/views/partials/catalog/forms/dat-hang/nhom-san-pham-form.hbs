@@ -1,0 +1,73 @@
+<div class="detail-panel__section">
+
+    <h3 class="detail-panel__section-title">
+        Thông tin nhóm sản phẩm
+    </h3>
+
+    <div class="catalog-form-grid">
+
+        {{> forms/input
+            id="maNhomSanPham"
+            name="maNhomSanPham"
+            label="Mã nhóm sản phẩm"
+            placeholder="Nhập mã nhóm sản phẩm"
+            maxlength=50
+            required=true
+        }}
+
+        {{> forms/input
+            id="tenNhomSanPham"
+            name="tenNhomSanPham"
+            label="Tên nhóm sản phẩm"
+            placeholder="Nhập tên nhóm sản phẩm"
+            maxlength=150
+            required=true
+        }}
+
+        {{> forms/select
+            id="loaiSanPham"
+            name="loaiSanPham"
+            label="Loại sản phẩm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn loại sản phẩm..."
+            required=true
+        }}
+
+        {{> forms/number
+            id="thuTuHienThi"
+            name="thuTuHienThi"
+            label="Thứ tự hiển thị"
+            placeholder="0"
+            min=0
+            max=2147483647
+            step=1
+            integer=true
+        }}
+
+        {{> forms/textarea
+            id="moTa"
+            name="moTa"
+            label="Mô tả"
+            placeholder="Nhập mô tả nhóm sản phẩm..."
+            maxlength=500
+            rows=4
+            showCounter=true
+            fieldClass="catalog-form-grid__full"
+        }}
+
+    </div>
+
+</div>
+
+<div class="detail-panel__section">
+
+    {{> forms/switch
+        id="active"
+        name="active"
+        label="Đang hoạt động"
+        checked=true
+    }}
+
+</div>

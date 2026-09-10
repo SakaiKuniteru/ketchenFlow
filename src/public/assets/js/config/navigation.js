@@ -241,6 +241,36 @@ window.MCS.navigationItems = [
         group: "Hệ thống",
         url: "/he-thong/thong-bao",
         permission: "Q000026"
+    },
+    {
+        label: "Danh mục Địa điểm nhận hàng",
+        group: "Đặt hàng",
+        url: "/dat-hang/dia-diem-nhan-hang",
+        permission: "Q000035"
+    },
+    {
+        label: "Danh mục Khung giờ nhận hàng",
+        group: "Đặt hàng",
+        url: "/dat-hang/khung-gio-nhan-hang",
+        permission: "Q000036"
+    },
+    {
+        label: "Danh mục Nhóm sản phẩm",
+        group: "Đặt hàng",
+        url: "/dat-hang/nhom-san-pham",
+        permission: "Q000032"
+    },
+    {
+        label: "Danh mục Sản phẩm",
+        group: "Đặt hàng",
+        url: "/dat-hang/san-pham",
+        permission: "Q000033"
+    },
+    {
+        label: "Danh mục Voucher đơn hàng",
+        group: "Đặt hàng",
+        url: "/dat-hang/voucher-don-hang",
+        permission: "Q000034"
     }
 
 ];

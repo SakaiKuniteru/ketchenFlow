@@ -1,0 +1,26 @@
+{{> catalog/module-page
+    moduleName="khung-gio-nhan-hang"
+    apiBase="/api/mcs/v1/dm-khung-gio-nhan-hang"
+    title="Danh mục khung giờ nhận hàng"
+    description="Quản lý các khoảng thời gian dự kiến nhận hàng theo cơ sở."
+    searchPlaceholder="Tìm theo mã, tên hoặc cơ sở..."
+    createButtonLabel="Thêm khung giờ"
+    createButtonId="btnCreateKhungGioNhanHang"
+    searchInputId="searchKhungGioNhanHang"
+    tableId="khungGioNhanHangTable"
+    tableBodyId="khungGioNhanHangTableBody"
+    paginationId="khungGioNhanHangPagination"
+    detailPanelId="khungGioNhanHangDetailPanel"
+    detailContentId="khungGioNhanHangDetailContent"
+    formId="khungGioNhanHangForm"
+    formPartial="catalog/forms/dat-hang/khung-gio-nhan-hang-form"
+    detailTitle="Thông tin khung giờ nhận hàng"
+    showEditButton=true
+    showActions=true
+    columns=columns
+}}
+
+{{> scripts/catalog-page
+    folder="dat-hang"
+    page="khung-gio-nhan-hang"
+}}

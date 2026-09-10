@@ -702,6 +702,274 @@ class DanhMucWebController {
             next(error);
         }
     }
+
+    async diaDiemNhanHang(
+        req,
+        res,
+        next
+    ) {
+        try {
+            return renderDanhMuc(
+                req,
+                res,
+                {
+                    view:
+                        "pages/danh-muc/dat-hang/dia-diem-nhan-hang/index",
+
+                    title:
+                        "Danh mục địa điểm nhận hàng",
+
+                    description:
+                        "Quản lý các địa điểm nhận hàng đã ghi nhớ.",
+
+                    page:
+                        "Địa điểm nhận hàng",
+
+                    activeSubmenu:
+                        "dia-diem-nhan-hang",
+
+                    columns: [
+                        textColumn(
+                            "maDiaDiem",
+                            "Mã địa điểm",
+                            {
+                                width:
+                                    "160px",
+                                className:
+                                    "catalog-table__cell--center"
+                            }
+                        ),
+                        textColumn(
+                            "tenDiaDiem",
+                            "Tên địa điểm",
+                            {
+                                width:
+                                    "220px"
+                            }
+                        ),
+                        textColumn(
+                            "diaChiChiTiet",
+                            "Địa chỉ chi tiết",
+                            {
+                                width:
+                                    "300px"
+                            }
+                        ),
+                        textColumn(
+                            "thongTinLoaiDiaDiem.name",
+                            "Loại địa điểm",
+                            {
+                                width:
+                                    "180px",
+                                className:
+                                    "catalog-table__cell--center"
+                            }
+                        ),
+                        booleanColumn(
+                            "laMacDinh",
+                            "Mặc định",
+                            {
+                                width:
+                                    "130px",
+                                trueLabel:
+                                    "Có",
+                                falseLabel:
+                                    "Không"
+                            }
+                        ),
+                        numberColumn(
+                            "thuTuHienThi",
+                            "Thứ tự",
+                            {
+                                width:
+                                    "110px"
+                            }
+                        ),
+                        booleanColumn(
+                            "active",
+                            "Trạng thái",
+                            {
+                                width:
+                                    "130px"
+                            }
+                        )
+                    ]
+                }
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async khungGioNhanHang(
+        req,
+        res,
+        next
+    ) {
+        try {
+            return renderDanhMuc(
+                req,
+                res,
+                {
+                    view:
+                        "pages/danh-muc/dat-hang/khung-gio-nhan-hang/index",
+
+                    title:
+                        "Danh mục khung giờ nhận hàng",
+
+                    description:
+                        "Quản lý khung giờ nhận hàng theo cơ sở.",
+
+                    page:
+                        "Khung giờ nhận hàng",
+
+                    activeSubmenu:
+                        "khung-gio-nhan-hang",
+
+                    columns: [
+                        textColumn(
+                            "maKhungGio",
+                            "Mã khung giờ",
+                            {
+                                width:
+                                    "160px"
+                            }
+                        ),
+                        textColumn(
+                            "tenKhungGio",
+                            "Tên khung giờ",
+                            {
+                                width:
+                                    "210px"
+                            }
+                        ),
+                        textColumn(
+                            "tenCoSo",
+                            "Cơ sở",
+                            {
+                                width:
+                                    "220px"
+                            }
+                        ),
+                        textColumn(
+                            "gioBatDau",
+                            "Giờ bắt đầu",
+                            {
+                                width:
+                                    "140px",
+                                className:
+                                    "catalog-table__cell--center"
+                            }
+                        ),
+                        textColumn(
+                            "gioKetThuc",
+                            "Giờ kết thúc",
+                            {
+                                width:
+                                    "140px",
+                                className:
+                                    "catalog-table__cell--center"
+                            }
+                        ),
+                        numberColumn(
+                            "soPhutDatTruoc",
+                            "Đặt trước",
+                            {
+                                width:
+                                    "130px"
+                            }
+                        ),
+                        numberColumn(
+                            "soDonToiDa",
+                            "Số đơn tối đa",
+                            {
+                                width:
+                                    "150px"
+                            }
+                        ),
+                        booleanColumn(
+                            "active",
+                            "Trạng thái",
+                            {
+                                width:
+                                    "130px"
+                            }
+                        )
+                    ]
+                }
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
+
+async nhomSanPham(req, res, next) {
+    try {
+        return renderDanhMuc(req, res, {
+            view:
+                "pages/danh-muc/dat-hang/nhom-san-pham/index",
+
+            title:
+                "Danh mục nhóm sản phẩm",
+
+            description:
+                "Quản lý nhóm sản phẩm, loại sản phẩm và thứ tự hiển thị.",
+
+            page:
+                "Nhóm sản phẩm",
+
+            activeSubmenu:
+                "nhom-san-pham",
+
+            columns: [
+                textColumn(
+                    "maNhomSanPham",
+                    "Mã nhóm sản phẩm",
+                    {
+                        width: "180px"
+                    }
+                ),
+                textColumn(
+                    "tenNhomSanPham",
+                    "Tên nhóm sản phẩm",
+                    {
+                        width: "240px"
+                    }
+                ),
+                textColumn(
+                    "loaiSanPhamText",
+                    "Loại sản phẩm",
+                    {
+                        width: "180px"
+                    }
+                ),
+                textColumn(
+                    "moTa",
+                    "Mô tả",
+                    {
+                        width: "300px"
+                    }
+                ),
+                numberColumn(
+                    "thuTuHienThi",
+                    "Thứ tự hiển thị",
+                    {
+                        width: "150px"
+                    }
+                ),
+                booleanColumn(
+                    "active",
+                    "Trạng thái",
+                    {
+                        width: "130px"
+                    }
+                )
+            ]
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 }
 
 module.exports = new DanhMucWebController();

@@ -25,9 +25,7 @@ const router =
 router.get(
     "/tong-hop",
     authenticate,
-    authorize(
-        "Q002051"
-    ),
+    authorize("Q000035"),
     controller.getTongHop
 );
 

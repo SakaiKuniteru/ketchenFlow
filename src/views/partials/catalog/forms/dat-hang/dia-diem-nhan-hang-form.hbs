@@ -1,0 +1,95 @@
+<div class="detail-panel__section">
+
+    <h3 class="detail-panel__section-title">
+        Thông tin địa điểm nhận hàng
+    </h3>
+
+    <div class="catalog-form-grid">
+
+        {{> forms/input
+            id="maDiaDiem"
+            name="maDiaDiem"
+            label="Mã địa điểm"
+            placeholder="Nhập mã địa điểm"
+            maxlength=50
+            required=true
+        }}
+
+        {{> forms/input
+            id="tenDiaDiem"
+            name="tenDiaDiem"
+            label="Tên địa điểm"
+            placeholder="Ví dụ: Văn phòng tầng 3"
+            maxlength=255
+            required=true
+        }}
+
+        {{> forms/select
+            id="loaiDiaDiem"
+            name="loaiDiaDiem"
+            label="Loại địa điểm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn loại địa điểm..."
+            required=true
+        }}
+
+        {{> forms/number
+            id="thuTuHienThi"
+            name="thuTuHienThi"
+            label="Thứ tự hiển thị"
+            placeholder="0"
+            min=0
+            step=1
+            integer=true
+        }}
+
+        {{> forms/textarea
+            id="diaChiChiTiet"
+            name="diaChiChiTiet"
+            label="Địa chỉ chi tiết"
+            placeholder="Nhập địa chỉ hoặc hướng dẫn nhận hàng..."
+            maxlength=500
+            rows=3
+            showCounter=true
+            required=true
+            fieldClass="catalog-form-grid__full"
+        }}
+
+        {{> forms/textarea
+            id="ghiChu"
+            name="ghiChu"
+            label="Ghi chú"
+            placeholder="Nhập ghi chú nếu có..."
+            maxlength=500
+            rows=3
+            showCounter=true
+            fieldClass="catalog-form-grid__full"
+        }}
+
+    </div>
+
+</div>
+
+<div class="detail-panel__section">
+
+    <div class="catalog-form-grid">
+
+        {{> forms/switch
+            id="laMacDinh"
+            name="laMacDinh"
+            label="Địa điểm mặc định"
+            description="Địa điểm này sẽ được chọn sẵn khi đặt hàng."
+        }}
+
+        {{> forms/switch
+            id="active"
+            name="active"
+            label="Đang hoạt động"
+            checked=true
+        }}
+
+    </div>
+
+</div>

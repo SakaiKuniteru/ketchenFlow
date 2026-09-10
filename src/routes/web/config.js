@@ -135,6 +135,25 @@ const danhMucRoutes = [
         method: "get",
         path: "/binh-chon/quan-ly-binh-chon",
         handler: danhMucWebController.binhChon
+    },
+    {
+        method:
+            "get",
+        path:
+            "/dat-hang/dia-diem-nhan-hang",
+        handler: danhMucWebController .diaDiemNhanHang
+    },
+    {
+        method:
+            "get",
+        path:
+            "/dat-hang/khung-gio-nhan-hang",
+        handler: danhMucWebController.khungGioNhanHang
+    },
+    {
+        method: "get",
+        path: "/dat-hang/nhom-san-pham",
+        handler: danhMucWebController.nhomSanPham
     }
 ];
 

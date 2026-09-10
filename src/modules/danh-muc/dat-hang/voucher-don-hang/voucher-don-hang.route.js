@@ -38,7 +38,7 @@ const upload = multer({
 router.get(
     "/tong-hop",
     authenticate,
-    authorize("Q002031"),
+    authorize("Q000034"),
     controller.getTongHop
 );
 

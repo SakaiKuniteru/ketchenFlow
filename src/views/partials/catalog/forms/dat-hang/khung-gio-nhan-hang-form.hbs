@@ -1,0 +1,90 @@
+<div class="detail-panel__section">
+
+    <h3 class="detail-panel__section-title">
+        Thông tin khung giờ nhận hàng
+    </h3>
+
+    <div class="catalog-form-grid">
+
+        {{> forms/input
+            id="maKhungGio"
+            name="maKhungGio"
+            label="Mã khung giờ"
+            placeholder="Ví dụ: KG1130"
+            maxlength=50
+            required=true
+        }}
+
+        {{> forms/input
+            id="tenKhungGio"
+            name="tenKhungGio"
+            label="Tên khung giờ"
+            placeholder="Ví dụ: 11:30 - 11:45"
+            maxlength=150
+            required=true
+        }}
+
+        {{> forms/select
+            id="coSoId"
+            name="coSoId"
+            label="Cơ sở"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn cơ sở..."
+            required=true
+        }}
+
+        {{> forms/number
+            id="soDonToiDa"
+            name="soDonToiDa"
+            label="Số đơn tối đa"
+            placeholder="Để trống nếu không giới hạn"
+            min=1
+            step=1
+            integer=true
+        }}
+
+        {{> forms/time
+            id="gioBatDau"
+            name="gioBatDau"
+            label="Giờ bắt đầu"
+            placeholder="HH:mm:ss"
+            showSeconds=true
+            required=true
+        }}
+
+        {{> forms/time
+            id="gioKetThuc"
+            name="gioKetThuc"
+            label="Giờ kết thúc"
+            placeholder="HH:mm:ss"
+            showSeconds=true
+            required=true
+        }}
+
+        {{> forms/number
+            id="soPhutDatTruoc"
+            name="soPhutDatTruoc"
+            label="Thời gian phải đặt trước"
+            suffix="phút"
+            integer=true
+            readonly=true
+            description="Giá trị này lấy từ thiết lập chung, không cấu hình theo từng khung giờ."
+            fieldClass="catalog-form-grid__full"
+        }}
+
+    </div>
+
+</div>
+
+<div class="detail-panel__section">
+
+    {{> forms/switch
+        id="active"
+        name="active"
+        label="Đang hoạt động"
+        checked=true
+    }}
+
+</div>
