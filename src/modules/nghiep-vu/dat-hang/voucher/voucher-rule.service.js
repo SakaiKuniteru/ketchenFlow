@@ -18,6 +18,7 @@ class VoucherRuleService {
                 SELECT
                     v.*,
                     COALESCE(array_agg(DISTINCT vcs.co_so_id) FILTER (WHERE vcs.co_so_id IS NOT NULL), '{}') AS co_so_ids,
+                    COALESCE(array_agg(DISTINCT vna.nha_an_id) FILTER (WHERE vna.nha_an_id IS NOT NULL), '{}') AS nha_an_ids,
                     COALESCE(array_agg(DISTINCT vpb.phong_ban_id) FILTER (WHERE vpb.phong_ban_id IS NOT NULL), '{}') AS phong_ban_ids,
                     COALESCE(array_agg(DISTINCT vcv.chuc_vu_id) FILTER (WHERE vcv.chuc_vu_id IS NOT NULL), '{}') AS chuc_vu_ids,
                     COALESCE(array_agg(DISTINCT vnv.nhan_vien_id) FILTER (WHERE vnv.nhan_vien_id IS NOT NULL), '{}') AS nhan_vien_ids,
@@ -27,6 +28,7 @@ class VoucherRuleService {
                     (SELECT COUNT(*) FROM nv_voucher_don_hang_su_dung sd WHERE sd.voucher_don_hang_id = v.id AND sd.nhan_vien_id = $4 AND sd.trang_thai IN ($2, $3))::INTEGER AS so_luot_nhan_vien
                 FROM dm_voucher_don_hang v
                 LEFT JOIN ct_voucher_don_hang_co_so vcs ON vcs.voucher_don_hang_id = v.id
+                LEFT JOIN ct_voucher_don_hang_nha_an vna ON vna.voucher_don_hang_id = v.id
                 LEFT JOIN ct_voucher_don_hang_phong_ban vpb ON vpb.voucher_don_hang_id = v.id
                 LEFT JOIN ct_voucher_don_hang_chuc_vu vcv ON vcv.voucher_don_hang_id = v.id
                 LEFT JOIN ct_voucher_don_hang_nhan_vien vnv ON vnv.voucher_don_hang_id = v.id
@@ -62,6 +64,19 @@ class VoucherRuleService {
             if (ids.length && !ids.map(Number).includes(Number(value))) {
                 throw new ApiError(400, message);
             }
+        }
+
+        if (
+            voucher.nha_an_ids?.length &&
+            !voucher.nha_an_ids
+                .map(Number)
+                .some(id =>
+                    (context.nhaAnIds || [])
+                        .map(Number)
+                        .includes(id)
+                )
+        ) {
+            throw new ApiError(400, "Voucher không áp dụng cho nhà ăn này.");
         }
 
         if (Number(context.tamTinh) < Number(voucher.gia_tri_don_hang_toi_thieu)) {

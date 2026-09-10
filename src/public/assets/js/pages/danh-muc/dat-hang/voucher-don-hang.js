@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         coSo:
             "/api/mcs/v1/dm-co-so/tong-hop?active=true",
 
-        phongBan:
-            "/api/mcs/v1/dm-phong-ban/tong-hop?active=true",
+        nhaAn:
+            "/api/mcs/v1/dm-nha-an/tong-hop?active=true",
 
         chucVu:
             "/api/mcs/v1/dm-chuc-vu/tong-hop?active=true",
@@ -45,6 +45,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let dsLoaiGiam = [];
     let dsPhamViApDung = [];
+
+    const doiTuongOptions = {
+        coSo: [],
+        nhaAn: [],
+        chucVu: [],
+        nhanVien: []
+    };
+
+    let dangLocDoiTuong = false;
 
     const FALLBACK_LOAI_GIAM = [
         {
@@ -100,15 +109,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item =>
                         `${item.maCoSo || ""} - ${
                             item.tenCoSo || ""
-                        }`
+                        }`,
+                    "coSo"
                 ),
                 loadSelectOptions(
-                    "phongBanIds",
-                    API.phongBan,
+                    "nhaAnIds",
+                    API.nhaAn,
                     item =>
-                        `${item.maPhongBan || ""} - ${
-                            item.tenPhongBan || ""
-                        }`
+                        `${item.maNhaAn || ""} - ${
+                            item.tenNhaAn || ""
+                        }`,
+                    "nhaAn"
                 ),
                 loadSelectOptions(
                     "chucVuIds",
@@ -116,7 +127,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item =>
                         `${item.maChucVu || ""} - ${
                             item.tenChucVu || ""
-                        }`
+                        }`,
+                    "chucVu"
                 ),
                 loadSelectOptions(
                     "nhanVienIds",
@@ -124,7 +136,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item =>
                         `${item.maNhanVien || ""} - ${
                             item.hoTen || ""
-                        }`
+                        }`,
+                    "nhanVien"
                 )
             ]);
 
@@ -133,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             bindEvents();
             syncGiaTriField();
             syncPhamViApDung();
+            applyDoiTuongFilters();
         } catch (error) {
             console.error(
                 "Không thể khởi tạo voucher đơn hàng.",
@@ -201,7 +215,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         renderSelect(
             "loaiGiam",
-            dsLoaiGiam
+            dsLoaiGiam.map(item => ({
+                ...item,
+                label: Number(item.value) === LOAI_GIAM.PHAN_TRAM
+                    ? "Phần trăm"
+                    : "Số tiền"
+            }))
         );
 
         renderSelect(
@@ -213,7 +232,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function loadSelectOptions(
         selectId,
         url,
-        getLabel
+        getLabel,
+        optionKey = null
     ) {
         try {
             const response =
@@ -224,6 +244,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     .filter(item =>
                         item?.active === true
                     );
+
+            if (optionKey) {
+                doiTuongOptions[optionKey] = records;
+            }
 
             renderOptions(
                 selectId,
@@ -241,6 +265,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 [],
                 () => ""
             );
+
+            if (optionKey) {
+                doiTuongOptions[optionKey] = [];
+            }
         }
     }
 
@@ -296,7 +324,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         select.innerHTML = "";
 
-        if (!select.multiple) {
+        if (select.multiple) {
+            const allOption =
+                document.createElement("option");
+
+            allOption.value = "__ALL__";
+            allOption.textContent =
+                select.closest("[data-smart-select]")
+                    ?.dataset.selectAllLabel ||
+                "Tất cả";
+            allOption.dataset.optionAll = "true";
+
+            select.appendChild(allOption);
+        } else {
             const emptyOption =
                 document.createElement("option");
 
@@ -392,6 +432,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     key: "thoiGianBatDau",
                     label: "Bắt đầu",
                     sortable: true,
+                    className: "catalog-table__cell--center",
                     filterable: true,
                     render: formatDateTime
                 },
@@ -399,17 +440,30 @@ document.addEventListener("DOMContentLoaded", async () => {
                     key: "thoiGianKetThuc",
                     label: "Kết thúc",
                     sortable: true,
+                    className: "catalog-table__cell--center",
                     filterable: true,
                     render: formatDateTime
+                },
+                {
+                    key: "choPhepDungChung",
+                    label: "Cho phép SD chung",
+                    sortable: true,
+                    className: "catalog-table__cell--center",
+                    render: window.createStatusBadge
+                },
+                {
+                    key: "tuDongApDung",
+                    label: "Tự động áp dụng",
+                    sortable: true,
+                    className: "catalog-table__cell--center",
+                    render: window.createStatusBadge
                 },
                 {
                     key: "active",
                     label: "Trạng thái",
                     sortable: true,
-                    className:
-                        "catalog-table__cell--center",
-                    render:
-                        window.createStatusBadge
+                    className: "catalog-table__cell--center",
+                    render: window.createStatusBadge
                 }
             ],
 
@@ -422,7 +476,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 giaTriDonHangToiThieu: "",
                 soLuongPhatHanh: "",
                 soLuotMoiNhanVien: "",
-                phamViApDung: "",
+                phamViApDung: PHAM_VI.TOAN_BO,
 
                 nhomSanPhamId: "",
                 sanPhamId: "",
@@ -430,7 +484,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 nhomSanPhamIds: [],
                 sanPhamIds: [],
                 coSoIds: [],
-                phongBanIds: [],
+                nhaAnIds: [],
                 chucVuIds: [],
                 nhanVienIds: [],
 
@@ -530,7 +584,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     soLuotMoiNhanVien:
                         record?.soLuotMoiNhanVien ?? "",
                     phamViApDung:
-                        record?.phamViApDung ?? "",
+                        record?.phamViApDung ??
+                        PHAM_VI.TOAN_BO,
 
                     nhomSanPhamId:
                         firstId(
@@ -557,9 +612,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             record?.coSoIds
                         ),
 
-                    phongBanIds:
+                    nhaAnIds:
                         normalizeIds(
-                            record?.phongBanIds
+                            record?.nhaAnIds
                         ),
 
                     chucVuIds:
@@ -619,8 +674,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 );
 
                 syncSelectValues(
-                    "phongBanIds",
-                    record?.phongBanIds
+                    "nhaAnIds",
+                    record?.nhaAnIds
                 );
 
                 syncSelectValues(
@@ -668,8 +723,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     record?.thoiGianKetThuc
                 );
 
-                syncGiaTriField();
+                syncGiaTriField(record?.loaiGiam ?? "");
                 syncPhamViApDung();
+                applyDoiTuongFilters();
             },
 
             transformPayload(formData) {
@@ -697,29 +753,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                         ),
 
                     giaTri:
-                        parseFormNumber(
-                            formData.giaTri
-                        ),
+                        toApiDecimal(formData.giaTri),
 
                     giamToiDa:
-                        parseOptionalNumber(
-                            formData.giamToiDa
-                        ),
+                        toApiDecimal(formData.giamToiDa),
 
                     giaTriDonHangToiThieu:
-                        parseOptionalNumber(
-                            formData.giaTriDonHangToiThieu
-                        ) ?? 0,
+                        toApiDecimal(formData.giaTriDonHangToiThieu) ?? "0",
 
                     soLuongPhatHanh:
-                        parseOptionalInteger(
-                            formData.soLuongPhatHanh
-                        ),
+                        parseOptionalInteger(formData.soLuongPhatHanh),
 
                     soLuotMoiNhanVien:
-                        parseOptionalInteger(
-                            formData.soLuotMoiNhanVien
-                        ),
+                        parseOptionalInteger(formData.soLuotMoiNhanVien),
 
                     phamViApDung,
 
@@ -741,22 +787,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     coSoIds:
                         normalizeIds(
-                            formData.coSoIds
+                            getSmartSelectValues(
+                                "coSoIds"
+                            )
                         ),
 
-                    phongBanIds:
+                    nhaAnIds:
                         normalizeIds(
-                            formData.phongBanIds
+                            getSmartSelectValues(
+                                "nhaAnIds"
+                            )
                         ),
 
                     chucVuIds:
                         normalizeIds(
-                            formData.chucVuIds
+                            getSmartSelectValues(
+                                "chucVuIds"
+                            )
                         ),
 
                     nhanVienIds:
                         normalizeIds(
-                            formData.nhanVienIds
+                            getSmartSelectValues(
+                                "nhanVienIds"
+                            )
                         ),
 
                     choPhepDungChung:
@@ -796,21 +850,56 @@ document.addEventListener("DOMContentLoaded", async () => {
                     action: "filter",
                     label: "Tìm kiếm chi tiết",
                     icon: "search"
+                },
+                {
+                    action: "export-voucher-don-hang",
+                    label: "Xuất danh mục voucher đơn hàng",
+                    icon: "download",
+                    permission: "Q100001"
+                },
+                {
+                    action: "import-voucher-don-hang",
+                    label: "Nhập danh mục voucher đơn hàng",
+                    icon: "upload",
+                    permission: "Q100002"
                 }
-            ]
+            ],
+
+            onAction(action, id, catalogInstance) {
+                if (action === "export-voucher-don-hang") {
+                    return exportData();
+                }
+
+                if (action === "import-voucher-don-hang") {
+                    return importData(catalogInstance);
+                }
+            }
         });
     }
 
     function bindEvents() {
-        bindSmartSelectChange(
-            "loaiGiam",
-            syncGiaTriField
-        );
+        const loaiGiam = document.getElementById("loaiGiam");
+
+        loaiGiam?.addEventListener("change", event => {
+            syncGiaTriField(event.target.value);
+        });
 
         bindSmartSelectChange(
             "phamViApDung",
             syncPhamViApDung
         );
+
+        [
+            "coSoIds",
+            "nhaAnIds",
+            "chucVuIds",
+            "nhanVienIds"
+        ].forEach(id => {
+            bindSmartSelectChange(
+                id,
+                applyDoiTuongFilters
+            );
+        });
 
         bindGiaTriRules();
     }
@@ -845,101 +934,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function bindGiaTriRules() {
-        const input =
-            document.getElementById("giaTri");
+        [
+            "giaTri",
+            "giamToiDa",
+            "giaTriDonHangToiThieu",
+            "soLuongPhatHanh",
+            "soLuotMoiNhanVien"
+        ].forEach(id => {
+            const input = document.getElementById(id);
 
-        if (!input) {
-            return;
-        }
-
-        input.addEventListener("input", () => {
-            if (input.disabled) {
+            if (
+                !input ||
+                input.dataset.voucherNumberBound === "true"
+            ) {
                 return;
             }
 
-            normalizeNumberInput(input);
+            window.MCS.numberInput.initialize(input);
+            input.dataset.voucherNumberBound = "true";
 
-            const loaiGiam =
-                toNullableNumber(
-                    getSmartSelectValue("loaiGiam")
-                );
+            const applyRules = () => {
+                if (!input.disabled && !input.readOnly) {
+                    normalizeNumberInput(input);
+                }
+            };
 
-            const value =
-                getInputNumber(input);
-
-            if (
-                loaiGiam === LOAI_GIAM.PHAN_TRAM &&
-                value !== null &&
-                value > 100
-            ) {
-                setNumberValue(input, 100);
-            }
-        });
-
-        input.addEventListener("blur", () => {
-            normalizeNumberInput(input);
-
-            const loaiGiam =
-                toNullableNumber(
-                    document.getElementById(
-                        "loaiGiam"
-                    )?.value
-                );
-
-            const value =
-                getInputNumber(input);
-
-            if (
-                loaiGiam === LOAI_GIAM.PHAN_TRAM &&
-                value !== null &&
-                value > 100
-            ) {
-                setNumberValue(input, 100);
-            }
+            // Giới hạn dữ liệu trước khi bộ nhập số chung định dạng.
+            input.addEventListener("input", applyRules, true);
+            input.addEventListener("blur", applyRules, true);
         });
     }
 
-    function syncGiaTriField() {
-        const input =
-            document.getElementById("giaTri");
+    function syncGiaTriField(explicitLoaiGiam) {
+        const input = document.getElementById("giaTri");
+        if (!input) return;
 
-        if (!input) {
-            return;
+        const field = input.closest("[data-form-field]");
+        if (!field) return;
+
+        const selectedValue = explicitLoaiGiam === undefined
+            ? document.getElementById("loaiGiam")?.value
+            : explicitLoaiGiam;
+
+        const loaiGiam = toNullableNumber(selectedValue);
+        const isPercent = loaiGiam === LOAI_GIAM.PHAN_TRAM;
+        const isMoney = loaiGiam === LOAI_GIAM.SO_TIEN;
+
+        let suffix = field.querySelector(".form-field__suffix");
+
+        if (!suffix) {
+            const control = field.querySelector(".form-field__control");
+
+            if (control) {
+                suffix = document.createElement("span");
+                suffix.className = "form-field__suffix";
+                control.appendChild(suffix);
+            }
         }
 
-        const loaiGiam =
-            toNullableNumber(
-                getSmartSelectValue("loaiGiam")
-            );
-
-        const field =
-            input.closest("[data-form-field]");
-
-        const control =
-            field?.querySelector(
-                ".form-field__control"
-            );
-
-        let suffix =
-            field?.querySelector(
-                ".form-field__suffix"
-            );
-
-        if (!suffix && control) {
-            suffix =
-                document.createElement("span");
-
-            suffix.className =
-                "form-field__suffix";
-
-            control.appendChild(suffix);
-        }
-
-        if (loaiGiam === null) {
+        // Chưa chọn hoặc giá trị không hợp lệ: luôn khóa và xóa giá trị.
+        if (!isPercent && !isMoney) {
             input.disabled = true;
-            input.setAttribute("disabled", "disabled");
-            input.value = "";
-
+            input.placeholder = "Chọn loại miễn giảm trước";
             input.min = "0";
             input.step = "any";
             input.removeAttribute("max");
@@ -948,50 +1004,40 @@ document.addEventListener("DOMContentLoaded", async () => {
                 suffix.textContent = "";
             }
 
+            setNumberValue(input, "");
             refreshNumberField(field);
             return;
         }
 
-        input.disabled = false;
-        input.removeAttribute("disabled");
+        // Chỉ mở khi thêm/sửa; xem chi tiết vẫn giữ khóa.
+        const isView =
+            input.closest("[data-detail-panel]")?.dataset.mode === "view";
 
-        input.placeholder = "";
-        input.min = "0";
-        input.step = "0.00001";
+        input.disabled = isView;
+        input.readOnly = isView;
+        input.placeholder = "Nhập giá trị";
 
-        input.dataset.numberMin = "0";
-        input.dataset.numberStep = "0.00001";
-        input.dataset.numberInteger = "false";
-
-        if (
-            loaiGiam === LOAI_GIAM.PHAN_TRAM
-        ) {
+        if (isPercent) {
+            input.min = "0.00001";
             input.max = "100";
-            input.dataset.numberMax = "100";
+            input.step = "0.00001";
 
             if (suffix) {
                 suffix.textContent = "%";
             }
 
-            const value =
-                getInputNumber(input);
+            const value = getInputNumber(input);
 
-            if (
-                value !== null &&
-                value > 100
-            ) {
+            if (value !== null && value > 100) {
                 setNumberValue(input, 100);
             }
-        }
-
-        if (
-            loaiGiam === LOAI_GIAM.SO_TIEN
-        ) {
+        } else {
+            input.min = "0";
+            input.step = "any";
             input.removeAttribute("max");
-            delete input.dataset.numberMax;
 
             if (suffix) {
-                suffix.textContent = "đ";
+                suffix.textContent = "VND";
             }
         }
 
@@ -999,10 +1045,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function syncPhamViApDung() {
-        const scope =
+        let scope =
             toNullableNumber(
                 getSmartSelectValue("phamViApDung")
             );
+
+        if (scope === null) {
+            scope = PHAM_VI.TOAN_BO;
+            syncSelectValue(
+                "phamViApDung",
+                scope
+            );
+        }
 
         const visibleField =
             scope === PHAM_VI.NHOM_SAN_PHAM
@@ -1045,7 +1099,183 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (visible) {
                     smartSelect?.refresh?.();
                 }
-            });
+        });
+    }
+
+    function applyDoiTuongFilters() {
+        if (dangLocDoiTuong) {
+            return;
+        }
+
+        dangLocDoiTuong = true;
+
+        try {
+            const selected = {
+                coSoIds: getSmartSelectValues("coSoIds"),
+                nhaAnIds: getSmartSelectValues("nhaAnIds"),
+                chucVuIds: getSmartSelectValues("chucVuIds"),
+                nhanVienIds: getSmartSelectValues("nhanVienIds")
+            };
+
+            const coSoSet = new Set(selected.coSoIds);
+            const nhaAnSet = new Set(selected.nhaAnIds);
+            const chucVuSet = new Set(selected.chucVuIds);
+            const nhanVienSet = new Set(selected.nhanVienIds);
+
+            const nhanVienTheoNhaAn = new Set(
+                doiTuongOptions.nhaAn
+                    .filter(item => nhaAnSet.has(Number(item.id)))
+                    .flatMap(item => getNhaAnNhanVienIds(item))
+            );
+
+            const nhaAnTheoNhanVien = new Set(
+                doiTuongOptions.nhaAn
+                    .filter(item =>
+                        getNhaAnNhanVienIds(item)
+                            .some(id => nhanVienSet.has(id))
+                    )
+                    .map(item => Number(item.id))
+            );
+
+            const coSoTheoNhanVien = new Set(
+                doiTuongOptions.nhanVien
+                    .filter(item => nhanVienSet.has(Number(item.id)))
+                    .map(item => Number(item.coSoId))
+                    .filter(Number.isInteger)
+            );
+
+            const chucVuTheoNhanVien = new Set(
+                doiTuongOptions.nhanVien
+                    .filter(item => nhanVienSet.has(Number(item.id)))
+                    .map(item => Number(item.chucVuId))
+                    .filter(Number.isInteger)
+            );
+
+            const filtered = {
+                coSo: doiTuongOptions.coSo.filter(item =>
+                    (!nhaAnSet.size ||
+                        doiTuongOptions.nhaAn.some(nhaAn =>
+                            nhaAnSet.has(Number(nhaAn.id)) &&
+                            Number(nhaAn.coSoId) === Number(item.id)
+                        )) &&
+                    (!nhanVienSet.size ||
+                        coSoTheoNhanVien.has(Number(item.id)))
+                ),
+
+                nhaAn: doiTuongOptions.nhaAn.filter(item =>
+                    (!coSoSet.size ||
+                        coSoSet.has(Number(item.coSoId))) &&
+                    (!nhanVienSet.size ||
+                        nhaAnTheoNhanVien.has(Number(item.id)))
+                ),
+
+                chucVu: doiTuongOptions.chucVu.filter(item =>
+                    (!nhanVienSet.size ||
+                        chucVuTheoNhanVien.has(Number(item.id)))
+                ),
+
+                nhanVien: doiTuongOptions.nhanVien.filter(item =>
+                    (!coSoSet.size ||
+                        coSoSet.has(Number(item.coSoId))) &&
+                    (!nhaAnSet.size ||
+                        nhanVienTheoNhaAn.has(Number(item.id))) &&
+                    (!chucVuSet.size ||
+                        chucVuSet.has(Number(item.chucVuId))) &&
+                    (!nhanVienSet.size ||
+                        nhanVienSet.has(Number(item.id)))
+                )
+            };
+
+            const selectedByField = {
+                coSoIds: selected.coSoIds,
+                nhaAnIds: selected.nhaAnIds,
+                chucVuIds: selected.chucVuIds,
+                nhanVienIds: selected.nhanVienIds
+            };
+
+            renderFilteredDoiTuong(
+                "coSoIds",
+                filtered.coSo,
+                item =>
+                    `${item.maCoSo || ""} - ${
+                        item.tenCoSo || ""
+                    }`,
+                selectedByField.coSoIds
+            );
+
+            renderFilteredDoiTuong(
+                "nhaAnIds",
+                filtered.nhaAn,
+                item =>
+                    `${item.maNhaAn || ""} - ${
+                        item.tenNhaAn || ""
+                    }`,
+                selectedByField.nhaAnIds
+            );
+
+            renderFilteredDoiTuong(
+                "chucVuIds",
+                filtered.chucVu,
+                item =>
+                    `${item.maChucVu || ""} - ${
+                        item.tenChucVu || ""
+                    }`,
+                selectedByField.chucVuIds
+            );
+
+            renderFilteredDoiTuong(
+                "nhanVienIds",
+                filtered.nhanVien,
+                item =>
+                    `${item.maNhanVien || ""} - ${
+                        item.hoTen || ""
+                    }`,
+                selectedByField.nhanVienIds
+            );
+        } finally {
+            dangLocDoiTuong = false;
+        }
+    }
+
+    function renderFilteredDoiTuong(
+        selectId,
+        records,
+        getLabel,
+        selectedValues
+    ) {
+        const validIds = new Set(
+            records.map(item => Number(item.id))
+        );
+
+        const values = normalizeIds(selectedValues)
+            .filter(id => validIds.has(id));
+
+        renderOptions(
+            selectId,
+            records,
+            getLabel
+        );
+
+        syncSelectValues(
+            selectId,
+            values
+        );
+    }
+
+    function getNhaAnNhanVienIds(item) {
+        if (Array.isArray(item?.dsNvQuanLyId)) {
+            return normalizeIds(item.dsNvQuanLyId);
+        }
+
+        if (Array.isArray(item?.dsNvQuanLy)) {
+            return normalizeIds(
+                item.dsNvQuanLy.map(
+                    nhanVien => nhanVien?.id
+                )
+            );
+        }
+
+        return [];
     }
 
     function validateFormData(data) {
@@ -1054,8 +1284,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const loaiGiam =
             toNullableNumber(data.loaiGiam);
 
-        const giaTri =
-            parseFormNumber(data.giaTri);
+        const giaTri = getInputNumber(
+            document.getElementById("giaTri")
+        );
 
         if (
             loaiGiam !== LOAI_GIAM.PHAN_TRAM &&
@@ -1259,39 +1490,147 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function normalizeNumberInput(input) {
-        let raw =
-            String(input.value || "")
-                .replace(/\./g, "");
+        const isInteger = [
+            "soLuongPhatHanh",
+            "soLuotMoiNhanVien"
+        ].includes(input.id);
 
-        const hasComma =
-            raw.includes(",");
+        const cursor = input.selectionStart ?? input.value.length;
 
-        let [
-            integerPart,
-            decimalPart = ""
-        ] = raw.split(",");
+        const logicalCursor = input.value
+            .slice(0, cursor)
+            .replace(/\./g, "")
+            .length;
 
-        integerPart =
-            integerPart
-                .replace(/\D/g, "")
-                .replace(/^0+(?=\d)/, "");
+        const raw = String(input.value ?? "")
+            .replace(/\./g, "");
 
-        if (!integerPart && hasComma) {
-            integerPart = "0";
+        let hasComma = !isInteger && raw.includes(",");
+        let [whole, fraction = ""] = raw.split(",");
+
+        whole = whole
+            .replace(/\D/g, "")
+            .replace(/^0+(?=\d)/, "");
+
+        fraction = fraction
+            .replace(/\D/g, "")
+            .slice(0, DECIMAL_SCALE);
+
+        if (!whole && hasComma) {
+            whole = "0";
         }
 
-        decimalPart =
-            decimalPart
-                .replace(/\D/g, "")
-                .slice(0, 5);
+        // numeric(18,6): tối đa 12 chữ số nguyên.
+        // INTEGER: tối đa 10 chữ số, kèm giới hạn giá trị bên dưới.
+        whole = whole.slice(0, isInteger ? 10 : 12);
 
-        input.value =
-            integerPart +
+        if (
+            isInteger &&
+            whole &&
+            Number(whole) > 2147483647
+        ) {
+            whole = "2147483647";
+        }
+
+        const isPercent =
+            input.id === "giaTri" &&
+            Number(document.getElementById("loaiGiam")?.value) ===
+                LOAI_GIAM.PHAN_TRAM;
+
+        if (
+            isPercent &&
             (
-                hasComma
-                    ? `,${decimalPart}`
-                    : ""
-            );
+                Number(whole) > 100 ||
+                (
+                    Number(whole) === 100 &&
+                    /[1-9]/.test(fraction)
+                )
+            )
+        ) {
+            whole = "100";
+            fraction = "";
+            hasComma = false;
+        }
+
+        const display =
+            whole + (hasComma ? "," + fraction : "");
+
+        input.value = window.MCS.numberInput.formatInputValue(
+            display,
+            isInteger,
+            false
+        );
+
+        // Giữ vị trí con trỏ khi dấu phân nhóm thay đổi.
+        let position = 0;
+        let characters = 0;
+
+        while (
+            position < input.value.length &&
+            characters < logicalCursor
+        ) {
+            if (input.value[position] !== ".") {
+                characters++;
+            }
+
+            position++;
+        }
+
+        input.setSelectionRange(position, position);
+    }
+
+    function toApiDecimal(value) {
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return null;
+        }
+
+        if (typeof value === "number") {
+            return Number.isFinite(value)
+                ? String(value)
+                : null;
+        }
+
+        const raw = String(value)
+            .trim()
+            .replace(/\s/g, "")
+            .replace(/\./g, "");
+
+        if (!/^\d+(?:,\d*)?$/.test(raw)) {
+            return null;
+        }
+
+        let [whole, fraction = ""] = raw.split(",");
+
+        whole = whole.replace(/^0+(?=\d)/, "");
+        fraction = fraction.replace(/0+$/, "");
+
+        return whole + (fraction ? "." + fraction : "");
+    }
+
+    function parseFormNumber(value) {
+        const decimal = toApiDecimal(value);
+
+        if (decimal === null) {
+            return null;
+        }
+
+        const number = Number(decimal);
+
+        return Number.isFinite(number)
+            ? number
+            : null;
+    }
+
+    function parseOptionalInteger(value) {
+        const number = parseFormNumber(value);
+
+        return Number.isInteger(number)
+            ? number
+            : null;
     }
 
     function getInputNumber(input) {
@@ -1305,45 +1644,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return parseFormNumber(input?.value);
     }
 
-    function parseFormNumber(value) {
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-            return null;
-        }
-
-        if (typeof value === "number") {
-            return Number.isFinite(value)
-                ? value
-                : null;
-        }
-
-        const text =
-            String(value)
-                .trim()
-                .replace(/\s/g, "");
-
-        if (!text) {
-            return null;
-        }
-
-        const normalized =
-            text.includes(",")
-                ? text
-                    .replace(/\./g, "")
-                    .replace(",", ".")
-                : text;
-
-        const number =
-            Number(normalized);
-
-        return Number.isFinite(number)
-            ? number
-            : null;
-    }
-
     function parseOptionalNumber(value) {
         const number =
             parseFormNumber(value);
@@ -1351,15 +1651,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return number === null
             ? null
             : number;
-    }
-
-    function parseOptionalInteger(value) {
-        const number =
-            parseFormNumber(value);
-
-        return number === null
-            ? null
-            : Math.trunc(number);
     }
 
     function getInputDecimalLength(id) {
@@ -1413,12 +1704,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function toNullableNumber(value) {
-        const number =
-            Number(value);
+        if (
+            value === undefined ||
+            value === null ||
+            (typeof value === "string" && value.trim() === "")
+        ) {
+            return null;
+        }
 
-        return Number.isFinite(number)
-            ? number
-            : null;
+        const number = Number(value);
+        return Number.isFinite(number) ? number : null;
     }
 
     function normalizeNullableText(value) {
@@ -1508,21 +1803,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function formatDateTime(value) {
-        const date =
-            new Date(value);
-
-        if (
-            !value ||
-            Number.isNaN(date.getTime())
-        ) {
+        if (!value) {
             return "-";
         }
 
-        return date.toLocaleString(
-            "vi-VN",
-            {
-                hour12: false
-            }
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return "-";
+        }
+
+        const parts = new Intl.DateTimeFormat("vi-VN", {
+            timeZone: "Asia/Ho_Chi_Minh",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hourCycle: "h23"
+        }).formatToParts(date);
+
+        const values = Object.fromEntries(
+            parts.map(part => [part.type, part.value])
+        );
+
+        return (
+            `${values.day}/${values.month}/${values.year} ` +
+            `${values.hour}:${values.minute}:${values.second}`
         );
     }
 
@@ -1542,5 +1850,147 @@ document.addEventListener("DOMContentLoaded", async () => {
             select?.value ??
             ""
         );
+    }
+
+    function getSmartSelectValues(selectId) {
+        const select =
+            document.getElementById(selectId);
+
+        const smartSelect =
+            getSmartSelect(selectId);
+
+        if (select?.multiple) {
+            return normalizeIds(
+                smartSelect?.getValues?.() ||
+                Array.from(
+                    select.selectedOptions || []
+                ).map(option => option.value)
+            );
+        }
+
+        return toIds(
+            smartSelect?.getValue?.() ??
+            select?.value
+        );
+    }
+
+    async function exportData() {
+        try {
+            const result = await window.MCS.api.requestFile(
+                `${API_BASE}/xuat-du-lieu`,
+                {
+                    method: "GET"
+                }
+            );
+
+            window.MCS.api.downloadBlob(
+                result.blob,
+                result.fileName || "dm_voucher_don_hang.xlsx"
+            );
+
+            window.MCS?.toast?.success?.(
+                "Xuất dữ liệu voucher đơn hàng thành công."
+            );
+        } catch (error) {
+            console.error(
+                "Xuất voucher đơn hàng thất bại:",
+                error
+            );
+
+            window.MCS?.toast?.error?.(
+                error?.message ||
+                "Không thể xuất dữ liệu voucher đơn hàng."
+            );
+        }
+    }
+
+    function importData(catalogInstance) {
+        const input = document.createElement("input");
+
+        input.type = "file";
+        input.accept = ".xlsx";
+        input.hidden = true;
+
+        document.body.appendChild(input);
+
+        input.addEventListener(
+            "cancel",
+            () => input.remove(),
+            { once: true }
+        );
+
+        input.addEventListener("change", async () => {
+            const file = input.files?.[0];
+
+            if (!file) {
+                input.remove();
+                return;
+            }
+
+            try {
+                if (!/\.xlsx$/i.test(file.name)) {
+                    throw new Error(
+                        "Vui lòng chọn file Excel .xlsx."
+                    );
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                    throw new Error(
+                        "File import không được vượt quá 10 MB."
+                    );
+                }
+
+                const body = new FormData();
+                body.append("file", file);
+
+                const result = await window.MCS.api.requestFile(
+                    `${API_BASE}/import-du-lieu`,
+                    {
+                        method: "POST",
+                        body
+                    }
+                );
+
+                // Backend trả file kết quả, không phải JSON.
+                window.MCS.api.downloadBlob(
+                    result.blob,
+                    result.fileName ||
+                        `dm_voucher_don_hang_import_${Date.now()}.xlsx`
+                );
+
+                window.MCS?.toast?.success?.(
+                    "Đã xử lý import. Mở file kết quả để xem cột ketQua và baoLoi."
+                );
+
+                // Tách lỗi tải lại bảng khỏi lỗi import,
+                // tránh báo import thất bại khi DB đã xử lý.
+                try {
+                    await catalogInstance?.load?.();
+                } catch (error) {
+                    console.error(
+                        "Không thể tải lại bảng sau import:",
+                        error
+                    );
+
+                    window.MCS?.toast?.error?.(
+                        "Import đã được xử lý nhưng bảng chưa tải lại. Vui lòng tải lại trang."
+                    );
+                }
+            } catch (error) {
+                console.error(
+                    "Import voucher đơn hàng thất bại:",
+                    error
+                );
+
+                window.MCS?.toast?.error?.(
+                    error?.message ||
+                    "Không thể import dữ liệu voucher đơn hàng."
+                );
+            } finally {
+                input.remove();
+            }
+        }, { once: true });
+
+        input.click();
     }
 });

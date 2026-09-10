@@ -8,7 +8,7 @@
             id="maVoucher"
             name="maVoucher"
             label="Mã voucher"
-            placeholder=""
+            placeholder="Nhập mã voucher..."
             maxlength=50
             required=true
         }}
@@ -17,7 +17,7 @@
             id="tenVoucher"
             name="tenVoucher"
             label="Tên voucher"
-            placeholder=""
+            placeholder="Nhập tên voucher..."
             maxlength=255
             required=true
         }}
@@ -25,31 +25,30 @@
         {{> forms/select
             id="loaiGiam"
             name="loaiGiam"
-            label="Loại giảm"
+            label="Loại miễn giảm"
             mode="single"
             multiple=false
             allowAll=false
-            placeholder=""
+            placeholder="Chọn loại miễn giảm..."
             required=true
         }}
 
         {{> forms/number
             id="giaTri"
             name="giaTri"
-            label="Giá trị"
-            placeholder=""
-            suffix=""
+            label="Giá trị voucher"
+            placeholder="Chọn loại miễn giảm trước"
             min=0
             step="any"
-            disabled=true
             required=true
+            disabled=true
         }}
 
         {{> forms/number
             id="giamToiDa"
             name="giamToiDa"
             label="Giảm tối đa"
-            placeholder=""
+            placeholder="Nhập giảm tối đa..."
             min=0
             step="any"
         }}
@@ -58,7 +57,7 @@
             id="giaTriDonHangToiThieu"
             name="giaTriDonHangToiThieu"
             label="Đơn hàng tối thiểu"
-            placeholder=""
+            placeholder="Nhập giá trị tối thiểu..."
             min=0
             step="any"
         }}
@@ -67,7 +66,7 @@
             id="soLuongPhatHanh"
             name="soLuongPhatHanh"
             label="Số lượng phát hành"
-            placeholder=""
+            placeholder="Nhập số lượng phát hành..."
             min=1
             step=1
             integer=true
@@ -77,11 +76,21 @@
             id="soLuotMoiNhanVien"
             name="soLuotMoiNhanVien"
             label="Lượt mỗi nhân viên"
-            placeholder=""
+            placeholder="Nhập số lượt mỗi nhân viên..."
             min=1
             step=1
             integer=true
         }}
+
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <h3 class="detail-panel__section-title">
+        Phạm vi áp dụng
+    </h3>
+
+    <div class="catalog-form-grid voucher-scope-grid">
 
         {{> forms/select
             id="phamViApDung"
@@ -90,55 +99,58 @@
             mode="single"
             multiple=false
             allowAll=false
-            placeholder=""
+            placeholder="Chọn phạm vi áp dụng..."
             required=true
         }}
-    </div>
-</div>
 
-<div class="detail-panel__section">
-    <div
-        class="catalog-form-grid"
-        data-voucher-scope-wrapper="all"
-        hidden>
+        <div
+            class="voucher-scope-field"
+            data-voucher-scope-wrapper="all"
+            hidden>
 
-        <div class="catalog-form-grid__full">
-            <div class="catalog-scope-message">
-                Áp dụng cho toàn bộ đơn hàng
-            </div>
+            {{> forms/input
+                id="phamViApDungToanBo"
+                name="phamViApDungToanBo"
+                label="Áp dụng cho"
+                value="Áp dụng cho toàn bộ đơn hàng"
+                placeholder="Áp dụng cho toàn bộ đơn hàng"
+                readonly=true
+                disabled=true
+            }}
         </div>
-    </div>
 
-    <div
-        class="catalog-form-grid"
-        data-voucher-scope-wrapper="nhomSanPhamId"
-        hidden>
+        <div
+            class="voucher-scope-field"
+            data-voucher-scope-wrapper="nhomSanPhamId"
+            hidden>
 
-        {{> forms/select
-            id="nhomSanPhamId"
-            name="nhomSanPhamId"
-            label="Nhóm sản phẩm"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
-        }}
-    </div>
+            {{> forms/select
+                id="nhomSanPhamId"
+                name="nhomSanPhamId"
+                label="Nhóm sản phẩm"
+                mode="single"
+                multiple=false
+                allowAll=false
+                placeholder="Chọn nhóm sản phẩm..."
+            }}
+        </div>
 
-    <div
-        class="catalog-form-grid"
-        data-voucher-scope-wrapper="sanPhamId"
-        hidden>
+        <div
+            class="voucher-scope-field"
+            data-voucher-scope-wrapper="sanPhamId"
+            hidden>
 
-        {{> forms/select
-            id="sanPhamId"
-            name="sanPhamId"
-            label="Sản phẩm"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
-        }}
+            {{> forms/select
+                id="sanPhamId"
+                name="sanPhamId"
+                label="Sản phẩm"
+                mode="single"
+                multiple=false
+                allowAll=false
+                placeholder="Chọn sản phẩm..."
+            }}
+        </div>
+
     </div>
 </div>
 
@@ -152,40 +164,48 @@
             id="coSoIds"
             name="coSoIds"
             label="Cơ sở"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
+            mode="multiple"
+            multiple=true
+            allowAll=true
+            allLabel="Tất cả"
+            compactMultiple=false
+            placeholder="Chọn cơ sở áp dụng..."
         }}
 
         {{> forms/select
-            id="phongBanIds"
-            name="phongBanIds"
-            label="Phòng ban"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
+            id="nhaAnIds"
+            name="nhaAnIds"
+            label="Nhà ăn"
+            mode="multiple"
+            multiple=true
+            allowAll=true
+            allLabel="Tất cả"
+            compactMultiple=false
+            placeholder="Chọn nhà ăn áp dụng..."
         }}
 
         {{> forms/select
             id="chucVuIds"
             name="chucVuIds"
             label="Chức vụ"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
+            mode="multiple"
+            multiple=true
+            allowAll=true
+            allLabel="Tất cả"
+            compactMultiple=false
+            placeholder="Chọn chức vụ áp dụng..."
         }}
 
         {{> forms/select
             id="nhanVienIds"
             name="nhanVienIds"
             label="Nhân viên"
-            mode="single"
-            multiple=false
-            allowAll=false
-            placeholder=""
+            mode="multiple"
+            multiple=true
+            allowAll=true
+            allLabel="Tất cả"
+            compactMultiple=false
+            placeholder="Chọn nhân viên áp dụng..."
         }}
     </div>
 </div>
@@ -220,11 +240,12 @@
             id="moTa"
             name="moTa"
             label="Mô tả"
-            placeholder=""
+            placeholder="Nhập mô tả..."
             maxlength=1000
             rows=3
             showCounter=true
             fieldClass="catalog-form-grid__full"
+            required=true
         }}
     </div>
 </div>

@@ -11,6 +11,10 @@ const {
 const voucherDonHangRepository =
     require("./voucher-don-hang.repository");
 
+const {
+    normalizeVoucherDecimal
+} = require("./voucher-don-hang.validation");
+
 const PHAN_TRAM = 10;
 const TOAN_BO_DON_HANG = 10;
 const NHOM_SAN_PHAM = 20;
@@ -145,24 +149,13 @@ class VoucherDonHangService {
                 ),
 
             giaTri:
-                Number(
-                    getValue("giaTri")
-                ),
+                getValue("giaTri"),
 
             giamToiDa:
-                getValue("giamToiDa", null) === null
-                    ? null
-                    : Number(
-                        getValue("giamToiDa")
-                    ),
+                getValue("giamToiDa", null),
 
             giaTriDonHangToiThieu:
-                Number(
-                    getValue(
-                        "giaTriDonHangToiThieu",
-                        0
-                    )
-                ),
+                getValue("giaTriDonHangToiThieu", "0"),
 
             soLuongPhatHanh:
                 getValue(
@@ -250,6 +243,14 @@ class VoucherDonHangService {
                     )
                 ),
 
+            nhaAnIds:
+                uniqueIds(
+                    getValue(
+                        "nhaAnIds",
+                        []
+                    )
+                ),
+
             phongBanIds:
                 uniqueIds(
                     getValue(
@@ -327,50 +328,43 @@ class VoucherDonHangService {
     }
 
     validateGiaTri(data) {
-        if (
-            !Number.isFinite(data.giaTri) ||
-            data.giaTri <= 0
-        ) {
+        const fields = [
+            ["giaTri", "Giá trị", false],
+            ["giamToiDa", "Giảm tối đa", true],
+            ["giaTriDonHangToiThieu", "Đơn hàng tối thiểu", false]
+        ];
+
+        for (const [key, label, nullable] of fields) {
+            if (nullable && data[key] === null) {
+                continue;
+            }
+
+            try {
+                data[key] = normalizeVoucherDecimal(data[key]);
+            } catch (error) {
+                throw new ApiError(
+                    400,
+                    label + ": " + error.message
+                );
+            }
+        }
+
+        if (data.giaTri === "0") {
             throw new ApiError(
                 400,
                 "Giá trị giảm phải lớn hơn 0."
             );
         }
 
+        // Chỉ chuyển số để kiểm tra mốc 100;
+        // không ghi giá trị Number trở lại data.giaTri.
         if (
             data.loaiGiam === PHAN_TRAM &&
-            data.giaTri > 100
+            Number(data.giaTri) > 100
         ) {
             throw new ApiError(
                 400,
-                "Giá trị giảm theo phần trăm không được vượt quá 100."
-            );
-        }
-
-        if (
-            data.giamToiDa !== null &&
-            (
-                !Number.isFinite(
-                    data.giamToiDa
-                ) ||
-                data.giamToiDa < 0
-            )
-        ) {
-            throw new ApiError(
-                400,
-                "Giảm tối đa phải lớn hơn hoặc bằng 0."
-            );
-        }
-
-        if (
-            !Number.isFinite(
-                data.giaTriDonHangToiThieu
-            ) ||
-            data.giaTriDonHangToiThieu < 0
-        ) {
-            throw new ApiError(
-                400,
-                "Giá trị đơn hàng tối thiểu không hợp lệ."
+                "Giá trị phần trăm không được vượt quá 100."
             );
         }
     }
@@ -393,7 +387,7 @@ class VoucherDonHangService {
                 value !== null &&
                 (
                     !Number.isInteger(value) ||
-                    value <= 0
+                    value <= 0 || value > 2147483647
                 )
             ) {
                 throw new ApiError(

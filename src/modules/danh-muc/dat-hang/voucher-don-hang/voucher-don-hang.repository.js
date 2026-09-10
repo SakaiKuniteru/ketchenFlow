@@ -51,6 +51,22 @@ const relationMap = {
             "INTEGER"
     },
 
+    nhaAnIds: {
+        detailKey: "dsNhaAn",
+        relationTable:
+            "ct_voucher_don_hang_nha_an",
+        foreignKey:
+            "nha_an_id",
+        masterTable:
+            "dm_nha_an",
+        codeColumn:
+            "ma_nha_an",
+        nameColumn:
+            "ten_nha_an",
+        dataType:
+            "INTEGER"
+    },
+
     phongBanIds: {
         detailKey: "dsPhongBan",
         relationTable:
@@ -107,6 +123,17 @@ function toNumberOrNull(value) {
         : Number(value);
 }
 
+function toDecimalString(value) {
+    if (value === null || value === undefined) {
+        return null;
+    }
+
+    const [whole, fraction = ""] = String(value).split(".");
+    const decimals = fraction.replace(/0+$/, "");
+
+    return whole + (decimals ? "." + decimals : "");
+}
+
 class VoucherDonHangRepository {
 
     mapVoucher(row) {
@@ -120,13 +147,14 @@ class VoucherDonHangRepository {
             tenVoucher: row.ten_voucher,
             moTa: row.mo_ta,
             loaiGiam: Number(row.loai_giam),
-            giaTri: Number(row.gia_tri),
+            giaTri:
+                toDecimalString(row.gia_tri),
+
             giamToiDa:
-                toNumberOrNull(row.giam_toi_da),
+                toDecimalString(row.giam_toi_da),
+
             giaTriDonHangToiThieu:
-                Number(
-                    row.gia_tri_don_hang_toi_thieu
-                ),
+                toDecimalString(row.gia_tri_don_hang_toi_thieu),
             soLuongPhatHanh:
                 toNumberOrNull(
                     row.so_luong_phat_hanh

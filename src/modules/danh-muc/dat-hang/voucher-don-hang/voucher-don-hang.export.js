@@ -53,6 +53,8 @@ function mapExportItem(item) {
             joinIds(item.sanPhamIds),
         coSoIds:
             joinIds(item.coSoIds),
+        nhaAnIds:
+            joinIds(item.nhaAnIds),
         phongBanIds:
             joinIds(item.phongBanIds),
         chucVuIds:

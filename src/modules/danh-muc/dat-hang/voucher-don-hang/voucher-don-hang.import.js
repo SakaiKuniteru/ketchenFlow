@@ -73,6 +73,7 @@ const relationFields = [
     "nhomSanPhamIds",
     "sanPhamIds",
     "coSoIds",
+    "nhaAnIds",
     "phongBanIds",
     "chucVuIds",
     "nhanVienIds"

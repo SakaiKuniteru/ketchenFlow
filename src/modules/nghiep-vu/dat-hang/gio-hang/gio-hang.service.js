@@ -9,7 +9,25 @@ const { tinhTongTien } = require("./tinh-tien.helper");
 class GioHangService {
     async getNhanVien(nhanVienId, client = pool) {
         const result = await client.query(
-            `SELECT id, co_so_id AS "coSoId", phong_ban_id AS "phongBanId", chuc_vu_id AS "chucVuId" FROM dm_nhan_vien WHERE id = $1 AND active = TRUE`,
+            `
+                SELECT
+                    nv.id,
+                    nv.co_so_id AS "coSoId",
+                    nv.phong_ban_id AS "phongBanId",
+                    nv.chuc_vu_id AS "chucVuId",
+                    COALESCE(
+                        (
+                            SELECT array_agg(ct.nha_an_id)
+                            FROM ct_nha_an_nhan_vien ct
+                            WHERE ct.nhan_vien_id = nv.id
+                                AND ct.active = TRUE
+                        ),
+                        '{}'
+                    ) AS "nhaAnIds"
+                FROM dm_nhan_vien nv
+                WHERE nv.id = $1
+                    AND nv.active = TRUE
+            `,
             [nhanVienId]
         );
 
@@ -68,6 +86,7 @@ class GioHangService {
             coSoId,
             phongBanId: profile.phongBanId,
             chucVuId: profile.chucVuId,
+            nhaAnIds: profile.nhaAnIds,
             tamTinh
         }, items, client, lockVoucher);
         const totals = tinhTongTien(items, voucher, Number(data.phiDichVu || 0));

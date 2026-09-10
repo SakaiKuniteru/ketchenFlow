@@ -18,6 +18,61 @@ const danhSachIdSchema = Joi.array()
     )
     .unique();
 
+function normalizeVoucherDecimal(value) {
+    if (
+        typeof value !== "string" &&
+        typeof value !== "number"
+    ) {
+        throw new Error("Giá trị phải là số hoặc chuỗi số chuẩn.");
+    }
+
+    const text = String(value).trim();
+
+    if (!/^\d+(?:\.\d+)?$/.test(text)) {
+        throw new Error(
+            "Dùng dấu chấm thập phân, không có dấu phân nhóm."
+        );
+    }
+
+    let [whole, fraction = ""] = text.split(".");
+
+    whole = whole.replace(/^0+(?=\d)/, "");
+    fraction = fraction.replace(/0+$/, "");
+
+    if (whole.length > 12 || fraction.length > 5) {
+        throw new Error(
+            "Tối đa 12 chữ số nguyên và 5 chữ số thập phân."
+        );
+    }
+
+    return whole + (fraction ? "." + fraction : "");
+}
+
+function decimalField(label, positive = false) {
+    return Joi.any()
+        .custom((value, helpers) => {
+            try {
+                const decimal = normalizeVoucherDecimal(value);
+
+                if (positive && decimal === "0") {
+                    return helpers.error("any.invalid");
+                }
+
+                // Giữ chuỗi chuẩn, không ép sang Number.
+                return decimal;
+            } catch {
+                return helpers.error("any.invalid");
+            }
+        })
+        .label(label)
+        .messages({
+            "any.invalid":
+                label + " phải " +
+                (positive ? "lớn hơn 0" : "lớn hơn hoặc bằng 0") +
+                ", tối đa 12 chữ số nguyên và 5 chữ số thập phân."
+        });
+}
+
 const fields = {
     maVoucher: Joi.string()
         .trim()
@@ -40,25 +95,29 @@ const fields = {
             )
         ),
 
-    giaTri: Joi.number()
-        .positive(),
+    giaTri:
+        decimalField("Giá trị", true),
 
-    giamToiDa: Joi.number()
-        .min(0)
-        .allow(null),
+    giamToiDa:
+        decimalField("Giảm tối đa")
+            .allow(null),
 
-    giaTriDonHangToiThieu: Joi.number()
-        .min(0),
+    giaTriDonHangToiThieu:
+        decimalField("Đơn hàng tối thiểu"),
 
-    soLuongPhatHanh: Joi.number()
-        .integer()
-        .positive()
-        .allow(null),
+    soLuongPhatHanh:
+        Joi.number()
+            .integer()
+            .positive()
+            .max(2147483647)
+            .allow(null),
 
-    soLuotMoiNhanVien: Joi.number()
-        .integer()
-        .positive()
-        .allow(null),
+    soLuotMoiNhanVien:
+        Joi.number()
+            .integer()
+            .positive()
+            .max(2147483647)
+            .allow(null),
 
     phamViApDung: Joi.number()
         .integer()
@@ -85,6 +144,8 @@ const fields = {
     sanPhamIds: danhSachIdSchema,
 
     coSoIds: danhSachIdSchema,
+
+    nhaAnIds: danhSachIdSchema,
 
     phongBanIds: danhSachIdSchema,
 
@@ -161,6 +222,10 @@ const createSchema = Joi.object({
         fields.coSoIds
             .optional(),
 
+    nhaAnIds:
+        fields.nhaAnIds
+            .optional(),
+
     phongBanIds:
         fields.phongBanIds
             .optional(),
@@ -192,5 +257,6 @@ const updateSchema = Joi.object(
 
 module.exports = {
     createSchema,
-    updateSchema
+    updateSchema,
+    normalizeVoucherDecimal
 };
