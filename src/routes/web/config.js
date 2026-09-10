@@ -154,6 +154,16 @@ const danhMucRoutes = [
         method: "get",
         path: "/dat-hang/nhom-san-pham",
         handler: danhMucWebController.nhomSanPham
+    },
+    {
+        method: "get",
+        path: "/dat-hang/san-pham",
+        handler: danhMucWebController.sanPham
+    },
+    {
+        method: "get",
+        path: "/dat-hang/voucher-don-hang",
+        handler: danhMucWebController.voucherDonHang
     }
 ];
 

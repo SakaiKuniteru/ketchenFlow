@@ -1,0 +1,16 @@
+.voucher-flags-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.voucher-flags-row .form-field {
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .voucher-flags-row {
+        grid-template-columns: 1fr;
+    }
+}

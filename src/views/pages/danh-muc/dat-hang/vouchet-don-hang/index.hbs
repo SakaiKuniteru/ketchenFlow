@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/assets/css/pages/danh-muc/dat-hang/voucher-don-hang.css">
+
+{{> catalog/module-page
+    moduleName="voucher-don-hang"
+    apiBase="/api/mcs/v1/dm-voucher-don-hang"
+    title="Danh mục voucher đơn hàng"
+    searchPlaceholder="Tìm theo mã hoặc tên voucher..."
+    createButtonLabel="Thêm voucher đơn hàng"
+    createButtonId="btnCreateVoucherDonHang"
+    searchInputId="searchVoucherDonHang"
+    tableId="voucherDonHangTable"
+    tableBodyId="voucherDonHangTableBody"
+    paginationId="voucherDonHangPagination"
+    detailPanelId="voucherDonHangDetailPanel"
+    detailContentId="voucherDonHangDetailContent"
+    formId="voucherDonHangForm"
+    formPartial="catalog/forms/dat-hang/voucher-don-hang-form"
+    detailTitle="Thông tin voucher đơn hàng"
+    showEditButton=true
+    showActions=true
+    mobilePanelId="voucherDonHangMobilePanel"
+    columns=columns
+}}
+{{> scripts/catalog-page folder="dat-hang" page="voucher-don-hang"}}

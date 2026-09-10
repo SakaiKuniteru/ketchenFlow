@@ -970,6 +970,14 @@ async nhomSanPham(req, res, next) {
         next(error);
     }
 }
+
+async sanPham(req, res, next) {
+    return renderDanhMuc(req, res, { view: "pages/danh-muc/dat-hang/san-pham/index", title: "Danh mục sản phẩm", description: "Quản lý sản phẩm.", page: "Sản phẩm", activeSubmenu: "san-pham", columns: [textColumn("maSanPham", "Mã sản phẩm"), textColumn("tenSanPham", "Tên sản phẩm"), textColumn("tenNhomSanPham", "Nhóm sản phẩm"), textColumn("tenDonViTinh", "Đơn vị tính"), numberColumn("giaBan", "Giá bán"), booleanColumn("active", "Trạng thái")] });
+}
+
+async voucherDonHang(req, res, next) {
+    return renderDanhMuc(req, res, { view: "pages/danh-muc/dat-hang/vouchet-don-hang/index", title: "Danh mục voucher đơn hàng", description: "Quản lý voucher đơn hàng.", page: "Voucher đơn hàng", activeSubmenu: "voucher-don-hang", columns: [textColumn("maVoucher", "Mã voucher"), textColumn("tenVoucher", "Tên voucher"), numberColumn("giaTri", "Giá trị"), textColumn("phamViApDungText", "Phạm vi áp dụng"), booleanColumn("active", "Trạng thái")] });
+}
 }
 
 module.exports = new DanhMucWebController();

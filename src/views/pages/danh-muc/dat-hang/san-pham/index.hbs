@@ -1,0 +1,22 @@
+{{> catalog/module-page
+    moduleName="san-pham"
+    apiBase="/api/mcs/v1/dm-san-pham"
+    title="Danh mục sản phẩm"
+    searchPlaceholder="Tìm theo mã hoặc tên sản phẩm..."
+    createButtonLabel="Thêm sản phẩm"
+    createButtonId="btnCreateSanPham"
+    searchInputId="searchSanPham"
+    tableId="sanPhamTable"
+    tableBodyId="sanPhamTableBody"
+    paginationId="sanPhamPagination"
+    detailPanelId="sanPhamDetailPanel"
+    detailContentId="sanPhamDetailContent"
+    formId="sanPhamForm"
+    formPartial="catalog/forms/dat-hang/san-pham-form"
+    detailTitle="Thông tin sản phẩm"
+    showEditButton=true
+    showActions=true
+    mobilePanelId="sanPhamMobilePanel"
+    columns=columns
+}}
+{{> scripts/catalog-page folder="dat-hang" page="san-pham"}}

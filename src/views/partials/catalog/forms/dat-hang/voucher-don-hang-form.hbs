@@ -1,0 +1,255 @@
+<div class="detail-panel__section">
+    <h3 class="detail-panel__section-title">
+        Thông tin voucher đơn hàng
+    </h3>
+
+    <div class="catalog-form-grid">
+        {{> forms/input
+            id="maVoucher"
+            name="maVoucher"
+            label="Mã voucher"
+            placeholder=""
+            maxlength=50
+            required=true
+        }}
+
+        {{> forms/input
+            id="tenVoucher"
+            name="tenVoucher"
+            label="Tên voucher"
+            placeholder=""
+            maxlength=255
+            required=true
+        }}
+
+        {{> forms/select
+            id="loaiGiam"
+            name="loaiGiam"
+            label="Loại giảm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+            required=true
+        }}
+
+        {{> forms/number
+            id="giaTri"
+            name="giaTri"
+            label="Giá trị"
+            placeholder=""
+            suffix=""
+            min=0
+            step="any"
+            disabled=true
+            required=true
+        }}
+
+        {{> forms/number
+            id="giamToiDa"
+            name="giamToiDa"
+            label="Giảm tối đa"
+            placeholder=""
+            min=0
+            step="any"
+        }}
+
+        {{> forms/number
+            id="giaTriDonHangToiThieu"
+            name="giaTriDonHangToiThieu"
+            label="Đơn hàng tối thiểu"
+            placeholder=""
+            min=0
+            step="any"
+        }}
+
+        {{> forms/number
+            id="soLuongPhatHanh"
+            name="soLuongPhatHanh"
+            label="Số lượng phát hành"
+            placeholder=""
+            min=1
+            step=1
+            integer=true
+        }}
+
+        {{> forms/number
+            id="soLuotMoiNhanVien"
+            name="soLuotMoiNhanVien"
+            label="Lượt mỗi nhân viên"
+            placeholder=""
+            min=1
+            step=1
+            integer=true
+        }}
+
+        {{> forms/select
+            id="phamViApDung"
+            name="phamViApDung"
+            label="Phạm vi áp dụng"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+            required=true
+        }}
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <div
+        class="catalog-form-grid"
+        data-voucher-scope-wrapper="all"
+        hidden>
+
+        <div class="catalog-form-grid__full">
+            <div class="catalog-scope-message">
+                Áp dụng cho toàn bộ đơn hàng
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="catalog-form-grid"
+        data-voucher-scope-wrapper="nhomSanPhamId"
+        hidden>
+
+        {{> forms/select
+            id="nhomSanPhamId"
+            name="nhomSanPhamId"
+            label="Nhóm sản phẩm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+    </div>
+
+    <div
+        class="catalog-form-grid"
+        data-voucher-scope-wrapper="sanPhamId"
+        hidden>
+
+        {{> forms/select
+            id="sanPhamId"
+            name="sanPhamId"
+            label="Sản phẩm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <h3 class="detail-panel__section-title">
+        Đối tượng áp dụng
+    </h3>
+
+    <div class="catalog-form-grid">
+        {{> forms/select
+            id="coSoIds"
+            name="coSoIds"
+            label="Cơ sở"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+
+        {{> forms/select
+            id="phongBanIds"
+            name="phongBanIds"
+            label="Phòng ban"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+
+        {{> forms/select
+            id="chucVuIds"
+            name="chucVuIds"
+            label="Chức vụ"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+
+        {{> forms/select
+            id="nhanVienIds"
+            name="nhanVienIds"
+            label="Nhân viên"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder=""
+        }}
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <h3 class="detail-panel__section-title">
+        Thời gian áp dụng
+    </h3>
+
+    <div class="catalog-form-grid">
+        {{> forms/date
+            id="thoiGianBatDau"
+            name="thoiGianBatDau"
+            label="Thời gian bắt đầu"
+            placeholder=""
+            showTime=true
+            defaultTime="00:00:00"
+            required=true
+        }}
+
+        {{> forms/date
+            id="thoiGianKetThuc"
+            name="thoiGianKetThuc"
+            label="Thời gian kết thúc"
+            placeholder=""
+            showTime=true
+            defaultTime="23:59:59"
+            required=true
+        }}
+
+        {{> forms/textarea
+            id="moTa"
+            name="moTa"
+            label="Mô tả"
+            placeholder=""
+            maxlength=1000
+            rows=3
+            showCounter=true
+            fieldClass="catalog-form-grid__full"
+        }}
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <div class="voucher-flags-row">
+        {{> forms/checkbox
+            id="choPhepDungChung"
+            name="choPhepDungChung"
+            label="Cho phép dùng chung"
+            checked=true
+        }}
+
+        {{> forms/checkbox
+            id="tuDongApDung"
+            name="tuDongApDung"
+            label="Tự động áp dụng"
+            checked=true
+        }}
+
+        {{> forms/checkbox
+            id="active"
+            name="active"
+            label="Đang hoạt động"
+            checked=true
+        }}
+    </div>
+</div>

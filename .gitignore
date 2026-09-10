@@ -1,33 +1,33 @@
-# Environment
-.env
-.env.*
-!.env.example
+# # Environment
+# .env
+# .env.*
+# !.env.example
 
-# Dependencies
-node_modules/
+# # Dependencies
+# node_modules/
 
-# macOS
-.DS_Store
-**/.DS_Store
+# # macOS
+# .DS_Store
+# **/.DS_Store
 
-# Runtime data
-src/public/uploads/
-src/public/dl-bao-cao/
-src/public/bao-cao/
-dl-bao-cao/
+# # Runtime data
+# src/public/uploads/
+# src/public/dl-bao-cao/
+# src/public/bao-cao/
+# dl-bao-cao/
 
-# Logs
-*.log
-logs/
+# # Logs
+# *.log
+# logs/
 
-# Coverage and temporary files
-coverage/
-tmp/
-temp/
+# # Coverage and temporary files
+# coverage/
+# tmp/
+# temp/
 
-database/
+# database/
 
-docs/
-scripts/
+# docs/
+# scripts/
 
-kitchenflow_schemas.sql
+# kitchenflow_schemas.sql
