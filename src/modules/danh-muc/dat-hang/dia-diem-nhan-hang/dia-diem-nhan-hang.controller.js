@@ -20,7 +20,8 @@ class DiaDiemNhanHangController {
                 await diaDiemNhanHangService
                     .getTongHop(
                         req.user.nhanVienId,
-                        req.query
+                        req.query,
+                        req.authorizationPermissions
                     );
 
             return successResponse(
@@ -55,9 +56,9 @@ class DiaDiemNhanHangController {
                 await diaDiemNhanHangService
                     .getChiTiet(
                         id,
-                        req.user.nhanVienId
+                        req.user.nhanVienId,
+                        req.authorizationPermissions
                     );
-
             return successResponse(
                 res,
                 "Lấy chi tiết địa điểm nhận hàng thành công.",
@@ -86,7 +87,8 @@ class DiaDiemNhanHangController {
                 await diaDiemNhanHangService
                     .create(
                         req.user.nhanVienId,
-                        req.body
+                        req.body,
+                        req.authorizationPermissions
                     );
 
             return successResponse(
@@ -122,7 +124,8 @@ class DiaDiemNhanHangController {
                     .update(
                         id,
                         req.user.nhanVienId,
-                        req.body
+                        req.body,
+                        req.authorizationPermissions
                     );
 
             return successResponse(

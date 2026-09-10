@@ -37,7 +37,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     parseNhanVienId(
         nhanVienId
     ) {
@@ -63,6 +62,119 @@ class DiaDiemNhanHangService {
 
     }
 
+    hasPermission(
+        permissions,
+        code
+    ) {
+        return (
+            permissions instanceof Set &&
+            permissions.has(code)
+        );
+    }
+
+    parseNhanVienApDungId(
+        value
+    ) {
+        if (
+            value === undefined ||
+            value === null ||
+            value === ""
+        ) {
+            return null;
+        }
+
+        const id =
+            Number(value);
+
+        if (
+            !Number.isInteger(id) ||
+            id <= 0
+        ) {
+            throw new ApiError(
+                400,
+                "Nhân viên áp dụng không hợp lệ."
+            );
+        }
+
+        return id;
+    }
+
+    async validateNhanVienApDung(
+        nhanVienApDungId
+    ) {
+        if (nhanVienApDungId === null) {
+            return;
+        }
+
+        const tonTai =
+            await diaDiemNhanHangRepository
+                .existsNhanVien(
+                    nhanVienApDungId
+                );
+
+        if (!tonTai) {
+            throw new ApiError(
+                400,
+                "Nhân viên áp dụng không tồn tại hoặc đã ngừng hoạt động."
+            );
+        }
+    }
+
+    async apDungMacDinhKhiTao(
+        nhanVienId,
+        data
+    ) {
+        const daCoMacDinh =
+            await diaDiemNhanHangRepository
+                .coMacDinhDangHoatDong(
+                    nhanVienId
+                );
+
+        if (!daCoMacDinh) {
+            if (data.active !== true) {
+                throw new ApiError(
+                    400,
+                    "Địa điểm đầu tiên phải ở trạng thái hoạt động."
+                );
+            }
+
+            data.laMacDinh = true;
+        }
+    }
+
+    async validateMacDinhKhiCapNhat(
+        nhanVienId,
+        id,
+        diaDiemCu,
+        data
+    ) {
+        const dangLaMacDinh =
+            diaDiemCu.laMacDinh === true &&
+            diaDiemCu.active === true;
+
+        const boMacDinh =
+            data.active !== true ||
+            data.laMacDinh !== true;
+
+        if (
+            dangLaMacDinh &&
+            boMacDinh
+        ) {
+            const coMacDinhKhac =
+                await diaDiemNhanHangRepository
+                    .coMacDinhKhac(
+                        nhanVienId,
+                        id
+                    );
+
+            if (!coMacDinhKhac) {
+                throw new ApiError(
+                    400,
+                    "Phải giữ lại ít nhất một địa điểm mặc định."
+                );
+            }
+        }
+    }
 
     parseBooleanQuery(
         value,
@@ -97,7 +209,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     getThongTinLoaiDiaDiem(
         loaiDiaDiem
     ) {
@@ -126,7 +237,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     mapResponse(
         diaDiem
     ) {
@@ -145,7 +255,6 @@ class DiaDiemNhanHangService {
         };
 
     }
-
 
     normalizeQuery(
         query = {}
@@ -190,10 +299,10 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async getTongHop(
         nhanVienId,
-        query
+        query,
+        permissions
     ) {
 
         const idNhanVien =
@@ -209,7 +318,12 @@ class DiaDiemNhanHangService {
         const danhSach =
             await diaDiemNhanHangRepository
                 .getTongHop(
-                    idNhanVien,
+                    this.hasPermission(
+                        permissions,
+                        "Q002064"
+                    )
+                        ? null
+                        : idNhanVien,
                     boLoc
                 );
 
@@ -220,10 +334,10 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async getChiTiet(
         id,
-        nhanVienId
+        nhanVienId,
+        permissions
     ) {
 
         const diaDiemNhanHangId =
@@ -238,7 +352,16 @@ class DiaDiemNhanHangService {
             await diaDiemNhanHangRepository
                 .getChiTiet(
                     diaDiemNhanHangId,
-                    idNhanVien
+                    this.hasPermission(
+                        permissions,
+                        "Q002064"
+                    ) ||
+                    this.hasPermission(
+                        permissions,
+                        "Q002065"
+                    )
+                        ? null
+                        : idNhanVien
                 );
 
         if (!diaDiem) {
@@ -255,7 +378,6 @@ class DiaDiemNhanHangService {
         );
 
     }
-
 
     validateLoaiDiaDiem(
         loaiDiaDiem
@@ -279,7 +401,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async validateNhanVien(
         nhanVienId
     ) {
@@ -301,28 +422,27 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async validateTrungDuLieu(
         nhanVienId,
         data,
         excludeId = null
     ) {
 
-        const trungMa =
-            await diaDiemNhanHangRepository
-                .existsMaDiaDiem(
-                    nhanVienId,
-                    data.maDiaDiem,
-                    excludeId
+        if (data.maDiaDiem) {
+            const trungMa =
+                await diaDiemNhanHangRepository
+                    .existsMaDiaDiem(
+                        nhanVienId,
+                        data.maDiaDiem,
+                        excludeId
+                    );
+
+            if (trungMa) {
+                throw new ApiError(
+                    409,
+                    "Mã địa điểm đã tồn tại trong danh sách của bạn."
                 );
-
-        if (trungMa) {
-
-            throw new ApiError(
-                409,
-                "Mã địa điểm đã tồn tại trong danh sách của bạn."
-            );
-
+            }
         }
 
         const trungTen =
@@ -344,7 +464,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     validateMacDinh(
         data
     ) {
@@ -363,7 +482,6 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async create(
         nhanVienId,
         data
@@ -374,15 +492,29 @@ class DiaDiemNhanHangService {
                 nhanVienId
             );
 
+        const maDiaDiemNhap =
+            String(
+                data.maDiaDiem ?? ""
+            )
+                .trim()
+                .toUpperCase();
+
         const duLieuTao = {
             maDiaDiem:
-                data.maDiaDiem.trim(),
+                maDiaDiemNhap || null,
 
             tenDiaDiem:
-                data.tenDiaDiem.trim(),
+                String(data.tenDiaDiem || "")
+                    .trim(),
 
             diaChiChiTiet:
-                data.diaChiChiTiet.trim(),
+                String(data.diaChiChiTiet || "")
+                    .trim(),
+
+            nhanVienApDungId:
+                this.parseNhanVienApDungId(
+                    data.nhanVienApDungId
+                ),
 
             loaiDiaDiem:
                 data.loaiDiaDiem !== undefined
@@ -390,13 +522,10 @@ class DiaDiemNhanHangService {
                     : 20,
 
             laMacDinh:
-                data.laMacDinh !== undefined
-                    ? data.laMacDinh
-                    : false,
+                data.laMacDinh === true,
 
             ghiChu:
-                data.ghiChu?.trim() ||
-                null,
+                data.ghiChu?.trim() || null,
 
             thuTuHienThi:
                 data.thuTuHienThi !== undefined
@@ -417,6 +546,14 @@ class DiaDiemNhanHangService {
             duLieuTao.loaiDiaDiem
         );
 
+        await this.validateNhanVienApDung(
+            duLieuTao.nhanVienApDungId
+        );
+
+        await this.apDungMacDinhKhiTao(
+            idNhanVien,
+            duLieuTao
+        );
         this.validateMacDinh(
             duLieuTao
         );
@@ -451,26 +588,34 @@ class DiaDiemNhanHangService {
 
     }
 
-
     async update(
         id,
         nhanVienId,
-        data
+        data,
+        permissions
     ) {
 
         const diaDiemNhanHangId =
             this.parseId(id);
 
-        const idNhanVien =
+        const idNhanVienDangNhap =
             this.parseNhanVienId(
                 nhanVienId
+            );
+
+        const coQuyenSuaNguoiKhac =
+            this.hasPermission(
+                permissions,
+                "Q002065"
             );
 
         const diaDiem =
             await diaDiemNhanHangRepository
                 .getChiTiet(
                     diaDiemNhanHangId,
-                    idNhanVien
+                    coQuyenSuaNguoiKhac
+                        ? null
+                        : idNhanVienDangNhap
                 );
 
         if (!diaDiem) {
@@ -482,16 +627,43 @@ class DiaDiemNhanHangService {
 
         }
 
+        const laDuLieuCuaMinh =
+            Number(diaDiem.nhanVienId) ===
+            Number(idNhanVienDangNhap)
+
+        if (
+            !laDuLieuCuaMinh &&
+            !coQuyenSuaNguoiKhac
+        ) {
+            throw new ApiError(
+                403,
+                "Bạn không có quyền sửa địa điểm của tài khoản khác."
+            );
+        }
+
+        const idChuSoHuu =
+            Number(diaDiem.nhanVienId);
+
         const duLieuCapNhat = {
             maDiaDiem:
-                data.maDiaDiem !== undefined
-                    ? data.maDiaDiem.trim()
+                data.maDiaDiem !== undefined &&
+                String(data.maDiaDiem).trim()
+                    ? String(data.maDiaDiem)
+                        .trim()
+                        .toUpperCase()
                     : diaDiem.maDiaDiem,
 
             tenDiaDiem:
                 data.tenDiaDiem !== undefined
                     ? data.tenDiaDiem.trim()
                     : diaDiem.tenDiaDiem,
+
+            nhanVienApDungId:
+                data.nhanVienApDungId !== undefined
+                    ? this.parseNhanVienApDungId(
+                        data.nhanVienApDungId
+                    )
+                    : diaDiem.nhanVienApDungId ?? null,
 
             diaChiChiTiet:
                 data.diaChiChiTiet !== undefined
@@ -524,6 +696,17 @@ class DiaDiemNhanHangService {
                     : diaDiem.active
         };
 
+        await this.validateNhanVienApDung(
+            duLieuCapNhat.nhanVienApDungId
+        );
+
+        await this.validateMacDinhKhiCapNhat(
+            idChuSoHuu,
+            diaDiemNhanHangId,
+            diaDiem,
+            duLieuCapNhat
+        );
+
         if (
             duLieuCapNhat.active === false
         ) {
@@ -540,7 +723,7 @@ class DiaDiemNhanHangService {
         );
 
         await this.validateTrungDuLieu(
-            idNhanVien,
+            idChuSoHuu,
             duLieuCapNhat,
             diaDiemNhanHangId
         );
@@ -551,7 +734,7 @@ class DiaDiemNhanHangService {
                 await diaDiemNhanHangRepository
                     .update(
                         diaDiemNhanHangId,
-                        idNhanVien,
+                        idChuSoHuu,
                         duLieuCapNhat
                     );
 
@@ -580,10 +763,19 @@ class DiaDiemNhanHangService {
 
     }
 
-
     handleDatabaseError(
         error
     ) {
+
+        if (
+            error.constraint ===
+            "uq_dm_dia_diem_nhan_hang_ten"
+        ) {
+            throw new ApiError(
+                409,
+                "Tên địa điểm đã tồn tại trong danh sách của bạn."
+            );
+        }
 
         if (
             error?.code !==
@@ -620,6 +812,4 @@ class DiaDiemNhanHangService {
 
 }
 
-
-module.exports =
-    new DiaDiemNhanHangService();
+module.exports = new DiaDiemNhanHangService();

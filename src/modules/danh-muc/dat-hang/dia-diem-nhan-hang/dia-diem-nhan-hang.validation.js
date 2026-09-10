@@ -16,15 +16,13 @@ const maDiaDiemSchema =
     Joi.string()
         .trim()
         .max(50)
+        .allow("", null)
         .messages({
             "string.base":
                 "Mã địa điểm phải là chuỗi.",
-            "string.empty":
-                "Mã địa điểm không được để trống.",
             "string.max":
                 "Mã địa điểm không được vượt quá 50 ký tự."
         });
-
 
 const tenDiaDiemSchema =
     Joi.string()
@@ -39,6 +37,19 @@ const tenDiaDiemSchema =
                 "Tên địa điểm không được vượt quá 255 ký tự."
         });
 
+const nhanVienApDungIdSchema =
+    Joi.number()
+        .integer()
+        .positive()
+        .allow("", null)
+        .messages({
+            "number.base":
+                "Nhân viên áp dụng phải là số.",
+            "number.integer":
+                "Nhân viên áp dụng phải là số nguyên.",
+            "number.positive":
+                "Nhân viên áp dụng không hợp lệ."
+        });
 
 const diaChiChiTietSchema =
     Joi.string()
@@ -52,7 +63,6 @@ const diaChiChiTietSchema =
             "string.max":
                 "Địa chỉ chi tiết không được vượt quá 500 ký tự."
         });
-
 
 const loaiDiaDiemSchema =
     Joi.number()
@@ -69,14 +79,12 @@ const loaiDiaDiemSchema =
                 "Loại địa điểm không hợp lệ."
         });
 
-
 const laMacDinhSchema =
     Joi.boolean()
         .messages({
             "boolean.base":
                 "Trạng thái mặc định phải là true hoặc false."
         });
-
 
 const ghiChuSchema =
     Joi.string()
@@ -93,7 +101,6 @@ const ghiChuSchema =
                 "Ghi chú không được vượt quá 500 ký tự."
         });
 
-
 const thuTuHienThiSchema =
     Joi.number()
         .integer()
@@ -107,7 +114,6 @@ const thuTuHienThiSchema =
                 "Thứ tự hiển thị không được nhỏ hơn 0."
         });
 
-
 const activeSchema =
     Joi.boolean()
         .messages({
@@ -115,17 +121,12 @@ const activeSchema =
                 "Trạng thái phải là true hoặc false."
         });
 
-
 const createSchema =
     Joi.object({
 
         maDiaDiem:
             maDiaDiemSchema
-                .required()
-                .messages({
-                    "any.required":
-                        "Mã địa điểm là bắt buộc."
-                }),
+                .optional(),
 
         tenDiaDiem:
             tenDiaDiemSchema
@@ -134,6 +135,10 @@ const createSchema =
                     "any.required":
                         "Tên địa điểm là bắt buộc."
                 }),
+
+        nhanVienApDungId:
+            nhanVienApDungIdSchema
+                .optional(),
 
         diaChiChiTiet:
             diaChiChiTietSchema
@@ -175,6 +180,10 @@ const updateSchema =
 
         tenDiaDiem:
             tenDiaDiemSchema
+                .optional(),
+
+        nhanVienApDungId:
+            nhanVienApDungIdSchema
                 .optional(),
 
         diaChiChiTiet:

@@ -194,3 +194,30 @@ COMMIT;
 
 
 
+ALTER TABLE dm_dia_diem_nhan_hang
+ADD COLUMN IF NOT EXISTS nhan_vien_ap_dung_id INTEGER;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'fk_dm_dia_diem_nhan_hang_nhan_vien_ap_dung'
+    ) THEN
+        ALTER TABLE dm_dia_diem_nhan_hang
+        ADD CONSTRAINT fk_dm_dia_diem_nhan_hang_nhan_vien_ap_dung
+        FOREIGN KEY (nhan_vien_ap_dung_id)
+        REFERENCES dm_nhan_vien(id);
+    END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS
+idx_dm_dia_diem_nhan_hang_nhan_vien_ap_dung
+ON dm_dia_diem_nhan_hang(nhan_vien_ap_dung_id);
+
+CREATE UNIQUE INDEX IF NOT EXISTS
+uq_dm_dia_diem_nhan_hang_ten
+ON dm_dia_diem_nhan_hang(
+    nhan_vien_id,
+    LOWER(BTRIM(ten_dia_diem))
+);

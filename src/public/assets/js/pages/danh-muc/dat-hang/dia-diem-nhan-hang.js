@@ -5,11 +5,16 @@ document.addEventListener(
     () => {
         let catalog = null;
         let dsLoaiDiaDiem = [];
+        let dsNhanVien = [];
 
         initialize();
 
         async function initialize() {
-            await loadLoaiDiaDiem();
+            await Promise.all([
+                loadLoaiDiaDiem(),
+                loadNhanVien()
+            ]);
+
             await initializeCatalog();
         }
 
@@ -22,12 +27,16 @@ document.addEventListener(
                                 "dia-diem-nhan-hang",
 
                             permissionCodes: {
-                                view:
+                                view: [
                                     "Q002051",
+                                    "Q002064"
+                                ],
                                 create:
                                     "Q002052",
-                                update:
-                                    "Q002053"
+                                update: [
+                                    "Q002053",
+                                    "Q002065"
+                                ]
                             },
 
                             columns: [
@@ -54,6 +63,13 @@ document.addEventListener(
                                         true,
                                     filterable:
                                         true
+                                },
+                                {
+                                    key: "tenNhanVienApDung",
+                                    label: "Nhân viên áp dụng",
+                                    width: "220px",
+                                    sortable: true,
+                                    filterable: true
                                 },
                                 {
                                     key:
@@ -142,6 +158,7 @@ document.addEventListener(
                                     "",
                                 tenDiaDiem:
                                     "",
+                                nhanVienApDungId: getCurrentNhanVienId() || "",
                                 diaChiChiTiet:
                                     "",
                                 loaiDiaDiem:
@@ -161,13 +178,11 @@ document.addEventListener(
                                     label:
                                         "Mã địa điểm",
                                     required:
-                                        true,
+                                        false,
                                     maxLength:
                                         50,
                                     unique:
                                         true,
-                                    requiredMessage:
-                                        "Vui lòng nhập mã địa điểm.",
                                     maxLengthMessage:
                                         "Mã địa điểm không được vượt quá 50 ký tự.",
                                     uniqueMessage:
@@ -265,6 +280,8 @@ document.addEventListener(
                                         record?.tenDiaDiem ||
                                         "",
 
+                                    nhanVienApDungId: record?.nhanVienApDungId ?? "",
+
                                     diaChiChiTiet:
                                         record
                                             ?.diaChiChiTiet ||
@@ -319,6 +336,13 @@ document.addEventListener(
                                             ""
                                         )
                                             .trim(),
+
+                                    nhanVienApDungId:
+                                        formData.nhanVienApDungId === "" ||
+                                        formData.nhanVienApDungId === null ||
+                                        formData.nhanVienApDungId === undefined
+                                            ? null
+                                            : Number(formData.nhanVienApDungId),
 
                                     diaChiChiTiet:
                                         String(
@@ -402,6 +426,37 @@ document.addEventListener(
                                         ?.thuTuHienThi ??
                                     0
                                 );
+
+                                const root =
+                                    document.querySelector(
+                                        '[data-catalog-page][data-module="dia-diem-nhan-hang"]'
+                                    );
+
+                                const permissions =
+                                    new Set(
+                                        String(
+                                            root?.dataset.permissions || ""
+                                        )
+                                            .split(",")
+                                            .map(item =>
+                                                item.trim().toUpperCase()
+                                            )
+                                            .filter(Boolean)
+                                    );
+
+                                const coQuyenSuaNguoiKhac =
+                                    permissions.has("Q002065");
+
+                                renderNhanVien(
+                                    record?.nhanVienApDungId ??
+                                    getCurrentNhanVienId()
+                                );
+
+                                setSmartSelectDisabled(
+                                    "nhanVienApDungId",
+                                    mode === "view" ||
+                                    !coQuyenSuaNguoiKhac
+                                );
                             },
 
                             toolbarActions: [
@@ -426,6 +481,113 @@ document.addEventListener(
                     "Không thể tải danh mục địa điểm nhận hàng."
                 );
             }
+        }
+
+        function getCurrentNhanVienId() {
+            return Number(
+                window.MCS.storage
+                    ?.getCurrentUser?.()
+                    ?.nhanVienId || 0
+            );
+        }
+
+        async function loadNhanVien() {
+            try {
+                const result =
+                    await window.MCS.api.request(
+                        "/api/mcs/v1/dm-nhan-vien/tong-hop?active=true"
+                    );
+
+                const data =
+                    Array.isArray(result?.data)
+                        ? result.data
+                        : result?.data?.items || [];
+
+                dsNhanVien =
+                    data.filter(
+                        item => item?.active === true
+                    );
+
+                renderNhanVien("");
+            } catch (error) {
+                console.error(
+                    "Không thể tải danh sách nhân viên.",
+                    error
+                );
+
+                dsNhanVien = [];
+                renderNhanVien("");
+            }
+        }
+
+        function renderNhanVien(
+            selectedValue = ""
+        ) {
+            const select =
+                document.getElementById(
+                    "nhanVienApDungId"
+                );
+
+            if (!select) {
+                return;
+            }
+
+            const selected =
+                selectedValue === null ||
+                selectedValue === undefined
+                    ? ""
+                    : String(selectedValue);
+
+            select.innerHTML = "";
+
+            const emptyOption =
+                document.createElement("option");
+
+            emptyOption.value = "";
+            emptyOption.textContent = "";
+            emptyOption.selected =
+                selected === "";
+
+            select.appendChild(
+                emptyOption
+            );
+
+            dsNhanVien.forEach(item => {
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    String(item.id);
+
+                option.textContent =
+                    [
+                        item.maNhanVien,
+                        item.hoTen ||
+                        item.ten ||
+                        item.name
+                    ]
+                        .filter(Boolean)
+                        .join(" - ");
+
+                option.selected =
+                    String(item.id) === selected;
+
+                select.appendChild(option);
+            });
+
+            select.value = selected;
+
+            const root =
+                select.closest(
+                    "[data-smart-select]"
+                );
+
+            const instance =
+                window.MCS.smartSelect.initialize(
+                    root
+                );
+
+            instance?.refresh?.();
         }
 
         async function loadLoaiDiaDiem() {

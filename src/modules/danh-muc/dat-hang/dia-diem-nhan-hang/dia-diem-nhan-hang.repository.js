@@ -19,6 +19,15 @@ class DiaDiemNhanHangRepository {
             nhanVienId:
                 row.nhan_vien_id,
 
+            nhanVienApDungId:
+                row.nhan_vien_ap_dung_id,
+
+            maNhanVienApDung:
+                row.ma_nhan_vien_ap_dung,
+
+            tenNhanVienApDung:
+                row.ten_nhan_vien_ap_dung,
+
             maNhanVien:
                 row.ma_nhan_vien,
 
@@ -73,7 +82,6 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     getBaseQuery() {
 
         return `
@@ -82,6 +90,7 @@ class DiaDiemNhanHangRepository {
 
                 dd.id,
                 dd.nhan_vien_id,
+                dd.nhan_vien_ap_dung_id,
                 dd.ma_dia_diem,
                 dd.ten_dia_diem,
                 dd.dia_chi_chi_tiet,
@@ -101,12 +110,18 @@ class DiaDiemNhanHangRepository {
                 cs.ten_co_so,
 
                 nv.phong_ban_id,
-                pb.ten_phong_ban
+                pb.ten_phong_ban,
+
+                nva.ma_nhan_vien AS ma_nhan_vien_ap_dung,
+                nva.ho_ten AS ten_nhan_vien_ap_dung
 
             FROM dm_dia_diem_nhan_hang dd
 
             JOIN dm_nhan_vien nv
                 ON nv.id = dd.nhan_vien_id
+
+            LEFT JOIN dm_nhan_vien nva
+                ON nva.id = dd.nhan_vien_ap_dung_id
 
             LEFT JOIN dm_co_so cs
                 ON cs.id = nv.co_so_id
@@ -118,19 +133,29 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async getTongHop(
         nhanVienId,
         query = {}
     ) {
 
-        const values = [
-            nhanVienId
-        ];
+        const values = [];
 
         const conditions = [
-            "dd.nhan_vien_id = $1"
+            "1 = 1"
         ];
+
+        if (
+            nhanVienId !== null &&
+            nhanVienId !== undefined
+        ) {
+            values.push(
+                nhanVienId
+            );
+
+            conditions.push(
+                `dd.nhan_vien_id = $${values.length}`
+            );
+        }
 
         if (query.keyword) {
 
@@ -216,29 +241,45 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async getChiTiet(
         id,
-        nhanVienId,
+        nhanVienId = null,
         client = pool
     ) {
+
+        const values = [
+            id
+        ];
+
+        const conditions = [
+            "dd.id = $1"
+        ];
+
+        if (
+            nhanVienId !== null &&
+            nhanVienId !== undefined
+        ) {
+            values.push(
+                nhanVienId
+            );
+
+            conditions.push(
+                `dd.nhan_vien_id = $${values.length}`
+            );
+        }
 
         const sql = `
             ${this.getBaseQuery()}
 
-            WHERE dd.id = $1
-                AND dd.nhan_vien_id = $2
+            WHERE ${conditions.join(" AND ")}
 
             LIMIT 1
         `;
 
         const result =
             await client.query(
-                sql,
-                [
-                    id,
-                    nhanVienId
-                ]
+                    sql,
+                    values
             );
 
         if (
@@ -253,7 +294,6 @@ class DiaDiemNhanHangRepository {
         );
 
     }
-
 
     async getChiTietByMa(
         nhanVienId,
@@ -295,7 +335,6 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async existsNhanVien(
         nhanVienId
     ) {
@@ -322,7 +361,6 @@ class DiaDiemNhanHangRepository {
         return result.rows[0].exists;
 
     }
-
 
     async existsMaDiaDiem(
         nhanVienId,
@@ -374,7 +412,6 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async existsTenDiaDiem(
         nhanVienId,
         tenDiaDiem,
@@ -425,6 +462,144 @@ class DiaDiemNhanHangRepository {
 
     }
 
+    async khoaNhanVien(
+        nhanVienId,
+        client = pool
+    ) {
+        await client.query(
+            `
+                SELECT id
+                FROM dm_nhan_vien
+                WHERE id = $1
+                FOR UPDATE
+            `,
+            [nhanVienId]
+        );
+    }
+
+    async coMacDinhDangHoatDong(
+        nhanVienId,
+        client = pool
+    ) {
+        const result =
+            await client.query(
+                `
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM dm_dia_diem_nhan_hang
+                        WHERE nhan_vien_id = $1
+                            AND la_mac_dinh = TRUE
+                            AND active = TRUE
+                    ) AS "exists"
+                `,
+                [nhanVienId]
+            );
+
+        return result.rows[0].exists;
+    }
+
+    async coMacDinhKhac(
+        nhanVienId,
+        excludeId,
+        client = pool
+    ) {
+        const result =
+            await client.query(
+                `
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM dm_dia_diem_nhan_hang
+                        WHERE nhan_vien_id = $1
+                            AND id <> $2
+                            AND la_mac_dinh = TRUE
+                            AND active = TRUE
+                    ) AS "exists"
+                `,
+                [
+                    nhanVienId,
+                    excludeId
+                ]
+            );
+
+        return result.rows[0].exists;
+    }
+
+    async sinhMaDiaDiem(
+        nhanVienId,
+        client = pool
+    ) {
+        const employeeResult =
+            await client.query(
+                `
+                    SELECT ma_nhan_vien
+                    FROM dm_nhan_vien
+                    WHERE id = $1
+                        AND active = TRUE
+                    FOR UPDATE
+                `,
+                [nhanVienId]
+            );
+
+        if (
+            employeeResult.rows.length === 0
+        ) {
+            return null;
+        }
+
+        const maNhanVien =
+            String(
+                employeeResult.rows[0].ma_nhan_vien || ""
+            )
+                .trim()
+                .toUpperCase();
+
+        const prefix =
+            `${maNhanVien}_`;
+
+        const result =
+            await client.query(
+                `
+                    SELECT COALESCE(
+                        MAX(
+                            CASE
+                                WHEN RIGHT(ma_dia_diem, 5)
+                                    ~ '^[0-9]{5}$'
+                                THEN RIGHT(ma_dia_diem, 5)::INTEGER
+                                ELSE 0
+                            END
+                        ),
+                        0
+                    ) + 1 AS next_number
+                    FROM dm_dia_diem_nhan_hang
+                    WHERE nhan_vien_id = $1
+                        AND LEFT(
+                            ma_dia_diem,
+                            LENGTH($2)
+                        ) = $2
+                `,
+                [
+                    nhanVienId,
+                    prefix
+                ]
+            );
+
+        const soThuTu =
+            Number(
+                result.rows[0].next_number
+            );
+
+        if (
+            !Number.isInteger(soThuTu) ||
+            soThuTu > 99999
+        ) {
+            return null;
+        }
+
+        return (
+            prefix +
+            String(soThuTu).padStart(5, "0")
+        );
+    }
 
     async boMacDinhCu(
         nhanVienId,
@@ -467,7 +642,6 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async create(
         nhanVienId,
         data
@@ -482,22 +656,46 @@ class DiaDiemNhanHangRepository {
                 "BEGIN"
             );
 
-            if (
-                data.laMacDinh === true
-            ) {
+            await this.khoaNhanVien(
+                nhanVienId,
+                client
+            );
 
+            const maDiaDiem =
+                data.maDiaDiem ||
+                await this.sinhMaDiaDiem(
+                    nhanVienId,
+                    client
+                );
+
+            if (!maDiaDiem) {
+                throw new Error(
+                    "Không thể tự sinh mã địa điểm."
+                );
+            }
+
+            const daCoMacDinh =
+                await this.coMacDinhDangHoatDong(
+                    nhanVienId,
+                    client
+                );
+
+            const laMacDinh =
+                data.laMacDinh === true ||
+                !daCoMacDinh;
+
+            if (laMacDinh) {
                 await this.boMacDinhCu(
                     nhanVienId,
                     null,
                     client
                 );
-
             }
 
             const sql = `
                 INSERT INTO dm_dia_diem_nhan_hang (
-
                     nhan_vien_id,
+                    nhan_vien_ap_dung_id,
                     ma_dia_diem,
                     ten_dia_diem,
                     dia_chi_chi_tiet,
@@ -508,33 +706,23 @@ class DiaDiemNhanHangRepository {
                     active,
                     created_at,
                     updated_at
-
                 )
                 VALUES (
-
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5,
-                    $6,
-                    $7,
-                    $8,
-                    $9,
-                    NOW(),
-                    NOW()
-
+                    $1, $2, $3, $4, $5, $6,
+                    $7, $8, $9, $10,
+                    NOW(), NOW()
                 )
                 RETURNING id
             `;
 
             const values = [
                 nhanVienId,
-                data.maDiaDiem,
+                data.nhanVienApDungId || null,
+                maDiaDiem,
                 data.tenDiaDiem,
                 data.diaChiChiTiet,
                 data.loaiDiaDiem,
-                data.laMacDinh,
+                laMacDinh,
                 data.ghiChu,
                 data.thuTuHienThi,
                 data.active
@@ -571,7 +759,6 @@ class DiaDiemNhanHangRepository {
 
     }
 
-
     async update(
         id,
         nhanVienId,
@@ -603,24 +790,25 @@ class DiaDiemNhanHangRepository {
             const sql = `
                 UPDATE dm_dia_diem_nhan_hang
                 SET
-
-                    ma_dia_diem = $1,
-                    ten_dia_diem = $2,
-                    dia_chi_chi_tiet = $3,
-                    loai_dia_diem = $4,
-                    la_mac_dinh = $5,
-                    ghi_chu = $6,
-                    thu_tu_hien_thi = $7,
-                    active = $8,
+                    nhan_vien_ap_dung_id = $1,
+                    ma_dia_diem = $2,
+                    ten_dia_diem = $3,
+                    dia_chi_chi_tiet = $4,
+                    loai_dia_diem = $5,
+                    la_mac_dinh = $6,
+                    ghi_chu = $7,
+                    thu_tu_hien_thi = $8,
+                    active = $9,
                     updated_at = NOW()
 
-                WHERE id = $9
-                    AND nhan_vien_id = $10
+                WHERE id = $10
+                    AND nhan_vien_id = $11
 
                 RETURNING id
             `;
 
             const values = [
+                data.nhanVienApDungId || null,
                 data.maDiaDiem,
                 data.tenDiaDiem,
                 data.diaChiChiTiet,
@@ -676,9 +864,6 @@ class DiaDiemNhanHangRepository {
         }
 
     }
-
 }
 
-
-module.exports =
-    new DiaDiemNhanHangRepository();
+module.exports = new DiaDiemNhanHangRepository();

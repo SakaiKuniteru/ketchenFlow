@@ -714,6 +714,7 @@ class DanhMucWebController {
                 columns: [
                     textColumn("maDiaDiem", "Mã địa điểm", { width: "160px", className: "catalog-table__cell--center" }),
                     textColumn("tenDiaDiem", "Tên địa điểm", { width: "220px", className: "catalog-table__cell--center" }),
+                    textColumn("tenNhanVienApDung", "Tên nhân viên", { width: "220px", className: "catalog-table__cell--center" }),
                     textColumn("diaChiChiTiet", "Địa chỉ chi tiết", { width: "300px", className: "catalog-table__cell--center" }),
                     textColumn("thongTinLoaiDiaDiem.name", "Loại địa điểm", { width: "180px", className: "catalog-table__cell--center", }),
                     booleanColumn("laMacDinh", "Mặc định", { width: "130px", className: "catalog-table__cell--center" }),

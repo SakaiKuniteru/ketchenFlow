@@ -25,7 +25,7 @@ const router =
 router.get(
     "/tong-hop",
     authenticate,
-    authorize("Q000035"),
+    authorize("Q000035", "Q002064"),
     controller.getTongHop
 );
 
@@ -36,7 +36,7 @@ router.get(
     authorize(
         "Q002051",
         "Q002052",
-        "Q002053"
+        "Q002053", "Q002065"
     ),
     controller.getChiTiet
 );
@@ -59,12 +59,8 @@ router.post(
 router.patch(
     "/cap-nhat/:id",
     authenticate,
-    authorize(
-        "Q002053"
-    ),
-    validate(
-        updateSchema
-    ),
+    authorize("Q002053", "Q002065"),
+    validate(updateSchema),
     controller.update
 );
 
