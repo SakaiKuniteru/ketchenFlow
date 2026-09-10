@@ -2,7 +2,15 @@
 
 const Joi = require("joi");
 
-const ids = Joi.array()
+const {
+    loaiGiamVoucherDonHang,
+    phamViApDungVoucherDonHang
+} = require("../../../../constants/enums");
+
+const layDanhSachGiaTri = danhSach =>
+    danhSach.map(item => Number(item.value));
+
+const danhSachIdSchema = Joi.array()
     .items(
         Joi.number()
             .integer()
@@ -10,65 +18,177 @@ const ids = Joi.array()
     )
     .unique();
 
-const f = {
-    maVoucher: Joi.string().trim().max(50),
-    tenVoucher: Joi.string().trim().max(255),
-    moTa: Joi.string().trim().max(1000).allow("", null),
-    loaiGiam: Joi.number().integer().valid(10, 20, 30),
-    giaTri: Joi.number().positive(),
-    giamToiDa: Joi.number().min(0).allow(null),
-    giaTriDonHangToiThieu: Joi.number().min(0),
-    soLuongPhatHanh: Joi.number().integer().positive().allow(null),
-    soLuotMoiNhanVien: Joi.number().integer().positive().allow(null),
-    phamViApDung: Joi.number().integer().valid(10, 20, 30),
+const fields = {
+    maVoucher: Joi.string()
+        .trim()
+        .max(50),
+
+    tenVoucher: Joi.string()
+        .trim()
+        .max(255),
+
+    moTa: Joi.string()
+        .trim()
+        .max(1000)
+        .allow("", null),
+
+    loaiGiam: Joi.number()
+        .integer()
+        .valid(
+            ...layDanhSachGiaTri(
+                loaiGiamVoucherDonHang
+            )
+        ),
+
+    giaTri: Joi.number()
+        .positive(),
+
+    giamToiDa: Joi.number()
+        .min(0)
+        .allow(null),
+
+    giaTriDonHangToiThieu: Joi.number()
+        .min(0),
+
+    soLuongPhatHanh: Joi.number()
+        .integer()
+        .positive()
+        .allow(null),
+
+    soLuotMoiNhanVien: Joi.number()
+        .integer()
+        .positive()
+        .allow(null),
+
+    phamViApDung: Joi.number()
+        .integer()
+        .valid(
+            ...layDanhSachGiaTri(
+                phamViApDungVoucherDonHang
+            )
+        ),
+
     choPhepDungChung: Joi.boolean(),
+
     tuDongApDung: Joi.boolean(),
-    thoiGianBatDau: Joi.date().iso(),
-    thoiGianKetThuc: Joi.date().iso(),
+
+    thoiGianBatDau: Joi.date()
+        .iso(),
+
+    thoiGianKetThuc: Joi.date()
+        .iso(),
+
     active: Joi.boolean(),
-    nhomSanPhamIds: ids,
-    sanPhamIds: ids,
-    coSoIds: ids,
-    phongBanIds: ids,
-    chucVuIds: ids,
-    nhanVienIds: ids
+
+    nhomSanPhamIds: danhSachIdSchema,
+
+    sanPhamIds: danhSachIdSchema,
+
+    coSoIds: danhSachIdSchema,
+
+    phongBanIds: danhSachIdSchema,
+
+    chucVuIds: danhSachIdSchema,
+
+    nhanVienIds: danhSachIdSchema
 };
 
 const createSchema = Joi.object({
-    maVoucher: f.maVoucher.required(),
-    tenVoucher: f.tenVoucher.required(),
-    moTa: f.moTa.optional(),
-    loaiGiam: f.loaiGiam.required(),
-    giaTri: f.giaTri.required(),
-    giamToiDa: f.giamToiDa.optional(),
-    giaTriDonHangToiThieu: f.giaTriDonHangToiThieu.optional(),
-    soLuongPhatHanh: f.soLuongPhatHanh.optional(),
-    soLuotMoiNhanVien: f.soLuotMoiNhanVien.optional(),
-    phamViApDung: f.phamViApDung.required(),
-    choPhepDungChung: f.choPhepDungChung.optional(),
-    tuDongApDung: f.tuDongApDung.optional(),
-    thoiGianBatDau: f.thoiGianBatDau.required(),
-    thoiGianKetThuc: f.thoiGianKetThuc
-        .greater(
-            Joi.ref("thoiGianBatDau")
-        )
+    maVoucher: fields.maVoucher
         .required(),
-    active: f.active.optional(),
-    nhomSanPhamIds: f.nhomSanPhamIds.optional(),
-    sanPhamIds: f.sanPhamIds.optional(),
-    coSoIds: f.coSoIds.optional(),
-    phongBanIds: f.phongBanIds.optional(),
-    chucVuIds: f.chucVuIds.optional(),
-    nhanVienIds: f.nhanVienIds.optional()
+
+    tenVoucher: fields.tenVoucher
+        .required(),
+
+    moTa: fields.moTa
+        .optional(),
+
+    loaiGiam: fields.loaiGiam
+        .required(),
+
+    giaTri: fields.giaTri
+        .required(),
+
+    giamToiDa: fields.giamToiDa
+        .optional(),
+
+    giaTriDonHangToiThieu:
+        fields.giaTriDonHangToiThieu
+            .optional(),
+
+    soLuongPhatHanh:
+        fields.soLuongPhatHanh
+            .optional(),
+
+    soLuotMoiNhanVien:
+        fields.soLuotMoiNhanVien
+            .optional(),
+
+    phamViApDung: fields.phamViApDung
+        .required(),
+
+    choPhepDungChung:
+        fields.choPhepDungChung
+            .optional(),
+
+    tuDongApDung:
+        fields.tuDongApDung
+            .optional(),
+
+    thoiGianBatDau:
+        fields.thoiGianBatDau
+            .required(),
+
+    thoiGianKetThuc:
+        fields.thoiGianKetThuc
+            .greater(
+                Joi.ref("thoiGianBatDau")
+            )
+            .required(),
+
+    active: fields.active
+        .optional(),
+
+    nhomSanPhamIds:
+        fields.nhomSanPhamIds
+            .optional(),
+
+    sanPhamIds:
+        fields.sanPhamIds
+            .optional(),
+
+    coSoIds:
+        fields.coSoIds
+            .optional(),
+
+    phongBanIds:
+        fields.phongBanIds
+            .optional(),
+
+    chucVuIds:
+        fields.chucVuIds
+            .optional(),
+
+    nhanVienIds:
+        fields.nhanVienIds
+            .optional()
 });
 
 const updateSchema = Joi.object(
     Object.fromEntries(
-        Object.entries(f).map(
-            ([k, v]) => [k, v.optional()]
+        Object.entries(fields).map(
+            ([key, schema]) => [
+                key,
+                schema.optional()
+            ]
         )
     )
-).min(1);
+)
+    .min(1)
+    .messages({
+        "object.min":
+            "Phải truyền ít nhất một trường cần cập nhật."
+    });
 
 module.exports = {
     createSchema,

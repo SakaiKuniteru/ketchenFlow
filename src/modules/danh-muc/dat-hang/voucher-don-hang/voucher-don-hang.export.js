@@ -1,2 +1,109 @@
-// "use strict";
-// const repository=require("./voucher-don-hang.repository");const{createExportFile}=require("../../../../helpers/excel/excel-export");const{sendExcel}=require("../../../../helpers/excel/excel-response");function taoDongExport(x){return{id:x.id,maVoucher:x.maVoucher,tenVoucher:x.tenVoucher,moTa:x.moTa,loaiGiam:x.loaiGiam,giaTri:x.giaTri,giamToiDa:x.giamToiDa,giaTriDonHangToiThieu:x.giaTriDonHangToiThieu,soLuongPhatHanh:x.soLuongPhatHanh,soLuotMoiNhanVien:x.soLuotMoiNhanVien,phamViApDung:x.phamViApDung,choPhepDungChung:x.choPhepDungChung,tuDongApDung:x.tuDongApDung,thoiGianBatDau:x.thoiGianBatDau,thoiGianKetThuc:x.thoiGianKetThuc,nhomSanPhamIds:x.nhomSanPhamIds.join(","),sanPhamIds:x.sanPhamIds.join(","),coSoIds:x.coSoIds.join(","),phongBanIds:x.phongBanIds.join(","),chucVuIds:x.chucVuIds.join(","),nhanVienIds:x.nhanVienIds.join(","),active:x.active};}async function xuLyExport(query={}){const list=await repository.getTongHop(query),details=[];for(const item of list)details.push(await repository.getChiTiet(item.id));return createExportFile({maBaoCao:"dm_voucher_don_hang",headerRowNumber:3,templateRowNumber:5,dataStartRowNumber:5,data:details.map(taoDongExport)});}async function exportData(req,res,next){try{return sendExcel(res,await xuLyExport(req.query));}catch(error){return next(error);}}module.exports={exportData,xuLyExport,taoDongExport};
+"use strict";
+
+const {
+    createExportFile
+} = require(
+    "../../../../helpers/excel/excel-export"
+);
+
+const voucherDonHangRepository =
+    require("./voucher-don-hang.repository");
+
+const MA_BAO_CAO =
+    "dm_voucher_don_hang";
+
+const HEADER_ROW = 3;
+const TEMPLATE_ROW = 5;
+const DATA_START_ROW = 5;
+
+function joinIds(value) {
+    return Array.isArray(value)
+        ? value.join(",")
+        : "";
+}
+
+function mapExportItem(item) {
+    return {
+        id: item.id,
+        maVoucher: item.maVoucher,
+        tenVoucher: item.tenVoucher,
+        moTa: item.moTa,
+        loaiGiam: item.loaiGiam,
+        giaTri: item.giaTri,
+        giamToiDa: item.giamToiDa,
+        giaTriDonHangToiThieu:
+            item.giaTriDonHangToiThieu,
+        soLuongPhatHanh:
+            item.soLuongPhatHanh,
+        soLuotMoiNhanVien:
+            item.soLuotMoiNhanVien,
+        phamViApDung:
+            item.phamViApDung,
+        choPhepDungChung:
+            item.choPhepDungChung,
+        tuDongApDung:
+            item.tuDongApDung,
+        thoiGianBatDau:
+            item.thoiGianBatDau,
+        thoiGianKetThuc:
+            item.thoiGianKetThuc,
+        nhomSanPhamIds:
+            joinIds(item.nhomSanPhamIds),
+        sanPhamIds:
+            joinIds(item.sanPhamIds),
+        coSoIds:
+            joinIds(item.coSoIds),
+        phongBanIds:
+            joinIds(item.phongBanIds),
+        chucVuIds:
+            joinIds(item.chucVuIds),
+        nhanVienIds:
+            joinIds(item.nhanVienIds),
+        active:
+            item.active
+    };
+}
+
+async function exportVoucherDonHang(
+    query = {}
+) {
+    const danhSach =
+        await voucherDonHangRepository
+            .getTongHop(query);
+
+    const danhSachChiTiet =
+        await Promise.all(
+            danhSach.map(
+                item =>
+                    voucherDonHangRepository
+                        .getChiTiet(item.id)
+            )
+        );
+
+    return createExportFile({
+        maBaoCao:
+            MA_BAO_CAO,
+
+        headerRowNumber:
+            HEADER_ROW,
+
+        templateRowNumber:
+            TEMPLATE_ROW,
+
+        dataStartRowNumber:
+            DATA_START_ROW,
+
+        data:
+            danhSachChiTiet.map(
+                mapExportItem
+            )
+    });
+}
+
+module.exports = {
+    MA_BAO_CAO,
+    HEADER_ROW,
+    TEMPLATE_ROW,
+    DATA_START_ROW,
+    exportVoucherDonHang
+};
