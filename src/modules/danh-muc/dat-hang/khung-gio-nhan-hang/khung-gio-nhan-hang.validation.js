@@ -2,6 +2,35 @@ const Joi =
     require("joi");
 
 
+const soDonToiDaSchema = Joi.string()
+    .trim()
+    .pattern(
+        /^(?:0|[1-9]\d{0,11})(?:\.\d{1,5})?$/
+    )
+    .custom((value, helpers) => {
+        if (!/[1-9]/.test(value)) {
+            return helpers.error("any.invalid");
+        }
+
+        return value;
+    })
+    .allow(null)
+    .optional()
+    .messages({
+        "string.base":
+            "Số đơn tối đa phải được gửi dưới dạng chuỗi số chuẩn.",
+
+        "string.empty":
+            "Nếu không giới hạn, gửi số đơn tối đa là null.",
+
+        "string.pattern.base":
+            "Số đơn tối đa chỉ được có tối đa 12 số phần nguyên " +
+            "và 5 số phần thập phân, dùng dấu chấm thập phân.",
+
+        "any.invalid":
+            "Số đơn tối đa phải lớn hơn 0."
+    });
+
 const timeSchema =
     Joi.string()
         .trim()
@@ -96,22 +125,7 @@ const createSchema =
                         "Giờ kết thúc là bắt buộc."
                 }),
 
-        soDonToiDa:
-            Joi.number()
-                .integer()
-                .positive()
-                .allow(null)
-                .optional()
-                .messages({
-                    "number.base":
-                        "Số đơn tối đa phải là số.",
-
-                    "number.integer":
-                        "Số đơn tối đa phải là số nguyên.",
-
-                    "number.positive":
-                        "Số đơn tối đa phải lớn hơn 0."
-                }),
+        soDonToiDa: soDonToiDaSchema,
 
         active:
             Joi.boolean()
@@ -183,22 +197,7 @@ const updateSchema =
             timeSchema
                 .optional(),
 
-        soDonToiDa:
-            Joi.number()
-                .integer()
-                .positive()
-                .allow(null)
-                .optional()
-                .messages({
-                    "number.base":
-                        "Số đơn tối đa phải là số.",
-
-                    "number.integer":
-                        "Số đơn tối đa phải là số nguyên.",
-
-                    "number.positive":
-                        "Số đơn tối đa phải lớn hơn 0."
-                }),
+        soDonToiDa: soDonToiDaSchema,
 
         active:
             Joi.boolean()

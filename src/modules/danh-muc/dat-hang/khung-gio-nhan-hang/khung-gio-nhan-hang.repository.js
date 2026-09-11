@@ -17,9 +17,9 @@ class KhungGioNhanHangRepository {
         const soDonToiDa =
             row.so_don_toi_da !== null &&
             row.so_don_toi_da !== undefined
-                ? Number(
-                    row.so_don_toi_da
-                )
+                ? String(row.so_don_toi_da)
+                    .replace(/(\.\d*?)0+$/, "$1")
+                    .replace(/\.$/, "")
                 : null;
 
         const soDonDaDat =

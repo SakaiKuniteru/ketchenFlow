@@ -16,6 +16,8 @@ document.addEventListener(
             ]);
 
             await initializeCatalog();
+
+            bindSoDonInput();
         }
 
         async function initializeCatalog() {
@@ -138,10 +140,18 @@ document.addEventListener(
                                     className:
                                         "catalog-table__cell--right",
                                     render(value) {
-                                        return value === null ||
-                                            value === undefined
-                                            ? "Không giới hạn"
-                                            : value;
+                                        if (
+                                            value === null ||
+                                            value === undefined ||
+                                            value === ""
+                                        ) {
+                                            return "Không giới hạn";
+                                        }
+
+                                        return window.MCS.numberInput.formatValue(
+                                            value,
+                                            false
+                                        );
                                     }
                                 },
                                 {
@@ -358,9 +368,8 @@ document.addEventListener(
                                         ),
 
                                     soDonToiDa:
-                                        getNumberValue(
-                                            "soDonToiDa"
-                                        ),
+                                        window.MCS.numberInput
+                                            .normalizeValue(formData.soDonToiDa) || null,
 
                                     active:
                                         formData.active ===
@@ -458,18 +467,20 @@ document.addEventListener(
                     "Giờ kết thúc phải lớn hơn giờ bắt đầu.";
             }
 
+            const soDonToiDa = formData.soDonToiDa;
+
             if (
-                formData.soDonToiDa !==
-                    null &&
+                soDonToiDa !== null &&
                 (
-                    !Number.isInteger(
-                        formData.soDonToiDa
+                    !/^(?:0|[1-9]\d{0,11})(?:\.\d{1,5})?$/.test(
+                        soDonToiDa
                     ) ||
-                    formData.soDonToiDa <= 0
+                    !/[1-9]/.test(soDonToiDa)
                 )
             ) {
                 errors.soDonToiDa =
-                    "Số đơn tối đa phải là số nguyên lớn hơn 0 hoặc để trống.";
+                    "Số đơn tối đa phải lớn hơn 0, tối đa 12 số phần nguyên " +
+                    "và 5 số sau dấu phẩy; hoặc để trống.";
             }
 
             const currentId =
@@ -880,6 +891,61 @@ document.addEventListener(
             instance?.setValue?.(
                 value ?? ""
             );
+        }
+
+        function limitSoDonInput(value) {
+            const raw = String(value ?? "")
+                .replace(/\s/g, "");
+
+            const commaIndex = raw.indexOf(",");
+
+            const integerPart = (
+                commaIndex < 0
+                    ? raw
+                    : raw.slice(0, commaIndex)
+            )
+                .replace(/\D/g, "")
+                .replace(/^0+(?=\d)/, "")
+                .slice(0, 12);
+
+            const decimalPart = commaIndex < 0
+                ? null
+                : raw.slice(commaIndex + 1)
+                    .replace(/\D/g, "")
+                    .slice(0, 5);
+
+            const displayValue = decimalPart === null
+                ? integerPart
+                : `${integerPart || "0"},${decimalPart}`;
+
+            return window.MCS.numberInput.formatInputValue(
+                displayValue,
+                false,
+                false
+            );
+        }
+
+        function bindSoDonInput() {
+            const input = document.getElementById("soDonToiDa");
+
+            if (!input || input.dataset.soDonBound === "true") {
+                return;
+            }
+
+            // Khởi tạo bộ định dạng chung trước khi gắn xử lý riêng.
+            window.MCS.numberInput.initialize(input);
+            input.dataset.soDonBound = "true";
+
+            function applyLimit() {
+                const formatted = limitSoDonInput(input.value);
+
+                if (input.value !== formatted) {
+                    input.value = formatted;
+                }
+            }
+
+            input.addEventListener("input", applyLimit);
+            input.addEventListener("blur", applyLimit);
         }
     }
 );

@@ -221,3 +221,8 @@ ON dm_dia_diem_nhan_hang(
     nhan_vien_id,
     LOWER(BTRIM(ten_dia_diem))
 );
+
+ALTER TABLE public.dm_khung_gio_nhan_hang
+ALTER COLUMN so_don_toi_da
+TYPE numeric(18,6)
+USING so_don_toi_da::numeric(18,6);
