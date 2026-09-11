@@ -41,6 +41,9 @@ class GioHangService {
     async tinhGioHang(data, user, client = pool, lockVoucher = false) {
         const profile = await this.getNhanVien(user.nhanVienId, client);
         const coSoId = Number(data.coSoId || profile.coSoId);
+        if (coSoId !== Number(profile.coSoId)) {
+            throw new ApiError(403, 'Bạn chỉ được đặt hàng tại cơ sở của mình.');
+        }
         const ids = [...new Set(data.items.map((item) => Number(item.sanPhamId)))];
         const products = await catalogRepository.getSanPhamDatHang(coSoId, ids, client);
 
@@ -98,7 +101,8 @@ class GioHangService {
             client,
             lockVoucher
         );
-        const totals = tinhTongTien(items, voucher, Number(data.phiDichVu || 0));
+        // Phí dịch vụ do hệ thống quyết định, không lấy số tiền từ trình duyệt.
+        const totals = tinhTongTien(items, voucher, 0);
 
         return { coSoId, items, voucher, ...totals };
     }

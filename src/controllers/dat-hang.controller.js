@@ -4,7 +4,7 @@ const { renderPage } = require('../utils/render-page.util');
 
 function renderOrderPage(req, res, view, options = {}) {
     return renderPage(req, res, view, {
-        layout: 'order',
+        layout: 'app',
         activeMenu: 'dat-hang',
         orderFlowPage: true,
         orderScript: '/assets/js/pages/dat-hang/order-flow.js',

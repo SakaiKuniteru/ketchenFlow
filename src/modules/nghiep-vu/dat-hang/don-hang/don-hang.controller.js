@@ -66,6 +66,7 @@ const controller = new DonHangController();
 controller.xacNhan = controller.action(TRANG_THAI_DON_HANG.DANG_CHUAN_BI, 'XAC_NHAN_DON_HANG');
 controller.tuChoi = controller.action(TRANG_THAI_DON_HANG.TU_CHOI, 'TU_CHOI_DON_HANG');
 controller.huy = controller.action(TRANG_THAI_DON_HANG.DA_HUY, 'HUY_DON_HANG');
+controller.huyNhaAn = controller.action(TRANG_THAI_DON_HANG.DA_HUY, 'NHA_AN_HUY_DON_HANG');
 controller.sanSangGiao = controller.action(TRANG_THAI_DON_HANG.SAN_SANG_GIAO, 'SAN_SANG_GIAO');
 controller.batDauGiao = controller.action(TRANG_THAI_DON_HANG.DANG_GIAO, 'BAT_DAU_GIAO');
 controller.hoanThanh = controller.action(TRANG_THAI_DON_HANG.HOAN_THANH, 'HOAN_THANH_DON_HANG');

@@ -1,4 +1,17 @@
-<link rel='stylesheet' href='/assets/css/pages/dat-hang/order-detail.css' />
-<div class='order-page' data-order-page='my-order-detail' data-order-id='{{orderId}}'><div
-        data-my-order-detail
-    ></div></div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="my-order-detail"
+    orderId=orderId
+}}
+    {{> dat-hang/dung-chung
+        type="page-header"
+        title="Chi tiết đơn hàng"
+        description="Thông tin đơn hàng, thanh toán và tiến trình xử lý."
+    }}
+
+    <div data-order-detail>
+        {{> dat-hang/dung-chung type="loading"}}
+    </div>
+
+    {{> dat-hang/chi-tiet type="dialog"}}
+{{/dat-hang/dung-chung}}

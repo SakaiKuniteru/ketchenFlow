@@ -3,6 +3,9 @@
 window.MCS = window.MCS || {};
 
 window.MCS.navigationItems = [
+    { label: 'Đặt món', group: 'Đặt hàng', url: '/dat-hang/dat-mon' },
+    { label: 'Đơn hàng của tôi', group: 'Đặt hàng', url: '/dat-hang/danh-sach-don-hang-cua-toi' },
+    { label: 'Nhà ăn nhận đơn', group: 'Đặt hàng', url: '/dat-hang/nhan-don-hang', permission: 'Q002031' },
     {
         label: 'Tổng quan',
         group: 'Trang chủ',

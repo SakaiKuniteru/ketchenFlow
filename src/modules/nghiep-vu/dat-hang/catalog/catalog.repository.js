@@ -67,8 +67,6 @@ class CatalogRepository {
                     sp.nhom_san_pham_id AS "nhomSanPhamId",
                     nsp.ten_nhom_san_pham AS "tenNhomSanPham",
                     nsp.loai_san_pham AS "loaiSanPham",
-                    sp.mon_an_id AS "monAnId",
-                    ma.ten_mon_an AS "tenMonAn",
                     sp.don_vi_tinh_id AS "donViTinhId",
                     dvt.ten_don_vi_tinh AS "tenDonViTinh",
                     dvt.ky_hieu AS "kyHieuDonVi",
@@ -84,8 +82,6 @@ class CatalogRepository {
                 FROM dm_san_pham sp
                 JOIN dm_nhom_san_pham nsp
                     ON nsp.id = sp.nhom_san_pham_id
-                LEFT JOIN dm_mon_an ma
-                    ON ma.id = sp.mon_an_id
                 LEFT JOIN dm_don_vi_tinh dvt
                     ON dvt.id = sp.don_vi_tinh_id
                 LEFT JOIN ct_san_pham_co_so csp
@@ -150,18 +146,14 @@ class CatalogRepository {
     }
 
     async getThongTinCheckout(coSoId, nhanVienId) {
-        const [profile, locations, slots, groups] = await Promise.all([
+        const [profile, locations, groups] = await Promise.all([
             pool.query(
                 `SELECT nv.id AS "nhanVienId", nv.ho_ten AS "hoTen", nv.so_dien_thoai AS "soDienThoai", nv.phong_ban_id AS "phongBanId", pb.ten_phong_ban AS "tenPhongBan", nv.co_so_id AS "coSoId", cs.ten_co_so AS "tenCoSo" FROM dm_nhan_vien nv LEFT JOIN dm_phong_ban pb ON pb.id = nv.phong_ban_id LEFT JOIN dm_co_so cs ON cs.id = nv.co_so_id WHERE nv.id = $1`,
                 [nhanVienId]
             ),
             pool.query(
-                `SELECT id, ma_dia_diem AS "maDiaDiem", ten_dia_diem AS "tenDiaDiem", mo_ta_dia_chi AS "moTaDiaChi" FROM dm_dia_diem_nhan_hang WHERE co_so_id = $1 AND active = TRUE ORDER BY thu_tu_hien_thi, ten_dia_diem`,
-                [coSoId]
-            ),
-            pool.query(
-                `SELECT id, ma_khung_gio AS "maKhungGio", ten_khung_gio AS "tenKhungGio", gio_bat_dau AS "gioBatDau", gio_ket_thuc AS "gioKetThuc", han_dat_truoc_phut AS "hanDatTruocPhut", so_don_toi_da AS "soDonToiDa" FROM dm_khung_gio_nhan_hang WHERE co_so_id = $1 AND active = TRUE ORDER BY gio_bat_dau`,
-                [coSoId]
+                `SELECT id, ma_dia_diem AS "maDiaDiem", ten_dia_diem AS "tenDiaDiem", dia_chi_chi_tiet AS "moTaDiaChi", la_mac_dinh AS "laMacDinh" FROM dm_dia_diem_nhan_hang WHERE nhan_vien_id = $1 AND active = TRUE ORDER BY la_mac_dinh DESC, thu_tu_hien_thi, ten_dia_diem`,
+                [nhanVienId]
             ),
             pool.query(
                 `SELECT id, ma_nhom_san_pham AS "maNhomSanPham", ten_nhom_san_pham AS "tenNhomSanPham", loai_san_pham AS "loaiSanPham" FROM dm_nhom_san_pham WHERE active = TRUE ORDER BY thu_tu_hien_thi, ten_nhom_san_pham`
@@ -171,7 +163,6 @@ class CatalogRepository {
         return {
             nguoiDat: profile.rows[0] || null,
             diaDiemNhanHang: locations.rows,
-            khungGioNhanHang: slots.rows,
             nhomSanPham: groups.rows
         };
     }

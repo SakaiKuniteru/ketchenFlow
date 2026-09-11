@@ -1,0 +1,414 @@
+{{#if (eq type "information")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Thông tin đơn hàng"
+        icon="fa-solid fa-receipt"
+    }}
+        <dl class="order-info-list order-info-list--two">
+            <div>
+                <dt>Mã đơn</dt>
+                <dd>{{maDonHang}}</dd>
+            </div>
+
+            <div>
+                <dt>Thời gian đặt</dt>
+                <dd>{{dateTime createdAt}}</dd>
+            </div>
+
+            <div>
+                <dt>Trạng thái</dt>
+                <dd>
+                    {{> dat-hang/dung-chung type="status"}}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Người xử lý</dt>
+                <dd>
+                    {{#if nguoiXuLy}}
+                        {{nguoiXuLy.hoTen}}
+                    {{else}}
+                        Chưa tiếp nhận
+                    {{/if}}
+                </dd>
+            </div>
+        </dl>
+    {{/dat-hang/dung-chung}}
+
+{{else if (eq type "receiver")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Thông tin giao nhận"
+        icon="fa-solid fa-location-dot"
+    }}
+        <dl class="order-info-list">
+            <div>
+                <dt>Người đặt</dt>
+                <dd>{{nguoiDat.hoTen}}</dd>
+            </div>
+
+            <div>
+                <dt>Bộ phận</dt>
+                <dd>{{phongBan.tenPhongBan}}</dd>
+            </div>
+
+            <div>
+                <dt>Đặt hộ</dt>
+                <dd>
+                    {{#if datHo}}Có{{else}}Không{{/if}}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Người nhận</dt>
+                <dd>{{nguoiNhan.hoTen}}</dd>
+            </div>
+
+            <div>
+                <dt>Điện thoại</dt>
+                <dd>{{nguoiNhan.soDienThoai}}</dd>
+            </div>
+
+            <div>
+                <dt>Địa điểm</dt>
+                <dd>
+                    {{diaDiemNhan.tenDiaDiem}}
+                    <br>
+                    {{diaDiemNhan.diaChi}}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Thời gian nhận</dt>
+                <dd>{{deliveryTime}}</dd>
+            </div>
+
+            <div>
+                <dt>Ghi chú</dt>
+                <dd class="order-preserve-lines">
+                    {{#if ghiChu}}
+                        {{ghiChu}}
+                    {{else}}
+                        Không có ghi chú
+                    {{/if}}
+                </dd>
+            </div>
+        </dl>
+    {{/dat-hang/dung-chung}}
+
+{{else if (eq type "items")}}
+
+    <div class="order-table-wrap">
+        <table class="order-items">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Món / Dịch vụ</th>
+                    <th>Loại</th>
+                    <th>SL</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each items}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+
+                        <td>
+                            <div class="order-item-product">
+                                <img
+                                    src="{{imageUrl hinhAnh}}"
+                                    alt="{{tenSanPham}}"
+                                >
+
+                                <strong>{{tenSanPham}}</strong>
+                            </div>
+
+                            {{#if ghiChu}}
+                                <small>{{ghiChu}}</small>
+                            {{/if}}
+                        </td>
+
+                        <td>
+                            <span class="order-product-card__tag">
+                                {{tenNhomSanPham}}
+                            </span>
+                        </td>
+
+                        <td>{{number soLuong}}</td>
+                        <td>{{money donGia}}</td>
+                        <td>
+                            <strong>{{money thanhTien}}</strong>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="order-help">
+        {{items.length}} loại · {{number quantity}} sản phẩm
+    </p>
+
+{{else if (eq type "payment")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Thanh toán"
+        icon="fa-solid fa-credit-card"
+    }}
+        <dl class="order-info-list">
+            <div>
+                <dt>Phương thức</dt>
+                <dd>{{paymentName phuongThucThanhToan}}</dd>
+            </div>
+
+            <div>
+                <dt>Trạng thái</dt>
+                <dd>
+                    {{> dat-hang/dung-chung type="payment-status"}}
+                </dd>
+            </div>
+
+            {{#each vouchers}}
+                <div>
+                    <dt>Voucher</dt>
+                    <dd class="order-text-success">
+                        {{maVoucher}} · −{{money soTienGiam}}
+                    </dd>
+                </div>
+            {{/each}}
+        </dl>
+
+        {{#with tien}}
+            {{> dat-hang/gio-hang type="totals"}}
+        {{/with}}
+
+        {{#if canPay}}
+            <div class="order-payment-actions">
+                <button
+                    type="button"
+                    class="order-button order-button--outline"
+                    data-payment-create
+                >
+                    {{#if isQr}}
+                        Xem / tạo mã QR
+                    {{else}}
+                        Khởi tạo thanh toán
+                    {{/if}}
+                </button>
+            </div>
+        {{/if}}
+
+        <div data-payment-result></div>
+    {{/dat-hang/dung-chung}}
+
+{{else if (eq type "actions")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Xử lý đơn hàng"
+        icon="fa-solid fa-gear"
+    }}
+        <div class="order-action-row">
+            {{#each actions}}
+                <button
+                    type="button"
+                    class="order-button order-button--{{theme}}"
+                    data-order-action="{{action}}"
+                >
+                    <i class="fa-solid {{icon}}"></i>
+                    {{label}}
+                </button>
+            {{/each}}
+
+            {{#if phoneLink}}
+                <a
+                    class="order-button order-button--outline"
+                    href="{{phoneLink}}"
+                >
+                    <i class="fa-solid fa-phone"></i>
+                    Liên hệ người nhận
+                </a>
+            {{/if}}
+        </div>
+
+        {{#if actionHint}}
+            <p class="order-notice">
+                {{actionHint}}
+            </p>
+        {{/if}}
+    {{/dat-hang/dung-chung}}
+
+{{else if (eq type "timeline")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Theo dõi đơn hàng"
+        icon="fa-solid fa-truck"
+    }}
+        {{#if lyDoHuy}}
+            <p class="order-notice order-notice--danger">
+                {{lyDoHuy}}
+            </p>
+        {{/if}}
+
+        <ol class="order-progress">
+            {{#each progress}}
+                <li class="{{className}}">
+                    <span>
+                        <i class="fa-solid {{icon}}"></i>
+                    </span>
+
+                    <strong>{{label}}</strong>
+                    <small>{{description}}</small>
+                </li>
+            {{/each}}
+        </ol>
+    {{/dat-hang/dung-chung}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Lịch sử cập nhật"
+        icon="fa-regular fa-clock"
+    }}
+        <ol class="order-history">
+            {{#each history}}
+                <li>
+                    <span class="order-history__dot"></span>
+
+                    <div>
+                        <time>{{dateTime createdAt}}</time>
+                        <strong>
+                            {{#if noiDung}}
+                                {{noiDung}}
+                            {{else}}
+                                {{tenTrangThaiMoi}}
+                            {{/if}}
+                        </strong>
+                        <small>{{tenNguoiThucHien}}</small>
+                    </div>
+                </li>
+            {{else}}
+                <li>Chưa có lịch sử cập nhật.</li>
+            {{/each}}
+        </ol>
+    {{/dat-hang/dung-chung}}
+
+{{else if (eq type "header")}}
+
+    {{#if completed}}
+        <section class="order-complete-banner">
+            <span class="order-complete-banner__icon">
+                <i class="fa-solid fa-check"></i>
+            </span>
+
+            <div>
+                <h2>Đặt hàng thành công</h2>
+
+                <p>
+                    Đơn {{maDonHang}} đã được gửi tới nhà ăn.
+                    Bạn có thể theo dõi tiến trình bên dưới.
+                </p>
+
+                <div class="order-action-row">
+                    <a
+                        href="/dat-hang/dat-mon"
+                        class="order-button order-button--outline"
+                    >
+                        Tiếp tục mua hàng
+                    </a>
+
+                    <a
+                        href="/dat-hang/danh-sach-don-hang-cua-toi"
+                        class="order-button order-button--primary"
+                    >
+                        Danh sách đơn hàng
+                    </a>
+                </div>
+            </div>
+        </section>
+    {{/if}}
+
+    {{> dat-hang/chi-tiet type="information"}}
+
+{{else if (eq type "detail")}}
+
+    <div class="order-detail-layout">
+        <main>
+            {{> dat-hang/chi-tiet type="header"}}
+            {{> dat-hang/chi-tiet type="timeline"}}
+
+            {{#> dat-hang/dung-chung
+                type="card"
+                title="Món đã đặt"
+                icon="fa-solid fa-utensils"
+            }}
+                {{> dat-hang/chi-tiet type="items"}}
+            {{/dat-hang/dung-chung}}
+        </main>
+
+        <aside>
+            {{> dat-hang/chi-tiet type="receiver"}}
+            {{> dat-hang/chi-tiet type="payment"}}
+            {{> dat-hang/chi-tiet type="actions"}}
+        </aside>
+    </div>
+
+{{else if (eq type "dialog")}}
+
+    <dialog class="order-dialog" data-order-action-dialog>
+        <form data-order-action-form novalidate>
+            <header>
+                <h2 data-action-title>
+                    Xác nhận thao tác
+                </h2>
+
+                <button
+                    type="button"
+                    class="order-icon-button"
+                    data-dialog-close
+                    aria-label="Đóng"
+                >
+                    ×
+                </button>
+            </header>
+
+            <p data-action-description></p>
+
+            {{> forms/textarea
+                id="orderActionReason"
+                name="lyDo"
+                label="Lý do hủy / từ chối"
+                maxlength=500
+                showCounter=true
+                rows=3
+            }}
+
+            {{> forms/form-error}}
+
+            <div class="order-dialog__actions">
+                <button
+                    type="button"
+                    class="order-button order-button--outline"
+                    data-dialog-close
+                >
+                    Quay lại
+                </button>
+
+                <button
+                    type="submit"
+                    class="order-button order-button--primary"
+                    data-action-confirm
+                >
+                    Xác nhận
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+{{/if}}

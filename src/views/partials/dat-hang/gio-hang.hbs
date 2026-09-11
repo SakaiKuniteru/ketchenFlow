@@ -1,0 +1,165 @@
+{{#if (eq type "empty")}}
+
+    {{> dat-hang/dung-chung
+        type="empty"
+        icon="fa-cart-shopping"
+        title="Giỏ hàng đang trống"
+        description="Chọn món yêu thích để bắt đầu đặt hàng."
+    }}
+
+{{else if (eq type "note")}}
+
+    {{> forms/textarea
+        id="orderCartNote"
+        name="ghiChu"
+        label="Ghi chú đơn hàng (tùy chọn)"
+        value=note
+        placeholder="Ví dụ: ít đá, không đường..."
+        maxlength=1000
+        showCounter=true
+        rows=3
+    }}
+
+{{else if (eq type "totals")}}
+
+    {{> dat-hang/dung-chung
+        type="money-row"
+        label="Tạm tính"
+        value=tamTinh
+    }}
+
+    {{#if tongMienGiam}}
+        {{> dat-hang/dung-chung
+            type="money-row"
+            label="Giảm giá"
+            value=tongMienGiam
+            discount=true
+        }}
+    {{/if}}
+
+    {{> dat-hang/dung-chung
+        type="money-row"
+        label="Phí dịch vụ"
+        value=phiDichVu
+    }}
+
+    {{> dat-hang/dung-chung
+        type="money-row"
+        label="Tổng cộng"
+        value=tongThanhToan
+        grand=true
+    }}
+
+{{else if (eq type "item")}}
+
+    <div class="order-cart-item">
+        <img
+            src="{{imageUrl hinhAnh}}"
+            alt="{{tenSanPham}}"
+        >
+
+        <div>
+            <strong>{{tenSanPham}}</strong>
+            <small>
+                {{money donGia}} / {{tenDonViTinh}}
+            </small>
+        </div>
+
+        <div class="order-cart-item__tools">
+            {{> dat-hang/dat-mon type="quantity"}}
+
+            <button
+                type="button"
+                class="order-cart-item__remove"
+                data-remove="{{id}}"
+                aria-label="Xóa {{tenSanPham}}"
+            >
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        </div>
+    </div>
+
+{{else if (eq type "panel")}}
+
+    <section class="order-cart">
+        <header class="order-cart__header">
+            <h2>
+                <i class="fa-solid fa-cart-shopping"></i>
+                Giỏ hàng
+                <span class="order-cart__count">
+                    {{items.length}}
+                </span>
+            </h2>
+
+            {{#if items.length}}
+                <button
+                    class="order-cart-item__remove"
+                    type="button"
+                    data-clear-cart
+                >
+                    Xóa tất cả
+                </button>
+            {{/if}}
+        </header>
+
+        {{#if items.length}}
+
+            <div class="order-cart__items">
+                {{#each items}}
+                    {{> dat-hang/gio-hang type="item"}}
+                {{/each}}
+            </div>
+
+            <div class="order-cart__footer">
+                {{#if error}}
+                    <div
+                        class="order-notice order-notice--danger"
+                        role="alert"
+                    >
+                        {{error}}
+                    </div>
+                {{/if}}
+
+                {{#if loading}}
+                    <p role="status">
+                        Đang tính lại giá...
+                    </p>
+                {{/if}}
+
+                {{> dat-hang/gio-hang type="totals"}}
+            </div>
+
+            <div class="order-cart__footer">
+                {{> dat-hang/gio-hang type="note"}}
+
+                <p class="order-notice">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Bạn có thể đặt nhiều loại món trong cùng một đơn.
+                </p>
+
+                <a
+                    class="order-button order-button--outline"
+                    href="/dat-hang/danh-sach-don-hang-cua-toi"
+                >
+                    Đơn hàng của tôi
+                </a>
+
+                <button
+                    type="button"
+                    class="order-button order-button--primary"
+                    data-checkout
+                    {{#if blocked}}disabled{{/if}}
+                >
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Đặt hàng
+                </button>
+            </div>
+
+        {{else}}
+
+            {{> dat-hang/gio-hang type="empty"}}
+
+        {{/if}}
+    </section>
+
+{{/if}}

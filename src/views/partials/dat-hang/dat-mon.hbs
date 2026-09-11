@@ -1,0 +1,169 @@
+{{#if (eq type "tabs")}}
+
+    {{#each categories}}
+        <button
+            type="button"
+            class="order-category-tab {{#if selected}}is-active{{/if}}"
+            data-category="{{value}}"
+            aria-pressed="{{selected}}"
+        >
+            <i class="fa-solid {{icon}}" aria-hidden="true"></i>
+            {{label}}
+        </button>
+    {{/each}}
+
+{{else if (eq type "quantity")}}
+
+    <div
+        class="order-quantity"
+        aria-label="Số lượng {{tenSanPham}}"
+    >
+        <button
+            type="button"
+            data-quantity="{{id}}"
+            data-delta="-1"
+            aria-label="Giảm {{tenSanPham}}"
+        >
+            −
+        </button>
+
+        <b aria-live="polite">{{number quantity}}</b>
+
+        <button
+            type="button"
+            data-quantity="{{id}}"
+            data-delta="1"
+            aria-label="Tăng {{tenSanPham}}"
+            {{#if atMax}}disabled{{/if}}
+        >
+            +
+        </button>
+    </div>
+
+{{else if (eq type "product")}}
+
+    <article class="order-product-card">
+        <div class="order-product-card__media">
+            <img
+                class="order-product-card__image"
+                src="{{imageUrl hinhAnh}}"
+                alt="{{tenSanPham}}"
+                loading="lazy"
+            >
+
+            {{#if laSanPhamNoiBat}}
+                <span class="order-product-ribbon">
+                    Nổi bật
+                </span>
+            {{else if laSanPhamMoi}}
+                <span class="order-product-ribbon is-new">
+                    Mới
+                </span>
+            {{/if}}
+        </div>
+
+        <div class="order-product-card__body">
+            <span class="order-product-card__tag order-category--{{loaiSanPham}}">
+                {{categoryName loaiSanPham}}
+            </span>
+
+            <h3>{{tenSanPham}}</h3>
+
+            <p>{{moTa}}</p>
+
+            <div class="order-product-card__bottom">
+                <span class="order-price">
+                    {{money giaBan}}
+                    <small>/{{tenDonViTinh}}</small>
+                </span>
+
+                {{#if quantity}}
+                    {{> dat-hang/dat-mon type="quantity"}}
+                {{else}}
+                    <button
+                        type="button"
+                        class="order-button order-button--primary order-button--small"
+                        data-add="{{id}}"
+                    >
+                        Chọn
+                    </button>
+                {{/if}}
+            </div>
+        </div>
+    </article>
+
+{{else if (eq type "grid")}}
+
+    {{#each items}}
+        {{> dat-hang/dat-mon type="product"}}
+    {{else}}
+        {{> dat-hang/dung-chung
+            type="empty"
+            title="Chưa có sản phẩm phù hợp"
+            description="Thử đổi từ khóa hoặc bộ lọc để tìm món khác."
+        }}
+    {{/each}}
+
+{{else if (eq type "search")}}
+
+    <div class="order-search-row">
+        {{> forms/search
+            inputId="orderCatalogSearch"
+            placeholder="Tìm món ăn, đồ uống, dịch vụ khác..."
+            showClear=true
+            hideDropdown=true
+        }}
+
+        <button
+            type="button"
+            class="order-icon-button"
+            data-filter-open
+            aria-label="Lọc sản phẩm"
+        >
+            <i class="fa-solid fa-sliders"></i>
+        </button>
+    </div>
+
+{{else if (eq type "filter")}}
+
+    <dialog class="order-dialog" data-product-filter>
+        <form method="dialog" data-product-filter-form>
+            <header>
+                <h2>Lọc sản phẩm</h2>
+
+                <button
+                    class="order-icon-button"
+                    value="cancel"
+                    aria-label="Đóng"
+                >
+                    ×
+                </button>
+            </header>
+
+            {{> forms/native-select
+                id="orderGroupFilter"
+                name="nhomSanPhamId"
+                label="Nhóm sản phẩm"
+                placeholder="Tất cả nhóm"
+            }}
+
+            <div class="order-dialog__actions">
+                <button
+                    class="order-button order-button--outline"
+                    type="button"
+                    data-filter-reset
+                >
+                    Xóa bộ lọc
+                </button>
+
+                <button
+                    class="order-button order-button--primary"
+                    value="apply"
+                >
+                    Áp dụng
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+{{/if}}

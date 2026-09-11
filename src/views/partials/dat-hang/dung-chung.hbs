@@ -1,0 +1,218 @@
+{{#if (eq type "loading")}}
+
+    <div class="order-loading" role="status">
+        <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+        {{#if message}}
+            {{message}}
+        {{else}}
+            Đang tải dữ liệu...
+        {{/if}}
+    </div>
+
+{{else if (eq type "empty")}}
+
+    <div class="order-empty">
+        <i class="fa-solid {{#if icon}}{{icon}}{{else}}fa-box-open{{/if}}" aria-hidden="true"></i>
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+
+        {{#if retry}}
+            <button type="button" class="order-button order-button--outline" data-retry>
+                Thử lại
+            </button>
+        {{/if}}
+
+        {{#if shopping}}
+            <a class="order-button order-button--primary" href="/dat-hang/dat-mon">
+                Chọn món ngay
+            </a>
+        {{/if}}
+    </div>
+
+{{else if (eq type "money-row")}}
+
+    <div class="order-total-row {{#if grand}}order-total-row--grand{{/if}}">
+        <span>{{label}}</span>
+
+        <strong class="{{#if discount}}order-text-success{{/if}}">
+            {{#if discount}}−{{/if}}{{money value}}
+        </strong>
+    </div>
+
+{{else if (eq type "status")}}
+
+    <span class="order-status order-status--{{statusTheme trangThai}}">
+        <i class="fa-solid {{statusIcon trangThai}}" aria-hidden="true"></i>
+        {{statusName trangThai}}
+    </span>
+
+{{else if (eq type "payment-status")}}
+
+    <span class="order-status order-status--{{paymentTheme trangThaiThanhToan}}">
+        {{paymentStatusName trangThaiThanhToan}}
+    </span>
+
+{{else if (eq type "steps")}}
+
+    <div class="order-steps" aria-label="Tiến trình đặt hàng">
+
+        <div class="order-step {{#if (eq activeStep 1)}}is-active{{else if (gt activeStep 1)}}is-done{{/if}}">
+            <span>
+                {{#if (gt activeStep 1)}}✓{{else}}1{{/if}}
+            </span>
+            <strong>Giỏ hàng</strong>
+            <small>
+                {{#if (gt activeStep 1)}}Đã hoàn thành{{else}}Đang thực hiện{{/if}}
+            </small>
+        </div>
+
+        <i></i>
+
+        <div class="order-step {{#if (eq activeStep 2)}}is-active{{else if (gt activeStep 2)}}is-done{{/if}}">
+            <span>
+                {{#if (gt activeStep 2)}}✓{{else}}2{{/if}}
+            </span>
+            <strong>Thông tin nhận hàng</strong>
+            <small>
+                {{#if (gt activeStep 2)}}
+                    Đã hoàn thành
+                {{else if (eq activeStep 2)}}
+                    Đang thực hiện
+                {{else}}
+                    Tiếp theo
+                {{/if}}
+            </small>
+        </div>
+
+        <i></i>
+
+        <div class="order-step {{#if (eq activeStep 3)}}is-active{{else if (gt activeStep 3)}}is-done{{/if}}">
+            <span>
+                {{#if (gt activeStep 3)}}✓{{else}}3{{/if}}
+            </span>
+            <strong>Xác nhận đơn hàng</strong>
+            <small>
+                {{#if (gt activeStep 3)}}
+                    Đã hoàn thành
+                {{else if (eq activeStep 3)}}
+                    Đang thực hiện
+                {{else}}
+                    Tiếp theo
+                {{/if}}
+            </small>
+        </div>
+
+        <i></i>
+
+        <div class="order-step {{#if (eq activeStep 4)}}is-active{{else if (gt activeStep 4)}}is-done{{/if}}">
+            <span>4</span>
+            <strong>Hoàn tất</strong>
+            <small>
+                {{#if (eq activeStep 4)}}
+                    Đang hiển thị
+                {{else}}
+                    Tiếp theo
+                {{/if}}
+            </small>
+        </div>
+
+    </div>
+
+{{else if (eq type "page-header")}}
+
+    <div class="order-page-header">
+        <div>
+            <h1>{{title}}</h1>
+
+            {{#if description}}
+                <p>{{description}}</p>
+            {{/if}}
+        </div>
+
+        {{#if showSteps}}
+            {{> dat-hang/dung-chung type="steps" activeStep=activeStep}}
+        {{/if}}
+    </div>
+
+{{else if (eq type "card")}}
+
+    <section
+        class="order-card {{className}}"
+        {{#if dataCard}}data-order-card="{{dataCard}}"{{/if}}
+    >
+        {{#if title}}
+            <header class="order-card__header">
+                <div class="order-card__title">
+                    <span class="order-card__icon">
+                        <i class="{{icon}}"></i>
+                    </span>
+                    <h2>{{title}}</h2>
+                </div>
+
+                {{#if headerAction}}
+                    <div class="order-card__action">
+                        {{{headerAction}}}
+                    </div>
+                {{/if}}
+            </header>
+        {{/if}}
+
+        <div class="order-card__body">
+            {{> @partial-block}}
+        </div>
+    </section>
+
+{{else if (eq type "page-shell")}}
+
+    <div
+        class="order-page"
+        data-order-page="{{page}}"
+        {{#if orderId}}data-order-id="{{orderId}}"{{/if}}
+    >
+        {{> @partial-block}}
+    </div>
+
+{{else if (eq type "checkout-layout")}}
+
+    <div class="order-checkout-layout">
+        <main class="order-checkout-main">
+            {{> @partial-block}}
+        </main>
+
+        <aside class="order-summary-panel" data-checkout-summary>
+            {{> dat-hang/dung-chung type="loading"}}
+        </aside>
+    </div>
+
+{{else if (eq type "management-layout")}}
+
+    <div class="order-management-layout">
+        <main class="order-management-main">
+            {{> @partial-block}}
+        </main>
+
+        <aside class="order-management-detail" data-management-detail>
+            {{> dat-hang/dung-chung
+                type="empty"
+                title="Chọn một đơn hàng"
+                description="Thông tin và thao tác xử lý sẽ xuất hiện tại đây."
+            }}
+        </aside>
+    </div>
+
+{{else if (eq type "form-field")}}
+
+    <label class="order-field {{#if full}}order-field--full{{/if}}">
+        <span>
+            {{label}}
+            {{#if required}}<b>*</b>{{/if}}
+        </span>
+
+        {{{control}}}
+
+        {{#if hint}}
+            <small>{{hint}}</small>
+        {{/if}}
+    </label>
+
+{{/if}}

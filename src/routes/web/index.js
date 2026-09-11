@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const webRoutes = require('./config');
 const { renderPage } = require('../../utils/render-page.util');
+router.get('/assets/js/pages/dat-hang/templates.js', require('./order-templates'));
 
 router.use((req, res, next) => {
     res.locals.formOptions = {

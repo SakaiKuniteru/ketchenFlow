@@ -13,7 +13,7 @@ module.exports = function (app) {
                 gt: (left, right) => Number(left) > Number(right)
             },
 
-            defaultLayout: 'main',
+            defaultLayout: 'app',
 
             layoutsDir: path.join(process.cwd(), 'src/views/layouts'),
 

@@ -38,6 +38,12 @@
         <link rel="stylesheet" href="/assets/css/catalog/mobile.css">
     {{/if}}
 
+    {{#if orderFlowPage}}
+        <link rel="stylesheet" href="/assets/css/pages/dat-hang/order-flow.css">
+        <link rel="stylesheet" href="/assets/css/pages/dat-hang/order-detail.css">
+        <link rel="stylesheet" href="/assets/css/pages/dat-hang/index.css">
+    {{/if}}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
@@ -51,25 +57,18 @@
         {{> common/header}}
 
         <div class="app-wrapper">
-
             {{> common/sidebar}}
 
             <main class="app-content">
-
                 {{> common/breadcrumb}}
 
                 <section class="page-content">
-
                     {{{body}}}
-
                 </section>
 
                 {{> common/footer}}
-
             </main>
-
         </div>
-
     </div>
 
     {{> common/toast}}
@@ -100,7 +99,13 @@
     <script defer src="/assets/js/common/loading.js"></script>
     <script defer src="/assets/js/common/change-password.js"></script>
     <script defer src="/assets/js/catalog/pagination.js"></script>
-
+    {{#if orderScript}}
+        <script defer src="/assets/js/pages/dat-hang/templates.js"></script>
+        <script defer src="/assets/js/pages/dat-hang/core.js"></script>
+        <script defer src="/assets/js/pages/dat-hang/checkout.js"></script>
+        <script defer src="/assets/js/pages/dat-hang/orders.js"></script>
+        <script defer src="{{orderScript}}"></script>
+    {{/if}}
 </body>
 
 </html>

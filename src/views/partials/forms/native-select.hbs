@@ -1,0 +1,8 @@
+<div class="form-field {{fieldClass}}" data-form-field="{{name}}">
+    <label for="{{id}}" class="form-field__label">{{label}}{{#if required}} <span class="form-field__required">*</span>{{/if}}</label>
+    <select id="{{id}}" name="{{name}}" class="form-input" {{#if required}}required{{/if}} {{#if disabled}}disabled{{/if}}>
+        <option value="">{{#if placeholder}}{{placeholder}}{{else}}Chọn dữ liệu...{{/if}}</option>
+        {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" hidden></small>
+</div>

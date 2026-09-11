@@ -6,6 +6,21 @@ class DonHangReportRepository {
     async getData(query) {
         const values = [query.coSoId];
         const conditions = ['dh.co_so_id = $1'];
+        for (const [key, column] of [
+            ['trangThai', 'trang_thai'],
+            ['trangThaiThanhToan', 'trang_thai_thanh_toan']
+        ]) {
+            if (query[key] !== undefined) {
+                values.push(query[key]);
+                conditions.push(`dh.${column} = $${values.length}`);
+            }
+        }
+        if (query.keyword) {
+            values.push(`%${query.keyword}%`);
+            conditions.push(
+                `(dh.ma_don_hang ILIKE $${values.length} OR nd.ho_ten ILIKE $${values.length} OR dh.ten_nguoi_nhan ILIKE $${values.length})`
+            );
+        }
 
         if (query.tuNgay) {
             values.push(query.tuNgay);

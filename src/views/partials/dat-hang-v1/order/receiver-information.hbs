@@ -1,0 +1,46 @@
+{{#> dat-hang/common/order-card
+    title="Thông tin giao nhận"
+    icon="fa-solid fa-location-dot"
+}}
+    <dl class="order-info-list">
+        <div>
+            <dt>Người đặt</dt>
+            <dd>{{nguoiDat.hoTen}}</dd>
+        </div>
+
+        <div>
+            <dt>Bộ phận</dt>
+            <dd>{{phongBan.tenPhongBan}}</dd>
+        </div>
+
+        <div>
+            <dt>Đặt hộ</dt>
+            <dd>{{#if datHo}}Có{{else}}Không{{/if}}</dd>
+        </div>
+
+        <div>
+            <dt>Người nhận</dt>
+            <dd>{{nguoiNhan.hoTen}}</dd>
+        </div>
+
+        <div>
+            <dt>Điện thoại</dt>
+            <dd>{{nguoiNhan.soDienThoai}}</dd>
+        </div>
+
+        <div>
+            <dt>Địa điểm</dt>
+            <dd>{{diaDiemNhan.tenDiaDiem}}<br>{{diaDiemNhan.diaChi}}</dd>
+        </div>
+
+        <div>
+            <dt>Thời gian nhận</dt>
+            <dd>{{deliveryTime}}</dd>
+        </div>
+
+        <div>
+            <dt>Ghi chú</dt>
+            <dd class="order-preserve-lines">{{#if ghiChu}}{{ghiChu}}{{else}}Không có ghi chú{{/if}}</dd>
+        </div>
+    </dl>
+{{/dat-hang/common/order-card}}

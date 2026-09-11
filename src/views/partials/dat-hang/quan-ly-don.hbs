@@ -1,0 +1,213 @@
+{{#if (eq type "filter")}}
+
+    <form class="order-list-filters" data-order-filters hidden>
+        {{> forms/native-select
+            id="orderStatusFilter"
+            name="trangThai"
+            label="Trạng thái đơn"
+            placeholder="Tất cả trạng thái"
+        }}
+
+        {{> forms/native-select
+            id="orderPaymentFilter"
+            name="trangThaiThanhToan"
+            label="Thanh toán"
+            placeholder="Tất cả"
+        }}
+
+        {{> forms/input
+            id="orderFromDate"
+            name="tuNgay"
+            type="date"
+            label="Từ ngày"
+        }}
+
+        {{> forms/input
+            id="orderToDate"
+            name="denNgay"
+            type="date"
+            label="Đến ngày"
+        }}
+
+        <div class="order-action-row">
+            <button
+                type="button"
+                class="order-button order-button--outline"
+                data-reset-filters
+            >
+                Xóa lọc
+            </button>
+
+            <button
+                type="submit"
+                class="order-button order-button--primary"
+            >
+                Áp dụng
+            </button>
+        </div>
+    </form>
+
+{{else if (eq type "statistics")}}
+
+    {{#each statistics}}
+        <div class="order-stat-card order-stat-card--{{theme}}">
+            <span class="order-stat-card__icon">
+                <i class="fa-solid {{icon}}"></i>
+            </span>
+
+            <div>
+                <strong>{{number count}}</strong>
+                <small>{{label}}</small>
+            </div>
+        </div>
+    {{/each}}
+
+{{else if (eq type "table-row")}}
+
+    <tr
+        class="{{#if selected}}is-selected{{/if}}"
+        data-order-row="{{id}}"
+    >
+        <td>{{index}}</td>
+
+        <td>
+            <a
+                href="{{detailUrl}}"
+                data-order-select="{{id}}"
+                class="order-code"
+            >
+                {{maDonHang}}
+            </a>
+        </td>
+
+        <td>{{dateTime thoiGianDat}}</td>
+
+        {{#if management}}
+            <td>{{nguoiDat}}</td>
+        {{/if}}
+
+        <td>{{nguoiNhan}}</td>
+        <td>{{soLoai}}</td>
+        <td>{{number tongSoLuong}}</td>
+
+        <td>
+            <strong>{{money tongThanhToan}}</strong>
+        </td>
+
+        {{#if management}}
+            <td>{{paymentName phuongThucThanhToan}}</td>
+        {{/if}}
+
+        <td>
+            {{> dat-hang/dung-chung type="status"}}
+        </td>
+    </tr>
+
+{{else if (eq type "table")}}
+
+    <div class="order-table-wrap">
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã đơn</th>
+                    <th>Thời gian đặt</th>
+
+                    {{#if management}}
+                        <th>Người đặt</th>
+                    {{/if}}
+
+                    <th>Người nhận</th>
+                    <th>Số loại</th>
+                    <th>Tổng SL</th>
+                    <th>Tổng tiền</th>
+
+                    {{#if management}}
+                        <th>PTTT</th>
+                    {{/if}}
+
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+
+            <tbody data-orders-table></tbody>
+        </table>
+    </div>
+
+    <div
+        class="order-pagination"
+        data-orders-pagination
+    ></div>
+
+{{else if (eq type "pagination")}}
+
+    <span class="order-pagination__info">
+        {{#if total}}
+            Hiển thị {{from}}–{{to}} trong {{total}} {{noun}}
+        {{else}}
+            Chưa có {{noun}}
+        {{/if}}
+    </span>
+
+    <div class="order-pagination__buttons">
+        <button
+            type="button"
+            data-page="{{previous}}"
+            {{#unless hasPrevious}}disabled{{/unless}}
+            aria-label="Trang trước"
+        >
+            ‹
+        </button>
+
+        {{#each pages}}
+            {{#if gap}}
+                <span>…</span>
+            {{else}}
+                <button
+                    type="button"
+                    data-page="{{value}}"
+                    class="{{#if active}}is-active{{/if}}"
+                    {{#if active}}aria-current="page"{{/if}}
+                >
+                    {{value}}
+                </button>
+            {{/if}}
+        {{/each}}
+
+        <button
+            type="button"
+            data-page="{{next}}"
+            {{#unless hasNext}}disabled{{/unless}}
+            aria-label="Trang sau"
+        >
+            ›
+        </button>
+    </div>
+
+{{else if (eq type "detail-panel")}}
+
+    {{> dat-hang/chi-tiet type="information"}}
+    {{> dat-hang/chi-tiet type="receiver"}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Món / Dịch vụ đã đặt"
+        icon="fa-solid fa-utensils"
+    }}
+        {{> dat-hang/chi-tiet type="items"}}
+
+        {{#with tien}}
+            {{> dat-hang/dung-chung
+                type="money-row"
+                label="Tổng cộng"
+                value=tongThanhToan
+                grand=true
+            }}
+        {{/with}}
+    {{/dat-hang/dung-chung}}
+
+    {{> dat-hang/chi-tiet type="payment"}}
+    {{> dat-hang/chi-tiet type="actions"}}
+    {{> dat-hang/chi-tiet type="timeline"}}
+
+{{/if}}

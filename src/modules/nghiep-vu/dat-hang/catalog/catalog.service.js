@@ -5,6 +5,7 @@ const repository = require('./catalog.repository');
 const gioHangService = require('../gio-hang/gio-hang.service');
 const { listQuerySchema, tinhGioHangSchema } = require('./catalog.validation');
 const { loaiSanPham } = require('../../../../constants/enums');
+const slotService = require('../../../danh-muc/dat-hang/khung-gio-nhan-hang/khung-gio-nhan-hang.service');
 
 function validate(schema, data) {
     const { error, value } = schema.validate(data, {
@@ -21,9 +22,10 @@ function validate(schema, data) {
 
 class CatalogService {
     async getDanhSach(query, user) {
+        const profile = await gioHangService.getNhanVien(user.nhanVienId);
         const data = validate(listQuerySchema, {
             ...query,
-            coSoId: query.coSoId || user.coSoId
+            coSoId: profile.coSoId
         });
 
         if (!data.coSoId) {
@@ -41,14 +43,21 @@ class CatalogService {
         };
     }
 
-    getThongTinCheckout(query, user) {
-        const coSoId = Number(query.coSoId || user.coSoId);
+    async getThongTinCheckout(query, user) {
+        const profile = await gioHangService.getNhanVien(user.nhanVienId);
+        const coSoId = Number(profile.coSoId);
 
         if (!coSoId || !user.nhanVienId) {
             throw new ApiError(400, 'Không xác định được nhân viên hoặc cơ sở đặt hàng.');
         }
 
-        return repository.getThongTinCheckout(coSoId, user.nhanVienId);
+        const ngayNhan =
+            query.ngayNhan || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+        const [checkout, slots] = await Promise.all([
+            repository.getThongTinCheckout(coSoId, user.nhanVienId),
+            slotService.getKhungGioKhaDung({ coSoId, ngayNhan })
+        ]);
+        return { ...checkout, ngayNhan, khungGioNhanHang: slots.items, soPhutDatTruoc: slots.soPhutDatTruoc };
     }
 
     tinhGioHang(body, user) {

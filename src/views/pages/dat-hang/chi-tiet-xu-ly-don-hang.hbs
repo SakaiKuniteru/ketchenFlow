@@ -1,4 +1,24 @@
-<link rel='stylesheet' href='/assets/css/pages/dat-hang/order-detail.css' />
-<div class='order-page' data-order-page='management-detail' data-order-id='{{orderId}}'>
-    <div data-management-detail-page></div>
-</div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="management-detail"
+    orderId=orderId
+}}
+    {{> dat-hang/dung-chung
+        type="page-header"
+        title="Xử lý đơn hàng"
+        description="Kiểm tra thông tin và cập nhật tiến trình xử lý."
+    }}
+
+    <a
+        class="order-button order-button--outline"
+        href="/dat-hang/nhan-don-hang"
+    >
+        ← Danh sách nhận đơn
+    </a>
+
+    <div class="order-standalone-management" data-order-detail>
+        {{> dat-hang/dung-chung type="loading"}}
+    </div>
+
+    {{> dat-hang/chi-tiet type="dialog"}}
+{{/dat-hang/dung-chung}}

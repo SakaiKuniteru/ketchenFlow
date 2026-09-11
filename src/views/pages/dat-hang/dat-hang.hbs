@@ -1,14 +1,42 @@
-<link rel="stylesheet" href="/assets/css/pages/dat-hang/catalog.css">
-<div class="order-page" data-order-page="catalog">
-    {{> dat-hang/common/page-header title="Đặt món" description="Đặt đồ ăn, đồ uống, tráng miệng và dịch vụ khác một cách nhanh chóng." showSteps=false}}
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="catalog"
+}}
     <div class="order-catalog-layout">
         <main class="order-catalog-main">
-            <div class="order-promo"><div><strong>Đặt nhanh<br>Tiện lợi mỗi ngày</strong><span>Đồ ăn ngon · Đồ uống mát lành · Dịch vụ đa dạng</span></div><i class="fa-solid fa-bowl-food"></i></div>
-            <div class="order-search-row"><label class="order-search"><i class="fa-solid fa-magnifying-glass"></i><input data-catalog-search placeholder="Tìm món ăn, đồ uống, dịch vụ khác..." autocomplete="off"></label><button class="order-icon-button" data-filter-open aria-label="Bộ lọc"><i class="fa-solid fa-sliders"></i></button></div>
+            <div class="order-catalog-heading">
+                {{> dat-hang/dung-chung
+                    type="page-header"
+                    title="Đặt món"
+                    description="Đồ ăn, đồ uống và dịch vụ cho một ngày làm việc trọn vẹn."
+                }}
+
+                <div class="order-promo">
+                    <div>
+                        <strong>Đặt nhanh<br>Tiện lợi mỗi ngày</strong>
+                        <span>Món ngon · Đồ uống · Dịch vụ</span>
+                    </div>
+
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+            </div>
+
+            {{> dat-hang/dat-mon type="search"}}
+
             <div class="order-category-tabs" data-category-tabs></div>
-            <div class="order-product-grid" data-product-grid></div>
+
+            <div class="order-product-grid" data-product-grid>
+                {{> dat-hang/dung-chung type="loading"}}
+            </div>
+
+            <div class="order-pagination" data-catalog-pagination></div>
         </main>
-        <aside class="order-cart-panel" data-cart-panel></aside>
+
+        <aside class="order-cart-panel" data-cart-panel>
+            {{> dat-hang/gio-hang type="empty"}}
+        </aside>
     </div>
-    <div class="order-filter-modal" data-filter-modal hidden></div>
-</div>
+
+    {{> dat-hang/dat-mon type="filter"}}
+    {{> dat-hang/dung-chung type="benefits"}}
+{{/dat-hang/dung-chung}}

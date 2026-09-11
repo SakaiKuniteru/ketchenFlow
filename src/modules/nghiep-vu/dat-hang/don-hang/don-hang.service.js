@@ -20,6 +20,8 @@ const enums = require('../../../../constants/enums');
 const { listSchema } = require('./don-hang.validation');
 const notificationService = require('../thong-bao/thong-bao-don-hang.service');
 const paymentRepository = require('../thanh-toan/thanh-toan-don-hang.repository');
+const slotService = require('../../../danh-muc/dat-hang/khung-gio-nhan-hang/khung-gio-nhan-hang.service');
+const locationRepository = require('../../../danh-muc/dat-hang/dia-diem-nhan-hang/dia-diem-nhan-hang.repository');
 
 function validateQuery(query) {
     const { error, value } = listSchema.validate(query, {
@@ -31,56 +33,45 @@ function validateQuery(query) {
 }
 
 class DonHangService {
-    async validateDelivery(data, client) {
-        const result = await client.query(
-            `
-                SELECT
-                    EXISTS(
-                        SELECT 1 FROM dm_dia_diem_nhan_hang
-                        WHERE id = $1 AND co_so_id = $3 AND active = TRUE
-                    ) AS dia_diem_hop_le,
-                    EXISTS(
-                        SELECT 1 FROM dm_khung_gio_nhan_hang
-                        WHERE id = $2 AND co_so_id = $3 AND active = TRUE
-                    ) AS khung_gio_hop_le,
-                    (
-                        SELECT so_don_toi_da FROM dm_khung_gio_nhan_hang
-                        WHERE id = $2
-                    ) AS so_don_toi_da,
-                    (
-                        SELECT COUNT(*) FROM nv_don_hang
-                        WHERE khung_gio_nhan_id = $2
-                            AND thoi_gian_nhan_tu::DATE = $4::TIMESTAMP::DATE
-                            AND trang_thai NOT IN ($5, $6)
-                    )::INTEGER AS so_don_da_dat
-            `,
-            [
-                data.diaDiemNhanId,
-                data.khungGioNhanId,
-                data.coSoId,
-                data.thoiGianNhanTu,
-                TRANG_THAI_DON_HANG.DA_HUY,
-                TRANG_THAI_DON_HANG.TU_CHOI
-            ]
+    async validateDelivery(data, user, client) {
+        const profile = await cartService.getNhanVien(user.nhanVienId, client);
+        if (Number(data.coSoId) !== Number(profile.coSoId)) {
+            throw new ApiError(403, 'Bạn chỉ được đặt hàng tại cơ sở của mình.');
+        }
+        if (data.diaDiemNhanId) {
+            const location = await locationRepository.getChiTiet(data.diaDiemNhanId, user.nhanVienId, client);
+            if (!location?.active) throw new ApiError(400, 'Địa điểm nhận hàng không hợp lệ.');
+        }
+        const ngayNhan = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(
+            new Date(data.thoiGianNhanTu)
         );
-        const delivery = result.rows[0];
-
-        if (data.diaDiemNhanId && !delivery.dia_diem_hop_le) {
-            throw new ApiError(400, 'Địa điểm nhận hàng không hợp lệ tại cơ sở đã chọn.');
-        }
-        if (data.khungGioNhanId && !delivery.khung_gio_hop_le) {
-            throw new ApiError(400, 'Khung giờ nhận hàng không hợp lệ tại cơ sở đã chọn.');
-        }
-        if (delivery.so_don_toi_da !== null && delivery.so_don_da_dat >= delivery.so_don_toi_da) {
-            throw new ApiError(409, 'Khung giờ nhận hàng đã đủ số lượng đơn tối đa.');
-        }
+        // Lấy khóa trước khi đếm lại sức chứa, để các đơn đồng thời không vượt giới hạn.
+        await client.query('SELECT id FROM dm_khung_gio_nhan_hang WHERE id = $1 FOR UPDATE', [data.khungGioNhanId]);
+        const slot = await slotService.kiemTraKhungGioCoTheDat({ ...data, ngayNhan }, client);
+        data.thoiGianNhanTu = slot.thoiGianNhanTu;
+        data.thoiGianNhanDen = slot.thoiGianNhanDen;
     }
 
     async create(data, user) {
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
-            await this.validateDelivery(data, client);
+            if (data.clientRequestId) {
+                const requestKey = `${user.nhanVienId}:${data.clientRequestId}`;
+                await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [requestKey]);
+                const existing = await client.query(
+                    `SELECT ls.don_hang_id FROM nv_lich_su_don_hang ls
+                    JOIN nv_don_hang dh ON dh.id = ls.don_hang_id
+                    WHERE dh.nguoi_dat_id = $1 AND ls.hanh_dong = 'TAO_DON_HANG'
+                        AND ls.metadata->>'clientRequestId' = $2 LIMIT 1`,
+                    [user.nhanVienId, data.clientRequestId]
+                );
+                if (existing.rows.length) {
+                    await client.query('COMMIT');
+                    return this.getDetail(existing.rows[0].don_hang_id, user);
+                }
+            }
+            await this.validateDelivery(data, user, client);
             const cart = await cartService.tinhGioHang(data, user, client, true);
             const profile = await cartService.getNhanVien(user.nhanVienId, client);
             const paymentStatus =
@@ -127,6 +118,7 @@ class DonHangService {
                     trangThaiMoi: TRANG_THAI_DON_HANG.CHO_XAC_NHAN,
                     hanhDong: 'TAO_DON_HANG',
                     noiDung: 'Đơn hàng được tạo và gửi chờ xác nhận.',
+                    metadata: data.clientRequestId ? { clientRequestId: data.clientRequestId } : null,
                     nguoiThucHienId: user.nhanVienId
                 },
                 client
@@ -240,6 +232,15 @@ class DonHangService {
             );
             if (!result.rowCount)
                 throw new ApiError(409, 'Đơn hàng đã được người khác cập nhật. Vui lòng tải lại dữ liệu.');
+            const itemStatus = isCancel
+                ? TRANG_THAI_CHI_TIET.DA_HUY
+                : targetStatus === TRANG_THAI_DON_HANG.DANG_CHUAN_BI
+                  ? TRANG_THAI_CHI_TIET.DANG_CHUAN_BI
+                  : TRANG_THAI_CHI_TIET.HOAN_THANH;
+            await client.query('UPDATE ct_don_hang SET trang_thai = $2, updated_at = NOW() WHERE don_hang_id = $1', [
+                id,
+                itemStatus
+            ]);
             if (isCancel) await voucherUsageRepository.refund(id, client);
             await historyRepository.create(
                 {

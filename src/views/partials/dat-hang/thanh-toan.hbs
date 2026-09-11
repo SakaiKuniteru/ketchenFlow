@@ -1,0 +1,332 @@
+{{#if (eq type "delivery-form")}}
+
+    {{> forms/native-select
+        id="orderKhungGio"
+        name="khungGioNhanId"
+        label="Thời gian nhận dự kiến"
+        placeholder="Chọn khung giờ còn chỗ..."
+        required=true
+    }}
+
+    {{> forms/native-select
+        id="orderDiaDiem"
+        name="diaDiemNhanId"
+        label="Địa điểm đã lưu"
+        placeholder="Nhập địa chỉ khác bên dưới"
+    }}
+
+    <p
+        class="order-form-grid__full order-help"
+        data-slot-hint
+        role="status"
+    ></p>
+
+{{else if (eq type "other-fields")}}
+
+    <fieldset
+        class="order-for-other order-form-grid__full"
+        data-order-other-fields
+        hidden
+        disabled
+    >
+        {{> forms/input
+            id="orderNguoiNhan"
+            name="tenNguoiNhan"
+            label="Người nhận"
+            maxlength=150
+            required=true
+        }}
+
+        {{> forms/phone
+            id="orderDienThoaiNguoiNhan"
+            name="soDienThoaiNguoiNhan"
+            label="Số điện thoại người nhận"
+            required=true
+        }}
+    </fieldset>
+
+{{else if (eq type "payment")}}
+
+    <fieldset class="order-payment-fieldset">
+        <legend>Phương thức thanh toán</legend>
+
+        <div class="order-payment-methods">
+            {{> forms/radio
+                id="payInternal"
+                name="payment"
+                value=10
+                label="Thanh toán nội bộ"
+                description="Khấu trừ theo chính sách nội bộ"
+                icon="fa-solid fa-wallet"
+                className="order-payment-option"
+                checked=true
+            }}
+
+            {{> forms/radio
+                id="payCash"
+                name="payment"
+                value=20
+                label="Tiền mặt khi nhận"
+                description="Thanh toán khi nhận hàng"
+                icon="fa-solid fa-money-bill-wave"
+                className="order-payment-option"
+            }}
+
+            {{> forms/radio
+                id="payTransfer"
+                name="payment"
+                value=30
+                label="Chuyển khoản"
+                description="Xác nhận khi nhận hàng"
+                icon="fa-solid fa-building-columns"
+                className="order-payment-option"
+            }}
+
+            {{> forms/radio
+                id="payQr"
+                name="payment"
+                value=40
+                label="QR Code"
+                description="Tạo mã sau khi đặt hàng"
+                icon="fa-solid fa-qrcode"
+                className="order-payment-option"
+            }}
+        </div>
+    </fieldset>
+
+{{else if (eq type "voucher")}}
+
+    <form class="order-voucher-row" data-voucher-form>
+        {{> forms/input
+            id="orderVoucher"
+            name="maVoucher"
+            label="Mã giảm giá / Voucher"
+            maxlength=50
+            placeholder="Nhập mã voucher"
+        }}
+
+        <button
+            class="order-button order-button--primary"
+            type="submit"
+        >
+            Áp dụng
+        </button>
+    </form>
+
+    <div
+        class="order-applied-voucher"
+        data-applied-voucher
+        hidden
+    ></div>
+
+{{else if (eq type "receiver")}}
+
+    <section class="order-card">
+        <header class="order-card__header">
+            <div class="order-card__title">
+                <span class="order-card__icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <h2>Thông tin nhận hàng</h2>
+            </div>
+
+            <button
+                class="order-link-button"
+                type="button"
+                data-fill-profile
+            >
+                <i class="fa-solid fa-pen"></i>
+                Nhập từ hồ sơ
+            </button>
+        </header>
+
+        <div class="order-card__body">
+            <form id="orderDeliveryForm" novalidate>
+                {{> forms/form-error}}
+
+                <div class="order-form-grid">
+                    {{> forms/input
+                        id="orderNguoiDat"
+                        name="hoTen"
+                        label="Người đặt hàng"
+                        readonly=true
+                    }}
+
+                    {{> forms/phone
+                        id="orderSoDienThoai"
+                        name="soDienThoai"
+                        label="Số điện thoại"
+                        required=true
+                    }}
+
+                    {{> forms/input
+                        id="orderPhongBan"
+                        name="phongBan"
+                        label="Bộ phận"
+                        readonly=true
+                    }}
+
+                    {{> forms/input
+                        id="orderNgayNhan"
+                        name="ngayNhan"
+                        type="date"
+                        label="Ngày nhận"
+                        required=true
+                    }}
+
+                    {{> dat-hang/thanh-toan type="delivery-form"}}
+
+                    {{> forms/checkbox
+                        id="orderDatHo"
+                        name="datHo"
+                        label="Đặt hộ người khác"
+                        description="Đặt món cho đồng nghiệp hoặc khách."
+                        fieldClass="order-form-grid__full"
+                    }}
+
+                    {{> dat-hang/thanh-toan type="other-fields"}}
+
+                    {{> forms/textarea
+                        id="orderDiaChi"
+                        name="diaChiNhan"
+                        label="Địa chỉ nhận chi tiết"
+                        placeholder="Tầng, phòng, vị trí giao nhận..."
+                        maxlength=500
+                        showCounter=true
+                        rows=2
+                        required=true
+                        fieldClass="order-form-grid__full"
+                    }}
+
+                    {{> forms/textarea
+                        id="orderGhiChu"
+                        name="ghiChu"
+                        label="Ghi chú đơn hàng"
+                        placeholder="Ít đá, không đường cho cà phê..."
+                        maxlength=1000
+                        showCounter=true
+                        rows=2
+                        fieldClass="order-form-grid__full"
+                    }}
+                </div>
+            </form>
+        </div>
+    </section>
+
+{{else if (eq type "summary")}}
+
+    <section class="order-summary">
+        <header class="order-summary__header">
+            <h2>
+                <i class="fa-solid fa-calculator"></i>
+                Tóm tắt đơn hàng
+            </h2>
+        </header>
+
+        <div class="order-summary__body">
+            {{#if receiver}}
+                <dl class="order-info-list">
+                    <div>
+                        <dt>Người nhận</dt>
+                        <dd>{{receiver}}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Điện thoại</dt>
+                        <dd>{{phone}}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Địa điểm</dt>
+                        <dd>{{address}}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Thời gian nhận</dt>
+                        <dd>{{deliveryTime}}</dd>
+                    </div>
+                </dl>
+            {{/if}}
+
+            <div class="order-summary__items">
+                {{#each items}}
+                    <div class="order-summary__item">
+                        <img
+                            src="{{imageUrl hinhAnh}}"
+                            alt="{{tenSanPham}}"
+                        >
+
+                        <div>
+                            <strong>{{tenSanPham}}</strong>
+                            <small>× {{number soLuong}}</small>
+                        </div>
+
+                        <b>{{money thanhTien}}</b>
+                    </div>
+                {{/each}}
+            </div>
+
+            <p class="order-help">
+                {{items.length}} loại · {{number quantity}} sản phẩm
+            </p>
+
+            {{> dat-hang/gio-hang type="totals"}}
+        </div>
+
+        <div class="order-summary__actions">
+            {{#if error}}
+                <p
+                    class="order-notice order-notice--danger"
+                    role="alert"
+                >
+                    {{error}}
+                </p>
+            {{/if}}
+
+            <a
+                class="order-button order-button--outline"
+                href="{{backUrl}}"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                {{backLabel}}
+            </a>
+
+            {{#if confirmation}}
+                <button
+                    type="button"
+                    class="order-button order-button--primary"
+                    data-place-order
+                    {{#if blocked}}disabled{{/if}}
+                >
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Xác nhận đặt hàng
+                </button>
+            {{else}}
+                <button
+                    type="submit"
+                    form="orderDeliveryForm"
+                    class="order-button order-button--primary"
+                    {{#if blocked}}disabled{{/if}}
+                >
+                    <i class="fa-solid fa-arrow-right"></i>
+                    Tiếp tục xác nhận
+                </button>
+            {{/if}}
+
+            <p class="order-help">
+                Giá và ưu đãi được kiểm tra lại khi xác nhận đơn.
+            </p>
+        </div>
+    </section>
+
+{{else if (eq type "confirmation-items")}}
+
+    {{#> dat-hang/dung-chung
+        type="card"
+        title="Kiểm tra món đã chọn"
+        icon="fa-solid fa-utensils"
+    }}
+        {{> dat-hang/chi-tiet type="items"}}
+    {{/dat-hang/dung-chung}}
+
+{{/if}}

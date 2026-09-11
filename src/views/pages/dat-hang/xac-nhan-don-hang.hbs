@@ -1,11 +1,22 @@
-<link rel="stylesheet" href="/assets/css/pages/dat-hang/checkout.css">
-<div class="order-page" data-order-page="confirmation">
-    {{> dat-hang/common/page-header title="Xác nhận đơn hàng" description="Kiểm tra lại thông tin đặt hàng và các món đã chọn trước khi xác nhận." showSteps=true activeStep=3}}
-    <div class="order-checkout-layout">
-        <main class="order-checkout-main">
-            <section class="order-card" data-confirm-information></section>
-            <section class="order-card" data-confirm-items></section>
-        </main>
-        <aside class="order-summary-panel" data-checkout-summary></aside>
-    </div>
-</div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="confirmation"
+}}
+    {{> dat-hang/dung-chung
+        type="page-header"
+        title="Xác nhận đơn hàng"
+        description="Kiểm tra thông tin và các món đã chọn trước khi gửi tới nhà ăn."
+        showSteps=true
+        activeStep=3
+    }}
+
+    {{#> dat-hang/dung-chung type="checkout-layout"}}
+        <div data-confirm-information>
+            {{> dat-hang/dung-chung type="loading"}}
+        </div>
+
+        <div data-confirm-items></div>
+    {{/dat-hang/dung-chung}}
+
+    {{> dat-hang/dung-chung type="benefits"}}
+{{/dat-hang/dung-chung}}

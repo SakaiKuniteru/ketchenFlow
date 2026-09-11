@@ -1,35 +1,27 @@
-<link rel="stylesheet" href="/assets/css/pages/dat-hang/checkout.css">
-<div class="order-page" data-order-page="delivery">
-    {{> dat-hang/common/page-header title="Thông tin nhận hàng" description="Nhập thông tin nhận hàng, mã giảm giá và phương thức thanh toán trước khi xác nhận đơn." showSteps=true activeStep=2}}
-    <div class="order-checkout-layout">
-        <main class="order-checkout-main">
-            <section class="order-card">
-                <header class="order-card__header"><div class="order-card__title"><span class="order-card__icon"><i class="fa-solid fa-location-dot"></i></span><h2>Thông tin nhận hàng</h2></div><button class="order-link-button" type="button" data-fill-profile><i class="fa-solid fa-pen"></i> Nhập nhanh từ hồ sơ</button></header>
-                <div class="order-card__body order-form-grid">
-                    {{> forms/input id="orderNguoiDat" name="orderNguoiDat" label="Người đặt hàng" required=true disabled=true}}
-                    {{> forms/input id="orderSoDienThoai" name="orderSoDienThoai" label="Số điện thoại" required=true disabled=true}}
-                    {{> forms/input id="orderPhongBan" name="orderPhongBan" label="Bộ phận" required=true disabled=true}}
-                    <div class="form-field"><label class="form-field__label">Thời gian nhận dự kiến <span class="form-field__required">*</span></label><select class="order-control" data-slot-select required><option value="">Chọn thời gian nhận...</option></select></div>
-                    <label class="order-check order-form-grid__full"><input type="checkbox" data-order-for-other><span></span><b>Đặt hộ người khác</b><small>Chọn nếu bạn đặt món giúp đồng nghiệp, khách hoặc người khác.</small></label>
-                    <div class="order-for-other order-form-grid__full" data-order-other-fields hidden></div>
-                    <div class="form-field"><label class="form-field__label">Địa điểm nhận <span class="form-field__required">*</span></label><select class="order-control" data-location-select required><option value="">Chọn địa điểm nhận...</option></select></div>
-                    {{> forms/textarea id="orderDiaChi" name="orderDiaChi" label="Địa chỉ nhận" placeholder="Nhập địa chỉ nhận..." maxlength=500 required=true}}
-                    {{> forms/textarea id="orderGhiChu" name="orderGhiChu" label="Ghi chú đơn hàng" placeholder="Ít đá, không đường cho cà phê..." maxlength=1000 showCounter=true fieldClass="order-form-grid__full"}}
-                </div>
-            </section>
-            <section class="order-card">
-                <header class="order-card__header"><div class="order-card__title"><span class="order-card__icon"><i class="fa-solid fa-tag"></i></span><h2>Ưu đãi & thanh toán</h2></div></header>
-                <div class="order-card__body">
-                    <div class="order-voucher-row"><label class="order-field"><span>Mã giảm giá / Voucher</span><input class="order-control" data-voucher placeholder="Nhập mã voucher"></label><button class="order-button order-button--primary" type="button" data-apply-voucher>Áp dụng</button></div>
-                    <div class="order-applied-voucher" data-applied-voucher hidden></div>
-                    <div class="order-payment-methods" data-payment-methods>
-                        <label class="order-payment-option is-selected"><input type="radio" name="payment" value="10" checked><span class="order-payment-option__radio"></span><i class="fa-solid fa-wallet"></i><span><b>Thanh toán nội bộ</b><small>Khấu trừ theo chính sách nội bộ</small></span></label>
-                        <label class="order-payment-option"><input type="radio" name="payment" value="20"><span class="order-payment-option__radio"></span><i class="fa-solid fa-building-columns"></i><span><b>Chuyển khoản khi nhận</b><small>Chuyển khoản và xác nhận khi nhận hàng</small></span></label>
-                        <label class="order-payment-option"><input type="radio" name="payment" value="30"><span class="order-payment-option__radio"></span><i class="fa-solid fa-qrcode"></i><span><b>QR Code</b><small>Quét mã QR để thanh toán</small></span></label>
-                    </div>
-                </div>
-            </section>
-        </main>
-        <aside class="order-summary-panel" data-checkout-summary></aside>
-    </div>
-</div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="delivery"
+}}
+    {{> dat-hang/dung-chung
+        type="page-header"
+        title="Thông tin nhận hàng"
+        description="Chọn thời gian, địa điểm nhận và phương thức thanh toán."
+        showSteps=true
+        activeStep=2
+    }}
+
+    {{#> dat-hang/dung-chung type="checkout-layout"}}
+        {{> dat-hang/thanh-toan type="receiver"}}
+
+        {{#> dat-hang/dung-chung
+            type="card"
+            title="Ưu đãi & thanh toán"
+            icon="fa-solid fa-tag"
+        }}
+            {{> dat-hang/thanh-toan type="voucher"}}
+            {{> dat-hang/thanh-toan type="payment"}}
+        {{/dat-hang/dung-chung}}
+    {{/dat-hang/dung-chung}}
+
+    {{> dat-hang/dung-chung type="benefits"}}
+{{/dat-hang/dung-chung}}

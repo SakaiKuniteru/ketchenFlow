@@ -1,7 +1,66 @@
-<link rel="stylesheet" href="/assets/css/pages/dat-hang/management.css">
-<div class="order-page" data-order-page="management">
-    {{> dat-hang/common/page-header title="Nhận đơn hàng" description="Theo dõi và xử lý các đơn hàng được gửi tới người dùng." showSteps=false}}
-    <div class="order-management-actions"><button class="order-button order-button--outline" data-management-refresh><i class="fa-solid fa-rotate"></i> Làm mới</button><button class="order-button order-button--primary" data-management-export><i class="fa-solid fa-download"></i> Xuất dữ liệu</button></div>
-    <div class="order-stat-grid" data-management-stats></div>
-    <div class="order-management-layout"><main class="order-card"><header class="order-card__header"><div class="order-card__title"><span class="order-card__icon"><i class="fa-solid fa-list"></i></span><h2>Danh sách đơn hàng</h2></div></header><div class="order-card__body"><div class="order-search-row"><label class="order-search"><i class="fa-solid fa-magnifying-glass"></i><input data-management-search placeholder="Tìm kiếm theo mã đơn, người đặt, người nhận..."></label><button class="order-button order-button--outline" data-management-filter><i class="fa-solid fa-filter"></i> Bộ lọc</button></div><div class="order-table-wrap"><table class="order-table"><thead><tr><th>STT</th><th>Mã đơn</th><th>Thời gian đặt</th><th>Người đặt</th><th>Người nhận</th><th>Số loại</th><th>Tổng SL</th><th>Tổng tiền</th><th>PTTT</th><th>Trạng thái</th></tr></thead><tbody data-management-table></tbody></table></div><div class="order-pagination" data-management-pagination></div></div></main><aside class="order-management-detail" data-management-detail></aside></div>
-</div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="management"
+}}
+    <div class="order-heading-actions">
+        {{> dat-hang/dung-chung
+            type="page-header"
+            title="Nhận đơn hàng"
+            description="Theo dõi và xử lý đơn hàng tại nhà ăn của cơ sở."
+        }}
+
+        <div class="order-action-row">
+            <button
+                type="button"
+                class="order-button order-button--outline"
+                data-orders-refresh
+            >
+                <i class="fa-solid fa-rotate"></i>
+                Làm mới
+            </button>
+
+            <button
+                type="button"
+                class="order-button order-button--primary"
+                data-management-export
+            >
+                <i class="fa-solid fa-download"></i>
+                Xuất dữ liệu
+            </button>
+        </div>
+    </div>
+
+    {{#> dat-hang/dung-chung type="management-layout"}}
+        <div class="order-stat-grid" data-management-stats></div>
+
+        {{#> dat-hang/dung-chung
+            type="card"
+            title="Danh sách đơn hàng"
+            icon="fa-solid fa-list"
+        }}
+            <div class="order-search-row">
+                {{> forms/search
+                    inputId="orderListSearch"
+                    placeholder="Tìm mã đơn, người đặt, người nhận..."
+                    showClear=true
+                    hideDropdown=true
+                }}
+
+                <button
+                    type="button"
+                    class="order-button order-button--outline"
+                    data-toggle-filters
+                    aria-expanded="false"
+                >
+                    <i class="fa-solid fa-filter"></i>
+                    Bộ lọc
+                </button>
+            </div>
+
+            {{> dat-hang/quan-ly-don type="filter"}}
+            {{> dat-hang/quan-ly-don type="table" management=true}}
+        {{/dat-hang/dung-chung}}
+    {{/dat-hang/dung-chung}}
+
+    {{> dat-hang/chi-tiet type="dialog"}}
+{{/dat-hang/dung-chung}}

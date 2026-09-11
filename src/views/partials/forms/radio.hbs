@@ -1,0 +1,5 @@
+<label class="form-radio {{className}}">
+    <input type="radio" id="{{id}}" name="{{name}}" value="{{value}}" {{#if checked}}checked{{/if}} {{#if required}}required{{/if}} {{#if disabled}}disabled{{/if}}>
+    {{#if icon}}<i class="{{icon}}" aria-hidden="true"></i>{{/if}}
+    <span><b>{{label}}</b>{{#if description}}<small>{{description}}</small>{{/if}}</span>
+</label>

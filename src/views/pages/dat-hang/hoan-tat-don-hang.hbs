@@ -1,5 +1,20 @@
-<link rel="stylesheet" href="/assets/css/pages/dat-hang/order-detail.css">
-<div class="order-page" data-order-page="completed" data-order-id="{{orderId}}">
-    {{> dat-hang/common/page-header title="Hoàn tất đơn hàng" description="Đơn hàng của bạn đã được ghi nhận. Theo dõi trạng thái xử lý ngay tại đây." showSteps=true activeStep=4}}
-    <div class="order-detail-layout" data-completed-content></div>
-</div>
+{{#> dat-hang/dung-chung
+    type="page-shell"
+    page="completed"
+    orderId=orderId
+}}
+    {{> dat-hang/dung-chung
+        type="page-header"
+        title="Hoàn tất đơn hàng"
+        description="Theo dõi trạng thái xử lý và thông tin giao nhận ngay tại đây."
+        showSteps=true
+        activeStep=4
+    }}
+
+    <div data-order-detail>
+        {{> dat-hang/dung-chung type="loading"}}
+    </div>
+
+    {{> dat-hang/chi-tiet type="dialog"}}
+    {{> dat-hang/dung-chung type="benefits"}}
+{{/dat-hang/dung-chung}}

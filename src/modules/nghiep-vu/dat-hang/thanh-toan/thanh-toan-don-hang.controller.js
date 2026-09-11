@@ -4,6 +4,18 @@ const service = require('./thanh-toan-don-hang.service');
 const { successResponse } = require('../../../../utils/response.util');
 
 class ThanhToanController {
+    async createManagement(req, res, next) {
+        try {
+            return successResponse(
+                res,
+                'Khởi tạo thanh toán thành công.',
+                await service.create(req.params.donHangId, req.user, true),
+                201
+            );
+        } catch (error) {
+            return next(error);
+        }
+    }
     async create(req, res, next) {
         try {
             const data = await service.create(req.params.donHangId, req.user);

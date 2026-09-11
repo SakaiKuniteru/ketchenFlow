@@ -21,8 +21,8 @@ class ThanhToanRepository {
         return result.rows[0];
     }
 
-    async list(donHangId) {
-        const result = await pool.query(
+    async list(donHangId, client = pool) {
+        const result = await client.query(
             `SELECT id, loai_giao_dich AS "loaiGiaoDich", phuong_thuc AS "phuongThuc", so_tien AS "soTien", ma_giao_dich AS "maGiaoDich", ma_tham_chieu AS "maThamChieu", qr_payload AS "qrPayload", qr_het_han_luc AS "qrHetHanLuc", trang_thai AS "trangThai", thoi_gian_thanh_toan AS "thoiGianThanhToan", created_at AS "createdAt" FROM nv_thanh_toan_don_hang WHERE don_hang_id = $1 ORDER BY created_at DESC`,
             [donHangId]
         );
@@ -31,7 +31,7 @@ class ThanhToanRepository {
 
     confirm(id, data, userId, client = pool) {
         return client.query(
-            `UPDATE nv_thanh_toan_don_hang SET trang_thai = $2, ma_tham_chieu = $3, ma_chuan_chi = $4, nguoi_xac_nhan_id = $5, thoi_gian_thanh_toan = NOW(), updated_at = NOW() WHERE id = $1 AND ma_giao_dich = $6 RETURNING don_hang_id`,
+            `UPDATE nv_thanh_toan_don_hang SET trang_thai = $2, ma_tham_chieu = $3, ma_chuan_chi = $4, nguoi_xac_nhan_id = $5, thoi_gian_thanh_toan = NOW(), updated_at = NOW() WHERE id = $1 AND ma_giao_dich = $6 AND trang_thai IN (10,20) AND (qr_het_han_luc IS NULL OR qr_het_han_luc > NOW()) RETURNING don_hang_id`,
             [id, data.trangThai, data.maThamChieu || null, data.maChuanChi || null, userId, data.maGiaoDich]
         );
     }
