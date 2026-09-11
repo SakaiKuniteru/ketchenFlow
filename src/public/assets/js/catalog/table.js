@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 
@@ -6,24 +6,22 @@ window.MCS.catalog = window.MCS.catalog || {};
 
 class MCSTable {
     constructor(root, options = {}) {
-        this.root = typeof root === "string"
-            ? document.querySelector(root)
-            : root;
+        this.root = typeof root === 'string' ? document.querySelector(root) : root;
 
         this.options = {
             columns: [],
             showIndex: true,
             showActions: false,
             selectable: false,
-            rowKey: "id",
-            statusKey: "active",
-            emptyTitle: "Không có dữ liệu",
-            emptyDescription: "Chưa có bản ghi nào để hiển thị.",
-            emptyIcon: "inbox",
+            rowKey: 'id',
+            statusKey: 'active',
+            emptyTitle: 'Không có dữ liệu',
+            emptyDescription: 'Chưa có bản ghi nào để hiển thị.',
+            emptyIcon: 'inbox',
 
             statusLabels: {
-                true: "TRUE",
-                false: "FALSE"
+                true: 'TRUE',
+                false: 'FALSE'
             },
 
             onRowClick: null,
@@ -31,9 +29,9 @@ class MCSTable {
             ...options
         };
 
-        this.body = this.root?.querySelector("[data-catalog-table-body]");
-        this.loading = this.root?.querySelector("[data-table-loading]");
-        this.table = this.root?.querySelector("[data-catalog-table]");
+        this.body = this.root?.querySelector('[data-catalog-table-body]');
+        this.loading = this.root?.querySelector('[data-table-loading]');
+        this.table = this.root?.querySelector('[data-catalog-table]');
 
         this.applyColumnWidths();
 
@@ -42,7 +40,7 @@ class MCSTable {
 
         this.sort = {
             key: null,
-            direction: "none"
+            direction: 'none'
         };
 
         this.bindEvents();
@@ -65,19 +63,12 @@ class MCSTable {
             totalWidth += 66;
         }
 
-        this.options.columns.forEach(column => {
-            const rawWidth = String(
-                column.width ||
-                `${DEFAULT_WIDTH}px`
-            ).trim();
+        this.options.columns.forEach((column) => {
+            const rawWidth = String(column.width || `${DEFAULT_WIDTH}px`).trim();
 
-            const match = rawWidth.match(
-                /^(\d+(?:\.\d+)?)px$/
-            );
+            const match = rawWidth.match(/^(\d+(?:\.\d+)?)px$/);
 
-            const width = match
-                ? Number(match[1])
-                : DEFAULT_WIDTH;
+            const width = match ? Number(match[1]) : DEFAULT_WIDTH;
 
             totalWidth += width;
         });
@@ -91,18 +82,16 @@ class MCSTable {
             return;
         }
 
-        this.root.addEventListener("click", event => {
-            const sortButton = event.target.closest("[data-sort-key]");
+        this.root.addEventListener('click', (event) => {
+            const sortButton = event.target.closest('[data-sort-key]');
 
             if (sortButton) {
-                this.toggleSort(
-                    sortButton.dataset.sortKey
-                );
+                this.toggleSort(sortButton.dataset.sortKey);
 
                 return;
             }
 
-            const row = event.target.closest("tr[data-record-id]");
+            const row = event.target.closest('tr[data-record-id]');
 
             if (!row) {
                 return;
@@ -110,45 +99,29 @@ class MCSTable {
 
             const recordId = row.dataset.recordId;
 
-            this.selectRow(
-                recordId
-            );
+            this.selectRow(recordId);
 
-            const record = this.getRecord(
-                recordId
-            );
+            const record = this.getRecord(recordId);
 
-            this.options.onRowClick?.(
-                record,
-                row
-            );
+            this.options.onRowClick?.(record, row);
         });
 
-        window.addEventListener("resize", () => {
+        window.addEventListener('resize', () => {
             this.closeActionMenus();
         });
     }
 
     setData(data) {
         this.data = Array.isArray(data)
-            ? data.filter(record => {
-                if (
-                    !record ||
-                    typeof record !== "object"
-                ) {
-                    return false;
-                }
+            ? data.filter((record) => {
+                  if (!record || typeof record !== 'object') {
+                      return false;
+                  }
 
-                const id = record[
-                    this.options.rowKey
-                ];
+                  const id = record[this.options.rowKey];
 
-                return (
-                    id !== null &&
-                    id !== undefined &&
-                    id !== ""
-                );
-            })
+                  return id !== null && id !== undefined && id !== '';
+              })
             : [];
 
         this.render();
@@ -159,12 +132,7 @@ class MCSTable {
     }
 
     getRecord(id) {
-        return this.data.find(
-            item =>
-                String(
-                    item[this.options.rowKey]
-                ) === String(id)
-        ) || null;
+        return this.data.find((item) => String(item[this.options.rowKey]) === String(id)) || null;
     }
 
     render() {
@@ -172,7 +140,7 @@ class MCSTable {
             return;
         }
 
-        this.body.innerHTML = "";
+        this.body.innerHTML = '';
 
         if (this.data.length === 0) {
             this.showEmpty();
@@ -183,95 +151,58 @@ class MCSTable {
         const fragment = document.createDocumentFragment();
 
         this.data.forEach((record, index) => {
-            fragment.appendChild(
-                this.createRow(
-                    record,
-                    index
-                )
-            );
+            fragment.appendChild(this.createRow(record, index));
         });
 
-        this.body.appendChild(
-            fragment
-        );
+        this.body.appendChild(fragment);
     }
 
     createRow(record, index) {
-        const row = document.createElement("tr");
+        const row = document.createElement('tr');
 
-        const recordId = record[
-            this.options.rowKey
-        ];
+        const recordId = record[this.options.rowKey];
 
         row.dataset.recordId = recordId;
 
-        if (
-            String(recordId) ===
-            String(this.selectedId)
-        ) {
-            row.classList.add(
-                "is-selected"
-            );
+        if (String(recordId) === String(this.selectedId)) {
+            row.classList.add('is-selected');
         }
 
         if (record.active === false) {
-            row.classList.add(
-                "is-disabled"
-            );
+            row.classList.add('is-disabled');
         }
 
         if (this.options.selectable) {
-            const cell = document.createElement("td");
+            const cell = document.createElement('td');
 
-            cell.className =
-                "catalog-table__cell " +
-                "catalog-table__cell--checkbox";
+            cell.className = 'catalog-table__cell ' + 'catalog-table__cell--checkbox';
 
-            const checkbox = document.createElement("input");
+            const checkbox = document.createElement('input');
 
-            checkbox.type = "checkbox";
+            checkbox.type = 'checkbox';
             checkbox.dataset.rowCheckbox = recordId;
 
-            checkbox.addEventListener(
-                "click",
-                event =>
-                    event.stopPropagation()
-            );
+            checkbox.addEventListener('click', (event) => event.stopPropagation());
 
-            cell.appendChild(
-                checkbox
-            );
+            cell.appendChild(checkbox);
 
-            row.appendChild(
-                cell
-            );
+            row.appendChild(cell);
         }
 
         if (this.options.showIndex) {
-            const indexCell = document.createElement("td");
+            const indexCell = document.createElement('td');
 
-            indexCell.className =
-                "catalog-table__cell " +
-                "catalog-table__cell--index";
+            indexCell.className = 'catalog-table__cell ' + 'catalog-table__cell--index';
 
-            indexCell.textContent = this.getDisplayIndex(
-                index
-            );
+            indexCell.textContent = this.getDisplayIndex(index);
 
-            row.appendChild(
-                indexCell
-            );
+            row.appendChild(indexCell);
         }
 
-        this.options.columns.forEach(column => {
-            const cell = document.createElement("td");
+        this.options.columns.forEach((column) => {
+            const cell = document.createElement('td');
 
-            cell.className = [
-                "catalog-table__cell",
-                column.className || ""
-            ]
-                .filter(Boolean)
-                .join(" ");
+            cell.className = ['catalog-table__cell', column.className || ''].filter(Boolean).join(' ');
 
             cell.dataset.columnKey = column.key;
 
@@ -280,82 +211,43 @@ class MCSTable {
                 cell.style.maxWidth = column.width;
             }
 
-            const value = this.resolveValue(
-                record,
-                column.key
-            );
+            const value = this.resolveValue(record, column.key);
 
             if (column.isBoolean) {
-                const badge = document.createElement("span");
+                const badge = document.createElement('span');
 
-                const isTrue =
-                    value === true ||
-                    value === 1 ||
-                    value === "1" ||
-                    String(value).toLowerCase() === "true";
+                const isTrue = value === true || value === 1 || value === '1' || String(value).toLowerCase() === 'true';
 
-                badge.className = [
-                    "status-badge",
-                    isTrue
-                        ? "status-badge--success"
-                        : "status-badge--neutral"
-                ].join(" ");
-
-                const dot = document.createElement("span");
-
-                dot.className = "status-badge__dot";
-
-                const label = document.createElement("span");
-
-                label.className = "status-badge__label";
-
-                label.textContent = isTrue
-                    ? (
-                        column.trueLabel ||
-                        "TRUE"
-                    )
-                    : (
-                        column.falseLabel ||
-                        "FALSE"
-                    );
-
-                badge.append(
-                    dot,
-                    label
+                badge.className = ['status-badge', isTrue ? 'status-badge--success' : 'status-badge--neutral'].join(
+                    ' '
                 );
 
-                cell.appendChild(
-                    badge
-                );
-            } else if (
-                typeof column.render === "function"
-            ) {
-                const rendered = column.render(
-                    value,
-                    record,
-                    index
-                );
+                const dot = document.createElement('span');
 
-                this.appendRenderedValue(
-                    cell,
-                    rendered
-                );
+                dot.className = 'status-badge__dot';
+
+                const label = document.createElement('span');
+
+                label.className = 'status-badge__label';
+
+                label.textContent = isTrue ? column.trueLabel || 'TRUE' : column.falseLabel || 'FALSE';
+
+                badge.append(dot, label);
+
+                cell.appendChild(badge);
+            } else if (typeof column.render === 'function') {
+                const rendered = column.render(value, record, index);
+
+                this.appendRenderedValue(cell, rendered);
             } else {
-                cell.textContent = this.formatValue(
-                    value,
-                    column
-                );
+                cell.textContent = this.formatValue(value, column);
             }
 
             if (column.title !== false) {
-                cell.title = this.getPlainText(
-                    cell
-                );
+                cell.title = this.getPlainText(cell);
             }
 
-            row.appendChild(
-                cell
-            );
+            row.appendChild(cell);
         });
 
         return row;
@@ -367,113 +259,57 @@ class MCSTable {
         }
 
         return String(path)
-            .split(".")
-            .reduce(
-                (value, key) => {
-                    return value?. [key];
-                },
-                object
-            );
+            .split('.')
+            .reduce((value, key) => {
+                return value?.[key];
+            }, object);
     }
 
     formatValue(value, column) {
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-            return (
-                column.emptyText ||
-                "—"
-            );
+        if (value === null || value === undefined || value === '') {
+            return column.emptyText || '—';
         }
 
         switch (column.type) {
-            case "number": {
-                const number =
-                    Number(value);
+            case 'number': {
+                const number = Number(value);
 
-                if (
-                    !Number.isFinite(number)
-                ) {
+                if (!Number.isFinite(number)) {
                     return String(value);
                 }
 
-                return new Intl
-                    .NumberFormat(
-                        "vi-VN",
-                        {
-                            minimumFractionDigits:
-                                column.minimumFractionDigits ??
-                                0,
+                return new Intl.NumberFormat('vi-VN', {
+                    minimumFractionDigits: column.minimumFractionDigits ?? 0,
 
-                            maximumFractionDigits:
-                                column.maximumFractionDigits ??
-                                20
-                        }
-                    )
-                    .format(number);
+                    maximumFractionDigits: column.maximumFractionDigits ?? 20
+                }).format(number);
             }
 
-            case "currency":
-                return new Intl
-                    .NumberFormat(
-                        "vi-VN",
-                        {
-                            style:
-                                "currency",
+            case 'currency':
+                return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
 
-                            currency:
-                                column.currency ||
-                                "VND",
+                    currency: column.currency || 'VND',
 
-                            maximumFractionDigits:
-                                column.maximumFractionDigits ??
-                                0
-                        }
-                    )
-                    .format(
-                        Number(value)
-                    );
+                    maximumFractionDigits: column.maximumFractionDigits ?? 0
+                }).format(Number(value));
 
-            case "date":
-                return this.formatDate(
-                    value,
-                    false
-                );
+            case 'date':
+                return this.formatDate(value, false);
 
-            case "datetime":
-                return this.formatDate(
-                    value,
-                    true
-                );
+            case 'datetime':
+                return this.formatDate(value, true);
 
-            case "boolean":
-                return value
-                    ? (
-                        column.trueLabel ||
-                        "Có"
-                    )
-                    : (
-                        column.falseLabel ||
-                        "Không"
-                    );
+            case 'boolean':
+                return value ? column.trueLabel || 'Có' : column.falseLabel || 'Không';
 
-            case "richtext":
-            case "html":
-                return this.formatRichText(
-                    value
-                );
+            case 'richtext':
+            case 'html':
+                return this.formatRichText(value);
 
             default:
-                if (
-                    this.containsRichTextHtml(
-                        value
-                    )
-                ) {
-                    return this.formatRichText(
-                        value
-                    );
+                if (this.containsRichTextHtml(value)) {
+                    return this.formatRichText(value);
                 }
 
                 return String(value);
@@ -481,215 +317,115 @@ class MCSTable {
     }
 
     containsRichTextHtml(value) {
-        const text =
-            String(
-                value ??
-                ""
-            );
+        const text = String(value ?? '');
 
         if (!text) {
             return false;
         }
 
-        return /<\/?(?:div|p|br|span|strong|b|em|i|u|a|ul|ol|li|blockquote)\b[^>]*>/i
-            .test(text);
+        return /<\/?(?:div|p|br|span|strong|b|em|i|u|a|ul|ol|li|blockquote)\b[^>]*>/i.test(text);
     }
 
     formatRichText(value) {
-        let html =
-            String(
-                value ??
-                ""
-            ).trim();
+        let html = String(value ?? '').trim();
 
         if (!html) {
-            return "";
+            return '';
         }
 
-        if (
-            !this.containsRichTextHtml(html) &&
-            /&lt;|&gt;/i.test(html)
-        ) {
-            const decoder =
-                document.createElement(
-                    "textarea"
-                );
+        if (!this.containsRichTextHtml(html) && /&lt;|&gt;/i.test(html)) {
+            const decoder = document.createElement('textarea');
 
-            decoder.innerHTML =
-                html;
+            decoder.innerHTML = html;
 
-            const decoded =
-                decoder.value;
+            const decoded = decoder.value;
 
-            if (
-                this.containsRichTextHtml(
-                    decoded
-                )
-            ) {
-                html =
-                    decoded;
+            if (this.containsRichTextHtml(decoded)) {
+                html = decoded;
             }
         }
 
-        const template =
-            document.createElement(
-                "template"
-            );
+        const template = document.createElement('template');
 
-        template.innerHTML =
-            html;
+        template.innerHTML = html;
 
-        template.content
-            .querySelectorAll(
-                "br"
-            )
-            .forEach(
-                element => {
+        template.content.querySelectorAll('br').forEach((element) => {
+            element.replaceWith(document.createTextNode(' '));
+        });
 
-                    element.replaceWith(
-                        document.createTextNode(
-                            " "
-                        )
-                    );
+        template.content.querySelectorAll('div, p, li, blockquote').forEach((element) => {
+            element.appendChild(document.createTextNode(' '));
+        });
 
-                }
-            );
-
-        template.content
-            .querySelectorAll(
-                "div, p, li, blockquote"
-            )
-            .forEach(
-                element => {
-
-                    element.appendChild(
-                        document.createTextNode(
-                            " "
-                        )
-                    );
-
-                }
-            );
-
-        return (
-            template.content
-                .textContent ||
-            ""
-        )
-            .replace(
-                /\u00A0/g,
-                " "
-            )
-            .replace(
-                /\s+/g,
-                " "
-            )
+        return (template.content.textContent || '')
+            .replace(/\u00A0/g, ' ')
+            .replace(/\s+/g, ' ')
             .trim();
     }
 
     formatDate(value, includeTime) {
         const date = new Date(value);
 
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
+        if (Number.isNaN(date.getTime())) {
             return String(value);
         }
 
-        return new Intl
-            .DateTimeFormat(
-                "vi-VN",
-                includeTime
-                    ? {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    }
-                    : {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric"
-                    }
-            )
-            .format(date);
+        return new Intl.DateTimeFormat(
+            'vi-VN',
+            includeTime
+                ? {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                  }
+                : {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                  }
+        ).format(date);
     }
 
     appendRenderedValue(cell, rendered) {
-        if (
-            rendered instanceof
-            Node
-        ) {
-            cell.appendChild(
-                rendered
-            );
+        if (rendered instanceof Node) {
+            cell.appendChild(rendered);
 
             return;
         }
 
-        if (
-            rendered &&
-            typeof rendered === "object" &&
-            rendered.html !== undefined
-        ) {
+        if (rendered && typeof rendered === 'object' && rendered.html !== undefined) {
             cell.innerHTML = rendered.html;
 
             return;
         }
 
-        cell.textContent =
-            rendered ?? "—";
+        cell.textContent = rendered ?? '—';
     }
 
     getPlainText(cell) {
-        return (
-            cell.textContent ||
-            ""
-        ).trim();
+        return (cell.textContent || '').trim();
     }
 
     getDisplayIndex(index) {
-        const offset = Number(
-            this.options.offset ||
-            0
-        );
+        const offset = Number(this.options.offset || 0);
 
-        return (
-            offset +
-            index +
-            1
-        );
+        return offset + index + 1;
     }
 
     selectRow(id) {
         this.selectedId = id;
 
-        this.body
-            ?.querySelectorAll("tr[data-record-id]")
-            .forEach(row => {
-                row.classList.toggle(
-                    "is-selected",
-                    String(
-                        row.dataset.recordId
-                    ) === String(id)
-                );
-            });
+        this.body?.querySelectorAll('tr[data-record-id]').forEach((row) => {
+            row.classList.toggle('is-selected', String(row.dataset.recordId) === String(id));
+        });
     }
 
     clearSelection() {
         this.selectedId = null;
 
-        this.body
-            ?.querySelectorAll(".is-selected")
-            .forEach(
-                row =>
-                    row.classList.remove(
-                        "is-selected"
-                    )
-            );
+        this.body?.querySelectorAll('.is-selected').forEach((row) => row.classList.remove('is-selected'));
     }
 
     showLoading() {
@@ -711,30 +447,27 @@ class MCSTable {
             return;
         }
 
-        this.body.innerHTML = "";
+        this.body.innerHTML = '';
 
-        const row = document.createElement("tr");
+        const row = document.createElement('tr');
 
-        row.className = "catalog-table__empty-row";
-        row.dataset.emptyRow = "";
+        row.className = 'catalog-table__empty-row';
+        row.dataset.emptyRow = '';
 
-        const cell = document.createElement("td");
+        const cell = document.createElement('td');
 
-        cell.className = "catalog-table__empty-cell";
+        cell.className = 'catalog-table__empty-cell';
         cell.colSpan = this.getColumnCount();
 
-        const emptyState = document.createElement("div");
+        const emptyState = document.createElement('div');
 
-        emptyState.className = "catalog-table-empty-state";
+        emptyState.className = 'catalog-table-empty-state';
 
-        const icon = document.createElement("div");
+        const icon = document.createElement('div');
 
-        icon.className = "catalog-table-empty-state__icon";
+        icon.className = 'catalog-table-empty-state__icon';
 
-        icon.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+        icon.setAttribute('aria-hidden', 'true');
 
         icon.innerHTML = `
             <svg
@@ -767,33 +500,23 @@ class MCSTable {
             </svg>
         `;
 
-        const title = document.createElement("strong");
+        const title = document.createElement('strong');
 
-        title.className = "catalog-table-empty-state__title";
+        title.className = 'catalog-table-empty-state__title';
         title.textContent = this.options.emptyTitle;
 
-        const description = document.createElement("p");
+        const description = document.createElement('p');
 
-        description.className = "catalog-table-empty-state__description";
+        description.className = 'catalog-table-empty-state__description';
         description.textContent = this.options.emptyDescription;
 
-        emptyState.append(
-            icon,
-            title,
-            description
-        );
+        emptyState.append(icon, title, description);
 
-        cell.appendChild(
-            emptyState
-        );
+        cell.appendChild(emptyState);
 
-        row.appendChild(
-            cell
-        );
+        row.appendChild(cell);
 
-        this.body.appendChild(
-            row
-        );
+        this.body.appendChild(row);
     }
 
     getColumnCount() {
@@ -807,38 +530,29 @@ class MCSTable {
             count += 1;
         }
 
-        return Math.max(
-            count,
-            1
-        );
+        return Math.max(count, 1);
     }
 
     hideEmpty() {
-        this.body
-            ?.querySelector("[data-empty-row]")
-            ?.remove();
+        this.body?.querySelector('[data-empty-row]')?.remove();
     }
 
     toggleSort(key) {
         if (this.sort.key !== key) {
             this.sort = {
                 key,
-                direction: "asc"
+                direction: 'asc'
             };
         } else {
             const next = {
-                none: "asc",
-                asc: "desc",
-                desc: "none"
+                none: 'asc',
+                asc: 'desc',
+                desc: 'none'
             };
 
-            this.sort.direction =
-                next[this.sort.direction];
+            this.sort.direction = next[this.sort.direction];
 
-            if (
-                this.sort.direction ===
-                "none"
-            ) {
+            if (this.sort.direction === 'none') {
                 this.sort.key = null;
             }
         }
@@ -851,20 +565,13 @@ class MCSTable {
     }
 
     updateSortIcons() {
-        this.root
-            ?.querySelectorAll("[data-sort-icon]")
-            .forEach(icon => {
-                const button = icon.closest(
-                    "[data-sort-key]"
-                );
+        this.root?.querySelectorAll('[data-sort-icon]').forEach((icon) => {
+            const button = icon.closest('[data-sort-key]');
 
-                const key = button?.dataset.sortKey;
+            const key = button?.dataset.sortKey;
 
-                icon.dataset.sortDirection =
-                    key === this.sort.key
-                        ? this.sort.direction
-                        : "none";
-            });
+            icon.dataset.sortDirection = key === this.sort.key ? this.sort.direction : 'none';
+        });
     }
 }
 

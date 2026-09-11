@@ -65,89 +65,60 @@
     margin: 0;
 }
 
-.date-time-range__item
-.form-field__label,
-
-.date-time-range__item
-.form-field__description,
-
-.date-time-range__item
-.form-field__error:empty {
+.date-time-range__item .form-field__label,
+.date-time-range__item .form-field__description,
+.date-time-range__item .form-field__error:empty {
     display: none !important;
 }
 
-.date-time-range__item
-.date-picker__input {
+.date-time-range__item .date-picker__input {
     width: 100%;
     height: 44px;
 
     padding-right: 36px;
     padding-left: 10px;
 
-    border:
-        1px solid
-        var(--color-border-light);
+    border: 1px solid var(--color-border-light);
 
-    border-radius:
-        var(--radius-md);
+    border-radius: var(--radius-md);
 
     outline: none;
 
-    color:
-        var(--color-text-primary);
+    color: var(--color-text-primary);
 
-    background:
-        var(--color-surface);
+    background: var(--color-surface);
 
     font-family: inherit;
     font-size: 13px;
     font-weight: 500;
 
-    box-sizing:
-        border-box;
+    box-sizing: border-box;
 
     transition:
-        border-color
-        var(--transition-fast),
-        box-shadow
-        var(--transition-fast);
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 }
 
-.date-time-range__item
-.date-picker__input:hover {
-    border-color:
-        var(--color-border);
+.date-time-range__item .date-picker__input:hover {
+    border-color: var(--color-border);
 }
 
-.date-time-range__item
-.date-picker__input:focus {
-    border-color:
-        var(--color-primary);
+.date-time-range__item .date-picker__input:focus {
+    border-color: var(--color-primary);
 
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            var(--color-primary-rgb),
-            0.08
-        );
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.08);
 }
 
-.date-time-range__item
-.date-picker__input::placeholder {
-    color:
-        var(--color-text-muted);
+.date-time-range__item .date-picker__input::placeholder {
+    color: var(--color-text-muted);
 }
 
-.list-filter-grid >
-.date-time-range,
-
-.list-filter-grid >
-.form-field {
+.list-filter-grid > .date-time-range,
+.list-filter-grid > .form-field {
     align-self: start;
 }
 
 @media (max-width: 768px) {
-
     .date-time-range__fields {
         grid-template-columns: 1fr;
         gap: 8px;
@@ -156,5 +127,4 @@
     .date-time-range__separator {
         display: none;
     }
-
 }

@@ -1,41 +1,13 @@
-<div
-    class="form-field form-field--switch {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field form-field--switch {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
-    <label
-        for="{{id}}"
-        class="form-switch">
+    <label for="{{id}}" class="form-switch">
 
-        <input
-            type="checkbox"
-            id="{{id}}"
-            name="{{name}}"
-            class="form-switch__input"
-            value="true"
+        <input type="checkbox" id="{{id}}" name="{{name}}" class="form-switch__input" value="true" {{#if checked}}
+            checked {{/if}} {{#if disabled}} disabled {{/if}} {{#if required}} required aria-required="true" {{/if}}
+            {{#if error}} aria-invalid="true" aria-describedby="{{id}}Error" {{else if description}}
+            aria-describedby="{{id}}Description" {{/if}}>
 
-            {{#if checked}}
-                checked
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if error}}
-                aria-invalid="true"
-                aria-describedby="{{id}}Error"
-            {{else if description}}
-                aria-describedby="{{id}}Description"
-            {{/if}}>
-
-        <span
-            class="form-switch__track"
-            aria-hidden="true">
+        <span class="form-switch__track" aria-hidden="true">
 
             <span class="form-switch__thumb">
             </span>
@@ -50,9 +22,7 @@
 
             {{#if description}}
 
-                <small
-                    id="{{id}}Description"
-                    class="form-switch__description">
+                <small id="{{id}}Description" class="form-switch__description">
                     {{description}}
                 </small>
 
@@ -62,11 +32,7 @@
 
     </label>
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

@@ -1,5 +1,5 @@
-const pool = require("../../../../config/database");
-const { active } = require("../../../../constants/enums");
+const pool = require('../../../../config/database');
+const { active } = require('../../../../constants/enums');
 
 class CoSoRepository {
     mapCoSo(row) {
@@ -16,31 +16,31 @@ class CoSoRepository {
             quocGiaId: row.quoc_gia_id,
             quocGia: row.quoc_gia_id
                 ? {
-                    id: row.quoc_gia_id,
-                    ma: row.ma_quoc_gia,
-                    ten: row.ten_quoc_gia,
-                    tenVietTat: row.quoc_gia_ten_viet_tat
-                }
+                      id: row.quoc_gia_id,
+                      ma: row.ma_quoc_gia,
+                      ten: row.ten_quoc_gia,
+                      tenVietTat: row.quoc_gia_ten_viet_tat
+                  }
                 : null,
 
             tinhThanhId: row.tinh_thanh_id,
             tinhThanh: row.tinh_thanh_id
                 ? {
-                    id: row.tinh_thanh_id,
-                    ma: row.ma_tinh_thanh,
-                    ten: row.ten_tinh_thanh,
-                    tenVietTat: row.tinh_thanh_ten_viet_tat
-                }
+                      id: row.tinh_thanh_id,
+                      ma: row.ma_tinh_thanh,
+                      ten: row.ten_tinh_thanh,
+                      tenVietTat: row.tinh_thanh_ten_viet_tat
+                  }
                 : null,
 
             xaPhuongId: row.xa_phuong_id,
             xaPhuong: row.xa_phuong_id
                 ? {
-                    id: row.xa_phuong_id,
-                    ma: row.ma_xa_phuong,
-                    ten: row.ten_xa_phuong,
-                    tenVietTat: row.xa_phuong_ten_viet_tat
-                }
+                      id: row.xa_phuong_id,
+                      ma: row.ma_xa_phuong,
+                      ten: row.ten_xa_phuong,
+                      tenVietTat: row.xa_phuong_ten_viet_tat
+                  }
                 : null,
 
             active: row.active,
@@ -92,9 +92,7 @@ class CoSoRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapCoSo(row)
-        );
+        return result.rows.map((row) => this.mapCoSo(row));
     }
 
     async getChiTiet(id) {
@@ -126,10 +124,7 @@ class CoSoRepository {
             params.push(excludeId);
         }
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rows.length > 0;
     }
@@ -148,10 +143,7 @@ class CoSoRepository {
             params.push(excludeId);
         }
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rows.length > 0;
     }
@@ -164,10 +156,7 @@ class CoSoRepository {
             AND active = true
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         return result.rows.length > 0;
     }
@@ -181,13 +170,7 @@ class CoSoRepository {
             AND active = true
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                tinhThanhId,
-                quocGiaId
-            ]
-        );
+        const result = await pool.query(sql, [tinhThanhId, quocGiaId]);
 
         return result.rows.length > 0;
     }
@@ -201,13 +184,7 @@ class CoSoRepository {
             AND active = true
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                xaPhuongId,
-                tinhThanhId
-            ]
-        );
+        const result = await pool.query(sql, [xaPhuongId, tinhThanhId]);
 
         return result.rows.length > 0;
     }
@@ -223,10 +200,7 @@ class CoSoRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maQuocGia]
-        );
+        const result = await pool.query(sql, [maQuocGia]);
 
         return result.rows[0] || null;
     }
@@ -244,13 +218,7 @@ class CoSoRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maTinhThanh,
-                quocGiaId
-            ]
-        );
+        const result = await pool.query(sql, [maTinhThanh, quocGiaId]);
 
         return result.rows[0] || null;
     }
@@ -268,13 +236,7 @@ class CoSoRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maXaPhuong,
-                tinhThanhId
-            ]
-        );
+        const result = await pool.query(sql, [maXaPhuong, tinhThanhId]);
 
         return result.rows[0] || null;
     }
@@ -290,34 +252,17 @@ class CoSoRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maCoSo
-            ]
-        );
+        const result = await pool.query(sql, [maCoSo]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapCoSo(
-            result.rows[0]
-        );
+        return this.mapCoSo(result.rows[0]);
     }
 
     async create(data) {
-        const {
-            maCoSo,
-            tenCoSo,
-            diaChi,
-            logo,
-            favicon,
-            logoDoiTac,
-            quocGiaId,
-            tinhThanhId,
-            xaPhuongId
-        } = data;
+        const { maCoSo, tenCoSo, diaChi, logo, favicon, logoDoiTac, quocGiaId, tinhThanhId, xaPhuongId } = data;
 
         const sql = `
             INSERT INTO dm_co_so (
@@ -363,29 +308,13 @@ class CoSoRepository {
             xaPhuongId
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
-        const {
-            maCoSo,
-            tenCoSo,
-            diaChi,
-            logo,
-            favicon,
-            logoDoiTac,
-            quocGiaId,
-            tinhThanhId,
-            xaPhuongId,
-            active
-        } = data;
+        const { maCoSo, tenCoSo, diaChi, logo, favicon, logoDoiTac, quocGiaId, tinhThanhId, xaPhuongId, active } = data;
 
         const sql = `
             UPDATE dm_co_so
@@ -419,10 +348,7 @@ class CoSoRepository {
             id
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;

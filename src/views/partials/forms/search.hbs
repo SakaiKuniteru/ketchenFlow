@@ -1,28 +1,11 @@
-<div
-    class="search-picker {{className}}"
-    data-search-picker
-    {{#if searchPickerId}}
-        id="{{searchPickerId}}"
-    {{/if}}>
+<div class="search-picker {{className}}" data-search-picker {{#if searchPickerId}} id="{{searchPickerId}}" {{/if}}>
 
-    <div
-        class="search-picker__control"
-        data-search-picker-control>
+    <div class="search-picker__control" data-search-picker-control>
 
-        <svg
-            class="search-picker__search-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true">
+        <svg class="search-picker__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 
-            <circle
-                cx="11"
-                cy="11"
-                r="8">
+            <circle cx="11" cy="11" r="8">
             </circle>
 
             <path d="m21 21-4.3-4.3">
@@ -30,46 +13,18 @@
 
         </svg>
 
-        <input
-            type="text"
-            {{#if inputId}}
-                id="{{inputId}}"
-            {{/if}}
-            class="search-picker__input"
-            data-search-picker-input
-            {{#if catalogSearch}}
-                data-catalog-search
-            {{/if}}
-            {{#if listSearch}}
-                data-list-search
-            {{/if}}
-            placeholder="{{#if placeholder}}{{placeholder}}{{else}}Nhập để tìm kiếm{{/if}}"
-            autocomplete="off"
-            spellcheck="false"
-            aria-autocomplete="list"
-            aria-expanded="false">
+        <input type="text" {{#if inputId}} id="{{inputId}}" {{/if}} class="search-picker__input"
+            data-search-picker-input {{#if catalogSearch}} data-catalog-search {{/if}} {{#if listSearch}}
+            data-list-search {{/if}} placeholder="{{#if placeholder}}{{placeholder}}{{else}}Nhập để tìm kiếm{{/if}}"
+            autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-expanded="false">
 
         {{#if showClear}}
 
-            <button
-                type="button"
-                class="search-picker__clear"
-                data-search-picker-clear
-                {{#if catalogSearch}}
-                    data-catalog-clear-search
-                {{/if}}
-                
-                {{#if listSearch}}
-                    data-list-clear-search
-                {{/if}}
+            <button type="button" class="search-picker__clear" data-search-picker-clear {{#if catalogSearch}}
+                data-catalog-clear-search {{/if}} {{#if listSearch}} data-list-clear-search {{/if}}
+                aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" hidden>
 
-                aria-label="Xóa tìm kiếm"
-                title="Xóa tìm kiếm"
-                hidden>
-
-                <i
-                    class="fa-solid fa-xmark"
-                    aria-hidden="true">
+                <i class="fa-solid fa-xmark" aria-hidden="true">
                 </i>
 
             </button>
@@ -78,9 +33,7 @@
 
         {{#if showShortcut}}
 
-            <span
-                class="search-picker__shortcut"
-                data-search-picker-shortcut>
+            <span class="search-picker__shortcut" data-search-picker-shortcut>
 
                 ⌘ + K
 
@@ -93,21 +46,12 @@
 
     {{#unless hideDropdown}}
 
-        <div
-            class="search-picker__dropdown"
-            data-search-picker-dropdown
-            hidden>
+        <div class="search-picker__dropdown" data-search-picker-dropdown hidden>
 
-            <div
-                class="search-picker__list"
-                data-search-picker-list
-                role="listbox">
+            <div class="search-picker__list" data-search-picker-list role="listbox">
             </div>
 
-            <div
-                class="search-picker__empty"
-                data-search-picker-empty
-                hidden>
+            <div class="search-picker__empty" data-search-picker-empty hidden>
 
                 Không tìm thấy dữ liệu phù hợp.
 

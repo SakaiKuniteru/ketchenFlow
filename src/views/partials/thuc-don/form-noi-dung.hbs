@@ -1,9 +1,6 @@
-<section
-    class="td-card td-content"
-    data-content-section>
+<section class="td-card td-content" data-content-section>
 
-    <header
-        class="td-card__header td-content__header">
+    <header class="td-card__header td-content__header">
 
         <div>
             <h2>
@@ -13,9 +10,7 @@
 
 
         <div class="td-content__header-actions">
-            <div
-                class="td-content-search"
-                data-day-search>
+            <div class="td-content-search" data-day-search>
                 {{> forms/search
                     inputId="thucDonDaySearch"
                     className="search-picker--thuc-don-content"
@@ -25,15 +20,10 @@
                     hideDropdown=true
                 }}
             </div>
-            
-            <div
-                class="td-view-switcher"
-                data-content-view-switcher>
 
-                <button
-                    type="button"
-                    class="td-view-switcher__button is-active"
-                    data-content-view="detail"
+            <div class="td-view-switcher" data-content-view-switcher>
+
+                <button type="button" class="td-view-switcher__button is-active" data-content-view="detail"
                     title="Xem chi tiết">
 
                     <i class="fa-solid fa-layer-group"></i>
@@ -44,10 +34,7 @@
 
                 </button>
 
-                <button
-                    type="button"
-                    class="td-view-switcher__button"
-                    data-content-view="group"
+                <button type="button" class="td-view-switcher__button" data-content-view="group"
                     title="Xem theo nhóm món">
 
                     <i class="fa-solid fa-list"></i>
@@ -58,11 +45,7 @@
 
                 </button>
 
-                <button
-                    type="button"
-                    class="td-view-switcher__button"
-                    data-content-view="food"
-                    title="Xem theo món ăn">
+                <button type="button" class="td-view-switcher__button" data-content-view="food" title="Xem theo món ăn">
 
                     <i class="fa-solid fa-bowl-food"></i>
 
@@ -74,11 +57,7 @@
 
             </div>
 
-            <button
-                type="button"
-                class="td-btn td-btn--outline"
-                data-add-day
-                data-editor-only>
+            <button type="button" class="td-btn td-btn--outline" data-add-day data-editor-only>
 
                 <i class="fa-solid fa-plus"></i>
 
@@ -92,15 +71,10 @@
 
     </header>
 
-    <div
-        class="td-days"
-        data-days-list>
+    <div class="td-days" data-days-list>
     </div>
 
-    <div
-        class="td-day-search-empty"
-        data-day-search-empty
-        hidden>
+    <div class="td-day-search-empty" data-day-search-empty hidden>
 
         <i class="fa-solid fa-magnifying-glass"></i>
 
@@ -114,14 +88,9 @@
 
     </div>
 
-    <div
-        class="td-content__bottom"
-        data-editor-only>
+    <div class="td-content__bottom" data-editor-only>
 
-        <button
-            type="button"
-            class="td-btn td-btn--outline"
-            data-add-day>
+        <button type="button" class="td-btn td-btn--outline" data-add-day>
 
             <i class="fa-solid fa-plus"></i>
 
@@ -137,16 +106,11 @@
 
 <template id="td-template-day">
 
-    <article
-        class="td-day"
-        data-day-item>
+    <article class="td-day" data-day-item>
 
         <header class="td-day__header">
 
-            <button
-                type="button"
-                class="td-day__toggle"
-                data-toggle-day>
+            <button type="button" class="td-day__toggle" data-toggle-day>
 
                 <span class="td-day__icon">
 
@@ -155,9 +119,7 @@
                 </span>
 
 
-                <span
-                    class="td-day__index"
-                    data-day-index>
+                <span class="td-day__index" data-day-index>
 
                     01
 
@@ -203,12 +165,7 @@
             </button>
 
 
-            <button
-                type="button"
-                class="td-icon-btn is-danger"
-                data-delete-day
-                data-editor-only
-                title="Xóa ngày">
+            <button type="button" class="td-icon-btn is-danger" data-delete-day data-editor-only title="Xóa ngày">
 
                 <i class="fa-regular fa-trash-can"></i>
 
@@ -217,10 +174,7 @@
         </header>
 
 
-        <div
-            class="td-day__body"
-            data-day-body
-            hidden>
+        <div class="td-day__body" data-day-body hidden>
 
             <div class="td-section-row">
 
@@ -229,11 +183,7 @@
                 </strong>
 
 
-                <button
-                    type="button"
-                    class="td-btn td-btn--small td-btn--outline"
-                    data-add-group
-                    data-day-add-group
+                <button type="button" class="td-btn td-btn--small td-btn--outline" data-add-group data-day-add-group
                     data-editor-only>
 
                     <i class="fa-solid fa-plus"></i>
@@ -247,9 +197,7 @@
             </div>
 
 
-            <div
-                class="td-groups"
-                data-groups-list>
+            <div class="td-groups" data-groups-list>
             </div>
 
         </div>
@@ -260,16 +208,11 @@
 
 <template id="td-template-group">
 
-    <article
-        class="td-group"
-        data-group-item>
+    <article class="td-group" data-group-item>
 
         <header class="td-group__header">
 
-            <button
-                type="button"
-                class="td-group__toggle"
-                data-toggle-group>
+            <button type="button" class="td-group__toggle" data-toggle-group>
 
                 <span class="td-group__icon">
 
@@ -283,9 +226,7 @@
                 </strong>
 
 
-                <span
-                    class="td-group__count"
-                    data-group-food-count>
+                <span class="td-group__count" data-group-food-count>
 
                     0 món
 
@@ -297,12 +238,7 @@
             </button>
 
 
-            <button
-                type="button"
-                class="td-icon-btn is-danger"
-                data-delete-group
-                data-editor-only
-                title="Xóa nhóm">
+            <button type="button" class="td-icon-btn is-danger" data-delete-group data-editor-only title="Xóa nhóm">
 
                 <i class="fa-regular fa-trash-can"></i>
 
@@ -311,10 +247,7 @@
         </header>
 
 
-        <div
-            class="td-group__body"
-            data-group-body
-            hidden>
+        <div class="td-group__body" data-group-body hidden>
 
             <div class="td-section-row">
 
@@ -323,11 +256,7 @@
                 </strong>
 
 
-                <button
-                    type="button"
-                    class="td-btn td-btn--small td-btn--outline"
-                    data-add-food
-                    data-editor-only>
+                <button type="button" class="td-btn td-btn--small td-btn--outline" data-add-food data-editor-only>
 
                     <i class="fa-solid fa-plus"></i>
 
@@ -340,9 +269,7 @@
             </div>
 
 
-            <div
-                class="td-foods"
-                data-food-list>
+            <div class="td-foods" data-food-list>
             </div>
 
         </div>
@@ -353,17 +280,11 @@
 
 <template id="td-template-food">
 
-    <article
-        class="td-food"
-        data-food-item>
+    <article class="td-food" data-food-item>
 
         <div class="td-food__identity">
 
-            <img
-                src="/uploads/danh-muc/mon-an/mon-an.png"
-                alt="Ảnh món ăn"
-                data-food-image
-            >
+            <img src="/uploads/danh-muc/mon-an/mon-an.png" alt="Ảnh món ăn" data-food-image>
 
 
             <div>
@@ -419,12 +340,7 @@
 
         </div>
 
-        <button
-            type="button"
-            class="td-icon-btn is-danger"
-            data-delete-food
-            data-editor-only
-            title="Xóa món">
+        <button type="button" class="td-icon-btn is-danger" data-delete-food data-editor-only title="Xóa món">
 
             <i class="fa-regular fa-trash-can"></i>
 
@@ -436,9 +352,7 @@
 
 <template id="td-template-group-overview">
 
-    <article
-        class="td-group td-group--overview"
-        data-group-overview-item>
+    <article class="td-group td-group--overview" data-group-overview-item>
 
         <div class="td-group__header">
 
@@ -461,9 +375,7 @@
                 </div>
 
 
-                <span
-                    class="td-group__count"
-                    data-group-overview-food-count>
+                <span class="td-group__count" data-group-overview-food-count>
 
                     0 món
 
@@ -479,16 +391,11 @@
 
 <template id="td-template-food-overview">
 
-    <article
-        class="td-food td-food--overview"
-        data-food-overview-item>
+    <article class="td-food td-food--overview" data-food-overview-item>
 
         <div class="td-food__identity">
 
-            <img
-                src="/uploads/danh-muc/mon-an/mon-an.png"
-                alt="Ảnh món ăn"
-                data-food-overview-image>
+            <img src="/uploads/danh-muc/mon-an/mon-an.png" alt="Ảnh món ăn" data-food-overview-image>
 
 
             <div>
@@ -506,9 +413,7 @@
         </div>
 
 
-        <div
-            class="td-food__field"
-            data-food-overview-group-field>
+        <div class="td-food__field" data-food-overview-group-field>
 
             <span>
                 Nhóm món
@@ -563,10 +468,7 @@
 
 </template>
 
-<div
-    class="td-empty"
-    data-empty-day
-    hidden>
+<div class="td-empty" data-empty-day hidden>
 
     <i class="fa-regular fa-calendar-plus"></i>
 

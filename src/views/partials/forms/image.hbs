@@ -1,12 +1,8 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
     {{#if label}}
 
-        <label
-            class="form-field__label"
-            for="{{id}}">
+        <label class="form-field__label" for="{{id}}">
 
             <span>
                 {{label}}
@@ -14,9 +10,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -26,55 +20,24 @@
 
     {{/if}}
 
-    <div
-        class="image-picker"
-        data-image-picker
-        style="
+    <div class="image-picker" data-image-picker style="
             --image-picker-width: {{#if width}}{{width}}{{else}}150px{{/if}};
             --image-picker-height: {{#if height}}{{height}}{{else}}150px{{/if}};
         ">
 
-        <input
-            type="hidden"
-            value="{{value}}"
-            data-image-picker-value>
+        <input type="hidden" value="{{value}}" data-image-picker-value>
 
-        <input
-            id="{{id}}"
-            name="{{name}}"
-            type="file"
-            class="image-picker__input"
-            accept="{{#if accept}}{{accept}}{{else}}image/*{{/if}}"
-            data-image-picker-input
+        <input id="{{id}}" name="{{name}}" type="file" class="image-picker__input"
+            accept="{{#if accept}}{{accept}}{{else}}image/*{{/if}}" data-image-picker-input {{#if required}} required
+            aria-required="true" {{/if}} {{#if disabled}} disabled {{/if}}>
 
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
+        <label for="{{id}}" class="image-picker__preview" data-image-picker-preview>
 
-            {{#if disabled}}
-                disabled
-            {{/if}}
-        >
+            <img class="image-picker__image" data-image-picker-image alt="Ảnh xem trước" hidden>
 
-        <label
-            for="{{id}}"
-            class="image-picker__preview"
-            data-image-picker-preview>
+            <span class="image-picker__placeholder" data-image-picker-placeholder>
 
-            <img
-                class="image-picker__image"
-                data-image-picker-image
-                alt="Ảnh xem trước"
-                hidden>
-
-            <span
-                class="image-picker__placeholder"
-                data-image-picker-placeholder>
-
-                <span
-                    class="image-picker__plus"
-                    aria-hidden="true">
+                <span class="image-picker__plus" aria-hidden="true">
 
                     <i class="fa-solid fa-plus"></i>
 
@@ -94,17 +57,10 @@
 
         </label>
 
-        <button
-            type="button"
-            class="image-picker__remove"
-            data-image-picker-remove
-            title="Xóa ảnh"
-            aria-label="Xóa ảnh"
+        <button type="button" class="image-picker__remove" data-image-picker-remove title="Xóa ảnh" aria-label="Xóa ảnh"
             hidden>
 
-            <i
-                class="fa-solid fa-xmark"
-                aria-hidden="true">
+            <i class="fa-solid fa-xmark" aria-hidden="true">
             </i>
 
         </button>
@@ -119,11 +75,7 @@
 
     {{/if}}
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

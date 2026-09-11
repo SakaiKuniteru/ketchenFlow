@@ -9,10 +9,7 @@
 
     <div class="data-list-page__actions">
         {{#each listPage.actions}}
-            <button
-                type="button"
-                class="data-list-btn {{className}}"
-                data-list-action="{{action}}"
+            <button type="button" class="data-list-btn {{className}}" data-list-action="{{action}}"
                 {{#if hidden}}hidden{{/if}}>
 
                 {{#if icon}}

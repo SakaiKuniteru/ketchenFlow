@@ -1,0 +1,3 @@
+.order-page[data-order-page='management'] .order-card {
+    min-height: 0;
+}

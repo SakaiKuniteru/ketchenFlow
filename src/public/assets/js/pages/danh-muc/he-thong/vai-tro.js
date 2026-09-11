@@ -1,30 +1,27 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const API_BASE = "/api/mcs/v1/dm-vai-tro";
-    const API_QUYEN = "/api/mcs/v1/dm-quyen/tong-hop?active=true";
-    const API_NHOM_TINH_NANG = "/api/mcs/v1/dm-nhom-tinh-nang/tong-hop?active=true";
+document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = '/api/mcs/v1/dm-vai-tro';
+    const API_QUYEN = '/api/mcs/v1/dm-quyen/tong-hop?active=true';
+    const API_NHOM_TINH_NANG = '/api/mcs/v1/dm-nhom-tinh-nang/tong-hop?active=true';
 
     let catalog = null;
     let dsQuyen = [];
     let dsNhomTinhNang = [];
     let dsQuyenDaChon = new Set();
     let dsQuyenTamChon = new Set();
-    let currentMode = "view";
-    let detailTrangThai = "selected";
+    let currentMode = 'view';
+    let detailTrangThai = 'selected';
     let popupTrangThai = [];
     let popupNhomTinhNangId = [];
-    let popupSearchText = "";
+    let popupSearchText = '';
     let popupDangMo = false;
 
     initialize();
 
     async function initialize() {
         await initializeCatalog();
-        await Promise.all([
-            loadNhomTinhNang(),
-            loadQuyen()
-        ]);
+        await Promise.all([loadNhomTinhNang(), loadQuyen()]);
         initializeFilters();
         bindEvents();
         syncChooseButton();
@@ -34,85 +31,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function initializeCatalog() {
         catalog = await window.MCS.pages.createCatalogPage({
-            moduleName: "vai-tro",
+            moduleName: 'vai-tro',
             permissionCodes: {
-                view: "Q000526",
-                create: "Q000527",
-                update: "Q000528"
+                view: 'Q000526',
+                create: 'Q000527',
+                update: 'Q000528'
             },
-            detailTitle: "Thông tin vai trò",
-            createTitle: "Thêm vai trò",
-            updateTitle: "Cập nhật vai trò",
+            detailTitle: 'Thông tin vai trò',
+            createTitle: 'Thêm vai trò',
+            updateTitle: 'Cập nhật vai trò',
 
             columns: [
                 {
-                    key: "maVaiTro",
-                    label: "Mã vai trò",
+                    key: 'maVaiTro',
+                    label: 'Mã vai trò',
                     sortable: true,
                     filterable: true
                 },
                 {
-                    key: "tenVaiTro",
-                    label: "Tên vai trò",
+                    key: 'tenVaiTro',
+                    label: 'Tên vai trò',
                     sortable: true,
                     filterable: true
                 },
                 {
-                    key: "moTa",
-                    label: "Mô tả",
+                    key: 'moTa',
+                    label: 'Mô tả',
                     filterable: true
                 },
                 {
-                    key: "active",
-                    label: "Trạng thái",
+                    key: 'active',
+                    label: 'Trạng thái',
                     sortable: true,
-                    className: "catalog-table__cell--center",
+                    className: 'catalog-table__cell--center',
                     render: window.createStatusBadge
                 }
             ],
 
             defaultValues: {
-                maVaiTro: "",
-                tenVaiTro: "",
-                moTa: "",
+                maVaiTro: '',
+                tenVaiTro: '',
+                moTa: '',
                 dsQuyenId: [],
                 active: true
             },
 
             validation: {
                 maVaiTro: {
-                    label: "Mã vai trò",
+                    label: 'Mã vai trò',
                     required: true,
                     maxLength: 50,
                     unique: true,
-                    requiredMessage: "Vui lòng điền vào trường này.",
-                    maxLengthMessage: "Mã vai trò không được vượt quá 50 ký tự.",
-                    uniqueMessage: "Mã vai trò đã tồn tại."
+                    requiredMessage: 'Vui lòng điền vào trường này.',
+                    maxLengthMessage: 'Mã vai trò không được vượt quá 50 ký tự.',
+                    uniqueMessage: 'Mã vai trò đã tồn tại.'
                 },
 
                 tenVaiTro: {
-                    label: "Tên vai trò",
+                    label: 'Tên vai trò',
                     required: true,
                     maxLength: 255,
                     unique: true,
-                    requiredMessage: "Vui lòng điền vào trường này.",
-                    maxLengthMessage: "Tên vai trò không được vượt quá 255 ký tự.",
-                    uniqueMessage: "Tên vai trò đã tồn tại."
+                    requiredMessage: 'Vui lòng điền vào trường này.',
+                    maxLengthMessage: 'Tên vai trò không được vượt quá 255 ký tự.',
+                    uniqueMessage: 'Tên vai trò đã tồn tại.'
                 },
 
                 moTa: {
-                    label: "Mô tả",
+                    label: 'Mô tả',
                     maxLength: 500,
-                    maxLengthMessage: "Mô tả không được vượt quá 500 ký tự."
+                    maxLengthMessage: 'Mô tả không được vượt quá 500 ký tự.'
                 }
             },
 
             mapRecordToForm(record) {
                 return {
-                    id: record?.id ?? "",
-                    maVaiTro: record?.maVaiTro || "",
-                    tenVaiTro: record?.tenVaiTro || "",
-                    moTa: record?.moTa || "",
+                    id: record?.id ?? '',
+                    maVaiTro: record?.maVaiTro || '',
+                    tenVaiTro: record?.tenVaiTro || '',
+                    moTa: record?.moTa || '',
                     dsQuyenId: normalizeNumberArray(record?.dsQuyenId),
                     active: record?.active === true
                 };
@@ -120,23 +117,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             transformPayload(formData) {
                 return {
-                    maVaiTro: String(formData.maVaiTro || "").trim().toUpperCase(),
-                    tenVaiTro: String(formData.tenVaiTro || "").trim(),
-                    moTa: String(formData.moTa || "").trim() || null,
+                    maVaiTro: String(formData.maVaiTro || '')
+                        .trim()
+                        .toUpperCase(),
+                    tenVaiTro: String(formData.tenVaiTro || '').trim(),
+                    moTa: String(formData.moTa || '').trim() || null,
                     dsQuyenId: Array.from(dsQuyenDaChon).map(Number).filter(Number.isInteger),
                     active: formData.active === true
                 };
             },
 
             getRecordSubtitle(record) {
-                return record?.maVaiTro || "";
+                return record?.maVaiTro || '';
             },
 
             onRecordLoaded(record, mode) {
-                currentMode = mode || "view";
+                currentMode = mode || 'view';
                 dsQuyenDaChon = new Set(normalizeNumberArray(record?.dsQuyenId));
                 dsQuyenTamChon = new Set(dsQuyenDaChon);
-                detailTrangThai = "selected";
+                detailTrangThai = 'selected';
                 resetPopupFilters();
                 syncChooseButton();
                 syncDetailStatusFilter();
@@ -145,29 +144,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
             toolbarActions: [
                 {
-                    action: "filter",
-                    label: "Tìm kiếm chi tiết",
-                    icon: "search"
+                    action: 'filter',
+                    label: 'Tìm kiếm chi tiết',
+                    icon: 'search'
                 },
                 {
-                    action: "export-vai-tro",
-                    label: "Xuất danh mục vai trò",
-                    icon: "download"
+                    action: 'export-vai-tro',
+                    label: 'Xuất danh mục vai trò',
+                    icon: 'download'
                 },
                 {
-                    action: "import-vai-tro",
-                    label: "Nhập danh mục vai trò",
-                    icon: "upload"
+                    action: 'import-vai-tro',
+                    label: 'Nhập danh mục vai trò',
+                    icon: 'upload'
                 }
             ],
 
             onAction(action, id, catalogInstance) {
-                if (action === "export-vai-tro") {
+                if (action === 'export-vai-tro') {
                     exportData();
                     return;
                 }
 
-                if (action === "import-vai-tro") {
+                if (action === 'import-vai-tro') {
                     importData(catalogInstance);
                 }
             }
@@ -179,17 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await window.MCS.api.request(API_QUYEN);
             const data = response?.data;
 
-            dsQuyen = Array.isArray(data)
-                ? data
-                : (data?.items || data?.data || []);
+            dsQuyen = Array.isArray(data) ? data : data?.items || data?.data || [];
 
-            dsQuyen = dsQuyen.filter(item => item?.active !== false);
+            dsQuyen = dsQuyen.filter((item) => item?.active !== false);
         } catch (error) {
             dsQuyen = [];
 
-            window.MCS?.toast?.error(
-                error?.message || "Không thể tải danh sách quyền."
-            );
+            window.MCS?.toast?.error(error?.message || 'Không thể tải danh sách quyền.');
         }
     }
 
@@ -198,11 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await window.MCS.api.request(API_NHOM_TINH_NANG);
             const data = response?.data;
 
-            dsNhomTinhNang = Array.isArray(data)
-                ? data
-                : (data?.items || data?.data || []);
+            dsNhomTinhNang = Array.isArray(data) ? data : data?.items || data?.data || [];
 
-            dsNhomTinhNang = dsNhomTinhNang.filter(item => item?.active !== false);
+            dsNhomTinhNang = dsNhomTinhNang.filter((item) => item?.active !== false);
         } catch (error) {
             dsNhomTinhNang = [];
         }
@@ -210,54 +203,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function initializeFilters() {
         renderSingleSelectOptions(
-            "vaiTroDanhSachTrangThai",
+            'vaiTroDanhSachTrangThai',
             [
                 {
-                    value: "selected",
-                    label: "Đã có quyền"
+                    value: 'selected',
+                    label: 'Đã có quyền'
                 },
                 {
-                    value: "unselected",
-                    label: "Chưa có quyền"
+                    value: 'unselected',
+                    label: 'Chưa có quyền'
                 }
             ],
-            "selected"
+            'selected'
         );
 
-        renderMultipleSelectOptions(
-            "vaiTroPopupTrangThai",
-            [
-                {
-                    value: "selected",
-                    label: "Đã có quyền"
-                },
-                {
-                    value: "unselected",
-                    label: "Chưa có quyền"
-                }
-            ]
-        );
+        renderMultipleSelectOptions('vaiTroPopupTrangThai', [
+            {
+                value: 'selected',
+                label: 'Đã có quyền'
+            },
+            {
+                value: 'unselected',
+                label: 'Chưa có quyền'
+            }
+        ]);
 
         renderMultipleSelectOptions(
-            "vaiTroPopupNhomTinhNang",
-            dsNhomTinhNang.map(item => ({
+            'vaiTroPopupNhomTinhNang',
+            dsNhomTinhNang.map((item) => ({
                 value: String(item.id),
                 label: `${item.maNhomTinhNang} - ${item.tenNhomTinhNang}`
             }))
         );
     }
 
-    function renderSingleSelectOptions(selectId, options, selectedValue = "") {
+    function renderSingleSelectOptions(selectId, options, selectedValue = '') {
         const select = document.getElementById(selectId);
 
         if (!select) {
             return;
         }
 
-        select.innerHTML = "";
+        select.innerHTML = '';
 
-        options.forEach(item => {
-            const option = document.createElement("option");
+        options.forEach((item) => {
+            const option = document.createElement('option');
 
             option.value = item.value;
             option.textContent = item.label;
@@ -266,10 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
             select.appendChild(option);
         });
 
-        select
-            .closest("[data-smart-select]")
-            ?.smartSelect
-            ?.refresh?.();
+        select.closest('[data-smart-select]')?.smartSelect?.refresh?.();
     }
 
     function renderMultipleSelectOptions(selectId, options) {
@@ -279,17 +266,17 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        select.innerHTML = "";
+        select.innerHTML = '';
 
-        const allOption = document.createElement("option");
+        const allOption = document.createElement('option');
 
-        allOption.value = "__ALL__";
-        allOption.textContent = "Tất cả";
+        allOption.value = '__ALL__';
+        allOption.textContent = 'Tất cả';
 
         select.appendChild(allOption);
 
-        options.forEach(item => {
-            const option = document.createElement("option");
+        options.forEach((item) => {
+            const option = document.createElement('option');
 
             option.value = String(item.value);
             option.textContent = item.label;
@@ -297,10 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
             select.appendChild(option);
         });
 
-        select
-            .closest("[data-smart-select]")
-            ?.smartSelect
-            ?.refresh?.();
+        select.closest('[data-smart-select]')?.smartSelect?.refresh?.();
     }
 
     function getMultiSelectValues(selectId) {
@@ -311,17 +295,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const values = Array.from(select.selectedOptions || [])
-            .map(option => String(option.value))
-            .filter(value => value !== "__ALL__");
+            .map((option) => String(option.value))
+            .filter((value) => value !== '__ALL__');
 
         return values;
     }
 
     function getDetailQuyen() {
-        return dsQuyen.filter(quyen => {
+        return dsQuyen.filter((quyen) => {
             const selected = dsQuyenDaChon.has(Number(quyen.id));
 
-            if (detailTrangThai === "selected") {
+            if (detailTrangThai === 'selected') {
                 return selected;
             }
 
@@ -330,35 +314,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderDetailQuyen() {
-        const container = document.querySelector("[data-vai-tro-detail-list]");
+        const container = document.querySelector('[data-vai-tro-detail-list]');
 
         if (!container) {
             return;
         }
 
-        container.innerHTML = "";
+        container.innerHTML = '';
 
         const danhSach = getDetailQuyen();
         const groups = buildGroups(danhSach);
 
-        groups.forEach(group => {
+        groups.forEach((group) => {
             container.appendChild(createDetailGroup(group));
         });
 
         if (groups.length === 0) {
-            const empty = document.createElement("div");
+            const empty = document.createElement('div');
 
-            empty.className = "vai-tro-quyen__empty";
+            empty.className = 'vai-tro-quyen__empty';
 
             empty.textContent =
-                detailTrangThai === "selected"
-                    ? "Vai trò chưa được gán quyền."
-                    : "Không còn quyền chưa được gán.";
+                detailTrangThai === 'selected' ? 'Vai trò chưa được gán quyền.' : 'Không còn quyền chưa được gán.';
 
             container.appendChild(empty);
         }
 
-        const count = document.querySelector("[data-vai-tro-detail-count]");
+        const count = document.querySelector('[data-vai-tro-detail-count]');
 
         if (count) {
             count.textContent = `${danhSach.length} quyền`;
@@ -366,37 +348,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createDetailGroup(group) {
-        const section = document.createElement("section");
-        section.className = "vai-tro-quyen__group";
+        const section = document.createElement('section');
+        section.className = 'vai-tro-quyen__group';
 
-        const header = document.createElement("div");
-        header.className = "vai-tro-quyen__group-header";
+        const header = document.createElement('div');
+        header.className = 'vai-tro-quyen__group-header';
 
-        const title = document.createElement("span");
-        title.className = "vai-tro-quyen__group-title";
-        title.textContent = group.ma
-            ? `${group.ma} - ${group.ten}`
-            : group.ten;
+        const title = document.createElement('span');
+        title.className = 'vai-tro-quyen__group-title';
+        title.textContent = group.ma ? `${group.ma} - ${group.ten}` : group.ten;
 
         header.appendChild(title);
         section.appendChild(header);
 
-        const grid = document.createElement("div");
-        grid.className = "vai-tro-quyen__group-grid";
+        const grid = document.createElement('div');
+        grid.className = 'vai-tro-quyen__group-grid';
 
-        group.quyen
-            .sort(sortQuyen)
-            .forEach(quyen => {
-                grid.appendChild(
-                    createPermissionCheckbox(
-                        quyen,
-                        {
-                            checked: dsQuyenDaChon.has(Number(quyen.id)),
-                            disabled: true
-                        }
-                    )
-                );
-            });
+        group.quyen.sort(sortQuyen).forEach((quyen) => {
+            grid.appendChild(
+                createPermissionCheckbox(quyen, {
+                    checked: dsQuyenDaChon.has(Number(quyen.id)),
+                    disabled: true
+                })
+            );
+        });
 
         section.appendChild(grid);
 
@@ -404,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openPermissionPopup() {
-        if (currentMode === "view") {
+        if (currentMode === 'view') {
             return;
         }
 
@@ -412,11 +387,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         popupTrangThai = [];
         popupNhomTinhNangId = [];
-        popupSearchText = "";
+        popupSearchText = '';
 
         resetPopupFilters();
 
-        const modal = document.querySelector("[data-vai-tro-permission-modal]");
+        const modal = document.querySelector('[data-vai-tro-permission-modal]');
 
         if (!modal) {
             return;
@@ -429,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.hidden = false;
         popupDangMo = true;
 
-        document.body.classList.add("vai-tro-permission-open");
+        document.body.classList.add('vai-tro-permission-open');
 
         renderPopupQuyen();
     }
@@ -440,7 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function closePermissionPopup() {
-        const modal = document.querySelector("[data-vai-tro-permission-modal]");
+        const modal = document.querySelector('[data-vai-tro-permission-modal]');
 
         if (modal) {
             modal.hidden = true;
@@ -448,7 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         popupDangMo = false;
 
-        document.body.classList.remove("vai-tro-permission-open");
+        document.body.classList.remove('vai-tro-permission-open');
     }
 
     function savePermissionPopup() {
@@ -459,41 +434,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function normalizeSearchText(value) {
-        return String(value ?? "")
-            .normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .replace(
-                /đ/g,
-                "d"
-            )
-            .replace(
-                /Đ/g,
-                "D"
-            )
+        return String(value ?? '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
             .toLowerCase()
             .trim();
     }
 
     function getPopupVisibleQuyen() {
-        return dsQuyen.filter(quyen => {
+        return dsQuyen.filter((quyen) => {
             const id = Number(quyen.id);
             const selected = dsQuyenTamChon.has(id);
 
             if (popupTrangThai.length === 1) {
-                if (
-                    popupTrangThai.includes("selected") &&
-                    !selected
-                ) {
+                if (popupTrangThai.includes('selected') && !selected) {
                     return false;
                 }
 
-                if (
-                    popupTrangThai.includes("unselected") &&
-                    selected
-                ) {
+                if (popupTrangThai.includes('unselected') && selected) {
                     return false;
                 }
             }
@@ -501,9 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (popupNhomTinhNangId.length > 0) {
                 const ids = getQuyenNhomIds(quyen).map(String);
 
-                const matched = popupNhomTinhNangId.some(
-                    nhomId => ids.includes(String(nhomId))
-                );
+                const matched = popupNhomTinhNangId.some((nhomId) => ids.includes(String(nhomId)));
 
                 if (!matched) {
                     return false;
@@ -511,14 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (popupSearchText) {
-                const text = normalizeSearchText(
-                    [
-                        quyen.maQuyen,
-                        quyen.tenQuyen
-                    ]
-                        .filter(Boolean)
-                        .join(" ")
-                );
+                const text = normalizeSearchText([quyen.maQuyen, quyen.tenQuyen].filter(Boolean).join(' '));
 
                 if (!text.includes(popupSearchText)) {
                     return false;
@@ -530,26 +481,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderPopupQuyen() {
-        const container = document.querySelector("[data-vai-tro-popup-list]");
+        const container = document.querySelector('[data-vai-tro-popup-list]');
 
         if (!container) {
             return;
         }
 
-        container.innerHTML = "";
+        container.innerHTML = '';
 
         const visible = getPopupVisibleQuyen();
         const groups = buildGroups(visible);
 
-        groups.forEach(group => {
+        groups.forEach((group) => {
             container.appendChild(createPopupGroup(group));
         });
 
         if (groups.length === 0) {
-            const empty = document.createElement("div");
+            const empty = document.createElement('div');
 
-            empty.className = "vai-tro-quyen__empty";
-            empty.textContent = "Không tìm thấy quyền phù hợp.";
+            empty.className = 'vai-tro-quyen__empty';
+            empty.textContent = 'Không tìm thấy quyền phù hợp.';
 
             container.appendChild(empty);
         }
@@ -559,44 +510,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createPopupGroup(group) {
-        const section = document.createElement("section");
-        section.className = "vai-tro-quyen__group";
+        const section = document.createElement('section');
+        section.className = 'vai-tro-quyen__group';
 
-        const header = document.createElement("div");
-        header.className = "vai-tro-quyen__group-header";
+        const header = document.createElement('div');
+        header.className = 'vai-tro-quyen__group-header';
 
-        const left = document.createElement("div");
-        left.className = "vai-tro-quyen__group-heading";
+        const left = document.createElement('div');
+        left.className = 'vai-tro-quyen__group-heading';
 
-        const groupCheckbox = document.createElement("input");
-        groupCheckbox.type = "checkbox";
-        groupCheckbox.className = "vai-tro-quyen__group-checkbox";
+        const groupCheckbox = document.createElement('input');
+        groupCheckbox.type = 'checkbox';
+        groupCheckbox.className = 'vai-tro-quyen__group-checkbox';
 
-        const groupIds = [
-            ...new Set(
-                group.quyen.map(item => Number(item.id))
-            )
-        ];
+        const groupIds = [...new Set(group.quyen.map((item) => Number(item.id)))];
 
-        const selectedCount = groupIds.filter(
-            id => dsQuyenTamChon.has(id)
-        ).length;
+        const selectedCount = groupIds.filter((id) => dsQuyenTamChon.has(id)).length;
 
-        groupCheckbox.checked =
-            groupIds.length > 0 &&
-            selectedCount === groupIds.length;
+        groupCheckbox.checked = groupIds.length > 0 && selectedCount === groupIds.length;
 
-        groupCheckbox.indeterminate =
-            selectedCount > 0 &&
-            selectedCount < groupIds.length;
+        groupCheckbox.indeterminate = selectedCount > 0 && selectedCount < groupIds.length;
 
-        groupCheckbox.addEventListener("change", () => {
+        groupCheckbox.addEventListener('change', () => {
             if (groupCheckbox.checked) {
-                groupIds.forEach(id => {
+                groupIds.forEach((id) => {
                     dsQuyenTamChon.add(id);
                 });
             } else {
-                groupIds.forEach(id => {
+                groupIds.forEach((id) => {
                     dsQuyenTamChon.delete(id);
                 });
             }
@@ -604,53 +545,46 @@ document.addEventListener("DOMContentLoaded", () => {
             renderPopupQuyen();
         });
 
-        const title = document.createElement("span");
+        const title = document.createElement('span');
 
-        title.className = "vai-tro-quyen__group-title";
-        title.textContent = group.ma
-            ? `${group.ma} - ${group.ten}`
-            : group.ten;
+        title.className = 'vai-tro-quyen__group-title';
+        title.textContent = group.ma ? `${group.ma} - ${group.ten}` : group.ten;
 
         left.appendChild(groupCheckbox);
         left.appendChild(title);
         header.appendChild(left);
 
-        const count = document.createElement("span");
+        const count = document.createElement('span');
 
-        count.className = "vai-tro-quyen__group-count";
+        count.className = 'vai-tro-quyen__group-count';
         count.textContent = `${selectedCount}/${groupIds.length}`;
 
         header.appendChild(count);
         section.appendChild(header);
 
-        const grid = document.createElement("div");
-        grid.className = "vai-tro-quyen__group-grid";
+        const grid = document.createElement('div');
+        grid.className = 'vai-tro-quyen__group-grid';
 
-        group.quyen
-            .sort(sortQuyen)
-            .forEach(quyen => {
-                grid.appendChild(
-                    createPermissionCheckbox(
-                        quyen,
-                        {
-                            checked: dsQuyenTamChon.has(Number(quyen.id)),
-                            disabled: false,
+        group.quyen.sort(sortQuyen).forEach((quyen) => {
+            grid.appendChild(
+                createPermissionCheckbox(quyen, {
+                    checked: dsQuyenTamChon.has(Number(quyen.id)),
+                    disabled: false,
 
-                            onChange(checked) {
-                                const id = Number(quyen.id);
+                    onChange(checked) {
+                        const id = Number(quyen.id);
 
-                                if (checked) {
-                                    dsQuyenTamChon.add(id);
-                                } else {
-                                    dsQuyenTamChon.delete(id);
-                                }
-
-                                renderPopupQuyen();
-                            }
+                        if (checked) {
+                            dsQuyenTamChon.add(id);
+                        } else {
+                            dsQuyenTamChon.delete(id);
                         }
-                    )
-                );
-            });
+
+                        renderPopupQuyen();
+                    }
+                })
+            );
+        });
 
         section.appendChild(grid);
 
@@ -658,129 +592,95 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function bindEvents() {
-        document
-            .querySelector("[data-vai-tro-open-permission]")
-            ?.addEventListener("click", openPermissionPopup);
+        document.querySelector('[data-vai-tro-open-permission]')?.addEventListener('click', openPermissionPopup);
 
-        document
-            .querySelectorAll("[data-vai-tro-permission-close]")
-            .forEach(button => {
-                button.addEventListener("click", cancelPermissionPopup);
-            });
+        document.querySelectorAll('[data-vai-tro-permission-close]').forEach((button) => {
+            button.addEventListener('click', cancelPermissionPopup);
+        });
 
-        document
-            .querySelector("[data-vai-tro-permission-cancel]")
-            ?.addEventListener("click", cancelPermissionPopup);
+        document.querySelector('[data-vai-tro-permission-cancel]')?.addEventListener('click', cancelPermissionPopup);
 
-        document
-            .querySelector("[data-vai-tro-permission-save]")
-            ?.addEventListener("click", savePermissionPopup);
+        document.querySelector('[data-vai-tro-permission-save]')?.addEventListener('click', savePermissionPopup);
 
-        document
-            .getElementById("vaiTroDanhSachTrangThai")
-            ?.addEventListener("change", event => {
-                detailTrangThai = String(event.target.value || "selected");
-                renderDetailQuyen();
-            });
+        document.getElementById('vaiTroDanhSachTrangThai')?.addEventListener('change', (event) => {
+            detailTrangThai = String(event.target.value || 'selected');
+            renderDetailQuyen();
+        });
 
-        document
-            .getElementById("vaiTroPopupChonTatCa")
-            ?.addEventListener("change", event => {
-                const visible = getPopupVisibleQuyen();
+        document.getElementById('vaiTroPopupChonTatCa')?.addEventListener('change', (event) => {
+            const visible = getPopupVisibleQuyen();
 
-                const ids = [
-                    ...new Set(
-                        visible.map(item => Number(item.id))
-                    )
-                ];
+            const ids = [...new Set(visible.map((item) => Number(item.id)))];
 
-                if (event.target.checked) {
-                    ids.forEach(
-                        id => dsQuyenTamChon.add(id)
-                    );
-                } else {
-                    ids.forEach(
-                        id => dsQuyenTamChon.delete(id)
-                    );
-                }
+            if (event.target.checked) {
+                ids.forEach((id) => dsQuyenTamChon.add(id));
+            } else {
+                ids.forEach((id) => dsQuyenTamChon.delete(id));
+            }
 
-                renderPopupQuyen();
-            });
+            renderPopupQuyen();
+        });
 
-        document
-            .getElementById("vaiTroPopupTrangThai")
-            ?.addEventListener("change", () => {
-                popupTrangThai = getMultiSelectValues("vaiTroPopupTrangThai");
-                renderPopupQuyen();
-            });
+        document.getElementById('vaiTroPopupTrangThai')?.addEventListener('change', () => {
+            popupTrangThai = getMultiSelectValues('vaiTroPopupTrangThai');
+            renderPopupQuyen();
+        });
 
-        document
-            .getElementById("vaiTroPopupNhomTinhNang")
-            ?.addEventListener("change", () => {
-                popupNhomTinhNangId = getMultiSelectValues("vaiTroPopupNhomTinhNang");
-                renderPopupQuyen();
-            });
+        document.getElementById('vaiTroPopupNhomTinhNang')?.addEventListener('change', () => {
+            popupNhomTinhNangId = getMultiSelectValues('vaiTroPopupNhomTinhNang');
+            renderPopupQuyen();
+        });
 
-        document
-            .getElementById("vaiTroPopupTimQuyen")
-            ?.addEventListener(
-                "input",
-                event => {
-                    popupSearchText = normalizeSearchText(event.target.value);
-                    renderPopupQuyen();
-                }
-            );
+        document.getElementById('vaiTroPopupTimQuyen')?.addEventListener('input', (event) => {
+            popupSearchText = normalizeSearchText(event.target.value);
+            renderPopupQuyen();
+        });
 
-        document
-            .querySelector("[data-catalog-create]")
-            ?.addEventListener("click", () => {
-                currentMode = "create";
+        document.querySelector('[data-catalog-create]')?.addEventListener('click', () => {
+            currentMode = 'create';
 
-                dsQuyenDaChon = new Set();
-                dsQuyenTamChon = new Set();
-                detailTrangThai = "selected";
+            dsQuyenDaChon = new Set();
+            dsQuyenTamChon = new Set();
+            detailTrangThai = 'selected';
 
-                syncChooseButton();
-                syncDetailStatusFilter();
-                renderDetailQuyen();
-            });
+            syncChooseButton();
+            syncDetailStatusFilter();
+            renderDetailQuyen();
+        });
     }
 
     function syncChooseButton() {
-        const button = document.querySelector("[data-vai-tro-open-permission]");
+        const button = document.querySelector('[data-vai-tro-open-permission]');
 
         if (!button) {
             return;
         }
 
-        button.hidden = currentMode === "view";
+        button.hidden = currentMode === 'view';
     }
 
     function syncDetailStatusFilter() {
-        const select = document.getElementById("vaiTroDanhSachTrangThai");
+        const select = document.getElementById('vaiTroDanhSachTrangThai');
 
         if (!select) {
             return;
         }
 
-        const value = detailTrangThai || "selected";
+        const value = detailTrangThai || 'selected';
 
-        Array.from(select.options)
-            .forEach(option => {
-                option.selected = String(option.value) === String(value);
-            });
+        Array.from(select.options).forEach((option) => {
+            option.selected = String(option.value) === String(value);
+        });
 
         select.value = value;
 
-        const smartSelect = select.closest("[data-smart-select]");
+        const smartSelect = select.closest('[data-smart-select]');
 
-        smartSelect
-            ?.smartSelect
-            ?.refresh?.();
+        smartSelect?.smartSelect?.refresh?.();
     }
 
     function syncPopupSummary() {
-        const summary = document.querySelector("[data-vai-tro-popup-summary]");
+        const summary = document.querySelector('[data-vai-tro-popup-summary]');
 
         if (!summary) {
             return;
@@ -791,17 +691,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getQuyenNhomIds(quyen) {
         if (Array.isArray(quyen.dsNhomTinhNangId)) {
-            return quyen
-                .dsNhomTinhNangId
-                .map(Number)
-                .filter(Number.isInteger);
+            return quyen.dsNhomTinhNangId.map(Number).filter(Number.isInteger);
         }
 
         if (Array.isArray(quyen.dsNhomTinhNang)) {
-            return quyen
-                .dsNhomTinhNang
-                .map(item => Number(item.id))
-                .filter(Number.isInteger);
+            return quyen.dsNhomTinhNang.map((item) => Number(item.id)).filter(Number.isInteger);
         }
 
         return [];
@@ -810,26 +704,23 @@ document.addEventListener("DOMContentLoaded", () => {
     function buildGroups(quyenList) {
         const groupMap = new Map();
 
-        dsNhomTinhNang.forEach(nhom => {
-            groupMap.set(
-                Number(nhom.id),
-                {
-                    id: Number(nhom.id),
-                    ma: nhom.maNhomTinhNang || "",
-                    ten: nhom.tenNhomTinhNang || "",
-                    quyen: []
-                }
-            );
+        dsNhomTinhNang.forEach((nhom) => {
+            groupMap.set(Number(nhom.id), {
+                id: Number(nhom.id),
+                ma: nhom.maNhomTinhNang || '',
+                ten: nhom.tenNhomTinhNang || '',
+                quyen: []
+            });
         });
 
         const otherGroup = {
             id: null,
-            ma: "",
-            ten: "Khác",
+            ma: '',
+            ten: 'Khác',
             quyen: []
         };
 
-        quyenList.forEach(quyen => {
+        quyenList.forEach((quyen) => {
             const ids = getQuyenNhomIds(quyen);
 
             if (ids.length === 0) {
@@ -839,7 +730,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let assigned = false;
 
-            ids.forEach(id => {
+            ids.forEach((id) => {
                 const group = groupMap.get(Number(id));
 
                 if (!group) {
@@ -855,8 +746,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        const groups = Array.from(groupMap.values())
-            .filter(group => group.quyen.length > 0);
+        const groups = Array.from(groupMap.values()).filter((group) => group.quyen.length > 0);
 
         if (otherGroup.quyen.length > 0) {
             groups.push(otherGroup);
@@ -866,33 +756,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createPermissionCheckbox(quyen, options = {}) {
-        const template = document.getElementById("vaiTroQuyenCheckboxTemplate");
+        const template = document.getElementById('vaiTroQuyenCheckboxTemplate');
         const fragment = template.content.cloneNode(true);
-        const item = fragment.querySelector("[data-vai-tro-quyen-item]");
+        const item = fragment.querySelector('[data-vai-tro-quyen-item]');
         const input = item.querySelector("input[type='checkbox']");
-        const label = item.querySelector(".form-checkbox__label");
+        const label = item.querySelector('.form-checkbox__label');
         const id = Number(quyen.id);
 
-        const inputId = `vaiTroQuyen_${id}_${Math.random()
-            .toString(36)
-            .slice(2, 8)}`;
+        const inputId = `vaiTroQuyen_${id}_${Math.random().toString(36).slice(2, 8)}`;
 
         input.id = inputId;
-        input.name = "dsQuyenId";
+        input.name = 'dsQuyenId';
         input.value = String(id);
         input.checked = options.checked === true;
         input.disabled = options.disabled === true;
 
         if (label) {
-            label.textContent = `${quyen.maQuyen || ""} - ${quyen.tenQuyen || ""}`;
+            label.textContent = `${quyen.maQuyen || ''} - ${quyen.tenQuyen || ''}`;
         }
 
-        item
-            .querySelector("label[for]")
-            ?.setAttribute("for", inputId);
+        item.querySelector('label[for]')?.setAttribute('for', inputId);
 
-        if (typeof options.onChange === "function") {
-            input.addEventListener("change", () => {
+        if (typeof options.onChange === 'function') {
+            input.addEventListener('change', () => {
                 options.onChange(input.checked);
             });
         }
@@ -901,7 +787,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function syncPopupSelectAll() {
-        const checkbox = document.getElementById("vaiTroPopupChonTatCa");
+        const checkbox = document.getElementById('vaiTroPopupChonTatCa');
 
         if (!checkbox) {
             return;
@@ -909,73 +795,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const visible = getPopupVisibleQuyen();
 
-        const ids = [
-            ...new Set(
-                visible.map(item => Number(item.id))
-            )
-        ];
+        const ids = [...new Set(visible.map((item) => Number(item.id)))];
 
-        const selected = ids.filter(
-            id => dsQuyenTamChon.has(id)
-        ).length;
+        const selected = ids.filter((id) => dsQuyenTamChon.has(id)).length;
 
-        checkbox.checked =
-            ids.length > 0 &&
-            selected === ids.length;
+        checkbox.checked = ids.length > 0 && selected === ids.length;
 
-        checkbox.indeterminate =
-            selected > 0 &&
-            selected < ids.length;
+        checkbox.indeterminate = selected > 0 && selected < ids.length;
     }
 
     function sortQuyen(a, b) {
-        const maA = String(a.maQuyen || "");
-        const maB = String(b.maQuyen || "");
+        const maA = String(a.maQuyen || '');
+        const maB = String(b.maQuyen || '');
 
-        return maA.localeCompare(
-            maB,
-            "vi",
-            {
-                numeric: true,
-                sensitivity: "base"
-            }
-        );
+        return maA.localeCompare(maB, 'vi', {
+            numeric: true,
+            sensitivity: 'base'
+        });
     }
 
     function countSelected(quyen) {
-        return quyen
-            .filter(
-                item => dsQuyenDaChon.has(Number(item.id))
-            )
-            .length;
+        return quyen.filter((item) => dsQuyenDaChon.has(Number(item.id))).length;
     }
 
     function normalizeNumberArray(value) {
         if (Array.isArray(value)) {
-            return [
-                ...new Set(
-                    value
-                        .map(Number)
-                        .filter(Number.isInteger)
-                )
-            ];
+            return [...new Set(value.map(Number).filter(Number.isInteger))];
         }
 
-        if (
-            value === undefined ||
-            value === null ||
-            value === ""
-        ) {
+        if (value === undefined || value === null || value === '') {
             return [];
         }
 
         return [
             ...new Set(
                 String(value)
-                    .replace(/^\[/, "")
-                    .replace(/\]$/, "")
-                    .split(",")
-                    .map(item => Number(item.trim()))
+                    .replace(/^\[/, '')
+                    .replace(/\]$/, '')
+                    .split(',')
+                    .map((item) => Number(item.trim()))
                     .filter(Number.isInteger)
             )
         ];
@@ -983,43 +841,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function exportData() {
         try {
-            const result = await window.MCS.api.requestFile(
-                `${API_BASE}/xuat-du-lieu`,
-                {
-                    method: "GET"
-                }
-            );
+            const result = await window.MCS.api.requestFile(`${API_BASE}/xuat-du-lieu`, {
+                method: 'GET'
+            });
 
-            window.MCS.api.downloadBlob(
-                result.blob,
-                result.fileName || "dm_vai_tro.xlsx"
-            );
+            window.MCS.api.downloadBlob(result.blob, result.fileName || 'dm_vai_tro.xlsx');
 
-            window.MCS?.toast?.success(
-                "Xuất dữ liệu thành công."
-            );
+            window.MCS?.toast?.success('Xuất dữ liệu thành công.');
         } catch (error) {
-            console.error(
-                "Xuất dữ liệu vai trò thất bại:",
-                error
-            );
+            console.error('Xuất dữ liệu vai trò thất bại:', error);
 
-            window.MCS?.toast?.error(
-                error?.message || "Xuất dữ liệu thất bại."
-            );
+            window.MCS?.toast?.error(error?.message || 'Xuất dữ liệu thất bại.');
         }
     }
 
     function importData(catalogInstance) {
-        const input = document.createElement("input");
+        const input = document.createElement('input');
 
-        input.type = "file";
-        input.accept = ".xlsx,.xls,.xlsm";
+        input.type = 'file';
+        input.accept = '.xlsx,.xls,.xlsm';
         input.hidden = true;
 
         document.body.appendChild(input);
 
-        input.addEventListener("change", async () => {
+        input.addEventListener('change', async () => {
             const file = input.files?.[0];
 
             if (!file) {
@@ -1030,37 +875,24 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const body = new FormData();
 
-                body.append("file", file);
+                body.append('file', file);
 
-                const result = await window.MCS.api.requestFile(
-                    `${API_BASE}/import-du-lieu`,
-                    {
-                        method: "POST",
-                        body
-                    }
-                );
+                const result = await window.MCS.api.requestFile(`${API_BASE}/import-du-lieu`, {
+                    method: 'POST',
+                    body
+                });
 
-                window.MCS.api.downloadBlob(
-                    result.blob,
-                    result.fileName || `dm_vai_tro_import_${Date.now()}.xlsx`
-                );
+                window.MCS.api.downloadBlob(result.blob, result.fileName || `dm_vai_tro_import_${Date.now()}.xlsx`);
 
                 if (catalogInstance?.load) {
                     await catalogInstance.load();
                 }
 
-                window.MCS?.toast?.success(
-                    "Đã xử lý import. Vui lòng kiểm tra file kết quả."
-                );
+                window.MCS?.toast?.success('Đã xử lý import. Vui lòng kiểm tra file kết quả.');
             } catch (error) {
-                console.error(
-                    "Import dữ liệu vai trò thất bại:",
-                    error
-                );
+                console.error('Import dữ liệu vai trò thất bại:', error);
 
-                window.MCS?.toast?.error(
-                    error?.message || "Import dữ liệu thất bại."
-                );
+                window.MCS?.toast?.error(error?.message || 'Import dữ liệu thất bại.');
             } finally {
                 input.remove();
             }
@@ -1072,23 +904,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function resetPopupFilters() {
         popupTrangThai = [];
         popupNhomTinhNangId = [];
-        popupSearchText = "";
+        popupSearchText = '';
 
-        clearSmartSelect("vaiTroPopupTrangThai");
-        clearSmartSelect("vaiTroPopupNhomTinhNang");
+        clearSmartSelect('vaiTroPopupTrangThai');
+        clearSmartSelect('vaiTroPopupNhomTinhNang');
 
-        const search = document.getElementById("vaiTroPopupTimQuyen");
+        const search = document.getElementById('vaiTroPopupTimQuyen');
 
         if (search) {
-            search.value = "";
+            search.value = '';
 
             search.dispatchEvent(
-                new Event(
-                    "input",
-                    {
-                        bubbles: true
-                    }
-                )
+                new Event('input', {
+                    bubbles: true
+                })
             );
         }
     }
@@ -1100,14 +929,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        Array.from(select.options)
-            .forEach(option => {
-                option.selected = false;
-            });
+        Array.from(select.options).forEach((option) => {
+            option.selected = false;
+        });
 
-        select
-            .closest("[data-smart-select]")
-            ?.smartSelect
-            ?.refresh?.();
+        select.closest('[data-smart-select]')?.smartSelect?.refresh?.();
     }
 });

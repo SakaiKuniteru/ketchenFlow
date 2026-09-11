@@ -1,31 +1,17 @@
-"use strict";
-const ApiError = require("../../../../utils/api-error");
-const {
-    readExcel
-} = require("../../../../helpers/excel/excel-reader");
-const {
-    toNumber,
-    toBoolean
-} = require("../../../../helpers/excel/excel-value");
+'use strict';
+const ApiError = require('../../../../utils/api-error');
+const { readExcel } = require('../../../../helpers/excel/excel-reader');
+const { toNumber, toBoolean } = require('../../../../helpers/excel/excel-value');
 const {
     validateKeyHeaders,
     resolveImportStrategy,
     shouldChangeCode
-} = require("../../../../helpers/excel/import-strategy");
-const {
-    createResultFile
-} = require("../../../../helpers/excel/excel-result");
-const sanPhamRepository = require("./san-pham.repository");
-const sanPhamService = require("./san-pham.service");
-const {
-    MA_BAO_CAO,
-    HEADER_ROW,
-    DATA_START_ROW
-} = require("./san-pham.export");
-const {
-    normalizeGiaBan
-} = require("./san-pham-number");
-
+} = require('../../../../helpers/excel/import-strategy');
+const { createResultFile } = require('../../../../helpers/excel/excel-result');
+const sanPhamRepository = require('./san-pham.repository');
+const sanPhamService = require('./san-pham.service');
+const { MA_BAO_CAO, HEADER_ROW, DATA_START_ROW } = require('./san-pham.export');
+const { normalizeGiaBan } = require('./san-pham-number');
 
 function parseNumber(value, fieldName) {
     if (value === undefined) {
@@ -38,7 +24,6 @@ function parseNumber(value, fieldName) {
     return number;
 }
 
-
 function parsePositiveNumber(value, fieldName) {
     const number = parseNumber(value, fieldName);
     if (number !== undefined && number <= 0) {
@@ -46,7 +31,6 @@ function parsePositiveNumber(value, fieldName) {
     }
     return number;
 }
-
 
 function parseNonNegativeNumber(value, fieldName) {
     const number = parseNumber(value, fieldName);
@@ -56,7 +40,6 @@ function parseNonNegativeNumber(value, fieldName) {
     return number;
 }
 
-
 function parsePositiveInteger(value, fieldName) {
     const number = parsePositiveNumber(value, fieldName);
     if (number !== undefined && !Number.isInteger(number)) {
@@ -65,7 +48,6 @@ function parsePositiveInteger(value, fieldName) {
     return number;
 }
 
-
 function parseNonNegativeInteger(value, fieldName) {
     const number = parseNonNegativeNumber(value, fieldName);
     if (number !== undefined && !Number.isInteger(number)) {
@@ -73,7 +55,6 @@ function parseNonNegativeInteger(value, fieldName) {
     }
     return number;
 }
-
 
 function parseBoolean(value, fieldName) {
     if (value === undefined) {
@@ -86,47 +67,43 @@ function parseBoolean(value, fieldName) {
     }
 }
 
-
 function readItem(row, rowNumber, getValue, keyConfig) {
-    const codeField = keyConfig.hasCodeKey ? "maSanPham/k" : "maSanPham";
+    const codeField = keyConfig.hasCodeKey ? 'maSanPham/k' : 'maSanPham';
     return {
-        rowNumbers: [
-            rowNumber
-        ],
+        rowNumbers: [rowNumber],
         idIsKey: keyConfig.hasIdKey,
         codeIsKey: keyConfig.hasCodeKey,
-        id: keyConfig.hasIdKey ? getValue(row, "id/k") : undefined,
+        id: keyConfig.hasIdKey ? getValue(row, 'id/k') : undefined,
         code: getValue(row, codeField),
         maSanPham: getValue(row, codeField),
-        tenSanPham: getValue(row, "tenSanPham"),
-        nhomSanPhamId: getValue(row, "nhomSanPhamId"),
-        donViTinhId: getValue(row, "donViTinhId"),
-        giaBan: getValue(row, "giaBan"),
-        moTa: getValue(row, "moTa"),
-        hinhAnh: getValue(row, "hinhAnh"),
-        choPhepDat: getValue(row, "choPhepDat"),
-        laSanPhamMoi: getValue(row, "laSanPhamMoi"),
-        laSanPhamNoiBat: getValue(row, "laSanPhamNoiBat"),
-        soLuongToiThieu: getValue(row, "soLuongToiThieu"),
-        soLuongToiDa: getValue(row, "soLuongToiDa"),
-        buocSoLuong: getValue(row, "buocSoLuong"),
-        thoiGianChuanBiPhut: getValue(row, "thoiGianChuanBiPhut"),
-        thuTuHienThi: getValue(row, "thuTuHienThi"),
-        active: getValue(row, "active")
+        tenSanPham: getValue(row, 'tenSanPham'),
+        nhomSanPhamId: getValue(row, 'nhomSanPhamId'),
+        donViTinhId: getValue(row, 'donViTinhId'),
+        giaBan: getValue(row, 'giaBan'),
+        moTa: getValue(row, 'moTa'),
+        hinhAnh: getValue(row, 'hinhAnh'),
+        choPhepDat: getValue(row, 'choPhepDat'),
+        laSanPhamMoi: getValue(row, 'laSanPhamMoi'),
+        laSanPhamNoiBat: getValue(row, 'laSanPhamNoiBat'),
+        soLuongToiThieu: getValue(row, 'soLuongToiThieu'),
+        soLuongToiDa: getValue(row, 'soLuongToiDa'),
+        buocSoLuong: getValue(row, 'buocSoLuong'),
+        thoiGianChuanBiPhut: getValue(row, 'thoiGianChuanBiPhut'),
+        thuTuHienThi: getValue(row, 'thuTuHienThi'),
+        active: getValue(row, 'active')
     };
 }
-
 
 function createBusinessData(item) {
     const data = {};
     if (item.tenSanPham !== undefined) {
         data.tenSanPham = item.tenSanPham;
     }
-    const nhomSanPhamId = parsePositiveInteger(item.nhomSanPhamId, "Nhóm sản phẩm");
+    const nhomSanPhamId = parsePositiveInteger(item.nhomSanPhamId, 'Nhóm sản phẩm');
     if (nhomSanPhamId !== undefined) {
         data.nhomSanPhamId = nhomSanPhamId;
     }
-    const donViTinhId = parsePositiveInteger(item.donViTinhId, "Đơn vị tính");
+    const donViTinhId = parsePositiveInteger(item.donViTinhId, 'Đơn vị tính');
     if (donViTinhId !== undefined) {
         data.donViTinhId = donViTinhId;
     }
@@ -140,39 +117,39 @@ function createBusinessData(item) {
     if (item.hinhAnh !== undefined) {
         data.hinhAnh = item.hinhAnh;
     }
-    const choPhepDat = parseBoolean(item.choPhepDat, "Cho phép đặt");
+    const choPhepDat = parseBoolean(item.choPhepDat, 'Cho phép đặt');
     if (choPhepDat !== undefined) {
         data.choPhepDat = choPhepDat;
     }
-    const laSanPhamMoi = parseBoolean(item.laSanPhamMoi, "Sản phẩm mới");
+    const laSanPhamMoi = parseBoolean(item.laSanPhamMoi, 'Sản phẩm mới');
     if (laSanPhamMoi !== undefined) {
         data.laSanPhamMoi = laSanPhamMoi;
     }
-    const laSanPhamNoiBat = parseBoolean(item.laSanPhamNoiBat, "Sản phẩm nổi bật");
+    const laSanPhamNoiBat = parseBoolean(item.laSanPhamNoiBat, 'Sản phẩm nổi bật');
     if (laSanPhamNoiBat !== undefined) {
         data.laSanPhamNoiBat = laSanPhamNoiBat;
     }
-    const soLuongToiThieu = parsePositiveNumber(item.soLuongToiThieu, "Số lượng tối thiểu");
+    const soLuongToiThieu = parsePositiveNumber(item.soLuongToiThieu, 'Số lượng tối thiểu');
     if (soLuongToiThieu !== undefined) {
         data.soLuongToiThieu = soLuongToiThieu;
     }
-    const soLuongToiDa = parsePositiveNumber(item.soLuongToiDa, "Số lượng tối đa");
+    const soLuongToiDa = parsePositiveNumber(item.soLuongToiDa, 'Số lượng tối đa');
     if (soLuongToiDa !== undefined) {
         data.soLuongToiDa = soLuongToiDa;
     }
-    const buocSoLuong = parsePositiveNumber(item.buocSoLuong, "Bước số lượng");
+    const buocSoLuong = parsePositiveNumber(item.buocSoLuong, 'Bước số lượng');
     if (buocSoLuong !== undefined) {
         data.buocSoLuong = buocSoLuong;
     }
-    const thoiGianChuanBiPhut = parseNonNegativeInteger(item.thoiGianChuanBiPhut, "Thời gian chuẩn bị");
+    const thoiGianChuanBiPhut = parseNonNegativeInteger(item.thoiGianChuanBiPhut, 'Thời gian chuẩn bị');
     if (thoiGianChuanBiPhut !== undefined) {
         data.thoiGianChuanBiPhut = thoiGianChuanBiPhut;
     }
-    const thuTuHienThi = parseNonNegativeInteger(item.thuTuHienThi, "Thứ tự hiển thị");
+    const thuTuHienThi = parseNonNegativeInteger(item.thuTuHienThi, 'Thứ tự hiển thị');
     if (thuTuHienThi !== undefined) {
         data.thuTuHienThi = thuTuHienThi;
     }
-    const active = parseBoolean(item.active, "Trạng thái");
+    const active = parseBoolean(item.active, 'Trạng thái');
     if (active !== undefined) {
         data.active = active;
     }
@@ -180,34 +157,37 @@ function createBusinessData(item) {
 }
 async function processItem(item) {
     if (item.id !== undefined) {
-        item.id = parsePositiveInteger(item.id, "ID sản phẩm");
+        item.id = parsePositiveInteger(item.id, 'ID sản phẩm');
     }
     const strategy = await resolveImportStrategy(item, {
-        getById: id => sanPhamRepository.getChiTiet(id),
-        getByCode: code => sanPhamRepository.getChiTietByMa(code),
-        getRecordCode: record => record.maSanPham,
-        entityName: "sản phẩm"
+        getById: (id) => sanPhamRepository.getChiTiet(id),
+        getByCode: (code) => sanPhamRepository.getChiTietByMa(code),
+        getRecordCode: (record) => record.maSanPham,
+        entityName: 'sản phẩm'
     });
     const data = createBusinessData(item);
-    if (strategy.action === "UPDATE") {
-        if (strategy.allowCodeChange && item.maSanPham !== undefined && shouldChangeCode(item.maSanPham, strategy
-                .record.maSanPham)) {
+    if (strategy.action === 'UPDATE') {
+        if (
+            strategy.allowCodeChange &&
+            item.maSanPham !== undefined &&
+            shouldChangeCode(item.maSanPham, strategy.record.maSanPham)
+        ) {
             data.maSanPham = item.maSanPham;
         }
         if (Object.keys(data).length === 0) {
-            throw new ApiError(400, "Không có dữ liệu cần cập nhật.");
+            throw new ApiError(400, 'Không có dữ liệu cần cập nhật.');
         }
         const result = await sanPhamService.update(strategy.record.id, data);
         return {
             rowNumbers: item.rowNumbers,
             id: result.id,
             maSanPham: result.maSanPham,
-            hanhDong: "CAP_NHAT",
+            hanhDong: 'CAP_NHAT',
             message: `Cập nhật thành công - ID ${result.id}`
         };
     }
     if (!item.maSanPham) {
-        throw new ApiError(400, "Thêm mới sản phẩm phải có mã sản phẩm.");
+        throw new ApiError(400, 'Thêm mới sản phẩm phải có mã sản phẩm.');
     }
     data.maSanPham = item.maSanPham;
     const result = await sanPhamService.create(data);
@@ -215,24 +195,18 @@ async function processItem(item) {
         rowNumbers: item.rowNumbers,
         id: result.id,
         maSanPham: result.maSanPham,
-        hanhDong: "THEM_MOI",
+        hanhDong: 'THEM_MOI',
         message: `Thêm mới thành công - ID ${result.id}`
     };
 }
 async function importSanPham(file) {
-    const {
-        workbook,
-        worksheet,
-        headerMap,
-        getValue,
-        hasData
-    } = await readExcel(file, {
+    const { workbook, worksheet, headerMap, getValue, hasData } = await readExcel(file, {
         headerRowNumber: HEADER_ROW
     });
     const keyConfig = validateKeyHeaders(headerMap, {
-        idKey: "id/k",
-        codeKey: "maSanPham/k",
-        codeField: "maSanPham"
+        idKey: 'id/k',
+        codeKey: 'maSanPham/k',
+        codeField: 'maSanPham'
     });
     const items = [];
     for (let rowNumber = DATA_START_ROW; rowNumber <= worksheet.rowCount; rowNumber++) {
@@ -246,10 +220,8 @@ async function importSanPham(file) {
     const errors = [];
     if (items.length === 0) {
         errors.push({
-            rowNumbers: [
-                DATA_START_ROW
-            ],
-            message: "File import không có dữ liệu."
+            rowNumbers: [DATA_START_ROW],
+            message: 'File import không có dữ liệu.'
         });
     }
     for (const item of items) {
@@ -259,7 +231,7 @@ async function importSanPham(file) {
         } catch (error) {
             errors.push({
                 rowNumbers: item.rowNumbers,
-                message: error.message || "Dữ liệu không hợp lệ."
+                message: error.message || 'Dữ liệu không hợp lệ.'
             });
         }
     }

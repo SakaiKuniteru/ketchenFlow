@@ -1,39 +1,33 @@
-<div
-    class="table-action-menu"
-    data-action-menu>
+<div class='table-action-menu' data-action-menu>
 
     <button
-        type="button"
-        class="table-action-menu__trigger"
+        type='button'
+        class='table-action-menu__trigger'
         data-action-menu-trigger
-        aria-label="Mở danh sách thao tác"
-        aria-haspopup="true"
-        aria-expanded="false">
+        aria-label='Mở danh sách thao tác'
+        aria-haspopup='true'
+        aria-expanded='false'
+    >
 
-        <span aria-hidden="true">
+        <span aria-hidden='true'>
             ⋮
         </span>
 
     </button>
 
-    <div
-        class="table-action-menu__dropdown"
-        data-action-menu-dropdown
-        role="menu"
-        hidden>
+    <div class='table-action-menu__dropdown' data-action-menu-dropdown role='menu' hidden>
 
         {{#if showView}}
 
             <button
-                type="button"
-                class="table-action-menu__item"
-                data-action="view"
-                data-record-id="{{recordId}}"
-                role="menuitem">
+                type='button'
+                class='table-action-menu__item'
+                data-action='view'
+                data-record-id='{{recordId}}'
+                role='menuitem'
+            >
 
-                <span
-                    class="table-action-menu__icon"
-                    aria-hidden="true">
+                <span class='table-action-menu__icon' aria-hidden='true'>
                     ◉
                 </span>
 
@@ -48,15 +42,14 @@
         {{#if showEdit}}
 
             <button
-                type="button"
-                class="table-action-menu__item"
-                data-action="edit"
-                data-record-id="{{recordId}}"
-                role="menuitem">
+                type='button'
+                class='table-action-menu__item'
+                data-action='edit'
+                data-record-id='{{recordId}}'
+                role='menuitem'
+            >
 
-                <span
-                    class="table-action-menu__icon"
-                    aria-hidden="true">
+                <span class='table-action-menu__icon' aria-hidden='true'>
                     ✎
                 </span>
 
@@ -71,18 +64,14 @@
         {{#if showLock}}
 
             <button
-                type="button"
-                class="
-                    table-action-menu__item
-                    table-action-menu__item--warning
-                "
-                data-action="lock"
-                data-record-id="{{recordId}}"
-                role="menuitem">
+                type='button'
+                class='table-action-menu__item table-action-menu__item--warning'
+                data-action='lock'
+                data-record-id='{{recordId}}'
+                role='menuitem'
+            >
 
-                <span
-                    class="table-action-menu__icon"
-                    aria-hidden="true">
+                <span class='table-action-menu__icon' aria-hidden='true'>
                     🔒
                 </span>
 
@@ -97,18 +86,14 @@
         {{#if showUnlock}}
 
             <button
-                type="button"
-                class="
-                    table-action-menu__item
-                    table-action-menu__item--success
-                "
-                data-action="unlock"
-                data-record-id="{{recordId}}"
-                role="menuitem">
+                type='button'
+                class='table-action-menu__item table-action-menu__item--success'
+                data-action='unlock'
+                data-record-id='{{recordId}}'
+                role='menuitem'
+            >
 
-                <span
-                    class="table-action-menu__icon"
-                    aria-hidden="true">
+                <span class='table-action-menu__icon' aria-hidden='true'>
                     🔓
                 </span>
 
@@ -122,24 +107,18 @@
 
         {{#if showDelete}}
 
-            <div
-                class="table-action-menu__separator"
-                role="separator">
+            <div class='table-action-menu__separator' role='separator'>
             </div>
 
             <button
-                type="button"
-                class="
-                    table-action-menu__item
-                    table-action-menu__item--danger
-                "
-                data-action="delete"
-                data-record-id="{{recordId}}"
-                role="menuitem">
+                type='button'
+                class='table-action-menu__item table-action-menu__item--danger'
+                data-action='delete'
+                data-record-id='{{recordId}}'
+                role='menuitem'
+            >
 
-                <span
-                    class="table-action-menu__icon"
-                    aria-hidden="true">
+                <span class='table-action-menu__icon' aria-hidden='true'>
                     🗑
                 </span>
 

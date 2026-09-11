@@ -1,0 +1,9 @@
+<section class="order-card {{className}}" {{#if dataCard}}data-order-card="{{dataCard}}"{{/if}}>
+    {{#if title}}
+        <header class="order-card__header">
+            <div class="order-card__title"><span class="order-card__icon"><i class="{{icon}}"></i></span><h2>{{title}}</h2></div>
+            {{#if headerAction}}<div class="order-card__action">{{{headerAction}}}</div>{{/if}}
+        </header>
+    {{/if}}
+    <div class="order-card__body">{{> @partial-block}}</div>
+</section>

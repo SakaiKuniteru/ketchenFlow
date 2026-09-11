@@ -31,18 +31,10 @@
     border-color: #94a3b8;
 }
 
-.file-picker:focus-within
-.file-picker__control {
+.file-picker:focus-within .file-picker__control {
     border-color: #2563eb;
 
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            37,
-            99,
-            235,
-            0.12
-        );
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .file-picker__icon {
@@ -57,114 +49,77 @@
 }
 
 .file-picker__name {
-    display:
-        block;
+    display: block;
 
-    flex:
-        1 1 auto;
+    flex: 1 1 auto;
 
-    min-width:
-        0;
+    min-width: 0;
 
-    padding:
-        0;
+    padding: 0;
 
-    overflow:
-        hidden;
+    overflow: hidden;
 
-    border:
-        0;
+    border: 0;
 
-    outline:
-        0;
+    outline: 0;
 
-    color:
-        #94a3b8;
+    color: #94a3b8;
 
-    background:
-        transparent;
+    background: transparent;
 
-    font-family:
-        inherit;
+    font-family: inherit;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    font-weight:
-        500;
+    font-weight: 500;
 
-    text-align:
-        left;
+    text-align: left;
 
-    text-overflow:
-        ellipsis;
+    text-overflow: ellipsis;
 
-    white-space:
-        nowrap;
+    white-space: nowrap;
 
-    cursor:
-        default;
+    cursor: default;
 }
 
-.file-picker.has-file
-.file-picker__name {
-    color:
-        var(
-            --color-primary,
-            #2563eb
-        );
+.file-picker.has-file .file-picker__name {
+    color: var(--color-primary, #2563eb);
 
-    font-weight:
-        700;
+    font-weight: 700;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 }
 
-.file-picker.has-file
-.file-picker__name:hover {
-    text-decoration:
-        underline;
+.file-picker.has-file .file-picker__name:hover {
+    text-decoration: underline;
 }
 
 .file-picker__name:disabled {
-    cursor:
-        default;
+    cursor: default;
 }
 
 .file-picker__action {
-    display:
-        inline-flex;
+    display: inline-flex;
 
-    flex:
-        0 0 32px;
+    flex: 0 0 32px;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    width:
-        32px;
+    width: 32px;
 
-    height:
-        32px;
+    height: 32px;
 
-    margin-left:
-        auto;
+    margin-left: auto;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
-    color:
-        #64748b;
+    color: #64748b;
 
-    background:
-        transparent;
+    background: transparent;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
     transition:
         color 160ms ease,
@@ -172,17 +127,13 @@
 }
 
 .file-picker__action:hover {
-    color:
-        #2563eb;
+    color: #2563eb;
 
-    background:
-        #eff6ff;
+    background: #eff6ff;
 }
 
-.file-picker.is-disabled
-.file-picker__action {
-    display:
-        none;
+.file-picker.is-disabled .file-picker__action {
+    display: none;
 }
 
 .file-picker__input {
@@ -195,12 +146,7 @@
     padding: 0;
     overflow: hidden;
 
-    clip: rect(
-        0,
-        0,
-        0,
-        0
-    );
+    clip: rect(0, 0, 0, 0);
 
     white-space: nowrap;
 
@@ -211,8 +157,7 @@
     pointer-events: none;
 }
 
-.file-picker.is-disabled
-.file-picker__control {
+.file-picker.is-disabled .file-picker__control {
     color: #94a3b8;
 
     background: #f1f5f9;

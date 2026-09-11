@@ -1,19 +1,13 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 
 window.MCS.sessionTimeout = (() => {
-    const CONFIG_CODE = "THOI_GIAN_TIMEOUT";
-    const LAST_ACTIVITY_KEY = "mcsLastActivityAt";
+    const CONFIG_CODE = 'THOI_GIAN_TIMEOUT';
+    const LAST_ACTIVITY_KEY = 'mcsLastActivityAt';
     const ACTIVITY_SYNC_INTERVAL = 1000;
 
-    const ACTIVITY_EVENTS = [
-        "mousedown",
-        "keydown",
-        "scroll",
-        "touchstart",
-        "pointerdown"
-    ];
+    const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'scroll', 'touchstart', 'pointerdown'];
 
     let timeoutMinutes = null;
     let timeoutMilliseconds = null;
@@ -21,59 +15,30 @@ window.MCS.sessionTimeout = (() => {
     let initialized = false;
     let enabled = false;
     let lastActivityAt = 0;
-    let lastActivitySyncedAt =  0;
+    let lastActivitySyncedAt = 0;
 
     function getStoredLastActivity() {
+        const value = Number(localStorage.getItem(LAST_ACTIVITY_KEY));
 
-        const value =
-            Number(
-                localStorage.getItem(
-                    LAST_ACTIVITY_KEY
-                )
-            );
-
-
-        if (
-            !Number.isFinite(
-                value
-            ) ||
-            value <=
-                0
-        ) {
-
+        if (!Number.isFinite(value) || value <= 0) {
             return 0;
-
         }
 
-
         return value;
-
     }
 
-    function saveLastActivity(
-        value
-    ) {
+    function saveLastActivity(value) {
+        lastActivityAt = value;
 
-        lastActivityAt =
-            value;
-
-
-        localStorage.setItem(
-            LAST_ACTIVITY_KEY,
-            String(value)
-        );
-
+        localStorage.setItem(LAST_ACTIVITY_KEY, String(value));
     }
 
     function getLatestActivity() {
-
         return Math.max(
-            lastActivityAt ||
-                0,
+            lastActivityAt || 0,
 
             getStoredLastActivity()
         );
-
     }
 
     async function init() {
@@ -106,10 +71,7 @@ window.MCS.sessionTimeout = (() => {
             bindActivityEvents();
             startTimer();
         } catch (error) {
-            console.error(
-                "[SessionTimeout] Không thể khởi tạo:",
-                error
-            );
+            console.error('[SessionTimeout] Không thể khởi tạo:', error);
 
             enabled = false;
         }
@@ -135,7 +97,7 @@ window.MCS.sessionTimeout = (() => {
     }
 
     function parseTimeoutMinutes(value) {
-        const raw = String(value ?? "").trim();
+        const raw = String(value ?? '').trim();
 
         if (!/^\d+$/.test(raw)) {
             return null;
@@ -143,10 +105,7 @@ window.MCS.sessionTimeout = (() => {
 
         const minutes = Number(raw);
 
-        if (
-            !Number.isInteger(minutes) ||
-            minutes <= 10
-        ) {
+        if (!Number.isInteger(minutes) || minutes <= 10) {
             return null;
         }
 
@@ -154,87 +113,45 @@ window.MCS.sessionTimeout = (() => {
     }
 
     function bindActivityEvents() {
-        ACTIVITY_EVENTS.forEach(eventName => {
-            document.addEventListener(
-                eventName,
-                handleActivity,
-                {
-                    passive: true
-                }
-            );
+        ACTIVITY_EVENTS.forEach((eventName) => {
+            document.addEventListener(eventName, handleActivity, {
+                passive: true
+            });
         });
 
-        document.addEventListener(
-            "visibilitychange",
-            handleVisibilityChange
-        );
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
-        window.addEventListener(
-            "focus",
-            checkTimeout
-        );
-        window.addEventListener(
-            "storage",
-            handleStorageActivity
-        );
+        window.addEventListener('focus', checkTimeout);
+        window.addEventListener('storage', handleStorageActivity);
     }
 
     function handleActivity() {
-
-        if (!enabled) {return;}
+        if (!enabled) {
+            return;
+        }
         const now = Date.now();
         lastActivityAt = now;
-        if (
-            now - lastActivitySyncedAt >= ACTIVITY_SYNC_INTERVAL
-        ) {
+        if (now - lastActivitySyncedAt >= ACTIVITY_SYNC_INTERVAL) {
             lastActivitySyncedAt = now;
             saveLastActivity(now);
         }
         restartTimer();
     }
 
-    function handleStorageActivity(
-        event
-    ) {
-
-        if (
-            event.storageArea !==
-                localStorage ||
-            event.key !==
-                LAST_ACTIVITY_KEY ||
-            !event.newValue
-        ) {
-
+    function handleStorageActivity(event) {
+        if (event.storageArea !== localStorage || event.key !== LAST_ACTIVITY_KEY || !event.newValue) {
             return;
-
         }
 
+        const value = Number(event.newValue);
 
-        const value =
-            Number(
-                event.newValue
-            );
-
-
-        if (
-            !Number.isFinite(
-                value
-            ) ||
-            value <=
-                lastActivityAt
-        ) {
-
+        if (!Number.isFinite(value) || value <= lastActivityAt) {
             return;
-
         }
 
-
-        lastActivityAt =
-            value;
-
+        lastActivityAt = value;
 
         restartTimer();
-
     }
 
     function handleVisibilityChange() {
@@ -242,58 +159,31 @@ window.MCS.sessionTimeout = (() => {
             return;
         }
 
-        if (document.visibilityState === "visible") {
+        if (document.visibilityState === 'visible') {
             checkTimeout();
         }
     }
 
     function startTimer() {
-
         clearTimer();
 
-
-        if (
-            !enabled ||
-            !timeoutMilliseconds
-        ) {
-
+        if (!enabled || !timeoutMilliseconds) {
             return;
-
         }
 
+        lastActivityAt = getLatestActivity();
 
-        lastActivityAt =
-            getLatestActivity();
+        const elapsed = Date.now() - lastActivityAt;
 
+        const remaining = timeoutMilliseconds - elapsed;
 
-        const elapsed =
-            Date.now() -
-            lastActivityAt;
-
-
-        const remaining =
-            timeoutMilliseconds -
-            elapsed;
-
-
-        if (
-            remaining <=
-            0
-        ) {
-
+        if (remaining <= 0) {
             checkTimeout();
 
             return;
-
         }
 
-
-        timer =
-            window.setTimeout(
-                checkTimeout,
-                remaining
-            );
-
+        timer = window.setTimeout(checkTimeout, remaining);
     }
 
     function restartTimer() {
@@ -305,141 +195,75 @@ window.MCS.sessionTimeout = (() => {
     }
 
     function checkTimeout() {
-
-        if (
-            !enabled ||
-            !timeoutMilliseconds
-        ) {
-
+        if (!enabled || !timeoutMilliseconds) {
             return;
-
         }
 
-
         /*
-        * Luôn đọc activity mới nhất
-        * của TẤT CẢ tab.
-        */
-        lastActivityAt =
-            getLatestActivity();
+         * Luôn đọc activity mới nhất
+         * của TẤT CẢ tab.
+         */
+        lastActivityAt = getLatestActivity();
 
+        const elapsed = Date.now() - lastActivityAt;
 
-        const elapsed =
-            Date.now() -
-            lastActivityAt;
-
-
-        if (
-            elapsed >=
-            timeoutMilliseconds
-        ) {
-
+        if (elapsed >= timeoutMilliseconds) {
             logoutByTimeout();
 
             return;
-
         }
 
-
         startTimer();
-
     }
 
     async function logoutByTimeout() {
-
         if (!enabled) {
-
             return;
-
         }
 
-
-        const latestActivity =
-            getLatestActivity();
-
+        const latestActivity = getLatestActivity();
 
         /*
-        * Có tab khác vừa thao tác
-        * thì KHÔNG logout.
-        */
-        if (
-            Date.now() -
-                latestActivity <
-            timeoutMilliseconds
-        ) {
-
-            lastActivityAt =
-                latestActivity;
-
+         * Có tab khác vừa thao tác
+         * thì KHÔNG logout.
+         */
+        if (Date.now() - latestActivity < timeoutMilliseconds) {
+            lastActivityAt = latestActivity;
 
             startTimer();
 
             return;
-
         }
 
-
-        enabled =
-            false;
+        enabled = false;
 
         clearTimer();
 
         unbindActivityEvents();
 
-
-        const refreshToken =
-            window.MCS?.storage
-                ?.getRefreshToken?.();
-
+        const refreshToken = window.MCS?.storage?.getRefreshToken?.();
 
         if (refreshToken) {
-
             try {
+                await window.MCS.api.request('/api/mcs/v1/auth/logout', {
+                    method: 'POST',
 
-                await window.MCS.api
-                    .request(
-                        "/api/mcs/v1/auth/logout",
-                        {
-                            method:
-                                "POST",
+                    body: JSON.stringify({
+                        refreshToken
+                    }),
 
-                            body:
-                                JSON.stringify({
-                                    refreshToken
-                                }),
-
-                            allowRefresh:
-                                false
-                        }
-                    );
-
+                    allowRefresh: false
+                });
             } catch (error) {
-
-                console.warn(
-                    "[SessionTimeout] Không thể revoke token:",
-                    error
-                );
-
+                console.warn('[SessionTimeout] Không thể revoke token:', error);
             }
-
         }
 
+        localStorage.removeItem(LAST_ACTIVITY_KEY);
 
-        localStorage.removeItem(
-            LAST_ACTIVITY_KEY
-        );
+        window.MCS?.storage?.clearAuthentication?.();
 
-
-        window.MCS?.storage
-            ?.clearAuthentication?.();
-
-
-        window.location.replace(
-            window.MCS?.config
-                ?.loginPath ||
-            "/auth/login"
-        );
-
+        window.location.replace(window.MCS?.config?.loginPath || '/auth/login');
     }
 
     function clearTimer() {
@@ -451,26 +275,14 @@ window.MCS.sessionTimeout = (() => {
     }
 
     function unbindActivityEvents() {
-        ACTIVITY_EVENTS.forEach(eventName => {
-            document.removeEventListener(
-                eventName,
-                handleActivity
-            );
+        ACTIVITY_EVENTS.forEach((eventName) => {
+            document.removeEventListener(eventName, handleActivity);
         });
 
-        document.removeEventListener(
-            "visibilitychange",
-            handleVisibilityChange
-        );
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
 
-        window.removeEventListener(
-            "focus",
-            checkTimeout
-        );
-        window.removeEventListener(
-            "storage",
-            handleStorageActivity
-        );
+        window.removeEventListener('focus', checkTimeout);
+        window.removeEventListener('storage', handleStorageActivity);
     }
 
     function destroy() {
@@ -499,6 +311,6 @@ window.MCS.sessionTimeout = (() => {
     };
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     window.MCS?.sessionTimeout?.init?.();
 });

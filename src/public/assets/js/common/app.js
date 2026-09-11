@@ -1,15 +1,15 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 
 window.MCS.config = {
-    accessTokenKey: "accessToken",
-    refreshTokenKey: "refreshToken",
-    currentUserKey: "currentUser",
-    authEventKey: "mcsAuthEvent",
-    redirectKey: "mcsAuthRedirect",
-    loginPath: "/auth/login",
-    homePath: "/",
+    accessTokenKey: 'accessToken',
+    refreshTokenKey: 'refreshToken',
+    currentUserKey: 'currentUser',
+    authEventKey: 'mcsAuthEvent',
+    redirectKey: 'mcsAuthRedirect',
+    loginPath: '/auth/login',
+    homePath: '/',
     accessTokenRefreshBeforeSeconds: 120
 };
 
@@ -38,29 +38,19 @@ window.MCS.storage = {
 
     setCurrentUser(currentUser) {
         if (!currentUser) {
-            localStorage.removeItem(
-                window.MCS.config.currentUserKey
-            );
+            localStorage.removeItem(window.MCS.config.currentUserKey);
 
             return;
         }
 
-        localStorage.setItem(
-            window.MCS.config.currentUserKey,
-            JSON.stringify(
-                currentUser
-            )
-        );
+        localStorage.setItem(window.MCS.config.currentUserKey, JSON.stringify(currentUser));
 
         window.dispatchEvent(
-            new CustomEvent(
-                "mcs:current-user-updated",
-                {
-                    detail: {
-                        currentUser
-                    }
+            new CustomEvent('mcs:current-user-updated', {
+                detail: {
+                    currentUser
                 }
-            )
+            })
         );
     },
 
@@ -68,7 +58,7 @@ window.MCS.storage = {
         localStorage.removeItem(window.MCS.config.accessTokenKey);
         localStorage.removeItem(window.MCS.config.refreshTokenKey);
         localStorage.removeItem(window.MCS.config.currentUserKey);
-        localStorage.removeItem("mcsLastActivityAt");
+        localStorage.removeItem('mcsLastActivityAt');
     }
 };
 
@@ -76,11 +66,7 @@ window.MCS.authSync = {
     initialized: false,
 
     getCurrentUrl() {
-        return (
-            window.location.pathname +
-            window.location.search +
-            window.location.hash
-        );
+        return window.location.pathname + window.location.search + window.location.hash;
     },
 
     isLoginPage() {
@@ -88,17 +74,14 @@ window.MCS.authSync = {
     },
 
     hasAuthentication() {
-        return Boolean(
-            window.MCS.storage.getAccessToken() &&
-            window.MCS.storage.getRefreshToken()
-        );
+        return Boolean(window.MCS.storage.getAccessToken() && window.MCS.storage.getRefreshToken());
     },
 
     isValidRedirect(redirect) {
         return Boolean(
             redirect &&
-            redirect.startsWith("/") &&
-            !redirect.startsWith("//") &&
+            redirect.startsWith('/') &&
+            !redirect.startsWith('//') &&
             !redirect.startsWith(window.MCS.config.loginPath)
         );
     },
@@ -110,23 +93,18 @@ window.MCS.authSync = {
             return;
         }
 
-        sessionStorage.setItem(
-            window.MCS.config.redirectKey,
-            redirect
-        );
+        sessionStorage.setItem(window.MCS.config.redirectKey, redirect);
     },
 
     getRedirect() {
         const params = new URLSearchParams(window.location.search);
-        const redirectFromQuery = params.get("redirect");
+        const redirectFromQuery = params.get('redirect');
 
         if (this.isValidRedirect(redirectFromQuery)) {
             return redirectFromQuery;
         }
 
-        const redirectFromSession = sessionStorage.getItem(
-            window.MCS.config.redirectKey
-        );
+        const redirectFromSession = sessionStorage.getItem(window.MCS.config.redirectKey);
 
         if (this.isValidRedirect(redirectFromSession)) {
             return redirectFromSession;
@@ -146,11 +124,7 @@ window.MCS.authSync = {
             return window.MCS.config.loginPath;
         }
 
-        return (
-            window.MCS.config.loginPath +
-            "?redirect=" +
-            encodeURIComponent(target)
-        );
+        return window.MCS.config.loginPath + '?redirect=' + encodeURIComponent(target);
     },
 
     redirectToLogin() {
@@ -162,9 +136,7 @@ window.MCS.authSync = {
 
         this.saveRedirect(currentUrl);
 
-        window.location.replace(
-            this.buildLoginUrl(currentUrl)
-        );
+        window.location.replace(this.buildLoginUrl(currentUrl));
     },
 
     redirectAfterLogin() {
@@ -191,11 +163,11 @@ window.MCS.authSync = {
     },
 
     notifyLogin() {
-        this.notify("login");
+        this.notify('login');
     },
 
     notifyLogout() {
-        this.notify("logout");
+        this.notify('logout');
     },
 
     handleAuthenticated() {
@@ -239,10 +211,7 @@ window.MCS.authSync = {
             return;
         }
 
-        if (
-            event.key !== window.MCS.config.authEventKey ||
-            !event.newValue
-        ) {
+        if (event.key !== window.MCS.config.authEventKey || !event.newValue) {
             return;
         }
 
@@ -254,12 +223,12 @@ window.MCS.authSync = {
             return;
         }
 
-        if (authEvent?.type === "login") {
+        if (authEvent?.type === 'login') {
             this.handleAuthenticated();
             return;
         }
 
-        if (authEvent?.type === "logout") {
+        if (authEvent?.type === 'logout') {
             this.handleUnauthenticated();
         }
     },
@@ -267,18 +236,12 @@ window.MCS.authSync = {
     checkCurrentAuthentication() {
         const authenticated = this.hasAuthentication();
 
-        if (
-            authenticated &&
-            this.isLoginPage()
-        ) {
+        if (authenticated && this.isLoginPage()) {
             this.redirectAfterLogin();
             return;
         }
 
-        if (
-            !authenticated &&
-            !this.isLoginPage()
-        ) {
+        if (!authenticated && !this.isLoginPage()) {
             this.redirectToLogin();
         }
     },
@@ -290,21 +253,21 @@ window.MCS.authSync = {
 
         this.initialized = true;
 
-        window.addEventListener("storage", event => {
+        window.addEventListener('storage', (event) => {
             this.handleStorageEvent(event);
         });
 
-        window.addEventListener("pageshow", () => {
+        window.addEventListener('pageshow', () => {
             this.checkCurrentAuthentication();
         });
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
                 this.checkCurrentAuthentication();
             }
         });
 
-        window.addEventListener("focus", () => {
+        window.addEventListener('focus', () => {
             this.checkCurrentAuthentication();
         });
 
@@ -321,42 +284,28 @@ window.MCS.authSession = {
         }
 
         try {
-            const parts = token.split(".");
+            const parts = token.split('.');
 
             if (parts.length !== 3) {
                 return null;
             }
 
-            let payload = parts[1]
-                .replace(/-/g, "+")
-                .replace(/_/g, "/");
+            let payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
 
             while (payload.length % 4) {
-                payload += "=";
+                payload += '=';
             }
 
             const decoded = decodeURIComponent(
                 atob(payload)
-                    .split("")
-                    .map(
-                        character =>
-                            "%" +
-                            (
-                                "00" +
-                                character
-                                    .charCodeAt(0)
-                                    .toString(16)
-                            ).slice(-2)
-                    )
-                    .join("")
+                    .split('')
+                    .map((character) => '%' + ('00' + character.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
             );
 
             return JSON.parse(decoded);
         } catch (error) {
-            console.warn(
-                "[Auth] Không thể đọc Access Token:",
-                error
-            );
+            console.warn('[Auth] Không thể đọc Access Token:', error);
 
             return null;
         }
@@ -370,253 +319,110 @@ window.MCS.authSession = {
     },
 
     scheduleRefreshRetry() {
-
         this.clearRefreshTimer();
 
-
-        if (
-            !window.MCS.storage
-                .getAccessToken() ||
-            !window.MCS.storage
-                .getRefreshToken()
-        ) {
-
+        if (!window.MCS.storage.getAccessToken() || !window.MCS.storage.getRefreshToken()) {
             return;
-
         }
 
-
-        this.refreshTimer =
-            window.setTimeout(
-                () => {
-
-                    this.refreshAccessTokenNow();
-
-                },
-                15000
-            );
-
+        this.refreshTimer = window.setTimeout(() => {
+            this.refreshAccessTokenNow();
+        }, 15000);
     },
 
     scheduleAccessTokenRefresh() {
-
         this.clearRefreshTimer();
 
+        const accessToken = window.MCS.storage.getAccessToken();
 
-        const accessToken =
-            window.MCS.storage
-                .getAccessToken();
+        const refreshToken = window.MCS.storage.getRefreshToken();
 
-
-        const refreshToken =
-            window.MCS.storage
-                .getRefreshToken();
-
-
-        if (
-            !accessToken ||
-            !refreshToken
-        ) {
-
+        if (!accessToken || !refreshToken) {
             return;
-
         }
 
+        const accessPayload = this.decodeAccessToken(accessToken);
 
-        const accessPayload =
-            this.decodeAccessToken(
-                accessToken
-            );
+        const refreshPayload = this.decodeAccessToken(refreshToken);
 
+        const expirations = [Number(accessPayload?.exp), Number(refreshPayload?.exp)]
+            .filter((value) => Number.isFinite(value) && value > 0)
+            .map((value) => value * 1000);
 
-        const refreshPayload =
-            this.decodeAccessToken(
-                refreshToken
-            );
-
-
-        const expirations =
-            [
-                Number(
-                    accessPayload?.exp
-                ),
-
-                Number(
-                    refreshPayload?.exp
-                )
-            ]
-                .filter(
-                    value =>
-                        Number.isFinite(
-                            value
-                        ) &&
-                        value > 0
-                )
-                .map(
-                    value =>
-                        value * 1000
-                );
-
-
-        if (
-            expirations.length ===
-            0
-        ) {
-
+        if (expirations.length === 0) {
             return;
-
         }
-
 
         /*
-        * Token nào hết trước
-        * thì refresh theo token đó.
-        */
-        const expiresAt =
-            Math.min(
-                ...expirations
-            );
+         * Token nào hết trước
+         * thì refresh theo token đó.
+         */
+        const expiresAt = Math.min(...expirations);
 
+        const refreshBefore = window.MCS.config.accessTokenRefreshBeforeSeconds * 1000;
 
-        const refreshBefore =
-            window.MCS.config
-                .accessTokenRefreshBeforeSeconds *
-            1000;
+        const delay = expiresAt - Date.now() - refreshBefore;
 
-
-        const delay =
-            expiresAt -
-            Date.now() -
-            refreshBefore;
-
-
-        if (
-            delay <=
-            0
-        ) {
-
+        if (delay <= 0) {
             this.refreshAccessTokenNow();
 
             return;
-
         }
 
-
-        this.refreshTimer =
-            window.setTimeout(
-                () => {
-
-                    this.refreshAccessTokenNow();
-
-                },
-                delay
-            );
-
+        this.refreshTimer = window.setTimeout(() => {
+            this.refreshAccessTokenNow();
+        }, delay);
     },
 
     async refreshAccessTokenNow() {
-
-        if (
-            window.location.pathname ===
-            window.MCS.config.loginPath
-        ) {
-
+        if (window.location.pathname === window.MCS.config.loginPath) {
             return;
-
         }
 
-
-        const refreshToken =
-            window.MCS.storage
-                .getRefreshToken();
-
+        const refreshToken = window.MCS.storage.getRefreshToken();
 
         if (!refreshToken) {
-
             return;
-
         }
 
-
         try {
-
-            const refreshed =
-                await window.MCS.api
-                    .refreshAuthentication();
-
+            const refreshed = await window.MCS.api.refreshAuthentication();
 
             if (!refreshed) {
-
                 this.scheduleRefreshRetry();
 
                 return;
-
             }
 
-
             this.scheduleAccessTokenRefresh();
-
         } catch (error) {
-
-            console.warn(
-                "[Auth] Làm mới token tự động thất bại:",
-                error
-            );
-
+            console.warn('[Auth] Làm mới token tự động thất bại:', error);
 
             this.scheduleRefreshRetry();
-
         }
-
     }
 };
 
 window.MCS.api = {
     refreshPromise: null,
 
-    async request(
-        url,
-        options = {}
-    ) {
-        let result = await this.send(
-            url,
-            options
-        );
+    async request(url, options = {}) {
+        let result = await this.send(url, options);
 
-        if (
-            result.response.status ===
-                401 &&
-            options.allowRefresh !==
-                false
-        ) {
-
-            const refreshed =
-                await this
-                    .refreshAuthentication();
-
+        if (result.response.status === 401 && options.allowRefresh !== false) {
+            const refreshed = await this.refreshAuthentication();
 
             if (refreshed) {
+                result = await this.send(url, {
+                    ...options,
 
-                result =
-                    await this.send(
-                        url,
-                        {
-                            ...options,
-
-                            allowRefresh:
-                                false
-                        }
-                    );
-
+                    allowRefresh: false
+                });
             }
-
         }
 
         if (!result.response.ok) {
-            const error = new Error(
-                result.data?.message ||
-                "Yêu cầu không thành công."
-            );
+            const error = new Error(result.data?.message || 'Yêu cầu không thành công.');
 
             error.statusCode = result.response.status;
             error.data = result.data?.data;
@@ -627,33 +433,24 @@ window.MCS.api = {
         return result.data;
     },
 
-    async send(
-        url,
-        options = {}
-    ) {
+    async send(url, options = {}) {
         const accessToken = window.MCS.storage.getAccessToken();
 
         const headers = {
-            Accept: "application/json",
+            Accept: 'application/json',
             ...options.headers
         };
 
-        if (
-            options.body &&
-            !(options.body instanceof FormData)
-        ) {
-            headers["Content-Type"] = "application/json";
+        if (options.body && !(options.body instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
         }
 
-        if (
-            accessToken &&
-            options.withoutAccessToken !== true
-        ) {
+        if (accessToken && options.withoutAccessToken !== true) {
             headers.Authorization = `Bearer ${accessToken}`;
         }
 
         const fetchOptions = {
-            credentials: "include",
+            credentials: 'include',
             ...options,
             headers
         };
@@ -661,17 +458,13 @@ window.MCS.api = {
         delete fetchOptions.allowRefresh;
         delete fetchOptions.withoutAccessToken;
 
-        const response = await fetch(
-            url,
-            fetchOptions
-        );
+        const response = await fetch(url, fetchOptions);
 
-        const contentType =
-            response.headers.get("content-type") || "";
+        const contentType = response.headers.get('content-type') || '';
 
         let data = null;
 
-        if (contentType.includes("application/json")) {
+        if (contentType.includes('application/json')) {
             try {
                 data = await response.json();
             } catch {
@@ -685,65 +478,33 @@ window.MCS.api = {
         };
     },
 
-    async requestFile(
-        url,
-        options = {}
-    ) {
-        let result = await this.sendFile(
-            url,
-            options
-        );
+    async requestFile(url, options = {}) {
+        let result = await this.sendFile(url, options);
 
-        if (
-            result.response.status ===
-                401 &&
-            options.allowRefresh !==
-                false
-        ) {
-
-            const refreshed =
-                await this
-                    .refreshAuthentication();
-
+        if (result.response.status === 401 && options.allowRefresh !== false) {
+            const refreshed = await this.refreshAuthentication();
 
             if (refreshed) {
+                result = await this.sendFile(url, {
+                    ...options,
 
-                result =
-                    await this.sendFile(
-                        url,
-                        {
-                            ...options,
-
-                            allowRefresh:
-                                false
-                        }
-                    );
-
+                    allowRefresh: false
+                });
             }
-
         }
 
         if (!result.response.ok) {
-            let message = "Yêu cầu không thành công.";
+            let message = 'Yêu cầu không thành công.';
 
-            if (
-                result.contentType.includes(
-                    "application/json"
-                )
-            ) {
+            if (result.contentType.includes('application/json')) {
                 try {
                     const text = await result.blob.text();
 
                     const data = JSON.parse(text);
 
-                    message =
-                        data?.message ||
-                        message;
+                    message = data?.message || message;
                 } catch (error) {
-                    console.warn(
-                        "Không đọc được lỗi tải file:",
-                        error
-                    );
+                    console.warn('Không đọc được lỗi tải file:', error);
                 }
             }
 
@@ -756,40 +517,29 @@ window.MCS.api = {
 
         return {
             blob: result.blob,
-            fileName: this.getDownloadFileName(
-                result.response
-            ),
+            fileName: this.getDownloadFileName(result.response),
             contentType: result.contentType
         };
     },
 
-    async sendFile(
-        url,
-        options = {}
-    ) {
+    async sendFile(url, options = {}) {
         const accessToken = window.MCS.storage.getAccessToken();
 
         const headers = {
-            Accept: "*/*",
+            Accept: '*/*',
             ...options.headers
         };
 
-        if (
-            options.body &&
-            !(options.body instanceof FormData)
-        ) {
-            headers["Content-Type"] = "application/json";
+        if (options.body && !(options.body instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
         }
 
-        if (
-            accessToken &&
-            options.withoutAccessToken !== true
-        ) {
+        if (accessToken && options.withoutAccessToken !== true) {
             headers.Authorization = `Bearer ${accessToken}`;
         }
 
         const fetchOptions = {
-            credentials: "include",
+            credentials: 'include',
             ...options,
             headers
         };
@@ -797,14 +547,9 @@ window.MCS.api = {
         delete fetchOptions.allowRefresh;
         delete fetchOptions.withoutAccessToken;
 
-        const response = await fetch(
-            url,
-            fetchOptions
-        );
+        const response = await fetch(url, fetchOptions);
 
-        const contentType =
-            response.headers.get("content-type") ||
-            "";
+        const contentType = response.headers.get('content-type') || '';
 
         const blob = await response.blob();
 
@@ -816,62 +561,43 @@ window.MCS.api = {
     },
 
     getDownloadFileName(response) {
-        const disposition =
-            response.headers.get("content-disposition") ||
-            "";
+        const disposition = response.headers.get('content-disposition') || '';
 
-        const utf8Match = disposition.match(
-            /filename\*=UTF-8''([^;]+)/i
-        );
+        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
 
         if (utf8Match?.[1]) {
             try {
-                return decodeURIComponent(
-                    utf8Match[1]
-                );
+                return decodeURIComponent(utf8Match[1]);
             } catch (error) {
                 return utf8Match[1];
             }
         }
 
-        const normalMatch = disposition.match(
-            /filename="?([^";]+)"?/i
-        );
+        const normalMatch = disposition.match(/filename="?([^";]+)"?/i);
 
-        return (
-            normalMatch?.[1] ||
-            null
-        );
+        return normalMatch?.[1] || null;
     },
 
-    downloadBlob(
-        blob,
-        fileName = "download.xlsx"
-    ) {
+    downloadBlob(blob, fileName = 'download.xlsx') {
         if (!(blob instanceof Blob)) {
-            throw new Error(
-                "Dữ liệu tải xuống không hợp lệ."
-            );
+            throw new Error('Dữ liệu tải xuống không hợp lệ.');
         }
 
         const objectUrl = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
+        const anchor = document.createElement('a');
 
         anchor.href = objectUrl;
         anchor.download = fileName;
-        anchor.style.display = "none";
+        anchor.style.display = 'none';
 
         document.body.appendChild(anchor);
 
         anchor.click();
         anchor.remove();
 
-        setTimeout(
-            () => {
-                URL.revokeObjectURL(objectUrl);
-            },
-            1000
-        );
+        setTimeout(() => {
+            URL.revokeObjectURL(objectUrl);
+        }, 1000);
     },
 
     async refreshAuthentication() {
@@ -886,32 +612,23 @@ window.MCS.api = {
         }
 
         const executeRefresh = async () => {
-            const latestRefreshToken =
-                window.MCS.storage.getRefreshToken();
+            const latestRefreshToken = window.MCS.storage.getRefreshToken();
 
             if (!latestRefreshToken) {
                 return false;
             }
 
-            if (
-                latestRefreshToken !==
-                refreshToken
-            ) {
+            if (latestRefreshToken !== refreshToken) {
                 window.MCS.authSession?.scheduleAccessTokenRefresh();
 
                 return true;
             }
 
-            return await this.performRefresh(
-                latestRefreshToken
-            );
+            return await this.performRefresh(latestRefreshToken);
         };
 
         this.refreshPromise = navigator.locks?.request
-            ? navigator.locks.request(
-                "mcs-auth-refresh",
-                executeRefresh
-            )
+            ? navigator.locks.request('mcs-auth-refresh', executeRefresh)
             : executeRefresh();
 
         try {
@@ -923,20 +640,17 @@ window.MCS.api = {
 
     async performRefresh(refreshToken) {
         try {
-            const response = await fetch(
-                "/api/mcs/v1/auth/lam-moi-token",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        refreshToken
-                    })
-                }
-            );
+            const response = await fetch('/api/mcs/v1/auth/lam-moi-token', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refreshToken
+                })
+            });
 
             if (!response.ok) {
                 return false;
@@ -944,104 +658,59 @@ window.MCS.api = {
 
             const result = await response.json();
 
-            const data =
-                result?.data ??
-                result;
+            const data = result?.data ?? result;
 
-            if (
-                !data?.accessToken ||
-                !data?.refreshToken
-            ) {
+            if (!data?.accessToken || !data?.refreshToken) {
                 return false;
             }
 
-            localStorage.setItem(
-                window.MCS.config.accessTokenKey,
-                data.accessToken
-            );
+            localStorage.setItem(window.MCS.config.accessTokenKey, data.accessToken);
 
-            localStorage.setItem(
-                window.MCS.config.refreshTokenKey,
-                data.refreshToken
-            );
+            localStorage.setItem(window.MCS.config.refreshTokenKey, data.refreshToken);
 
             window.MCS.authSession?.scheduleAccessTokenRefresh();
 
             return true;
         } catch (error) {
-            console.warn(
-                "[Auth] Không thể làm mới token:",
-                error
-            );
+            console.warn('[Auth] Không thể làm mới token:', error);
 
             return false;
         }
     }
 };
 
-window.MCS.escapeHtml = value => {
-    const element = document.createElement("div");
+window.MCS.escapeHtml = (value) => {
+    const element = document.createElement('div');
 
-    element.textContent = value ?? "";
+    element.textContent = value ?? '';
 
     return element.innerHTML;
 };
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    window.MCS.authSync?.initialize();
 
-        window.MCS.authSync
-            ?.initialize();
+    const authenticated = window.MCS.authSync?.hasAuthentication?.() === true;
 
+    const loginPage = window.MCS.authSync?.isLoginPage?.() === true;
 
-        const authenticated =
-            window.MCS.authSync
-                ?.hasAuthentication?.() ===
-            true;
+    if (authenticated && !loginPage) {
+        await window.MCS.api.refreshAuthentication();
+    }
 
+    window.MCS.authSession.scheduleAccessTokenRefresh();
 
-        const loginPage =
-            window.MCS.authSync
-                ?.isLoginPage?.() ===
-            true;
+    const currentUser = window.MCS.storage.getCurrentUser();
 
-        if (
-            authenticated &&
-            !loginPage
-        ) {
+    document.querySelectorAll('[data-current-user-name]').forEach((element) => {
+        element.textContent = currentUser?.hoTen || 'Người dùng';
+    });
 
-            await window.MCS.api
-                .refreshAuthentication();
+    const changePasswordButtons = document.querySelectorAll('#changePasswordButton, ' + '#homeChangePasswordButton');
 
-        }
-
-        window.MCS.authSession
-            .scheduleAccessTokenRefresh();
-
-
-        const currentUser =
-            window.MCS.storage
-                .getCurrentUser();
-
-    document
-        .querySelectorAll("[data-current-user-name]")
-        .forEach(element => {
-            element.textContent =
-                currentUser?.hoTen ||
-                "Người dùng";
-        });
-
-    const changePasswordButtons = document.querySelectorAll(
-        "#changePasswordButton, " +
-        "#homeChangePasswordButton"
-    );
-
-    changePasswordButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            window.MCS.modal?.open(
-                "changePasswordModal"
-            );
+    changePasswordButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            window.MCS.modal?.open('changePasswordModal');
         });
     });
 });

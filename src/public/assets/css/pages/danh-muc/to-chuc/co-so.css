@@ -1,22 +1,14 @@
 .co-so-image-grid {
     display: grid;
-    grid-template-columns:
-        repeat(
-            3,
-            minmax(100px, 1fr)
-        );
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
     gap: 24px;
     align-items: start;
     width: 100%;
 }
 
-
-#coSoDetailPanel
-[data-form-field="logo"],
-#coSoDetailPanel
-[data-form-field="favicon"],
-#coSoDetailPanel
-[data-form-field="logoDoiTac"] {
+#coSoDetailPanel [data-form-field='logo'],
+#coSoDetailPanel [data-form-field='favicon'],
+#coSoDetailPanel [data-form-field='logoDoiTac'] {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
@@ -24,25 +16,12 @@
     align-self: start;
 }
 
-
-#coSoDetailPanel
-[data-form-field="logo"]
-[data-image-picker],
-#coSoDetailPanel
-[data-form-field="favicon"]
-[data-image-picker],
-#coSoDetailPanel
-[data-form-field="logoDoiTac"]
-[data-image-picker],
-#coSoDetailPanel
-[data-form-field="logo"]
-.image-picker,
-#coSoDetailPanel
-[data-form-field="favicon"]
-.image-picker,
-#coSoDetailPanel
-[data-form-field="logoDoiTac"]
-.image-picker {
+#coSoDetailPanel [data-form-field='logo'] [data-image-picker],
+#coSoDetailPanel [data-form-field='favicon'] [data-image-picker],
+#coSoDetailPanel [data-form-field='logoDoiTac'] [data-image-picker],
+#coSoDetailPanel [data-form-field='logo'] .image-picker,
+#coSoDetailPanel [data-form-field='favicon'] .image-picker,
+#coSoDetailPanel [data-form-field='logoDoiTac'] .image-picker {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -51,16 +30,9 @@
     max-height: 100px !important;
 }
 
-
-#coSoDetailPanel
-[data-form-field="logo"]
-.image-picker__preview,
-#coSoDetailPanel
-[data-form-field="favicon"]
-.image-picker__preview,
-#coSoDetailPanel
-[data-form-field="logoDoiTac"]
-.image-picker__preview {
+#coSoDetailPanel [data-form-field='logo'] .image-picker__preview,
+#coSoDetailPanel [data-form-field='favicon'] .image-picker__preview,
+#coSoDetailPanel [data-form-field='logoDoiTac'] .image-picker__preview {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -70,33 +42,17 @@
     overflow: hidden;
 }
 
-
-#coSoDetailPanel
-[data-form-field="logo"]
-.image-picker__preview img,
-#coSoDetailPanel
-[data-form-field="favicon"]
-.image-picker__preview img,
-#coSoDetailPanel
-[data-form-field="logoDoiTac"]
-.image-picker__preview img {
+#coSoDetailPanel [data-form-field='logo'] .image-picker__preview img,
+#coSoDetailPanel [data-form-field='favicon'] .image-picker__preview img,
+#coSoDetailPanel [data-form-field='logoDoiTac'] .image-picker__preview img {
     display: block;
     width: 100px !important;
     height: 100px !important;
     object-fit: cover;
 }
 
-
-@media (
-    max-width: 620px
-) {
-
+@media (max-width: 620px) {
     .co-so-image-grid {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(100px, 1fr)
-            );
+        grid-template-columns: repeat(2, minmax(100px, 1fr));
     }
-
 }

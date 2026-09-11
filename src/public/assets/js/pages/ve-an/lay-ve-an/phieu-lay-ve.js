@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 (() => {
     const app = window.KitchenFlowLayVeAn;
@@ -7,15 +7,7 @@
         return;
     }
 
-    const {
-        root,
-        permission,
-        API,
-        DAILY_MEAL_STORAGE_KEY,
-        TAKER_TYPE_STORAGE_KEY,
-        state,
-        el
-    } = app;
+    const { root, permission, API, DAILY_MEAL_STORAGE_KEY, TAKER_TYPE_STORAGE_KEY, state, el } = app;
 
     const closeDiscountModal = (...args) => app.closeDiscountModal(...args);
     const fillSelect = (...args) => app.fillSelect(...args);
@@ -44,31 +36,21 @@
     const isFinancialLocked = (...args) => app.isFinancialLocked(...args);
 
     async function handleLayVeStorageChange(event) {
-        if (
-            event.key ===
-            DAILY_MEAL_STORAGE_KEY
-        ) {
+        if (event.key === DAILY_MEAL_STORAGE_KEY) {
             restoreDailyMealSelection();
             renderMeal();
 
-            await loadGiaVePreview(
-                false
-            );
+            await loadGiaVePreview(false);
 
             renderSummary();
             return;
         }
 
-        if (
-            event.key ===
-            TAKER_TYPE_STORAGE_KEY
-        ) {
+        if (event.key === TAKER_TYPE_STORAGE_KEY) {
             restoreDoiTuongSelection();
             renderPersonMode();
 
-            await loadGiaVePreview(
-                false
-            );
+            await loadGiaVePreview(false);
 
             renderSummary();
         }
@@ -77,176 +59,102 @@
     function bindDoiTuongLayVeEvents() {
         const select = el.doiTuongLayVe;
 
-        if (
-            !select ||
-            select.dataset.layVeDoiTuongBound ===
-                "true"
-        ) {
+        if (!select || select.dataset.layVeDoiTuongBound === 'true') {
             return;
         }
 
-        select.dataset.layVeDoiTuongBound = "true";
+        select.dataset.layVeDoiTuongBound = 'true';
 
         let timer = null;
 
         const scheduleSync = () => {
             if (timer) {
-                clearTimeout(
-                    timer
-                );
+                clearTimeout(timer);
             }
 
-            timer = setTimeout(
-                async () => {
-                    timer = null;
+            timer = setTimeout(async () => {
+                timer = null;
 
-                    syncDoiTuongFromSmartSelect();
+                syncDoiTuongFromSmartSelect();
 
-                    await handleDoiTuongLayVeChange();
-                },
-                0
-            );
+                await handleDoiTuongLayVeChange();
+            }, 0);
         };
 
-        select.addEventListener(
-            "change",
-            scheduleSync
-        );
+        select.addEventListener('change', scheduleSync);
 
-        select.addEventListener(
-            "input",
-            scheduleSync
-        );
+        select.addEventListener('input', scheduleSync);
 
-        const smartSelectRoot = select.closest(
-            "[data-smart-select]"
-        );
+        const smartSelectRoot = select.closest('[data-smart-select]');
 
-        smartSelectRoot
-            ?.addEventListener(
-                "click",
-                scheduleSync
-            );
+        smartSelectRoot?.addEventListener('click', scheduleSync);
     }
 
     function syncDoiTuongFromSmartSelect() {
         const select = el.doiTuongLayVe;
 
         if (!select) {
-            return "";
+            return '';
         }
 
-        const smartSelectRoot = select.closest(
-            "[data-smart-select]"
-        );
+        const smartSelectRoot = select.closest('[data-smart-select]');
 
         if (!smartSelectRoot) {
             return select.value;
         }
 
         const display = smartSelectRoot.querySelector(
-            [
-                ".smart-select__value",
-                "[data-smart-select-value]",
-                ".smart-select__placeholder"
-            ].join(
-                ","
-            )
+            ['.smart-select__value', '[data-smart-select-value]', '.smart-select__placeholder'].join(',')
         );
 
-        const displayText = normalizeSearchText(
-            display?.textContent
-        );
+        const displayText = normalizeSearchText(display?.textContent);
 
-        if (
-            !displayText ||
-            displayText.includes(
-                "chon doi tuong"
-            )
-        ) {
+        if (!displayText || displayText.includes('chon doi tuong')) {
             return select.value;
         }
 
-        const selectedItem = state.doiTuong.find(
-            item =>
-                normalizeSearchText(
-                    item.label
-                ) ===
-                displayText
-        );
+        const selectedItem = state.doiTuong.find((item) => normalizeSearchText(item.label) === displayText);
 
         if (!selectedItem) {
             return select.value;
         }
 
-        const value = String(
-            selectedItem.value
-        );
+        const value = String(selectedItem.value);
 
-        Array
-            .from(
-                select.options ||
-                []
-            )
-            .forEach(
-                option => {
-                    option.selected =
-                        option.value ===
-                        value;
-                }
-            );
+        Array.from(select.options || []).forEach((option) => {
+            option.selected = option.value === value;
+        });
 
         select.value = value;
 
         return value;
     }
 
-    function rememberDoiTuongSelection(
-        selectedValue = null
-    ) {
-        const rawValue =
-            selectedValue !==
-                null
-                ? selectedValue
-                : syncDoiTuongFromSmartSelect();
+    function rememberDoiTuongSelection(selectedValue = null) {
+        const rawValue = selectedValue !== null ? selectedValue : syncDoiTuongFromSmartSelect();
 
-        const value = toPositiveInt(
-            rawValue
-        );
+        const value = toPositiveInt(rawValue);
 
         if (!value) {
             return;
         }
 
-        localStorage.setItem(
-            TAKER_TYPE_STORAGE_KEY,
-            String(
-                value
-            )
-        );
+        localStorage.setItem(TAKER_TYPE_STORAGE_KEY, String(value));
     }
 
     async function handleDoiTuongLayVeChange() {
-        if (
-            !canChangeFinancialFields()
-        ) {
+        if (!canChangeFinancialFields()) {
             restoreDoiTuong();
             return;
         }
 
         const value = syncDoiTuongFromSmartSelect();
 
-        rememberDoiTuongSelection(
-            value
-        );
+        rememberDoiTuongSelection(value);
 
-        renderPersonMode(
-            value
-        );
+        renderPersonMode(value);
 
-        await loadGiaVePreview(
-            true
-        );
+        await loadGiaVePreview(true);
 
         renderSummary();
         markDraftDirty();
@@ -257,16 +165,12 @@
             await resetForNewTicket();
         };
 
-        if (
-            state.phieu ||
-            state.payment ||
-            state.discounts.length
-        ) {
+        if (state.phieu || state.payment || state.discounts.length) {
             confirmAction(
-                "Lấy vé mới",
-                "Bỏ thông tin đang nhập để chuyển sang người lấy vé mới?",
-                "Tiếp tục",
-                "primary",
+                'Lấy vé mới',
+                'Bỏ thông tin đang nhập để chuyển sang người lấy vé mới?',
+                'Tiếp tục',
+                'primary',
                 execute
             );
 
@@ -298,19 +202,15 @@
         state.pricePreview = null;
         state.selectedPaymentMethod = null;
 
-        root.dataset.phieuId = "";
+        root.dataset.phieuId = '';
 
         markPageAsCreate();
 
         if (el.soLuong) {
-            el.soLuong.value = "1";
+            el.soLuong.value = '1';
         }
 
-        setSelectValue(
-            el.nhanVienId,
-            "",
-            false
-        );
+        setSelectValue(el.nhanVienId, '', false);
 
         clearEmployeeInfo();
         clearTextField(el.noteEmployee);
@@ -320,15 +220,9 @@
         clearTextField(el.unit);
         clearTextField(el.noteGuest);
 
-        clearDateField(
-            "ngaySinhNguoiLayVe"
-        );
+        clearDateField('ngaySinhNguoiLayVe');
 
-        setSelectValue(
-            el.gioiTinh,
-            "",
-            false
-        );
+        setSelectValue(el.gioiTinh, '', false);
 
         if (el.permanentGuest) {
             el.permanentGuest.checked = false;
@@ -344,29 +238,20 @@
         renderPersonMode();
         renderEmployee();
 
-        await loadGiaVePreview(
-            false
-        );
+        await loadGiaVePreview(false);
 
         renderSummary();
         renderStateActions();
     }
 
     function clearEmployeeInfo() {
-        [
-            el.employeeCode,
-            el.employeeName,
-            el.employeeDepartment,
-            el.employeeSite,
-            el.employeePhone
-        ]
-            .forEach(
-                element => {
-                    if (element) {
-                        element.textContent = "-";
-                    }
+        [el.employeeCode, el.employeeName, el.employeeDepartment, el.employeeSite, el.employeePhone].forEach(
+            (element) => {
+                if (element) {
+                    element.textContent = '-';
                 }
-            );
+            }
+        );
     }
 
     function clearTextField(input) {
@@ -374,57 +259,33 @@
             return;
         }
 
-        input.value = "";
+        input.value = '';
     }
 
     function clearDateField(id) {
-        const input = document.getElementById(
-            id
-        );
+        const input = document.getElementById(id);
 
         if (!input) {
             return;
         }
 
-        const field = input.closest(
-            "[data-form-field]"
-        );
+        const field = input.closest('[data-form-field]');
 
-        const datePickerRoot =
-            input.closest(
-                "[data-date-picker]"
-            ) ||
-            field?.querySelector(
-                "[data-date-picker]"
-            );
+        const datePickerRoot = input.closest('[data-date-picker]') || field?.querySelector('[data-date-picker]');
 
-        const hiddenInput =
-            field?.querySelector(
-                "[data-date-value]"
-            ) ||
-            input;
+        const hiddenInput = field?.querySelector('[data-date-value]') || input;
 
-        const displayInput = field?.querySelector(
-            "[data-date-input]"
-        );
+        const displayInput = field?.querySelector('[data-date-input]');
 
         if (hiddenInput) {
-            hiddenInput.value = "";
+            hiddenInput.value = '';
         }
 
         if (displayInput) {
-            displayInput.value = "";
+            displayInput.value = '';
         }
 
-        (
-            datePickerRoot?.datePicker ||
-            field?.datePicker
-        )
-            ?.setValue
-            ?.(
-                "",
-                false
-            );
+        (datePickerRoot?.datePicker || field?.datePicker)?.setValue?.('', false);
     }
 
     function renderMeal() {
@@ -437,94 +298,43 @@
         }
 
         el.mealDate.textContent = formatDate(item.ngay);
-        el.mealName.textContent =
-            item.tenThucDon || item.maThucDon || "-";
-        el.mealCanteen.textContent =
-            item.tenNhaAn || item.maNhaAn || "-";
-        el.mealShift.textContent =
-            item.tenCaAn || item.maCaAn || "-";
-        el.mealTime.textContent = [
-            formatTime(item.thoiGianBatDau),
-            formatTime(item.thoiGianKetThuc)
-        ]
-            .filter(Boolean)
-            .join(" - ") || "-";
+        el.mealName.textContent = item.tenThucDon || item.maThucDon || '-';
+        el.mealCanteen.textContent = item.tenNhaAn || item.maNhaAn || '-';
+        el.mealShift.textContent = item.tenCaAn || item.maCaAn || '-';
+        el.mealTime.textContent =
+            [formatTime(item.thoiGianBatDau), formatTime(item.thoiGianKetThuc)].filter(Boolean).join(' - ') || '-';
 
         if (el.viewMenu) {
-            el.viewMenu.href =
-                item.thucDonId
-                    ? `/thuc-don/thong-tin-chi-tiet-thuc-don/${item.thucDonId}`
-                    : "#";
+            el.viewMenu.href = item.thucDonId ? `/thuc-don/thong-tin-chi-tiet-thuc-don/${item.thucDonId}` : '#';
         }
     }
 
     function getDoiTuongByValue(value) {
-        return state.doiTuong.find(
-            item =>
-                String(
-                    item.value
-                ) ===
-                String(
-                    value
-                )
-        ) ||
-        null;
+        return state.doiTuong.find((item) => String(item.value) === String(value)) || null;
     }
 
     function isNhanVienDoiTuong(value) {
-        const item = getDoiTuongByValue(
-            value
-        );
+        const item = getDoiTuongByValue(value);
 
         if (!item) {
             return false;
         }
 
-        const label = normalizeSearchText(
-            item.label
-        );
+        const label = normalizeSearchText(item.label);
 
-        return (
-            Number(
-                item.value
-            ) ===
-            10 ||
-            label ===
-                "nhan vien" ||
-            label.includes(
-                "nhan vien"
-            )
-        );
+        return Number(item.value) === 10 || label === 'nhan vien' || label.includes('nhan vien');
     }
 
-    function renderPersonMode(
-        selectedValue = null
-    ) {
-        const value =
-            selectedValue !==
-                null
-                ? String(
-                    selectedValue
-                )
-                : String(
-                    el.doiTuongLayVe
-                        ?.value ||
-                    ""
-                );
+    function renderPersonMode(selectedValue = null) {
+        const value = selectedValue !== null ? String(selectedValue) : String(el.doiTuongLayVe?.value || '');
 
-        const hasValue = Boolean(
-            value
-        );
+        const hasValue = Boolean(value);
 
-        const isEmployee = isNhanVienDoiTuong(
-            value
-        );
+        const isEmployee = isNhanVienDoiTuong(value);
 
         el.employeeSelectField.hidden = !isEmployee;
         el.employeeInfo.hidden = !isEmployee;
-        el.guestForm.hidden =
-            !hasValue ||
-            isEmployee;
+        el.guestForm.hidden = !hasValue || isEmployee;
 
         if (isEmployee) {
             renderEmployee();
@@ -535,58 +345,32 @@
         const employee = getSelectedEmployee();
 
         if (!employee) {
-            [
-                el.employeeCode,
-                el.employeeName,
-                el.employeeDepartment,
-                el.employeeSite,
-                el.employeePhone
-            ].forEach(node => {
-                if (node) {
-                    node.textContent = "-";
+            [el.employeeCode, el.employeeName, el.employeeDepartment, el.employeeSite, el.employeePhone].forEach(
+                (node) => {
+                    if (node) {
+                        node.textContent = '-';
+                    }
                 }
-            });
+            );
             return;
         }
 
-        el.employeeCode.textContent =
-            employee.maNhanVien || employee.ma_nhan_vien || "-";
+        el.employeeCode.textContent = employee.maNhanVien || employee.ma_nhan_vien || '-';
 
-        el.employeeName.textContent =
-            employee.hoTen ||
-            employee.tenNhanVien ||
-            employee.ho_ten ||
-            "-";
+        el.employeeName.textContent = employee.hoTen || employee.tenNhanVien || employee.ho_ten || '-';
 
         el.employeeDepartment.textContent =
-            employee.tenPhongBan ||
-            employee.phongBan?.tenPhongBan ||
-            employee.phongBan?.ten ||
-            "-";
+            employee.tenPhongBan || employee.phongBan?.tenPhongBan || employee.phongBan?.ten || '-';
 
-        el.employeeSite.textContent =
-            employee.tenCoSo ||
-            employee.coSo?.tenCoSo ||
-            employee.coSo?.ten ||
-            "-";
+        el.employeeSite.textContent = employee.tenCoSo || employee.coSo?.tenCoSo || employee.coSo?.ten || '-';
 
-        el.employeePhone.textContent =
-            employee.soDienThoai ||
-            employee.so_dien_thoai ||
-            "-";
+        el.employeePhone.textContent = employee.soDienThoai || employee.so_dien_thoai || '-';
     }
 
     function renderSummary() {
-        const currentThucDonNgayId = toPositiveInt(
-            el.thucDonNgayId?.value
-        );
-        const currentDoiTuongLayVe = toPositiveInt(
-            el.doiTuongLayVe?.value
-        );
-        const currentSoLuong = Math.max(
-            1,
-            Math.floor(Number(el.soLuong?.value || 1))
-        );
+        const currentThucDonNgayId = toPositiveInt(el.thucDonNgayId?.value);
+        const currentDoiTuongLayVe = toPositiveInt(el.doiTuongLayVe?.value);
+        const currentSoLuong = Math.max(1, Math.floor(Number(el.soLuong?.value || 1)));
 
         const phieu =
             state.phieu &&
@@ -597,196 +381,109 @@
                 : null;
 
         const preview = state.pricePreview;
-        const doiTuong = state.doiTuong.find(
-            item => Number(item.value) === Number(el.doiTuongLayVe?.value)
-        );
+        const doiTuong = state.doiTuong.find((item) => Number(item.value) === Number(el.doiTuongLayVe?.value));
 
         const soLuong = currentSoLuong;
 
         const donGia = phieu
             ? Number(phieu.donGia)
             : preview?.donGia !== undefined && preview?.donGia !== null
-                ? Number(preview.donGia)
-                : null;
+              ? Number(preview.donGia)
+              : null;
 
-        const tienGoc = phieu
-            ? Number(phieu.tienGoc)
-            : Number.isFinite(donGia)
-                ? donGia * soLuong
-                : null;
+        const tienGoc = phieu ? Number(phieu.tienGoc) : Number.isFinite(donGia) ? donGia * soLuong : null;
 
-        const tongMienGiam = phieu
-            ? Number(phieu.tongMienGiam || 0)
-            : 0;
+        const tongMienGiam = phieu ? Number(phieu.tongMienGiam || 0) : 0;
 
         const thanhTien = phieu
             ? Number(phieu.thanhTien)
             : Number.isFinite(tienGoc)
-                ? Math.max(tienGoc - tongMienGiam, 0)
-                : null;
+              ? Math.max(tienGoc - tongMienGiam, 0)
+              : null;
 
-        el.summaryTicket.textContent =
-            doiTuong?.label || "-";
+        el.summaryTicket.textContent = doiTuong?.label || '-';
 
-        el.summaryQty.textContent =
-            `${soLuong} vé`;
+        el.summaryQty.textContent = `${soLuong} vé`;
 
-        el.summaryPrice.textContent =
-            Number.isFinite(donGia)
-                ? formatMoney(donGia)
-                : "-";
+        el.summaryPrice.textContent = Number.isFinite(donGia) ? formatMoney(donGia) : '-';
 
-        el.summaryOriginal.textContent =
-            Number.isFinite(tienGoc)
-                ? formatMoney(tienGoc)
-                : "-";
+        el.summaryOriginal.textContent = Number.isFinite(tienGoc) ? formatMoney(tienGoc) : '-';
 
-        el.summaryDiscount.textContent =
-            tongMienGiam > 0
-                ? `-${formatMoney(tongMienGiam)}`
-                : "0 đ";
+        el.summaryDiscount.textContent = tongMienGiam > 0 ? `-${formatMoney(tongMienGiam)}` : '0 đ';
 
-        el.summaryTotal.textContent =
-            Number.isFinite(thanhTien)
-                ? formatMoney(thanhTien)
-                : "-";
+        el.summaryTotal.textContent = Number.isFinite(thanhTien) ? formatMoney(thanhTien) : '-';
 
         renderStateActions();
     }
 
     async function loadExistingPhieu(id) {
-        const phieuId = toPositiveInt(
-            id
-        );
+        const phieuId = toPositiveInt(id);
 
         if (!phieuId) {
-            throw new Error(
-                "ID phiếu lấy vé không hợp lệ."
-            );
+            throw new Error('ID phiếu lấy vé không hợp lệ.');
         }
 
-        const response = await request(
-            `${API.phieu}/${phieuId}`
-        );
+        const response = await request(`${API.phieu}/${phieuId}`);
 
         const phieu = response?.data;
 
-        if (
-            !phieu ||
-            !phieu.id
-        ) {
-            throw new Error(
-                "Không tìm thấy phiếu lấy vé."
-            );
+        if (!phieu || !phieu.id) {
+            throw new Error('Không tìm thấy phiếu lấy vé.');
         }
 
         state.phieu = phieu;
 
-        state.pricePreview =
-            Number.isFinite(
-                Number(
-                    phieu.donGia
-                )
-            )
-                ? {
-                    donGia: Number(
-                        phieu.donGia
-                    )
-                }
-                : null;
+        state.pricePreview = Number.isFinite(Number(phieu.donGia))
+            ? {
+                  donGia: Number(phieu.donGia)
+              }
+            : null;
 
-        root.dataset.phieuId = String(
-            phieu.id
-        );
+        root.dataset.phieuId = String(phieu.id);
 
-        ensureExistingMeal(
-            phieu
-        );
+        ensureExistingMeal(phieu);
 
-        ensureExistingEmployee(
-            phieu
-        );
+        ensureExistingEmployee(phieu);
 
-        hydratePhieuForm(
-            phieu
-        );
+        hydratePhieuForm(phieu);
 
-        markPageAsExisting(
-            phieu.id
-        );
+        markPageAsExisting(phieu.id);
 
         return phieu;
     }
 
     function ensureExistingMeal(phieu) {
-        const id = toPositiveInt(
-            phieu?.thucDonNgayId
-        );
+        const id = toPositiveInt(phieu?.thucDonNgayId);
 
         if (!id) {
             return;
         }
 
-        const exists = state.thucDonNgay
-            .some(
-                item =>
-                    Number(
-                        item.id
-                    ) ===
-                    Number(
-                        id
-                    )
-            );
+        const exists = state.thucDonNgay.some((item) => Number(item.id) === Number(id));
 
         if (!exists) {
             state.thucDonNgay.unshift({
                 id,
-                ngay:
-                    phieu.ngay ||
-                    phieu.ngaySuDung ||
-                    null,
-                thucDonId:
-                    phieu.thucDonId ||
-                    null,
-                tenThucDon:
-                    phieu.tenThucDon ||
-                    phieu.maThucDon ||
-                    "Thực đơn",
-                tenNhaAn:
-                    phieu.tenNhaAn ||
-                    phieu.maNhaAn ||
-                    "Nhà ăn",
-                tenCaAn:
-                    phieu.tenCaAn ||
-                    phieu.maCaAn ||
-                    "Ca ăn",
-                thoiGianBatDau:
-                    phieu.thoiGianBatDau ||
-                    null,
-                thoiGianKetThuc:
-                    phieu.thoiGianKetThuc ||
-                    null
+                ngay: phieu.ngay || phieu.ngaySuDung || null,
+                thucDonId: phieu.thucDonId || null,
+                tenThucDon: phieu.tenThucDon || phieu.maThucDon || 'Thực đơn',
+                tenNhaAn: phieu.tenNhaAn || phieu.maNhaAn || 'Nhà ăn',
+                tenCaAn: phieu.tenCaAn || phieu.maCaAn || 'Ca ăn',
+                thoiGianBatDau: phieu.thoiGianBatDau || null,
+                thoiGianKetThuc: phieu.thoiGianKetThuc || null
             });
         }
 
         fillSelect(
             el.thucDonNgayId,
             state.thucDonNgay,
-            item =>
-                item.id,
-            item => {
-                const date = formatDate(
-                    item.ngay
-                );
+            (item) => item.id,
+            (item) => {
+                const date = formatDate(item.ngay);
 
-                const ca =
-                    item.tenCaAn ||
-                    item.maCaAn ||
-                    "Ca ăn";
+                const ca = item.tenCaAn || item.maCaAn || 'Ca ăn';
 
-                const nhaAn =
-                    item.tenNhaAn ||
-                    "Nhà ăn";
+                const nhaAn = item.tenNhaAn || 'Nhà ăn';
 
                 return `${date} - ${ca} - ${nhaAn}`;
             }
@@ -794,253 +491,122 @@
     }
 
     function ensureExistingEmployee(phieu) {
-        const id = toPositiveInt(
-            phieu?.nhanVienId
-        );
+        const id = toPositiveInt(phieu?.nhanVienId);
 
         if (!id) {
             return;
         }
 
-        const exists = state.employees
-            .some(
-                item =>
-                    Number(
-                        item.id
-                    ) ===
-                    Number(
-                        id
-                    )
-            );
+        const exists = state.employees.some((item) => Number(item.id) === Number(id));
 
         if (!exists) {
             state.employees.unshift({
                 id,
-                maNhanVien:
-                    phieu.maNhanVien ||
-                    "",
-                hoTen:
-                    phieu.tenNhanVien ||
-                    phieu.hoTenNhanVien ||
-                    phieu.hoTenNguoiLayVe ||
-                    "",
-                tenPhongBan:
-                    phieu.tenPhongBan ||
-                    "",
-                tenCoSo:
-                    phieu.tenCoSo ||
-                    "",
-                soDienThoai:
-                    phieu.soDienThoai ||
-                    phieu.soDienThoaiNguoiLayVe ||
-                    ""
+                maNhanVien: phieu.maNhanVien || '',
+                hoTen: phieu.tenNhanVien || phieu.hoTenNhanVien || phieu.hoTenNguoiLayVe || '',
+                tenPhongBan: phieu.tenPhongBan || '',
+                tenCoSo: phieu.tenCoSo || '',
+                soDienThoai: phieu.soDienThoai || phieu.soDienThoaiNguoiLayVe || ''
             });
         }
 
         fillSelect(
             el.nhanVienId,
             state.employees,
-            item =>
-                item.id,
-            item =>
-                [
-                    item.maNhanVien ||
-                        item.ma_nhan_vien,
-                    item.hoTen ||
-                        item.tenNhanVien ||
-                        item.ho_ten
-                ]
-                    .filter(
-                        Boolean
-                    )
-                    .join(
-                        " - "
-                    )
+            (item) => item.id,
+            (item) =>
+                [item.maNhanVien || item.ma_nhan_vien, item.hoTen || item.tenNhanVien || item.ho_ten]
+                    .filter(Boolean)
+                    .join(' - ')
         );
     }
 
     function hydratePhieuForm(phieu) {
-        setSelectValue(
-            el.thucDonNgayId,
-            phieu.thucDonNgayId ??
-                "",
-            false
-        );
+        setSelectValue(el.thucDonNgayId, phieu.thucDonNgayId ?? '', false);
 
-        setSelectValue(
-            el.doiTuongLayVe,
-            phieu.doiTuongLayVe ??
-                "",
-            false
-        );
+        setSelectValue(el.doiTuongLayVe, phieu.doiTuongLayVe ?? '', false);
 
         if (el.soLuong) {
-            el.soLuong.value = String(
-                phieu.soLuong ||
-                1
-            );
+            el.soLuong.value = String(phieu.soLuong || 1);
         }
 
-        const isEmployee = isNhanVienDoiTuong(
-            phieu.doiTuongLayVe
-        );
+        const isEmployee = isNhanVienDoiTuong(phieu.doiTuongLayVe);
 
         if (isEmployee) {
-            setSelectValue(
-                el.nhanVienId,
-                phieu.nhanVienId ??
-                    "",
-                false
-            );
+            setSelectValue(el.nhanVienId, phieu.nhanVienId ?? '', false);
 
             if (el.noteEmployee) {
-                el.noteEmployee.value =
-                    phieu.ghiChu ||
-                    "";
+                el.noteEmployee.value = phieu.ghiChu || '';
             }
         } else {
             if (el.hoTen) {
-                el.hoTen.value =
-                    phieu.hoTenNguoiLayVe ||
-                    "";
+                el.hoTen.value = phieu.hoTenNguoiLayVe || '';
             }
 
             if (el.phone) {
-                el.phone.value =
-                    phieu.soDienThoaiNguoiLayVe ||
-                    "";
+                el.phone.value = phieu.soDienThoaiNguoiLayVe || '';
             }
 
             if (el.address) {
-                el.address.value =
-                    phieu.diaChiNguoiLayVe ||
-                    "";
+                el.address.value = phieu.diaChiNguoiLayVe || '';
             }
 
             if (el.unit) {
-                el.unit.value =
-                    phieu.donViNguoiLayVe ||
-                    "";
+                el.unit.value = phieu.donViNguoiLayVe || '';
             }
 
             if (el.noteGuest) {
-                el.noteGuest.value =
-                    phieu.ghiChu ||
-                    "";
+                el.noteGuest.value = phieu.ghiChu || '';
             }
 
-            setDateFieldValue(
-                "ngaySinhNguoiLayVe",
-                phieu.ngaySinhNguoiLayVe
-            );
+            setDateFieldValue('ngaySinhNguoiLayVe', phieu.ngaySinhNguoiLayVe);
 
-            setSelectValue(
-                el.gioiTinh,
-                phieu.gioiTinhNguoiLayVe ??
-                    "",
-                false
-            );
+            setSelectValue(el.gioiTinh, phieu.gioiTinhNguoiLayVe ?? '', false);
 
             if (el.permanentGuest) {
                 el.permanentGuest.checked =
-                    phieu.khachLauDai ===
-                        true ||
-                    phieu.khachLauDai ===
-                        1 ||
-                    String(
-                        phieu.khachLauDai
-                    ).toLowerCase() ===
-                        "true";
+                    phieu.khachLauDai === true ||
+                    phieu.khachLauDai === 1 ||
+                    String(phieu.khachLauDai).toLowerCase() === 'true';
             }
         }
 
         renderMeal();
 
-        renderPersonMode(
-            phieu.doiTuongLayVe
-        );
+        renderPersonMode(phieu.doiTuongLayVe);
 
         renderEmployee();
     }
 
-    function setDateFieldValue(
-        id,
-        value
-    ) {
-        const input = document.getElementById(
-            id
-        );
+    function setDateFieldValue(id, value) {
+        const input = document.getElementById(id);
 
         if (!input) {
             return;
         }
 
-        const normalized =
-            normalizeDateForApi(
-                value
-            ) ||
-            "";
+        const normalized = normalizeDateForApi(value) || '';
 
-        const field = input.closest(
-            "[data-form-field]"
-        );
+        const field = input.closest('[data-form-field]');
 
-        const datePickerRoot =
-            input.closest(
-                "[data-date-picker]"
-            ) ||
-            field?.querySelector(
-                "[data-date-picker]"
-            );
+        const datePickerRoot = input.closest('[data-date-picker]') || field?.querySelector('[data-date-picker]');
 
-        const hiddenInput =
-            field?.querySelector(
-                "[data-date-value]"
-            ) ||
-            input;
+        const hiddenInput = field?.querySelector('[data-date-value]') || input;
 
-        const displayInput = field?.querySelector(
-            "[data-date-input]"
-        );
+        const displayInput = field?.querySelector('[data-date-input]');
 
-        const datePicker =
-            datePickerRoot?.datePicker ||
-            field?.datePicker;
+        const datePicker = datePickerRoot?.datePicker || field?.datePicker;
 
-        if (
-            normalized &&
-            datePicker
-                ?.setValue
-        ) {
-            const parts = normalized
-                .split("-")
-                .map(
-                    Number
-                );
+        if (normalized && datePicker?.setValue) {
+            const parts = normalized.split('-').map(Number);
 
-            if (
-                parts.length ===
-                    3 &&
-                parts.every(
-                    Number.isFinite
-                )
-            ) {
-                const date = new Date(
-                    parts[0],
-                    parts[1] - 1,
-                    parts[2]
-                );
+            if (parts.length === 3 && parts.every(Number.isFinite)) {
+                const date = new Date(parts[0], parts[1] - 1, parts[2]);
 
                 try {
-                    datePicker.setValue(
-                        date,
-                        false
-                    );
+                    datePicker.setValue(date, false);
                 } catch (error) {
-                    console.warn(
-                        "Không đồng bộ được date picker ngày sinh.",
-                        error
-                    );
+                    console.warn('Không đồng bộ được date picker ngày sinh.', error);
                 }
             }
         }
@@ -1050,29 +616,18 @@
         }
 
         if (displayInput) {
-            displayInput.value =
-                normalized
-                    ? formatDate(
-                        normalized
-                    )
-                    : "";
+            displayInput.value = normalized ? formatDate(normalized) : '';
         }
     }
 
     async function saveDraft() {
         const payload = buildPhieuPayload();
 
-        validatePhieuPayload(
-            payload
-        );
+        validatePhieuPayload(payload);
 
-        const canCreate = permission.canCreatePhieu(
-            state.permissions
-        );
+        const canCreate = permission.canCreatePhieu(state.permissions);
 
-        const canUpdate = permission.canUpdatePhieu(
-            state.permissions
-        );
+        const canUpdate = permission.canUpdatePhieu(state.permissions);
 
         const isCreating = !state.phieu;
 
@@ -1080,50 +635,30 @@
 
         if (isCreating) {
             if (!canCreate) {
-                throw new Error(
-                    "Bạn không có quyền tạo phiếu lấy vé ăn."
-                );
+                throw new Error('Bạn không có quyền tạo phiếu lấy vé ăn.');
             }
 
-            response = await request(
-                `${API.phieu}/them-moi`,
-                "POST",
-                payload
-            );
+            response = await request(`${API.phieu}/them-moi`, 'POST', payload);
         } else {
             if (!canUpdate) {
                 return state.phieu;
             }
 
-            response = await request(
-                `${API.phieu}/cap-nhat/${state.phieu.id}`,
-                "PATCH",
-                payload
-            );
+            response = await request(`${API.phieu}/cap-nhat/${state.phieu.id}`, 'PATCH', payload);
         }
 
-        state.phieu =
-            response?.data ||
-            null;
+        state.phieu = response?.data || null;
 
-        state.pricePreview =
-            state.phieu
-                ? {
-                    donGia: state.phieu.donGia
-                }
-                : state.pricePreview;
+        state.pricePreview = state.phieu
+            ? {
+                  donGia: state.phieu.donGia
+              }
+            : state.pricePreview;
 
-        root.dataset.phieuId =
-            state.phieu?.id ||
-            "";
+        root.dataset.phieuId = state.phieu?.id || '';
 
-        if (
-            isCreating &&
-            state.phieu?.id
-        ) {
-            markPageAsExisting(
-                state.phieu.id
-            );
+        if (isCreating && state.phieu?.id) {
+            markPageAsExisting(state.phieu.id);
         }
 
         renderSummary();
@@ -1132,131 +667,46 @@
     }
 
     function buildPhieuPayload() {
-        const doiTuong = Number(
-            el.doiTuongLayVe
-                ?.value
-        );
+        const doiTuong = Number(el.doiTuongLayVe?.value);
 
-        const isEmployee = isNhanVienDoiTuong(
-            doiTuong
-        );
+        const isEmployee = isNhanVienDoiTuong(doiTuong);
 
         return {
-            thucDonNgayId: toPositiveInt(
-                el.thucDonNgayId
-                    ?.value
-            ),
-            doiTuongLayVe:
-                doiTuong ||
-                null,
-            nhanVienId:
-                isEmployee
-                    ? toPositiveInt(
-                        el.nhanVienId
-                            ?.value
-                    )
-                    : null,
-            hoTenNguoiLayVe:
-                isEmployee
-                    ? null
-                    : nullableText(
-                        el.hoTen
-                            ?.value
-                    ),
-            ngaySinhNguoiLayVe:
-                isEmployee
-                    ? null
-                    : normalizeDateForApi(
-                        el.ngaySinh
-                            ?.value
-                    ),
-            gioiTinhNguoiLayVe:
-                isEmployee
-                    ? null
-                    : nullableNumber(
-                        el.gioiTinh
-                            ?.value
-                    ),
-            soDienThoaiNguoiLayVe:
-                isEmployee
-                    ? null
-                    : nullableText(
-                        el.phone
-                            ?.value
-                    ),
-            diaChiNguoiLayVe:
-                isEmployee
-                    ? null
-                    : nullableText(
-                        el.address
-                            ?.value
-                    ),
-            donViNguoiLayVe:
-                isEmployee
-                    ? null
-                    : nullableText(
-                        el.unit
-                            ?.value
-                    ),
-            khachLauDai:
-                isEmployee
-                    ? false
-                    : Boolean(
-                        el.permanentGuest
-                            ?.checked
-                    ),
-            soLuong: Math.max(
-                1,
-                Math.floor(
-                    Number(
-                        el.soLuong
-                            ?.value ||
-                        1
-                    )
-                )
-            ),
-            ghiChu: nullableText(
-                isEmployee
-                    ? el.noteEmployee
-                        ?.value
-                    : el.noteGuest
-                        ?.value
-            ),
-            phuongThucThanhToan:
-                state.selectedPaymentMethod ??
-                null
+            thucDonNgayId: toPositiveInt(el.thucDonNgayId?.value),
+            doiTuongLayVe: doiTuong || null,
+            nhanVienId: isEmployee ? toPositiveInt(el.nhanVienId?.value) : null,
+            hoTenNguoiLayVe: isEmployee ? null : nullableText(el.hoTen?.value),
+            ngaySinhNguoiLayVe: isEmployee ? null : normalizeDateForApi(el.ngaySinh?.value),
+            gioiTinhNguoiLayVe: isEmployee ? null : nullableNumber(el.gioiTinh?.value),
+            soDienThoaiNguoiLayVe: isEmployee ? null : nullableText(el.phone?.value),
+            diaChiNguoiLayVe: isEmployee ? null : nullableText(el.address?.value),
+            donViNguoiLayVe: isEmployee ? null : nullableText(el.unit?.value),
+            khachLauDai: isEmployee ? false : Boolean(el.permanentGuest?.checked),
+            soLuong: Math.max(1, Math.floor(Number(el.soLuong?.value || 1))),
+            ghiChu: nullableText(isEmployee ? el.noteEmployee?.value : el.noteGuest?.value),
+            phuongThucThanhToan: state.selectedPaymentMethod ?? null
         };
     }
 
     function validatePhieuPayload(payload) {
         if (!payload.thucDonNgayId) {
-            throw new Error("Vui lòng chọn bữa ăn / thực đơn.");
+            throw new Error('Vui lòng chọn bữa ăn / thực đơn.');
         }
 
         if (!payload.doiTuongLayVe) {
-            throw new Error("Vui lòng chọn đối tượng lấy vé.");
+            throw new Error('Vui lòng chọn đối tượng lấy vé.');
         }
 
-        if (
-            isNhanVienDoiTuong(
-                payload.doiTuongLayVe
-            ) &&
-            !payload.nhanVienId
-        ){
-            throw new Error("Vui lòng chọn nhân viên lấy vé.");
+        if (isNhanVienDoiTuong(payload.doiTuongLayVe) && !payload.nhanVienId) {
+            throw new Error('Vui lòng chọn nhân viên lấy vé.');
         }
 
-        if (
-            !isNhanVienDoiTuong(
-                payload.doiTuongLayVe
-            ) &&
-            !payload.hoTenNguoiLayVe
-        ) {
-            throw new Error("Vui lòng nhập họ tên người lấy vé.");
+        if (!isNhanVienDoiTuong(payload.doiTuongLayVe) && !payload.hoTenNguoiLayVe) {
+            throw new Error('Vui lòng nhập họ tên người lấy vé.');
         }
 
         if (!Number.isInteger(payload.soLuong) || payload.soLuong < 1) {
-            throw new Error("Số lượng vé phải lớn hơn 0.");
+            throw new Error('Số lượng vé phải lớn hơn 0.');
         }
     }
 
@@ -1265,33 +715,23 @@
             return;
         }
 
-        const response = await request(
-            `${API.phieu}/${state.phieu.id}`
-        );
+        const response = await request(`${API.phieu}/${state.phieu.id}`);
 
         state.phieu = response?.data || state.phieu;
     }
 
     async function openCancelPhieuModal() {
-        if (
-            !permission.canCancelPhieu(
-                state.permissions
-            )
-        ) {
+        if (!permission.canCancelPhieu(state.permissions)) {
             return;
         }
 
-        if (
-            !state.phieu?.id
-        ) {
+        if (!state.phieu?.id) {
             try {
                 setLoading(true);
 
                 await saveDraft();
             } catch (error) {
-                showError(
-                    error
-                );
+                showError(error);
 
                 return;
             } finally {
@@ -1300,7 +740,7 @@
         }
 
         if (el.cancelPhieuReason) {
-            el.cancelPhieuReason.value = "";
+            el.cancelPhieuReason.value = '';
         }
 
         if (el.cancelPhieuModal) {
@@ -1315,25 +755,14 @@
     }
 
     function submitCancelPhieu() {
-        if (
-            !state.phieu?.id
-        ) {
+        if (!state.phieu?.id) {
             return;
         }
 
-        const reason = String(
-            el.cancelPhieuReason
-                ?.value ||
-            ""
-        )
-            .trim();
+        const reason = String(el.cancelPhieuReason?.value || '').trim();
 
         if (!reason) {
-            showError(
-                new Error(
-                    "Vui lòng nhập lý do hủy phiếu."
-                )
-            );
+            showError(new Error('Vui lòng nhập lý do hủy phiếu.'));
 
             return;
         }
@@ -1342,41 +771,23 @@
             try {
                 setLoading(true);
 
-                const response = await request(
-                    `${API.phieu}/huy/${state.phieu.id}`,
-                    "PATCH",
-                    {
-                        lyDoHuy: reason
-                    }
-                );
+                const response = await request(`${API.phieu}/huy/${state.phieu.id}`, 'PATCH', {
+                    lyDoHuy: reason
+                });
 
                 closeCancelPhieuModal();
 
                 await resetForNewTicket();
 
-                window.MCS
-                    ?.toast
-                    ?.success
-                    ?.(
-                        response?.message ||
-                        "Hủy phiếu thành công."
-                    );
+                window.MCS?.toast?.success?.(response?.message || 'Hủy phiếu thành công.');
             } catch (error) {
-                showError(
-                    error
-                );
+                showError(error);
             } finally {
                 setLoading(false);
             }
         };
 
-        confirmAction(
-            "Hủy phiếu lấy vé",
-            "Bạn có chắc chắn muốn hủy phiếu này?",
-            "Hủy phiếu",
-            "danger",
-            execute
-        );
+        confirmAction('Hủy phiếu lấy vé', 'Bạn có chắc chắn muốn hủy phiếu này?', 'Hủy phiếu', 'danger', execute);
     }
 
     async function printTicket() {
@@ -1387,14 +798,9 @@
         }
 
         const canPrintCurrent =
-            document.loai ===
-                "PHIEU_HOAN"
-                ? permission.canPrintRefund(
-                    state.permissions
-                )
-                : permission.canPrint(
-                    state.permissions
-                );
+            document.loai === 'PHIEU_HOAN'
+                ? permission.canPrintRefund(state.permissions)
+                : permission.canPrint(state.permissions);
 
         if (!canPrintCurrent) {
             return;
@@ -1402,37 +808,16 @@
 
         let endpoint = null;
 
-        if (
-            document.loai ===
-            "PHIEU_HOAN"
-        ) {
-            if (
-                !document.thanhToanId
-            ) {
-                throw new Error(
-                    "Không xác định được phiếu hoàn cần in."
-                );
+        if (document.loai === 'PHIEU_HOAN') {
+            if (!document.thanhToanId) {
+                throw new Error('Không xác định được phiếu hoàn cần in.');
             }
 
-            endpoint =
-                `${API.payment}/in-phieu-hoan/${document.thanhToanId}`;
-        }
-        else if (
-            document.loai ===
-                "PHIEU_THU" &&
-            document.trangThaiHienThi ===
-                "DA_THANH_TOAN"
-        ) {
-            endpoint =
-                `${API.phieu}/in-ve/${document.phieuLayVeId}`;
-        }
-        else {
-            window.MCS
-                ?.toast
-                ?.info
-                ?.(
-                    "Phiếu chưa thanh toán nên chưa thể in."
-                );
+            endpoint = `${API.payment}/in-phieu-hoan/${document.thanhToanId}`;
+        } else if (document.loai === 'PHIEU_THU' && document.trangThaiHienThi === 'DA_THANH_TOAN') {
+            endpoint = `${API.phieu}/in-ve/${document.phieuLayVeId}`;
+        } else {
+            window.MCS?.toast?.info?.('Phiếu chưa thanh toán nên chưa thể in.');
 
             return;
         }
@@ -1440,148 +825,74 @@
         try {
             setLoading(true);
 
-            if (
-                !window.MCS
-                    ?.reportPrint
-                    ?.print
-            ) {
-                throw new Error(
-                    "Chức năng in báo cáo chưa được khởi tạo."
-                );
+            if (!window.MCS?.reportPrint?.print) {
+                throw new Error('Chức năng in báo cáo chưa được khởi tạo.');
             }
 
-            await window.MCS
-                .reportPrint
-                .print(
-                    endpoint
-                );
+            await window.MCS.reportPrint.print(endpoint);
         } catch (error) {
-            showError(
-                error,
-                "Không thể in giấy tờ."
-            );
+            showError(error, 'Không thể in giấy tờ.');
         } finally {
             setLoading(false);
         }
     }
 
-    function setSmartSelectDisabled(
-        select,
-        disabled
-    ) {
+    function setSmartSelectDisabled(select, disabled) {
         if (!select) {
             return;
         }
 
-        select.disabled = Boolean(
-            disabled
-        );
+        select.disabled = Boolean(disabled);
 
-        const wrapper = select.closest(
-            "[data-smart-select]"
-        );
+        const wrapper = select.closest('[data-smart-select]');
 
         if (!wrapper) {
             return;
         }
 
-        const smartSelect =
-            wrapper.smartSelect ||
-            window.MCS
-                ?.smartSelect
-                ?.initialize?.(
-                    wrapper
-                );
+        const smartSelect = wrapper.smartSelect || window.MCS?.smartSelect?.initialize?.(wrapper);
 
-        smartSelect
-            ?.setDisabled?.(
-                Boolean(
-                    disabled
-                )
-            );
+        smartSelect?.setDisabled?.(Boolean(disabled));
 
-        smartSelect
-            ?.refresh?.();
+        smartSelect?.refresh?.();
     }
 
     function renderEditLocks() {
         const locked = isFinancialLocked();
 
-        setSmartSelectDisabled(
-            el.thucDonNgayId,
-            locked
-        );
+        setSmartSelectDisabled(el.thucDonNgayId, locked);
 
-        setSmartSelectDisabled(
-            el.doiTuongLayVe,
-            locked
-        );
+        setSmartSelectDisabled(el.doiTuongLayVe, locked);
 
         if (el.soLuong) {
             el.soLuong.disabled = locked;
         }
 
-        root
-            .querySelector(
-                "[data-qty-minus]"
-            )
-            ?.toggleAttribute(
-                "disabled",
-                locked
-            );
+        root.querySelector('[data-qty-minus]')?.toggleAttribute('disabled', locked);
 
-        root
-            .querySelector(
-                "[data-qty-plus]"
-            )
-            ?.toggleAttribute(
-                "disabled",
-                locked
-            );
+        root.querySelector('[data-qty-plus]')?.toggleAttribute('disabled', locked);
 
         if (el.discountOpen) {
             el.discountOpen.disabled = locked;
         }
 
-        root
-            .querySelectorAll(
-                "[data-discount-list] button"
-            )
-            .forEach(
-                button => {
-                    button.disabled = locked;
-                }
-            );
+        root.querySelectorAll('[data-discount-list] button').forEach((button) => {
+            button.disabled = locked;
+        });
 
-        el.paymentMethodList
-            ?.querySelectorAll(
-                'input[name="phuongThucThanhToan"]'
-            )
-            .forEach(
-                radio => {
-                    radio.disabled = locked;
-                }
-            );
+        el.paymentMethodList?.querySelectorAll('input[name="phuongThucThanhToan"]').forEach((radio) => {
+            radio.disabled = locked;
+        });
 
-        root.classList.toggle(
-            "is-financial-locked",
-            locked
-        );
+        root.classList.toggle('is-financial-locked', locked);
     }
 
     function canChangeFinancialFields() {
-        if (
-            !isFinancialLocked()
-        ) {
+        if (!isFinancialLocked()) {
             return true;
         }
 
-        window.MCS
-            ?.toast
-            ?.info
-            ?.(
-                "Phiếu hiện tại không được thay đổi thông tin tính tiền."
-            );
+        window.MCS?.toast?.info?.('Phiếu hiện tại không được thay đổi thông tin tính tiền.');
 
         return false;
     }
@@ -1612,19 +923,11 @@
     }
 
     function getSelectedMeal() {
-        return state.thucDonNgay.find(
-            item =>
-                String(item.id) ===
-                String(el.thucDonNgayId?.value)
-        ) || null;
+        return state.thucDonNgay.find((item) => String(item.id) === String(el.thucDonNgayId?.value)) || null;
     }
 
     function getSelectedEmployee() {
-        return state.employees.find(
-            item =>
-                String(item.id) ===
-                String(el.nhanVienId?.value)
-        ) || null;
+        return state.employees.find((item) => String(item.id) === String(el.nhanVienId?.value)) || null;
     }
 
     function getTodayKey() {
@@ -1632,20 +935,16 @@
 
         return [
             now.getFullYear(),
-            String(now.getMonth() + 1).padStart(2, "0"),
-            String(now.getDate()).padStart(2, "0")
-        ].join("-");
+            String(now.getMonth() + 1).padStart(2, '0'),
+            String(now.getDate()).padStart(2, '0')
+        ].join('-');
     }
 
     function rememberDailyMealSelection() {
-        const value = toPositiveInt(
-            el.thucDonNgayId?.value
-        );
+        const value = toPositiveInt(el.thucDonNgayId?.value);
 
         if (!value) {
-            localStorage.removeItem(
-                DAILY_MEAL_STORAGE_KEY
-            );
+            localStorage.removeItem(DAILY_MEAL_STORAGE_KEY);
 
             return;
         }
@@ -1660,109 +959,57 @@
     }
 
     function restoreDailyMealSelection() {
-        if (
-            !el.thucDonNgayId
-        ) {
+        if (!el.thucDonNgayId) {
             return;
         }
 
         let stored = null;
 
         try {
-            stored = JSON.parse(
-                localStorage.getItem(
-                    DAILY_MEAL_STORAGE_KEY
-                ) ||
-                "null"
-            );
+            stored = JSON.parse(localStorage.getItem(DAILY_MEAL_STORAGE_KEY) || 'null');
         } catch {
-            localStorage.removeItem(
-                DAILY_MEAL_STORAGE_KEY
-            );
+            localStorage.removeItem(DAILY_MEAL_STORAGE_KEY);
 
             return;
         }
 
-        if (
-            !stored ||
-            stored.date !==
-                getTodayKey()
-        ) {
-            localStorage.removeItem(
-                DAILY_MEAL_STORAGE_KEY
-            );
+        if (!stored || stored.date !== getTodayKey()) {
+            localStorage.removeItem(DAILY_MEAL_STORAGE_KEY);
 
             return;
         }
 
-        const value = String(
-            stored.thucDonNgayId ||
-            ""
-        );
+        const value = String(stored.thucDonNgayId || '');
 
-        const exists = Array.from(
-            el.thucDonNgayId.options ||
-            []
-        )
-            .some(
-                option =>
-                    option.value ===
-                    value
-            );
+        const exists = Array.from(el.thucDonNgayId.options || []).some((option) => option.value === value);
 
         if (!exists) {
-            localStorage.removeItem(
-                DAILY_MEAL_STORAGE_KEY
-            );
+            localStorage.removeItem(DAILY_MEAL_STORAGE_KEY);
 
             return;
         }
 
-        setSelectValue(
-            el.thucDonNgayId,
-            value,
-            false
-        );
+        setSelectValue(el.thucDonNgayId, value, false);
     }
 
     function getDefaultDoiTuongValue() {
         const first = getOrderedDoiTuong()[0];
 
-        return first?.value !==
-            undefined
-            ? String(
-                first.value
-            )
-            : "";
+        return first?.value !== undefined ? String(first.value) : '';
     }
 
     function restoreDoiTuongSelection() {
-        if (
-            !el.doiTuongLayVe
-        ) {
+        if (!el.doiTuongLayVe) {
             return;
         }
 
-        const storedValue = localStorage.getItem(
-            TAKER_TYPE_STORAGE_KEY
-        );
+        const storedValue = localStorage.getItem(TAKER_TYPE_STORAGE_KEY);
 
         let value = storedValue;
 
-        const exists = state.doiTuong.some(
-            item =>
-                String(
-                    item.value
-                ) ===
-                String(
-                    storedValue
-                )
-        );
+        const exists = state.doiTuong.some((item) => String(item.value) === String(storedValue));
 
-        if (
-            !storedValue ||
-            !exists
-        ) {
+        if (!storedValue || !exists) {
             value = getDefaultDoiTuongValue();
         }
 
@@ -1770,48 +1017,26 @@
             return;
         }
 
-        setSelectValue(
-            el.doiTuongLayVe,
-            value,
-            false
-        );
+        setSelectValue(el.doiTuongLayVe, value, false);
 
-        renderPersonMode(
-            value
-        );
+        renderPersonMode(value);
 
-        localStorage.setItem(
-            TAKER_TYPE_STORAGE_KEY,
-            String(
-                value
-            )
-        );
+        localStorage.setItem(TAKER_TYPE_STORAGE_KEY, String(value));
     }
 
-    async function loadGiaVePreview(
-        notifyWhenMissing = false
-    ) {
-        if (
-            !permission.canLoadPrice(state.permissions)
-        ) {
+    async function loadGiaVePreview(notifyWhenMissing = false) {
+        if (!permission.canLoadPrice(state.permissions)) {
             state.pricePreview = null;
             renderSummary();
             return null;
         }
-        const thucDonNgayId = toPositiveInt(
-            el.thucDonNgayId?.value
-        );
+        const thucDonNgayId = toPositiveInt(el.thucDonNgayId?.value);
 
-        const doiTuongLayVe = toPositiveInt(
-            el.doiTuongLayVe?.value
-        );
+        const doiTuongLayVe = toPositiveInt(el.doiTuongLayVe?.value);
 
         state.pricePreview = null;
 
-        if (
-            !thucDonNgayId ||
-            !doiTuongLayVe
-        ) {
+        if (!thucDonNgayId || !doiTuongLayVe) {
             renderSummary();
             return null;
         }
@@ -1819,13 +1044,11 @@
         try {
             const response = await request(
                 `${API.phieu}/gia-ve` +
-                `?thucDonNgayId=${encodeURIComponent(thucDonNgayId)}` +
-                `&doiTuongLayVe=${encodeURIComponent(doiTuongLayVe)}`
+                    `?thucDonNgayId=${encodeURIComponent(thucDonNgayId)}` +
+                    `&doiTuongLayVe=${encodeURIComponent(doiTuongLayVe)}`
             );
 
-            state.pricePreview =
-                response?.data ||
-                null;
+            state.pricePreview = response?.data || null;
 
             renderSummary();
 
@@ -1835,10 +1058,7 @@
             renderSummary();
 
             if (notifyWhenMissing) {
-                showError(
-                    error,
-                    "Không tìm thấy giá vé ăn phù hợp với thực đơn ngày và đối tượng đã chọn."
-                );
+                showError(error, 'Không tìm thấy giá vé ăn phù hợp với thực đơn ngày và đối tượng đã chọn.');
             }
 
             return null;
@@ -1853,62 +1073,38 @@
         }
 
         if (!input.value) {
-            input.value = "1";
+            input.value = '1';
         }
 
-        const field = input.closest(
-            "[data-form-field]"
-        );
+        const field = input.closest('[data-form-field]');
 
-        const control = field?.querySelector(
-            ".form-field__control"
-        );
+        const control = field?.querySelector('.form-field__control');
 
-        if (
-            !control ||
-            control.dataset.quantityEnhanced === "true"
-        ) {
+        if (!control || control.dataset.quantityEnhanced === 'true') {
             return;
         }
 
-        control.dataset.quantityEnhanced = "true";
-        control.classList.add(
-            "lva-quantity-control"
-        );
+        control.dataset.quantityEnhanced = 'true';
+        control.classList.add('lva-quantity-control');
 
-        const minus = document.createElement(
-            "button"
-        );
+        const minus = document.createElement('button');
 
-        minus.type = "button";
-        minus.className = "lva-quantity-btn";
-        minus.dataset.qtyMinus = "";
-        minus.setAttribute(
-            "aria-label",
-            "Giảm số lượng"
-        );
-        minus.textContent = "−";
+        minus.type = 'button';
+        minus.className = 'lva-quantity-btn';
+        minus.dataset.qtyMinus = '';
+        minus.setAttribute('aria-label', 'Giảm số lượng');
+        minus.textContent = '−';
 
-        const plus = document.createElement(
-            "button"
-        );
+        const plus = document.createElement('button');
 
-        plus.type = "button";
-        plus.className = "lva-quantity-btn";
-        plus.dataset.qtyPlus = "";
-        plus.setAttribute(
-            "aria-label",
-            "Tăng số lượng"
-        );
-        plus.textContent = "+";
+        plus.type = 'button';
+        plus.className = 'lva-quantity-btn';
+        plus.dataset.qtyPlus = '';
+        plus.setAttribute('aria-label', 'Tăng số lượng');
+        plus.textContent = '+';
 
-        control.insertBefore(
-            minus,
-            input
-        );
-        control.appendChild(
-            plus
-        );
+        control.insertBefore(minus, input);
+        control.appendChild(plus);
     }
 
     function normalizeDateForApi(value) {
@@ -1918,17 +1114,13 @@
 
         const text = String(value).trim();
 
-        let match = text.match(
-            /^(\d{4})-(\d{2})-(\d{2})/
-        );
+        let match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
         if (match) {
             return `${match[1]}-${match[2]}-${match[3]}`;
         }
 
-        match = text.match(
-            /^(\d{2})\/(\d{2})\/(\d{4})/
-        );
+        match = text.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
 
         if (match) {
             return `${match[3]}-${match[2]}-${match[1]}`;
@@ -1938,59 +1130,53 @@
     }
 
     function normalizeQuantity() {
-        const value = Math.max(
-            1,
-            Math.floor(Number(el.soLuong?.value || 1))
-        );
+        const value = Math.max(1, Math.floor(Number(el.soLuong?.value || 1)));
 
         el.soLuong.value = String(value);
     }
 
-    Object.assign(
-        app,
-        {
-            handleLayVeStorageChange,
-            bindDoiTuongLayVeEvents,
-            syncDoiTuongFromSmartSelect,
-            rememberDoiTuongSelection,
-            handleDoiTuongLayVeChange,
-            handleNewTicket,
-            resetForNewTicket,
-            clearEmployeeInfo,
-            clearTextField,
-            clearDateField,
-            renderMeal,
-            getDoiTuongByValue,
-            isNhanVienDoiTuong,
-            renderPersonMode,
-            renderEmployee,
-            renderSummary,
-            loadExistingPhieu,
-            saveDraft,
-            buildPhieuPayload,
-            validatePhieuPayload,
-            reloadPhieu,
-            openCancelPhieuModal,
-            closeCancelPhieuModal,
-            submitCancelPhieu,
-            printTicket,
-            renderEditLocks,
-            canChangeFinancialFields,
-            restoreSelectedMeal,
-            restoreDoiTuong,
-            restoreEmployee,
-            markDraftDirty,
-            getSelectedMeal,
-            getSelectedEmployee,
-            getTodayKey,
-            rememberDailyMealSelection,
-            restoreDailyMealSelection,
-            getDefaultDoiTuongValue,
-            restoreDoiTuongSelection,
-            loadGiaVePreview,
-            enhanceQuantityField,
-            normalizeDateForApi,
-            normalizeQuantity
-        }
-    );
+    Object.assign(app, {
+        handleLayVeStorageChange,
+        bindDoiTuongLayVeEvents,
+        syncDoiTuongFromSmartSelect,
+        rememberDoiTuongSelection,
+        handleDoiTuongLayVeChange,
+        handleNewTicket,
+        resetForNewTicket,
+        clearEmployeeInfo,
+        clearTextField,
+        clearDateField,
+        renderMeal,
+        getDoiTuongByValue,
+        isNhanVienDoiTuong,
+        renderPersonMode,
+        renderEmployee,
+        renderSummary,
+        loadExistingPhieu,
+        saveDraft,
+        buildPhieuPayload,
+        validatePhieuPayload,
+        reloadPhieu,
+        openCancelPhieuModal,
+        closeCancelPhieuModal,
+        submitCancelPhieu,
+        printTicket,
+        renderEditLocks,
+        canChangeFinancialFields,
+        restoreSelectedMeal,
+        restoreDoiTuong,
+        restoreEmployee,
+        markDraftDirty,
+        getSelectedMeal,
+        getSelectedEmployee,
+        getTodayKey,
+        rememberDailyMealSelection,
+        restoreDailyMealSelection,
+        getDefaultDoiTuongValue,
+        restoreDoiTuongSelection,
+        loadGiaVePreview,
+        enhanceQuantityField,
+        normalizeDateForApi,
+        normalizeQuantity
+    });
 })();

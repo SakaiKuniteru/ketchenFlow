@@ -1,49 +1,33 @@
-const pool =
-    require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class BaoCaoRepository {
-
     mapBaoCao(row) {
-
         if (!row) {
             return null;
         }
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maBaoCao: row.ma_bao_cao,
 
-            maBaoCao:
-                row.ma_bao_cao,
+            tenBaoCao: row.ten_bao_cao,
 
-            tenBaoCao:
-                row.ten_bao_cao,
+            fileMau: row.file_mau,
 
-            fileMau:
-                row.file_mau,
+            loaiXuatFile: row.loai_xuat_file,
 
-            loaiXuatFile:
-                row.loai_xuat_file,
+            moTa: row.mo_ta,
 
-            moTa:
-                row.mo_ta,
+            active: row.active,
 
-            active:
-                row.active,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -62,11 +46,9 @@ class BaoCaoRepository {
             FROM dm_bao_cao bc
 
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -74,18 +56,12 @@ class BaoCaoRepository {
                 bc.ma_bao_cao ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row =>
-                this.mapBaoCao(row)
-        );
-
+        return result.rows.map((row) => this.mapBaoCao(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -94,28 +70,16 @@ class BaoCaoRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapBaoCao(
-            result.rows[0]
-        );
-
+        return this.mapBaoCao(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maBaoCao
-    ) {
-
+    async getChiTietByMa(maBaoCao) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -128,32 +92,17 @@ class BaoCaoRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [maBaoCao]
-            );
+        const result = await pool.query(sql, [maBaoCao]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapBaoCao(
-            result.rows[0]
-        );
-
+        return this.mapBaoCao(result.rows[0]);
     }
 
-    async existsMaBaoCao(
-        maBaoCao,
-        excludeId = null
-    ) {
-
-        const values = [
-            maBaoCao
-        ];
+    async existsMaBaoCao(maBaoCao, excludeId = null) {
+        const values = [maBaoCao];
 
         let sql = `
             SELECT EXISTS (
@@ -167,37 +116,24 @@ class BaoCaoRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenBaoCao(
-        tenBaoCao,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenBaoCao
-        ];
+    async existsTenBaoCao(tenBaoCao, excludeId = null) {
+        const values = [tenBaoCao];
 
         let sql = `
             SELECT EXISTS (
@@ -211,31 +147,23 @@ class BaoCaoRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
         const sql = `
             INSERT INTO dm_bao_cao (
 
@@ -265,7 +193,6 @@ class BaoCaoRepository {
         `;
 
         const values = [
-
             data.maBaoCao,
 
             data.tenBaoCao,
@@ -276,29 +203,15 @@ class BaoCaoRepository {
 
             data.moTa || null,
 
-            data.active !== undefined
-                ? data.active
-                : true
-
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-    async update(
-        id,
-        data
-    ) {
-
+    async update(id, data) {
         const sql = `
             UPDATE dm_bao_cao
             SET
@@ -317,7 +230,6 @@ class BaoCaoRepository {
         `;
 
         const values = [
-
             data.maBaoCao,
 
             data.tenBaoCao,
@@ -331,28 +243,16 @@ class BaoCaoRepository {
             data.active,
 
             id
-
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
-
 }
 
-module.exports =
-    new BaoCaoRepository();
+module.exports = new BaoCaoRepository();

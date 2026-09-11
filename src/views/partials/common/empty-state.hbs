@@ -1,16 +1,10 @@
-<div
-    class="empty-state"
-    role="status">
+<div class='empty-state' role='status'>
 
-    <div
-        class="empty-state__icon"
-        aria-hidden="true">
+    <div class='empty-state__icon' aria-hidden='true'>
 
         {{#if emptyIcon}}
 
-            <img
-                src="{{emptyIcon}}"
-                alt="">
+            <img src='{{emptyIcon}}' alt='' />
 
         {{else}}
 
@@ -22,7 +16,7 @@
 
     </div>
 
-    <h3 class="empty-state__title">
+    <h3 class='empty-state__title'>
 
         {{#if emptyTitle}}
 
@@ -36,7 +30,7 @@
 
     </h3>
 
-    <p class="empty-state__description">
+    <p class='empty-state__description'>
 
         {{#if emptyDescription}}
 
@@ -52,10 +46,7 @@
 
     {{#if emptyActionLabel}}
 
-        <button
-            type="button"
-            class="empty-state__action"
-            id="{{emptyActionId}}">
+        <button type='button' class='empty-state__action' id='{{emptyActionId}}'>
 
             {{emptyActionLabel}}
 

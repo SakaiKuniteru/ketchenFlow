@@ -1,177 +1,61 @@
-const khungGioNhanHangService =
-    require(
-        "./khung-gio-nhan-hang.service"
-    );
+const khungGioNhanHangService = require('./khung-gio-nhan-hang.service');
 
-const {
-    successResponse
-} = require(
-    "../../../../utils/response.util"
-);
-
+const { successResponse } = require('../../../../utils/response.util');
 
 class KhungGioNhanHangController {
-
-    async getTongHop(
-        req,
-        res,
-        next
-    ) {
-
+    async getTongHop(req, res, next) {
         try {
+            const data = await khungGioNhanHangService.getTongHop(req.query);
 
-            const data =
-                await khungGioNhanHangService
-                    .getTongHop(
-                        req.query
-                    );
-
-            return successResponse(
-                res,
-                "Lấy danh sách khung giờ nhận hàng thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Lấy danh sách khung giờ nhận hàng thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async getKhungGioKhaDung(
-        req,
-        res,
-        next
-    ) {
-
+    async getKhungGioKhaDung(req, res, next) {
         try {
+            const data = await khungGioNhanHangService.getKhungGioKhaDung(req.query);
 
-            const data =
-                await khungGioNhanHangService
-                    .getKhungGioKhaDung(
-                        req.query
-                    );
-
-            return successResponse(
-                res,
-                "Lấy danh sách khung giờ có thể nhận hàng thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Lấy danh sách khung giờ có thể nhận hàng thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async getChiTiet(
-        req,
-        res,
-        next
-    ) {
-
+    async getChiTiet(req, res, next) {
         try {
+            const { id } = req.params;
 
-            const {
-                id
-            } = req.params;
+            const data = await khungGioNhanHangService.getChiTiet(id);
 
-            const data =
-                await khungGioNhanHangService
-                    .getChiTiet(
-                        id
-                    );
-
-            return successResponse(
-                res,
-                "Lấy chi tiết khung giờ nhận hàng thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Lấy chi tiết khung giờ nhận hàng thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async create(
-        req,
-        res,
-        next
-    ) {
-
+    async create(req, res, next) {
         try {
+            const data = await khungGioNhanHangService.create(req.body);
 
-            const data =
-                await khungGioNhanHangService
-                    .create(
-                        req.body
-                    );
-
-            return successResponse(
-                res,
-                "Thêm khung giờ nhận hàng thành công.",
-                data,
-                201
-            );
-
+            return successResponse(res, 'Thêm khung giờ nhận hàng thành công.', data, 201);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async update(
-        req,
-        res,
-        next
-    ) {
-
+    async update(req, res, next) {
         try {
+            const { id } = req.params;
 
-            const {
-                id
-            } = req.params;
+            const data = await khungGioNhanHangService.update(id, req.body);
 
-            const data =
-                await khungGioNhanHangService
-                    .update(
-                        id,
-                        req.body
-                    );
-
-            return successResponse(
-                res,
-                "Cập nhật khung giờ nhận hàng thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Cập nhật khung giờ nhận hàng thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new KhungGioNhanHangController();
+module.exports = new KhungGioNhanHangController();

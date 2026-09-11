@@ -1,71 +1,58 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class XaPhuongRepository {
-
     mapXaPhuong(row) {
-
         if (!row) {
             return null;
         }
 
         return {
-
             id: row.id,
 
-            maXaPhuong:
-                row.ma_xa_phuong,
+            maXaPhuong: row.ma_xa_phuong,
 
-            tenXaPhuong:
-                row.ten_xa_phuong,
+            tenXaPhuong: row.ten_xa_phuong,
 
-            tenVietTat:
-                row.xa_phuong_ten_viet_tat,
+            tenVietTat: row.xa_phuong_ten_viet_tat,
 
-            tinhThanhId:
-                row.tinh_thanh_id,
+            tinhThanhId: row.tinh_thanh_id,
 
             tinhThanh: row.tinh_thanh_id
                 ? {
-                    id: row.tinh_thanh_id,
-                    ma: row.ma_tinh_thanh,
-                    ten: row.ten_tinh_thanh,
-                    tenVietTat: row.tinh_thanh_ten_viet_tat,
-                    quocGiaId: row.quoc_gia_id,
-                    quocGia: row.quoc_gia_id
-                        ? {
-                            id: row.quoc_gia_id,
+                      id: row.tinh_thanh_id,
+                      ma: row.ma_tinh_thanh,
+                      ten: row.ten_tinh_thanh,
+                      tenVietTat: row.tinh_thanh_ten_viet_tat,
+                      quocGiaId: row.quoc_gia_id,
+                      quocGia: row.quoc_gia_id
+                          ? {
+                                id: row.quoc_gia_id,
 
-                            maQuocGia: row.ma_quoc_gia,
+                                maQuocGia: row.ma_quoc_gia,
 
-                            tenQuocGia: row.ten_quoc_gia,
+                                tenQuocGia: row.ten_quoc_gia,
 
-                            tenTiengAnh: row.ten_tieng_anh,
+                                tenTiengAnh: row.ten_tieng_anh,
 
-                            maIso2: row.ma_iso2,
+                                maIso2: row.ma_iso2,
 
-                            maIso3: row.ma_iso3,
+                                maIso3: row.ma_iso3,
 
-                            tenVietTat: row.quoc_gia_ten_viet_tat
-                        }
-                        : null
-                }
+                                tenVietTat: row.quoc_gia_ten_viet_tat
+                            }
+                          : null
+                  }
                 : null,
 
-            active:
-                row.active,
+            active: row.active,
 
-            createdAt:
-                row.created_at,
+            createdAt: row.created_at,
 
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -105,28 +92,21 @@ class XaPhuongRepository {
                 ON qg.id = tt.quoc_gia_id
 
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
             ORDER BY xp.ma_xa_phuong ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapXaPhuong(row)
-        );
-
+        return result.rows.map((row) => this.mapXaPhuong(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -135,26 +115,16 @@ class XaPhuongRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapXaPhuong(
-            result.rows[0]
-        );
-
+        return this.mapXaPhuong(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maXaPhuong
-    ) {
-
+    async getChiTietByMa(maXaPhuong) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -167,33 +137,16 @@ class XaPhuongRepository {
             LIMIT 1
         `;
 
+        const result = await pool.query(sql, [maXaPhuong]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maXaPhuong
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
+        if (result.rows.length === 0) {
             return null;
-
         }
 
-
-        return this.mapXaPhuong(
-            result.rows[0]
-        );
-
+        return this.mapXaPhuong(result.rows[0]);
     }
 
     async getTinhThanhByMa(maTinhThanh) {
-
         const sql = `
             SELECT
                 id,
@@ -205,11 +158,7 @@ class XaPhuongRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [maTinhThanh]
-            );
+        const result = await pool.query(sql, [maTinhThanh]);
 
         if (result.rows.length === 0) {
             return null;
@@ -217,18 +166,13 @@ class XaPhuongRepository {
 
         return {
             id: result.rows[0].id,
-            maTinhThanh:
-                result.rows[0].ma_tinh_thanh,
-            tenTinhThanh:
-                result.rows[0].ten_tinh_thanh,
-            active:
-                result.rows[0].active
+            maTinhThanh: result.rows[0].ma_tinh_thanh,
+            tenTinhThanh: result.rows[0].ten_tinh_thanh,
+            active: result.rows[0].active
         };
-
     }
 
     async existsTinhThanh(tinhThanhId) {
-
         const sql = `
             SELECT EXISTS (
                 SELECT 1
@@ -238,24 +182,13 @@ class XaPhuongRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [tinhThanhId]
-            );
+        const result = await pool.query(sql, [tinhThanhId]);
 
         return result.rows[0].exists;
-
     }
 
-    async existsMaXaPhuong(
-        maXaPhuong,
-        excludeId = null
-    ) {
-
-        const values = [
-            maXaPhuong
-        ];
+    async existsMaXaPhuong(maXaPhuong, excludeId = null) {
+        const values = [maXaPhuong];
 
         let sql = `
             SELECT EXISTS (
@@ -266,39 +199,24 @@ class XaPhuongRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenXaPhuong(
-        tenXaPhuong,
-        tinhThanhId,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenXaPhuong,
-            tinhThanhId
-        ];
+    async existsTenXaPhuong(tenXaPhuong, tinhThanhId, excludeId = null) {
+        const values = [tenXaPhuong, tinhThanhId];
 
         let sql = `
             SELECT EXISTS (
@@ -310,31 +228,23 @@ class XaPhuongRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
         const sql = `
             INSERT INTO dm_xa_phuong (
                 ma_xa_phuong,
@@ -358,7 +268,6 @@ class XaPhuongRepository {
         `;
 
         const values = [
-
             data.maXaPhuong,
 
             data.tenXaPhuong,
@@ -367,26 +276,15 @@ class XaPhuongRepository {
 
             data.tinhThanhId,
 
-            data.active !== undefined
-                ? data.active
-                : true
-
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
-
         const sql = `
             UPDATE dm_xa_phuong
             SET
@@ -400,38 +298,16 @@ class XaPhuongRepository {
             RETURNING id
         `;
 
-        const values = [
+        const values = [data.maXaPhuong, data.tenXaPhuong, data.tenVietTat || null, data.tinhThanhId, data.active, id];
 
-            data.maXaPhuong,
-
-            data.tenXaPhuong,
-
-            data.tenVietTat || null,
-
-            data.tinhThanhId,
-
-            data.active,
-
-            id
-
-        ];
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
-
 }
 
 module.exports = new XaPhuongRepository();

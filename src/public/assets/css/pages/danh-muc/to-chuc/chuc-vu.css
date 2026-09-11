@@ -1,19 +1,13 @@
 #chuc-vuPage {
-    min-width:
-        0;
+    min-width: 0;
 }
 
-#chucVuDetailPanel
-.catalog-form-grid {
-    align-items:
-        start;
+#chucVuDetailPanel .catalog-form-grid {
+    align-items: start;
 }
 
-#chucVuDetailPanel
-textarea {
-    min-height:
-        110px;
+#chucVuDetailPanel textarea {
+    min-height: 110px;
 
-    resize:
-        vertical;
+    resize: vertical;
 }

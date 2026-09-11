@@ -1,13 +1,7 @@
-"use strict";
-const {
-    sendExcel
-} = require("../../../../helpers/excel/excel-result");
-const {
-    exportSanPham
-} = require("./san-pham.export");
-const {
-    importSanPham
-} = require("./san-pham.import");
+'use strict';
+const { sendExcel } = require('../../../../helpers/excel/excel-result');
+const { exportSanPham } = require('./san-pham.export');
+const { importSanPham } = require('./san-pham.import');
 
 class SanPhamExcel {
     exportData = async (req, res, next) => {

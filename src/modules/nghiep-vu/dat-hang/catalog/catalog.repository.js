@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class CatalogRepository {
     async getDanhSachSanPham(query) {
@@ -8,10 +8,10 @@ class CatalogRepository {
         const limit = Number(query.limit);
         const values = [query.coSoId];
         const conditions = [
-            "sp.active = TRUE",
-            "sp.cho_phep_dat = TRUE",
-            "nsp.active = TRUE",
-            "(csp.id IS NULL OR (csp.active = TRUE AND csp.cho_phep_dat = TRUE))"
+            'sp.active = TRUE',
+            'sp.cho_phep_dat = TRUE',
+            'nsp.active = TRUE',
+            '(csp.id IS NULL OR (csp.active = TRUE AND csp.cho_phep_dat = TRUE))'
         ];
 
         if (query.nhomSanPhamId) {
@@ -38,7 +38,7 @@ class CatalogRepository {
             conditions.push(`sp.la_san_pham_moi = $${values.length}`);
         }
 
-        const where = `WHERE ${conditions.join(" AND ")}`;
+        const where = `WHERE ${conditions.join(' AND ')}`;
         const countResult = await pool.query(
             `
                 SELECT COUNT(*)::INTEGER AS total

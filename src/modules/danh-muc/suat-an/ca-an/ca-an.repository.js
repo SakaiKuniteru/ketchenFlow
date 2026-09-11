@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class CaAnRepository {
     mapCaAn(row) {
@@ -41,9 +41,7 @@ class CaAnRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapCaAn(row)
-        );
+        return result.rows.map((row) => this.mapCaAn(row));
     }
 
     async getChiTiet(id) {
@@ -53,18 +51,13 @@ class CaAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapCaAn(
-            result.rows[0]
-        );
+        return this.mapCaAn(result.rows[0]);
     }
 
     async getChiTietByMa(maCaAn) {
@@ -78,29 +71,17 @@ class CaAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maCaAn
-            ]
-        );
+        const result = await pool.query(sql, [maCaAn]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapCaAn(
-            result.rows[0]
-        );
+        return this.mapCaAn(result.rows[0]);
     }
 
-    async existsMaCaAn(
-        maCaAn,
-        excludeId = null
-    ) {
-        const values = [
-            maCaAn
-        ];
+    async existsMaCaAn(maCaAn, excludeId = null) {
+        const values = [maCaAn];
 
         let sql = `
             SELECT EXISTS (
@@ -122,21 +103,13 @@ class CaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenCaAn(
-        tenCaAn,
-        excludeId = null
-    ) {
-        const values = [
-            tenCaAn,
-        ];
+    async existsTenCaAn(tenCaAn, excludeId = null) {
+        const values = [tenCaAn];
 
         let sql = `
             SELECT EXISTS (
@@ -158,23 +131,13 @@ class CaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsKhoangThoiGian(
-        thoiGianBatDau,
-        thoiGianKetThuc,
-        excludeId = null
-    ) {
-        const values = [
-            thoiGianBatDau,
-            thoiGianKetThuc
-        ];
+    async existsKhoangThoiGian(thoiGianBatDau, thoiGianKetThuc, excludeId = null) {
+        const values = [thoiGianBatDau, thoiGianKetThuc];
 
         let sql = `
             SELECT EXISTS (
@@ -185,9 +148,7 @@ class CaAnRepository {
         `;
 
         if (excludeId) {
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $3
@@ -198,10 +159,7 @@ class CaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
@@ -234,19 +192,12 @@ class CaAnRepository {
             data.tenCaAn,
             data.thoiGianBatDau,
             data.thoiGianKetThuc,
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
@@ -263,27 +214,15 @@ class CaAnRepository {
             RETURNING id
         `;
 
-        const values = [
-            data.maCaAn,
-            data.tenCaAn,
-            data.thoiGianBatDau,
-            data.thoiGianKetThuc,
-            data.active,
-            id
-        ];
+        const values = [data.maCaAn, data.tenCaAn, data.thoiGianBatDau, data.thoiGianKetThuc, data.active, id];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 }
 

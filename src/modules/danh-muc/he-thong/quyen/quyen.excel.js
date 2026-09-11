@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const quyenExport =
-    require("./quyen.export");
+const quyenExport = require('./quyen.export');
 
-const quyenImport =
-    require("./quyen.import");
-
+const quyenImport = require('./quyen.import');
 
 module.exports = {
     exportData: quyenExport.exportData,

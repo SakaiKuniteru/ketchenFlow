@@ -41,7 +41,7 @@
     display: flex;
     gap: 6px;
     opacity: 0;
-    transition: opacity .15s ease;
+    transition: opacity 0.15s ease;
 }
 
 .catalog-table__body tr:hover .catalog-table__row-actions,
@@ -138,14 +138,8 @@
 
 .catalog-page.is-info-expanded {
     grid-template-columns:
-        minmax(
-            0,
-            1fr
-        )
-        minmax(
-            520px,
-            600px
-        );
+        minmax(0, 1fr)
+        minmax(520px, 600px);
 }
 
 .catalog-page.is-table-expanded {
@@ -197,7 +191,6 @@
 }
 
 @media (max-width: 820px) {
-
     .catalog-toolbar__actions {
         width: 100%;
         overflow-x: auto;
@@ -219,5 +212,4 @@
     .catalog-table__row-actions {
         opacity: 1;
     }
-
 }

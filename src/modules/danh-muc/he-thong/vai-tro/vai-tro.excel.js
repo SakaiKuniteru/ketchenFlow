@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const vaiTroExport =
-    require("./vai-tro.export");
+const vaiTroExport = require('./vai-tro.export');
 
-const vaiTroImport =
-    require("./vai-tro.import");
-
+const vaiTroImport = require('./vai-tro.import');
 
 module.exports = {
     exportData: vaiTroExport.exportData,

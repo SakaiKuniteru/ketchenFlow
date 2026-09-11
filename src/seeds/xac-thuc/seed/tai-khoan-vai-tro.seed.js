@@ -1,21 +1,18 @@
-const seedHelper = require("../../helpers/seed.helper");
+const seedHelper = require('../../helpers/seed.helper');
 
-const data = require("../data/tai-khoan-vai-tro.data");
+const data = require('../data/tai-khoan-vai-tro.data');
 
 async function seedTaiKhoanVaiTro() {
-
-    console.log("Seeding dm_tai_khoan_vai_tro...");
+    console.log('Seeding dm_tai_khoan_vai_tro...');
 
     await seedHelper({
+        table: 'dm_tai_khoan_vai_tro',
 
-        table: "dm_tai_khoan_vai_tro",
-
-        unique: "tai_khoan_id,vai_tro_id",
+        unique: 'tai_khoan_id,vai_tro_id',
 
         data,
 
         transform: async (client, item) => {
-
             const taiKhoan = await client.query(
                 `
                 SELECT id
@@ -43,21 +40,16 @@ async function seedTaiKhoanVaiTro() {
             }
 
             return {
-
                 tai_khoan_id: taiKhoan.rows[0].id,
 
                 vai_tro_id: vaiTro.rows[0].id,
 
                 active: item.active
-
             };
-
         }
-
     });
 
-    console.log("✓ dm_tai_khoan_vai_tro completed");
-
+    console.log('✓ dm_tai_khoan_vai_tro completed');
 }
 
 module.exports = seedTaiKhoanVaiTro;

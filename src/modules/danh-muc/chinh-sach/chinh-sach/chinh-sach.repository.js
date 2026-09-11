@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class ChinhSachRepository {
     mapChinhSach(row) {
@@ -10,74 +10,31 @@ class ChinhSachRepository {
             id: row.id,
             maChinhSach: row.ma_chinh_sach,
             tenChinhSach: row.ten_chinh_sach,
-            loaiChinhSach: Number(
-                row.loai_chinh_sach
-            ),
+            loaiChinhSach: Number(row.loai_chinh_sach),
 
-            dsVoucherId:
-                Array.isArray(
-                    row.ds_voucher_id
-                )
-                    ? row.ds_voucher_id
-                        .map(
-                            item =>
-                                Number(item)
-                        )
-                    : [],
+            dsVoucherId: Array.isArray(row.ds_voucher_id) ? row.ds_voucher_id.map((item) => Number(item)) : [],
 
-            dsVoucher:
-                Array.isArray(
-                    row.ds_voucher
-                )
-                    ? row.ds_voucher.map(
-                        voucher => ({
-                            id:
-                                Number(
-                                    voucher.id
-                                ),
-                            maVoucher:
-                                voucher.maVoucher,
-                            tenVoucher:
-                                voucher.tenVoucher,
-                            loaiMienGiam:
-                                Number(
-                                    voucher.loaiMienGiam
-                                ),
-                            giaTri:
-                                Number(
-                                    voucher.giaTri
-                                ),
-                            soLuong:
-                                voucher.soLuong,
-                            daSuDung:
-                                voucher.daSuDung,
-                            soLuongConLai:
-                                Number(
-                                    voucher.soLuongConLai
-                                ),
-                            thoiGianBatDau:
-                                voucher.thoiGianBatDau,
-                            thoiGianKetThuc:
-                                voucher.thoiGianKetThuc,
-                            active:
-                                voucher.active
-                        })
-                    )
-                    : [],
+            dsVoucher: Array.isArray(row.ds_voucher)
+                ? row.ds_voucher.map((voucher) => ({
+                      id: Number(voucher.id),
+                      maVoucher: voucher.maVoucher,
+                      tenVoucher: voucher.tenVoucher,
+                      loaiMienGiam: Number(voucher.loaiMienGiam),
+                      giaTri: Number(voucher.giaTri),
+                      soLuong: voucher.soLuong,
+                      daSuDung: voucher.daSuDung,
+                      soLuongConLai: Number(voucher.soLuongConLai),
+                      thoiGianBatDau: voucher.thoiGianBatDau,
+                      thoiGianKetThuc: voucher.thoiGianKetThuc,
+                      active: voucher.active
+                  }))
+                : [],
 
             moTa: row.mo_ta,
 
-            mucDoUuTien:
-                Number(
-                    row.muc_do_uu_tien
-                ),
+            mucDoUuTien: Number(row.muc_do_uu_tien),
 
-            soLuongDoiTuong:
-                row.so_luong_doi_tuong !== undefined
-                    ? Number(
-                        row.so_luong_doi_tuong
-                    )
-                    : undefined,
+            soLuongDoiTuong: row.so_luong_doi_tuong !== undefined ? Number(row.so_luong_doi_tuong) : undefined,
 
             active: row.active,
             createdAt: row.created_at,
@@ -112,10 +69,10 @@ class ChinhSachRepository {
 
             nhanVien: row.nhan_vien_id
                 ? {
-                    id: row.nhan_vien_id,
-                    maNhanVien: row.ma_nhan_vien,
-                    hoTen: row.ho_ten
-                }
+                      id: row.nhan_vien_id,
+                      maNhanVien: row.ma_nhan_vien,
+                      hoTen: row.ho_ten
+                  }
                 : null,
 
             active: row.active
@@ -235,17 +192,13 @@ class ChinhSachRepository {
         `;
     }
 
-    async getTongHop(
-        filters = {}
-    ) {
+    async getTongHop(filters = {}) {
         const conditions = [];
         const values = [];
 
         let paramIndex = 1;
 
-        if (
-            filters.voucherId !== undefined
-        ) {
+        if (filters.voucherId !== undefined) {
             conditions.push(`
                 EXISTS (
                     SELECT 1
@@ -258,41 +211,29 @@ class ChinhSachRepository {
                 )
             `);
 
-            values.push(
-                filters.voucherId
-            );
+            values.push(filters.voucherId);
 
             paramIndex++;
         }
 
-        if (
-            filters.loaiChinhSach !== undefined
-        ) {
+        if (filters.loaiChinhSach !== undefined) {
             conditions.push(`
                 cs.loai_chinh_sach
                     = $${paramIndex}
             `);
 
-            values.push(
-                String(
-                    filters.loaiChinhSach
-                )
-            );
+            values.push(String(filters.loaiChinhSach));
 
             paramIndex++;
         }
 
-        if (
-            filters.active !== undefined
-        ) {
+        if (filters.active !== undefined) {
             conditions.push(`
                 cs.active
                     = $${paramIndex}
             `);
 
-            values.push(
-                filters.active
-            );
+            values.push(filters.active);
 
             paramIndex++;
         }
@@ -304,9 +245,7 @@ class ChinhSachRepository {
         if (conditions.length > 0) {
             sql += `
                 WHERE
-                    ${conditions.join(
-                        " AND "
-                    )}
+                    ${conditions.join(' AND ')}
             `;
         }
 
@@ -316,16 +255,9 @@ class ChinhSachRepository {
                 cs.ma_chinh_sach ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapChinhSach(row)
-        );
+        return result.rows.map((row) => this.mapChinhSach(row));
     }
 
     async getChiTiet(id) {
@@ -337,66 +269,36 @@ class ChinhSachRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        const chinhSach =
-            this.mapChinhSach(
-                result.rows[0]
-            );
+        const chinhSach = this.mapChinhSach(result.rows[0]);
 
-        chinhSach.doiTuongApDung =
-            await this.getDoiTuongTheoChinhSach(
-                id,
-                result.rows[0]
-                    .loai_chinh_sach
-            );
+        chinhSach.doiTuongApDung = await this.getDoiTuongTheoChinhSach(id, result.rows[0].loai_chinh_sach);
 
         return chinhSach;
     }
 
-    async getDoiTuongTheoChinhSach(
-        chinhSachId,
-        loaiChinhSach
-    ) {
-        switch (
-            String(loaiChinhSach)
-        ) {
-            case "10":
-                return await this
-                    .getVaiTroTheoChinhSach(
-                        chinhSachId
-                    );
+    async getDoiTuongTheoChinhSach(chinhSachId, loaiChinhSach) {
+        switch (String(loaiChinhSach)) {
+            case '10':
+                return await this.getVaiTroTheoChinhSach(chinhSachId);
 
-            case "20":
-                return await this
-                    .getChucVuTheoChinhSach(
-                        chinhSachId
-                    );
+            case '20':
+                return await this.getChucVuTheoChinhSach(chinhSachId);
 
-            case "30":
-                return await this
-                    .getTaiKhoanTheoChinhSach(
-                        chinhSachId
-                    );
+            case '30':
+                return await this.getTaiKhoanTheoChinhSach(chinhSachId);
 
             default:
                 return [];
         }
     }
 
-    async getVaiTroTheoChinhSach(
-        chinhSachId
-    ) {
+    async getVaiTroTheoChinhSach(chinhSachId) {
         const sql = `
             SELECT
                 vt.id,
@@ -414,21 +316,12 @@ class ChinhSachRepository {
                 vt.ma_vai_tro ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [chinhSachId]
-            );
+        const result = await pool.query(sql, [chinhSachId]);
 
-        return result.rows.map(
-            row =>
-                this.mapVaiTro(row)
-        );
+        return result.rows.map((row) => this.mapVaiTro(row));
     }
 
-    async getChucVuTheoChinhSach(
-        chinhSachId
-    ) {
+    async getChucVuTheoChinhSach(chinhSachId) {
         const sql = `
             SELECT
                 cv.id,
@@ -446,21 +339,12 @@ class ChinhSachRepository {
                 cv.ma_chuc_vu ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [chinhSachId]
-            );
+        const result = await pool.query(sql, [chinhSachId]);
 
-        return result.rows.map(
-            row =>
-                this.mapChucVu(row)
-        );
+        return result.rows.map((row) => this.mapChucVu(row));
     }
 
-    async getTaiKhoanTheoChinhSach(
-        chinhSachId
-    ) {
+    async getTaiKhoanTheoChinhSach(chinhSachId) {
         const sql = `
             SELECT
                 tk.id,
@@ -484,35 +368,21 @@ class ChinhSachRepository {
                 tk.ten_dang_nhap ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [chinhSachId]
-            );
+        const result = await pool.query(sql, [chinhSachId]);
 
-        return result.rows.map(
-            row =>
-                this.mapTaiKhoan(row)
-        );
+        return result.rows.map((row) => this.mapTaiKhoan(row));
     }
 
-    async getTongHopDoiTuong(
-        loaiChinhSach
-    ) {
-        switch (
-            String(loaiChinhSach)
-        ) {
-            case "10":
-                return await this
-                    .getTongHopVaiTro();
+    async getTongHopDoiTuong(loaiChinhSach) {
+        switch (String(loaiChinhSach)) {
+            case '10':
+                return await this.getTongHopVaiTro();
 
-            case "20":
-                return await this
-                    .getTongHopChucVu();
+            case '20':
+                return await this.getTongHopChucVu();
 
-            case "30":
-                return await this
-                    .getTongHopTaiKhoan();
+            case '30':
+                return await this.getTongHopTaiKhoan();
 
             default:
                 return [];
@@ -533,13 +403,9 @@ class ChinhSachRepository {
                 ma_vai_tro ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row =>
-                this.mapVaiTro(row)
-        );
+        return result.rows.map((row) => this.mapVaiTro(row));
     }
 
     async getTongHopChucVu() {
@@ -556,13 +422,9 @@ class ChinhSachRepository {
                 ma_chuc_vu ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row =>
-                this.mapChucVu(row)
-        );
+        return result.rows.map((row) => this.mapChucVu(row));
     }
 
     async getTongHopTaiKhoan() {
@@ -584,13 +446,9 @@ class ChinhSachRepository {
                 tk.ten_dang_nhap ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row =>
-                this.mapTaiKhoan(row)
-        );
+        return result.rows.map((row) => this.mapTaiKhoan(row));
     }
 
     async getTongHopVoucher() {
@@ -616,47 +474,25 @@ class ChinhSachRepository {
                 v.ma_voucher ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => ({
-                id: row.id,
-                maVoucher:
-                    row.ma_voucher,
-                tenVoucher:
-                    row.ten_voucher,
-                loaiMienGiam:
-                    row.loai_mien_giam,
-                giaTri:
-                    Number(
-                        row.gia_tri
-                    ),
-                soLuong:
-                    row.so_luong,
-                daSuDung:
-                    row.da_su_dung,
-                soLuongConLai:
-                    Number(
-                        row.so_luong_con_lai
-                    ),
-                thoiGianBatDau:
-                    row.thoi_gian_bat_dau,
-                thoiGianKetThuc:
-                    row.thoi_gian_ket_thuc,
-                active:
-                    row.active
-            })
-        );
+        return result.rows.map((row) => ({
+            id: row.id,
+            maVoucher: row.ma_voucher,
+            tenVoucher: row.ten_voucher,
+            loaiMienGiam: row.loai_mien_giam,
+            giaTri: Number(row.gia_tri),
+            soLuong: row.so_luong,
+            daSuDung: row.da_su_dung,
+            soLuongConLai: Number(row.so_luong_con_lai),
+            thoiGianBatDau: row.thoi_gian_bat_dau,
+            thoiGianKetThuc: row.thoi_gian_ket_thuc,
+            active: row.active
+        }));
     }
 
-    async existsMaChinhSach(
-        maChinhSach,
-        excludeId = null
-    ) {
-        const values = [
-            maChinhSach
-        ];
+    async existsMaChinhSach(maChinhSach, excludeId = null) {
+        const values = [maChinhSach];
 
         let sql = `
             SELECT EXISTS (
@@ -681,22 +517,13 @@ class ChinhSachRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenChinhSach(
-        tenChinhSach,
-        excludeId = null
-    ) {
-        const values = [
-            tenChinhSach
-        ];
+    async existsTenChinhSach(tenChinhSach, excludeId = null) {
+        const values = [tenChinhSach];
 
         let sql = `
             SELECT EXISTS (
@@ -721,25 +548,13 @@ class ChinhSachRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsVoucherIds(
-        voucherIds,
-        client = pool
-    ) {
-        if (
-            !Array.isArray(
-                voucherIds
-            ) ||
-            voucherIds.length === 0
-        ) {
+    async existsVoucherIds(voucherIds, client = pool) {
+        if (!Array.isArray(voucherIds) || voucherIds.length === 0) {
             return false;
         }
 
@@ -755,51 +570,29 @@ class ChinhSachRepository {
                 AND active = TRUE
         `;
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    voucherIds
-                ]
-            );
+        const result = await client.query(sql, [voucherIds]);
 
-        return (
-            Number(
-                result.rows[0].total
-            ) === voucherIds.length
-        );
+        return Number(result.rows[0].total) === voucherIds.length;
     }
 
-    async existsDoiTuongIds(
-        loaiChinhSach,
-        doiTuongIds,
-        client = pool
-    ) {
-        if (
-            !Array.isArray(doiTuongIds) ||
-            doiTuongIds.length === 0
-        ) {
+    async existsDoiTuongIds(loaiChinhSach, doiTuongIds, client = pool) {
+        if (!Array.isArray(doiTuongIds) || doiTuongIds.length === 0) {
             return false;
         }
 
         let tableName;
 
-        switch (
-            String(loaiChinhSach)
-        ) {
-            case "10":
-                tableName =
-                    "dm_vai_tro";
+        switch (String(loaiChinhSach)) {
+            case '10':
+                tableName = 'dm_vai_tro';
                 break;
 
-            case "20":
-                tableName =
-                    "dm_chuc_vu";
+            case '20':
+                tableName = 'dm_chuc_vu';
                 break;
 
-            case "30":
-                tableName =
-                    "dm_tai_khoan";
+            case '30':
+                tableName = 'dm_tai_khoan';
                 break;
 
             default:
@@ -815,23 +608,12 @@ class ChinhSachRepository {
                 AND active = TRUE
         `;
 
-        const result =
-            await client.query(
-                sql,
-                [doiTuongIds]
-            );
+        const result = await client.query(sql, [doiTuongIds]);
 
-        return (
-            Number(
-                result.rows[0].total
-            ) === doiTuongIds.length
-        );
+        return Number(result.rows[0].total) === doiTuongIds.length;
     }
 
-    async create(
-        data,
-        client = pool
-    ) {
+    async create(data, client = pool) {
         const sql = `
             INSERT INTO dm_chinh_sach (
                 ma_chinh_sach,
@@ -860,37 +642,21 @@ class ChinhSachRepository {
             data.maChinhSach,
             data.tenChinhSach,
 
-            Number(
-                data.loaiChinhSach
-            ),
+            Number(data.loaiChinhSach),
 
             data.moTa || null,
 
-            data.mucDoUuTien !== undefined
-                ? Number(
-                    data.mucDoUuTien
-                )
-                : 1,
+            data.mucDoUuTien !== undefined ? Number(data.mucDoUuTien) : 1,
 
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await client.query(
-                sql,
-                values
-            );
+        const result = await client.query(sql, values);
 
         return result.rows[0];
     }
 
-    async update(
-        id,
-        data,
-        client = pool
-    ) {
+    async update(id, data, client = pool) {
         const sql = `
             UPDATE dm_chinh_sach
             SET
@@ -909,39 +675,26 @@ class ChinhSachRepository {
             data.maChinhSach,
             data.tenChinhSach,
 
-            Number(
-                data.loaiChinhSach
-            ),
+            Number(data.loaiChinhSach),
 
             data.moTa,
 
-            Number(
-                data.mucDoUuTien
-            ),
+            Number(data.mucDoUuTien),
 
             data.active,
             id
         ];
 
-        const result =
-            await client.query(
-                sql,
-                values
-            );
+        const result = await client.query(sql, values);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
         return result.rows[0];
     }
 
-    async disableAllDoiTuong(
-        chinhSachId,
-        client = pool
-    ) {
+    async disableAllDoiTuong(chinhSachId, client = pool) {
         const queries = [
             `
                 UPDATE ct_chinh_sach_vai_tro
@@ -966,59 +719,28 @@ class ChinhSachRepository {
             `
         ];
 
-        for (
-            const sql of queries
-        ) {
-            await client.query(
-                sql,
-                [chinhSachId]
-            );
+        for (const sql of queries) {
+            await client.query(sql, [chinhSachId]);
         }
     }
 
-    async saveDoiTuongApDung(
-        chinhSachId,
-        loaiChinhSach,
-        doiTuongIds,
-        client = pool
-    ) {
-        switch (
-            String(loaiChinhSach)
-        ) {
-            case "10":
-                return await this
-                    .saveVaiTros(
-                        chinhSachId,
-                        doiTuongIds,
-                        client
-                    );
+    async saveDoiTuongApDung(chinhSachId, loaiChinhSach, doiTuongIds, client = pool) {
+        switch (String(loaiChinhSach)) {
+            case '10':
+                return await this.saveVaiTros(chinhSachId, doiTuongIds, client);
 
-            case "20":
-                return await this
-                    .saveChucVus(
-                        chinhSachId,
-                        doiTuongIds,
-                        client
-                    );
+            case '20':
+                return await this.saveChucVus(chinhSachId, doiTuongIds, client);
 
-            case "30":
-                return await this
-                    .saveTaiKhoans(
-                        chinhSachId,
-                        doiTuongIds,
-                        client
-                    );
+            case '30':
+                return await this.saveTaiKhoans(chinhSachId, doiTuongIds, client);
 
             default:
                 return null;
         }
     }
 
-    async saveVouchers(
-        chinhSachId,
-        voucherIds,
-        client = pool
-    ) {
+    async saveVouchers(chinhSachId, voucherIds, client = pool) {
         await client.query(
             `
                 DELETE FROM
@@ -1026,9 +748,7 @@ class ChinhSachRepository {
                 WHERE
                     chinh_sach_id = $1
             `,
-            [
-                chinhSachId
-            ]
+            [chinhSachId]
         );
 
         const sql = `
@@ -1044,20 +764,10 @@ class ChinhSachRepository {
             ON CONFLICT DO NOTHING
         `;
 
-        await client.query(
-            sql,
-            [
-                chinhSachId,
-                voucherIds
-            ]
-        );
+        await client.query(sql, [chinhSachId, voucherIds]);
     }
 
-    async saveVaiTros(
-        chinhSachId,
-        vaiTroIds,
-        client = pool
-    ) {
+    async saveVaiTros(chinhSachId, vaiTroIds, client = pool) {
         const sql = `
             INSERT INTO ct_chinh_sach_vai_tro (
                 chinh_sach_id,
@@ -1081,20 +791,10 @@ class ChinhSachRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                chinhSachId,
-                vaiTroIds
-            ]
-        );
+        await client.query(sql, [chinhSachId, vaiTroIds]);
     }
 
-    async saveChucVus(
-        chinhSachId,
-        chucVuIds,
-        client = pool
-    ) {
+    async saveChucVus(chinhSachId, chucVuIds, client = pool) {
         const sql = `
             INSERT INTO ct_chinh_sach_chuc_vu (
                 chinh_sach_id,
@@ -1118,20 +818,10 @@ class ChinhSachRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                chinhSachId,
-                chucVuIds
-            ]
-        );
+        await client.query(sql, [chinhSachId, chucVuIds]);
     }
 
-    async saveTaiKhoans(
-        chinhSachId,
-        taiKhoanIds,
-        client = pool
-    ) {
+    async saveTaiKhoans(chinhSachId, taiKhoanIds, client = pool) {
         const sql = `
             INSERT INTO ct_chinh_sach_tai_khoan (
                 chinh_sach_id,
@@ -1155,15 +845,8 @@ class ChinhSachRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                chinhSachId,
-                taiKhoanIds
-            ]
-        );
+        await client.query(sql, [chinhSachId, taiKhoanIds]);
     }
 }
 
-module.exports =
-    new ChinhSachRepository();
+module.exports = new ChinhSachRepository();

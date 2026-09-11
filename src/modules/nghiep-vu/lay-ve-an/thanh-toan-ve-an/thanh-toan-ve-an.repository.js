@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class ThanhToanVeAnRepository {
     mapThanhToan(row) {
@@ -22,10 +22,7 @@ class ThanhToanVeAnRepository {
             nguoiXacNhanId: row.nguoi_xac_nhan_id,
             nguoiXacNhanTenDangNhap: row.nguoi_xac_nhan_ten_dang_nhap,
             tenNguoiXacNhan: row.ten_nguoi_xac_nhan,
-            soLuong: Number(
-                row.so_luong ||
-                0
-            ),
+            soLuong: Number(row.so_luong || 0),
             thanhToanGocId: row.thanh_toan_goc_id,
             phieuMoiId: row.phieu_moi_id,
             thoiGianThanhToan: row.thoi_gian_thanh_toan,
@@ -96,10 +93,7 @@ class ThanhToanVeAnRepository {
         `;
     }
 
-    async getSoLuongDaHoanTheoThanhToan(
-        thanhToanGocId,
-        db = pool
-    ) {
+    async getSoLuongDaHoanTheoThanhToan(thanhToanGocId, db = pool) {
         const result = await db.query(
             `
                     SELECT
@@ -118,22 +112,13 @@ class ThanhToanVeAnRepository {
 
                         AND trang_thai = 30
                 `,
-            [
-                thanhToanGocId
-            ]
+            [thanhToanGocId]
         );
 
-        return Number(
-            result.rows[0]
-                ?.so_luong_da_hoan ||
-            0
-        );
+        return Number(result.rows[0]?.so_luong_da_hoan || 0);
     }
 
-    async getTongDaHoanTheoThanhToan(
-        thanhToanGocId,
-        db = pool
-    ) {
+    async getTongDaHoanTheoThanhToan(thanhToanGocId, db = pool) {
         const result = await db.query(
             `
                     SELECT
@@ -151,22 +136,13 @@ class ThanhToanVeAnRepository {
 
                         AND trang_thai = 30
                 `,
-            [
-                thanhToanGocId
-            ]
+            [thanhToanGocId]
         );
 
-        return Number(
-            result.rows[0]
-                ?.tong_da_hoan ||
-            0
-        );
+        return Number(result.rows[0]?.tong_da_hoan || 0);
     }
 
-    async existsHoanTheoThanhToan(
-        thanhToanGocId,
-        db = pool
-    ) {
+    async existsHoanTheoThanhToan(thanhToanGocId, db = pool) {
         const result = await db.query(
             `
                     SELECT EXISTS (
@@ -184,21 +160,13 @@ class ThanhToanVeAnRepository {
 
                     ) AS "exists"
                 `,
-            [
-                thanhToanGocId
-            ]
+            [thanhToanGocId]
         );
 
-        return Boolean(
-            result.rows[0]
-                ?.exists
-        );
+        return Boolean(result.rows[0]?.exists);
     }
 
-    async existsVeDaSuDung(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async existsVeDaSuDung(phieuLayVeId, db = pool) {
         const sql = `
 
             SELECT EXISTS (
@@ -216,24 +184,12 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        const result = await db.query(sql, [phieuLayVeId]);
 
-        return Boolean(
-            result.rows[0]
-                ?.exists
-        );
+        return Boolean(result.rows[0]?.exists);
     }
 
-    async resetPhieuThanhToan(
-        phieuLayVeId,
-        trangThai,
-        db = pool
-    ) {
+    async resetPhieuThanhToan(phieuLayVeId, trangThai, db = pool) {
         const sql = `
 
             UPDATE nv_phieu_lay_ve_an
@@ -260,19 +216,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId,
-                trangThai
-            ]
-        );
+        await db.query(sql, [phieuLayVeId, trangThai]);
     }
 
-    async deleteVeChuaSuDungTheoPhieu(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async deleteVeChuaSuDungTheoPhieu(phieuLayVeId, db = pool) {
         const sql = `
 
             DELETE FROM ct_ve_an
@@ -284,21 +231,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        await db.query(sql, [phieuLayVeId]);
     }
 
-    async huySoLuongVeTheoPhieu(
-        phieuLayVeId,
-        soLuong,
-        nguoiHuyId,
-        lyDoHuy,
-        db = pool
-    ) {
+    async huySoLuongVeTheoPhieu(phieuLayVeId, soLuong, nguoiHuyId, lyDoHuy, db = pool) {
         const sql = `
 
             WITH danh_sach AS (
@@ -345,78 +281,47 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                phieuLayVeId,
-                soLuong,
-                nguoiHuyId,
-                lyDoHuy
-            ]
-        );
+        const result = await db.query(sql, [phieuLayVeId, soLuong, nguoiHuyId, lyDoHuy]);
 
         return result.rows;
     }
 
-    async getTongHop(
-        query = {}
-    ) {
+    async getTongHop(query = {}) {
         const conditions = [];
         const values = [];
 
         if (query.phieuLayVeId) {
-            values.push(
-                Number(query.phieuLayVeId)
-            );
+            values.push(Number(query.phieuLayVeId));
 
-            conditions.push(
-                `tt.phieu_lay_ve_id = $${values.length}`
-            );
+            conditions.push(`tt.phieu_lay_ve_id = $${values.length}`);
         }
 
         if (query.loaiGiaoDich) {
-            values.push(
-                Number(query.loaiGiaoDich)
-            );
+            values.push(Number(query.loaiGiaoDich));
 
-            conditions.push(
-                `tt.loai_giao_dich = $${values.length}`
-            );
+            conditions.push(`tt.loai_giao_dich = $${values.length}`);
         }
 
         if (query.phuongThuc) {
-            values.push(
-                Number(query.phuongThuc)
-            );
+            values.push(Number(query.phuongThuc));
 
-            conditions.push(
-                `tt.phuong_thuc = $${values.length}`
-            );
+            conditions.push(`tt.phuong_thuc = $${values.length}`);
         }
 
         if (query.trangThai) {
-            values.push(
-                Number(query.trangThai)
-            );
+            values.push(Number(query.trangThai));
 
-            conditions.push(
-                `tt.trang_thai = $${values.length}`
-            );
+            conditions.push(`tt.trang_thai = $${values.length}`);
         }
 
         let sql = `
             ${this.getBaseQuery()}
         `;
 
-        if (
-            conditions.length >
-            0
-        ) {
+        if (conditions.length > 0) {
             sql += `
                 WHERE
-                    ${conditions.join(
-                        "\nAND "
-                    )}
+                    ${conditions.join('\nAND ')}
             `;
         }
 
@@ -428,17 +333,9 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapThanhToan(
-                    row
-                )
-        );
+        return result.rows.map((row) => this.mapThanhToan(row));
     }
 
     async getDanhSachPhieu(phieuLayVeId) {
@@ -682,20 +579,12 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        const result = await pool.query(sql, [phieuLayVeId]);
 
         return result.rows;
     }
 
-    async getChiTiet(
-        id,
-        db = pool
-    ) {
+    async getChiTiet(id, db = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -704,29 +593,16 @@ class ThanhToanVeAnRepository {
             LIMIT 1
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await db.query(sql, [id]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapThanhToan(
-            result.rows[0]
-        );
+        return this.mapThanhToan(result.rows[0]);
     }
 
-    async getByMaGiaoDich(
-        maGiaoDich,
-        db = pool
-    ) {
+    async getByMaGiaoDich(maGiaoDich, db = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -735,29 +611,16 @@ class ThanhToanVeAnRepository {
             LIMIT 1
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                maGiaoDich
-            ]
-        );
+        const result = await db.query(sql, [maGiaoDich]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapThanhToan(
-            result.rows[0]
-        );
+        return this.mapThanhToan(result.rows[0]);
     }
 
-    async getPhieuById(
-        id,
-        db = pool
-    ) {
+    async getPhieuById(id, db = pool) {
         const sql = `
 
             SELECT
@@ -790,21 +653,12 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await db.query(sql, [id]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
-    async existsThanhToanThanhCong(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async existsThanhToanThanhCong(phieuLayVeId, db = pool) {
         const sql = `
 
             SELECT EXISTS (
@@ -824,20 +678,12 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        const result = await db.query(sql, [phieuLayVeId]);
 
         return result.rows[0].exists;
     }
 
-    async create(
-        data,
-        db = pool
-    ) {
+    async create(data, db = pool) {
         const sql = `
 
             INSERT INTO nv_thanh_toan_ve_an (
@@ -903,35 +749,28 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                data.phieuLayVeId,
-                data.loaiGiaoDich,
-                data.phuongThuc,
-                data.soTien,
-                data.soLuong,
-                data.thanhToanGocId,
-                data.phieuMoiId,
-                data.maGiaoDich,
-                data.maThamChieu,
-                data.maChuanChi,
-                data.trangThai,
-                data.noiDungLoi,
-                data.nguoiKhoiTaoId,
-                data.nguoiXacNhanId,
-                data.thoiGianThanhToan
-            ]
-        );
+        const result = await db.query(sql, [
+            data.phieuLayVeId,
+            data.loaiGiaoDich,
+            data.phuongThuc,
+            data.soTien,
+            data.soLuong,
+            data.thanhToanGocId,
+            data.phieuMoiId,
+            data.maGiaoDich,
+            data.maThamChieu,
+            data.maChuanChi,
+            data.trangThai,
+            data.noiDungLoi,
+            data.nguoiKhoiTaoId,
+            data.nguoiXacNhanId,
+            data.thoiGianThanhToan
+        ]);
 
         return result.rows[0].id;
     }
 
-    async syncThanhToanChoXuLy(
-        id,
-        data,
-        db = pool
-    ) {
+    async syncThanhToanChoXuLy(id, data, db = pool) {
         const sql = `
 
             UPDATE nv_thanh_toan_ve_an
@@ -948,27 +787,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                id,
-                data.soTien,
-                data.soLuong
-            ]
-        );
+        await db.query(sql, [id, data.soTien, data.soLuong]);
     }
 
-    async createPhieuSauHoan(
-        {
-            phieuNguonId,
-            soPhieu,
-            soLuong,
-            trangThai,
-            nguoiTaoId,
-            phieuGocId
-        },
-        db = pool
-    ) {
+    async createPhieuSauHoan({ phieuNguonId, soPhieu, soLuong, trangThai, nguoiTaoId, phieuGocId }, db = pool) {
         const result = await db.query(
             `
                     INSERT INTO nv_phieu_lay_ve_an (
@@ -1059,26 +881,13 @@ class ThanhToanVeAnRepository {
 
                     RETURNING id
                 `,
-            [
-                phieuNguonId,
-                soPhieu,
-                soLuong,
-                trangThai,
-                nguoiTaoId,
-                phieuGocId
-            ]
+            [phieuNguonId, soPhieu, soLuong, trangThai, nguoiTaoId, phieuGocId]
         );
 
-        return result.rows[0]
-            ?.id ||
-            null;
+        return result.rows[0]?.id || null;
     }
 
-    async updateTrangThai(
-        id,
-        data,
-        db = pool
-    ) {
+    async updateTrangThai(id, data, db = pool) {
         const sql = `
 
             UPDATE nv_thanh_toan_ve_an
@@ -1122,28 +931,19 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id,
-                data.trangThai,
-                data.maThamChieu,
-                data.maChuanChi,
-                data.noiDungLoi,
-                data.nguoiXacNhanId
-            ]
-        );
+        const result = await db.query(sql, [
+            id,
+            data.trangThai,
+            data.maThamChieu,
+            data.maChuanChi,
+            data.noiDungLoi,
+            data.nguoiXacNhanId
+        ]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
-    async updatePhieuThanhToan(
-        phieuLayVeId,
-        phuongThuc,
-        nguoiThanhToanId,
-        db = pool
-    ) {
+    async updatePhieuThanhToan(phieuLayVeId, phuongThuc, nguoiThanhToanId, db = pool) {
         const sql = `
 
             UPDATE nv_phieu_lay_ve_an
@@ -1164,21 +964,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId,
-                phuongThuc,
-                nguoiThanhToanId
-            ]
-        );
+        await db.query(sql, [phieuLayVeId, phuongThuc, nguoiThanhToanId]);
     }
 
-    async updateTrangThaiPhieu(
-        phieuLayVeId,
-        trangThai,
-        db = pool
-    ) {
+    async updateTrangThaiPhieu(phieuLayVeId, trangThai, db = pool) {
         const sql = `
 
             UPDATE nv_phieu_lay_ve_an
@@ -1193,19 +982,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId,
-                trangThai
-            ]
-        );
+        await db.query(sql, [phieuLayVeId, trangThai]);
     }
 
-    async tangVoucherDaSuDung(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async tangVoucherDaSuDung(phieuLayVeId, db = pool) {
         const sql = `
 
             UPDATE dm_voucher v
@@ -1237,18 +1017,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        await db.query(sql, [phieuLayVeId]);
     }
 
-    async giamVoucherDaSuDung(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async giamVoucherDaSuDung(phieuLayVeId, db = pool) {
         const sql = `
 
             UPDATE dm_voucher v
@@ -1283,18 +1055,10 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        await db.query(sql, [phieuLayVeId]);
     }
 
-    async existsVeTheoPhieu(
-        phieuLayVeId,
-        db = pool
-    ) {
+    async existsVeTheoPhieu(phieuLayVeId, db = pool) {
         const sql = `
 
             SELECT EXISTS (
@@ -1310,20 +1074,12 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                phieuLayVeId
-            ]
-        );
+        const result = await db.query(sql, [phieuLayVeId]);
 
         return result.rows[0].exists;
     }
 
-    async createVe(
-        data,
-        db = pool
-    ) {
+    async createVe(data, db = pool) {
         const sql = `
 
             INSERT INTO ct_ve_an (
@@ -1362,27 +1118,19 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                data.phieuLayVeId,
-                data.thucDonNgayId,
-                data.soThuTu,
-                data.maVe,
-                data.qrToken,
-                data.trangThai
-            ]
-        );
+        const result = await db.query(sql, [
+            data.phieuLayVeId,
+            data.thucDonNgayId,
+            data.soThuTu,
+            data.maVe,
+            data.qrToken,
+            data.trangThai
+        ]);
 
         return result.rows[0].id;
     }
 
-    async huyVeTheoPhieu(
-        phieuLayVeId,
-        nguoiHuyId,
-        lyDoHuy,
-        db = pool
-    ) {
+    async huyVeTheoPhieu(phieuLayVeId, nguoiHuyId, lyDoHuy, db = pool) {
         const sql = `
 
             UPDATE ct_ve_an
@@ -1407,14 +1155,7 @@ class ThanhToanVeAnRepository {
 
         `;
 
-        await db.query(
-            sql,
-            [
-                phieuLayVeId,
-                nguoiHuyId,
-                lyDoHuy
-            ]
-        );
+        await db.query(sql, [phieuLayVeId, nguoiHuyId, lyDoHuy]);
     }
 }
 

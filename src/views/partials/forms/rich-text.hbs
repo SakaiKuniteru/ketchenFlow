@@ -1,21 +1,10 @@
-<div
-    class="form-field rich-text-field"
-    data-form-field="{{name}}"
-    data-rich-text
-    {{#if editorHeight}}
-        style="
+<div class="form-field rich-text-field" data-form-field="{{name}}" data-rich-text {{#if editorHeight}} style="
             --rich-text-editor-height:
                 {{editorHeight}}px;
-        "
-    {{/if}}
-    {{#if disabled}}
-        data-rich-text-disabled="true"
-    {{/if}}>
+        " {{/if}} {{#if disabled}} data-rich-text-disabled="true" {{/if}}>
 
     {{#if label}}
-        <label
-            id="{{id}}Label"
-            class="form-field__label">
+        <label id="{{id}}Label" class="form-field__label">
 
             {{label}}
 
@@ -31,38 +20,24 @@
 
     <div class="rich-text-editor">
 
-        <div
-            class="rich-text-editor__toolbar"
-            data-rich-text-toolbar>
+        <div class="rich-text-editor__toolbar" data-rich-text-toolbar>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="bold"
-                    title="In đậm"
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="bold" title="In đậm"
                     aria-label="In đậm">
 
                     <strong>B</strong>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="italic"
-                    title="In nghiêng"
-                    aria-label="In nghiêng">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="italic"
+                    title="In nghiêng" aria-label="In nghiêng">
 
                     <em>I</em>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="underline"
-                    title="Gạch chân"
-                    aria-label="Gạch chân">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="underline"
+                    title="Gạch chân" aria-label="Gạch chân">
 
                     <span class="rich-text-editor__underline">
                         U
@@ -71,15 +46,12 @@
 
             </div>
 
-            <span
-                class="rich-text-editor__separator"
-                aria-hidden="true">
+            <span class="rich-text-editor__separator" aria-hidden="true">
             </span>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <div
-                    class="rich-text-editor__toolbar-group rich-text-editor__toolbar-font-size"
+                <div class="rich-text-editor__toolbar-group rich-text-editor__toolbar-font-size"
                     data-rich-text-font-size>
 
                     {{> forms/select
@@ -96,154 +68,92 @@
 
             </div>
 
-            <span
-                class="rich-text-editor__separator"
-                aria-hidden="true">
+            <span class="rich-text-editor__separator" aria-hidden="true">
             </span>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="justifyLeft"
-                    title="Căn trái"
-                    aria-label="Căn trái">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="justifyLeft"
+                    title="Căn trái" aria-label="Căn trái">
 
-                    <i
-                        class="fa-solid fa-align-left"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-align-left" aria-hidden="true">
                     </i>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="justifyCenter"
-                    title="Căn giữa"
-                    aria-label="Căn giữa">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="justifyCenter"
+                    title="Căn giữa" aria-label="Căn giữa">
 
-                    <i
-                        class="fa-solid fa-align-center"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-align-center" aria-hidden="true">
                     </i>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="justifyRight"
-                    title="Căn phải"
-                    aria-label="Căn phải">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="justifyRight"
+                    title="Căn phải" aria-label="Căn phải">
 
-                    <i
-                        class="fa-solid fa-align-right"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-align-right" aria-hidden="true">
                     </i>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="justifyFull"
-                    title="Căn đều"
-                    aria-label="Căn đều">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="justifyFull"
+                    title="Căn đều" aria-label="Căn đều">
 
-                    <i
-                        class="fa-solid fa-align-justify"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-align-justify" aria-hidden="true">
                     </i>
                 </button>
 
             </div>
 
-            <span
-                class="rich-text-editor__separator"
-                aria-hidden="true">
+            <span class="rich-text-editor__separator" aria-hidden="true">
             </span>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="outdent"
-                    title="Giảm thụt lề"
-                    aria-label="Giảm thụt lề">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="outdent"
+                    title="Giảm thụt lề" aria-label="Giảm thụt lề">
 
-                    <i
-                        class="fa-solid fa-outdent"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-outdent" aria-hidden="true">
                     </i>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="indent"
-                    title="Tăng thụt lề"
-                    aria-label="Tăng thụt lề">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="indent"
+                    title="Tăng thụt lề" aria-label="Tăng thụt lề">
 
-                    <i
-                        class="fa-solid fa-indent"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-indent" aria-hidden="true">
                     </i>
                 </button>
 
             </div>
 
-            <span
-                class="rich-text-editor__separator"
-                aria-hidden="true">
+            <span class="rich-text-editor__separator" aria-hidden="true">
             </span>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="insertUnorderedList"
-                    title="Danh sách dấu chấm"
-                    aria-label="Danh sách dấu chấm">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="insertUnorderedList"
+                    title="Danh sách dấu chấm" aria-label="Danh sách dấu chấm">
 
-                    <i
-                        class="fa-solid fa-list-ul"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-list-ul" aria-hidden="true">
                     </i>
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-command="insertOrderedList"
-                    title="Danh sách đánh số"
-                    aria-label="Danh sách đánh số">
+                <button type="button" class="rich-text-editor__button" data-rich-text-command="insertOrderedList"
+                    title="Danh sách đánh số" aria-label="Danh sách đánh số">
 
-                    <i
-                        class="fa-solid fa-list-ol"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-list-ol" aria-hidden="true">
                     </i>
                 </button>
 
             </div>
 
-            <span
-                class="rich-text-editor__separator"
-                aria-hidden="true">
+            <span class="rich-text-editor__separator" aria-hidden="true">
             </span>
 
             <div class="rich-text-editor__toolbar-group">
 
-                <button
-                    type="button"
-                    class="rich-text-editor__button"
-                    data-rich-text-link
-                    title="Gắn liên kết"
+                <button type="button" class="rich-text-editor__button" data-rich-text-link title="Gắn liên kết"
                     aria-label="Gắn liên kết">
 
-                    <i
-                        class="fa-solid fa-link"
-                        aria-hidden="true">
+                    <i class="fa-solid fa-link" aria-hidden="true">
                     </i>
                 </button>
 
@@ -253,64 +163,39 @@
 
         </div>
 
-        <div
-            id="{{id}}Editor"
-            class="rich-text-editor__content"
-            data-rich-text-content
-            data-placeholder="{{placeholder}}"
-            contenteditable="true"
-            role="textbox"
-            aria-multiline="true"
+        <div id="{{id}}Editor" class="rich-text-editor__content" data-rich-text-content
+            data-placeholder="{{placeholder}}" contenteditable="true" role="textbox" aria-multiline="true"
             aria-labelledby="{{id}}Label">
         </div>
 
 
-        <textarea
-            id="{{id}}"
-            name="{{name}}"
-            data-rich-text-input
-            hidden></textarea>
+        <textarea id="{{id}}" name="{{name}}" data-rich-text-input hidden></textarea>
 
     </div>
-    
-    <div
-        class="rich-text-link-popup"
-        data-rich-text-link-popup
-        hidden>
+
+    <div class="rich-text-link-popup" data-rich-text-link-popup hidden>
 
         <div class="rich-text-link-popup__field">
 
-            <label
-                class="rich-text-link-popup__label"
-                for="{{id}}LinkText">
+            <label class="rich-text-link-popup__label" for="{{id}}LinkText">
 
                 Văn bản hiển thị
             </label>
 
-            <input
-                id="{{id}}LinkText"
-                type="text"
-                class="rich-text-link-popup__input"
-                placeholder="Nhập văn bản hiển thị"
-                data-rich-text-link-text>
+            <input id="{{id}}LinkText" type="text" class="rich-text-link-popup__input"
+                placeholder="Nhập văn bản hiển thị" data-rich-text-link-text>
 
         </div>
 
 
         <div class="rich-text-link-popup__field">
 
-            <label
-                class="rich-text-link-popup__label"
-                for="{{id}}LinkUrl">
+            <label class="rich-text-link-popup__label" for="{{id}}LinkUrl">
 
                 Đường dẫn
             </label>
 
-            <input
-                id="{{id}}LinkUrl"
-                type="text"
-                class="rich-text-link-popup__input"
-                placeholder="https://example.com"
+            <input id="{{id}}LinkUrl" type="text" class="rich-text-link-popup__input" placeholder="https://example.com"
                 data-rich-text-link-url>
 
         </div>
@@ -318,11 +203,7 @@
 
         <div class="rich-text-link-popup__actions">
 
-            <button
-                type="button"
-                class="rich-text-link-popup__remove"
-                data-rich-text-link-remove
-                hidden>
+            <button type="button" class="rich-text-link-popup__remove" data-rich-text-link-remove hidden>
 
                 Gỡ liên kết
             </button>
@@ -330,18 +211,12 @@
 
             <div class="rich-text-link-popup__actions-right">
 
-                <button
-                    type="button"
-                    class="rich-text-link-popup__cancel"
-                    data-rich-text-link-cancel>
+                <button type="button" class="rich-text-link-popup__cancel" data-rich-text-link-cancel>
 
                     Hủy
                 </button>
 
-                <button
-                    type="button"
-                    class="rich-text-link-popup__save"
-                    data-rich-text-link-save>
+                <button type="button" class="rich-text-link-popup__save" data-rich-text-link-save>
 
                     Áp dụng
                 </button>
@@ -352,10 +227,7 @@
 
     </div>
 
-    <div
-        class="form-field__error"
-        data-field-error="{{name}}"
-        hidden>
+    <div class="form-field__error" data-field-error="{{name}}" hidden>
     </div>
 
 </div>

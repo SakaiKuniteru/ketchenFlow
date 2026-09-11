@@ -1,39 +1,25 @@
-"use strict";
+'use strict';
 
-
-function buildPageData(
-    req,
-    options = {}
-) {
-
+function buildPageData(req, options = {}) {
     const {
-        layout = "app",
+        layout = 'app',
 
-        title = "",
+        title = '',
 
         pageTitle = title,
 
-        pageDescription = "",
+        pageDescription = '',
 
-        currentUser =
-            req.user ||
-            null,
+        currentUser = req.user || null,
 
-        currentYear =
-            new Date()
-                .getFullYear(),
+        currentYear = new Date().getFullYear(),
 
-        appVersion =
-            process.env
-                .APP_VERSION ||
-            "1.0.0",
+        appVersion = process.env.APP_VERSION || '1.0.0',
 
         breadcrumbs,
 
         ...data
-    } =
-        options;
-
+    } = options;
 
     return {
         layout,
@@ -50,41 +36,23 @@ function buildPageData(
 
         appVersion,
 
-        breadcrumbs:
-            Array.isArray(
-                breadcrumbs
-            )
-                ? breadcrumbs
-                : title
-                    ? [
-                        {
-                            label:
-                                title
-                        }
-                    ]
-                    : [],
+        breadcrumbs: Array.isArray(breadcrumbs)
+            ? breadcrumbs
+            : title
+              ? [
+                    {
+                        label: title
+                    }
+                ]
+              : [],
 
         ...data
     };
 }
 
-
-function renderPage(
-    req,
-    res,
-    view,
-    options = {}
-) {
-
-    return res.render(
-        view,
-        buildPageData(
-            req,
-            options
-        )
-    );
+function renderPage(req, res, view, options = {}) {
+    return res.render(view, buildPageData(req, options));
 }
-
 
 module.exports = {
     buildPageData,

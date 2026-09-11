@@ -1,27 +1,19 @@
-const seedHelper = require("../../helpers/seed.helper");
+const seedHelper = require('../../helpers/seed.helper');
 
-const data = require("../data/quoc-gia.data");
-
+const data = require('../data/quoc-gia.data');
 
 async function seedQuocGia() {
-
-    console.log("Seeding dm_quoc_gia...");
-
+    console.log('Seeding dm_quoc_gia...');
 
     await seedHelper({
+        table: 'dm_quoc_gia',
 
-        table: "dm_quoc_gia",
-
-        unique: "ma_quoc_gia",
+        unique: 'ma_quoc_gia',
 
         data,
 
-
         transform: async (client, item) => {
-
-
             return {
-
                 ma_quoc_gia: item.maQuocGia,
 
                 ten_quoc_gia: item.tenQuocGia,
@@ -35,19 +27,11 @@ async function seedQuocGia() {
                 ma_iso3: item.maIso3,
 
                 active: item.active
-
             };
-
-
         }
-
-
     });
 
-
-    console.log("✓ dm_quoc_gia completed");
-
+    console.log('✓ dm_quoc_gia completed');
 }
-
 
 module.exports = seedQuocGia;

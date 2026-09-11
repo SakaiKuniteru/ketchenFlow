@@ -1,19 +1,13 @@
 #nhom-tinh-nangPage {
-    min-width:
-        0;
+    min-width: 0;
 }
 
-#nhomTinhNangDetailPanel
-.catalog-form-grid {
-    align-items:
-        start;
+#nhomTinhNangDetailPanel .catalog-form-grid {
+    align-items: start;
 }
 
-#nhomTinhNangDetailPanel
-textarea {
-    min-height:
-        110px;
+#nhomTinhNangDetailPanel textarea {
+    min-height: 110px;
 
-    resize:
-        vertical;
+    resize: vertical;
 }

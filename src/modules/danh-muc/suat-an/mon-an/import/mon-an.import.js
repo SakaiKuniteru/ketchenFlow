@@ -1,13 +1,17 @@
-"use strict";
+'use strict';
 
-const ApiError = require("../../../../../utils/api-error");
-const { readExcel } = require("../../../../../helpers/excel/excel-reader");
-const { toNumber, toBoolean } = require("../../../../../helpers/excel/excel-value");
-const { validateKeyHeaders, resolveImportStrategy, shouldChangeCode } = require("../../../../../helpers/excel/import-strategy");
-const { createResultFile } = require("../../../../../helpers/excel/excel-result");
-const monAnRepository = require("../mon-an.repository");
-const monAnService = require("../mon-an.service");
-const { MA_BAO_CAO, HEADER_ROW, DATA_START_ROW } = require("../export/mon-an.export");
+const ApiError = require('../../../../../utils/api-error');
+const { readExcel } = require('../../../../../helpers/excel/excel-reader');
+const { toNumber, toBoolean } = require('../../../../../helpers/excel/excel-value');
+const {
+    validateKeyHeaders,
+    resolveImportStrategy,
+    shouldChangeCode
+} = require('../../../../../helpers/excel/import-strategy');
+const { createResultFile } = require('../../../../../helpers/excel/excel-result');
+const monAnRepository = require('../mon-an.repository');
+const monAnService = require('../mon-an.service');
+const { MA_BAO_CAO, HEADER_ROW, DATA_START_ROW } = require('../export/mon-an.export');
 
 function parsePositiveInteger(value, fieldName) {
     if (value === undefined) {
@@ -16,15 +20,8 @@ function parsePositiveInteger(value, fieldName) {
 
     const number = toNumber(value);
 
-    if (
-        number === null ||
-        !Number.isInteger(number) ||
-        number <= 0
-    ) {
-        throw new ApiError(
-            400,
-            `${fieldName} phải là số nguyên lớn hơn 0.`
-        );
+    if (number === null || !Number.isInteger(number) || number <= 0) {
+        throw new ApiError(400, `${fieldName} phải là số nguyên lớn hơn 0.`);
     }
 
     return number;
@@ -38,10 +35,7 @@ function parseNumber(value, fieldName) {
     const number = toNumber(value);
 
     if (number === null) {
-        throw new ApiError(
-            400,
-            `${fieldName} phải là số.`
-        );
+        throw new ApiError(400, `${fieldName} phải là số.`);
     }
 
     return number;
@@ -55,10 +49,7 @@ function parseBoolean(value) {
     try {
         return toBoolean(value);
     } catch (error) {
-        throw new ApiError(
-            400,
-            "Trạng thái không hợp lệ."
-        );
+        throw new ApiError(400, 'Trạng thái không hợp lệ.');
     }
 }
 
@@ -66,10 +57,7 @@ async function resolveNhomMonAn(item) {
     const rawId = item.nhomMonAnId;
     const rawCode = item.maNhomMonAn;
 
-    if (
-        rawId === undefined &&
-        rawCode === undefined
-    ) {
+    if (rawId === undefined && rawCode === undefined) {
         return undefined;
     }
 
@@ -77,55 +65,29 @@ async function resolveNhomMonAn(item) {
     let nhomTheoMa = null;
 
     if (rawId !== undefined) {
-        nhomMonAnId = parsePositiveInteger(
-            rawId,
-            "ID nhóm món ăn"
-        );
+        nhomMonAnId = parsePositiveInteger(rawId, 'ID nhóm món ăn');
 
-        const exists = await monAnRepository.existsNhomMonAn(
-            nhomMonAnId
-        );
+        const exists = await monAnRepository.existsNhomMonAn(nhomMonAnId);
 
         if (!exists) {
-            throw new ApiError(
-                404,
-                `Không tìm thấy nhóm món ăn đang hoạt động có ID ${nhomMonAnId}.`
-            );
+            throw new ApiError(404, `Không tìm thấy nhóm món ăn đang hoạt động có ID ${nhomMonAnId}.`);
         }
     }
 
     if (rawCode !== undefined) {
-        nhomTheoMa = await monAnRepository.getNhomMonAnByMa(
-            rawCode
-        );
+        nhomTheoMa = await monAnRepository.getNhomMonAnByMa(rawCode);
 
         if (!nhomTheoMa) {
-            throw new ApiError(
-                404,
-                `Không tìm thấy nhóm món ăn có mã "${rawCode}".`
-            );
+            throw new ApiError(404, `Không tìm thấy nhóm món ăn có mã "${rawCode}".`);
         }
 
-        if (
-            nhomTheoMa.active ===
-            false
-        ) {
-            throw new ApiError(
-                400,
-                `Nhóm món ăn "${nhomTheoMa.tenNhomMonAn}" đã bị khóa.`
-            );
+        if (nhomTheoMa.active === false) {
+            throw new ApiError(400, `Nhóm món ăn "${nhomTheoMa.tenNhomMonAn}" đã bị khóa.`);
         }
     }
 
-    if (
-        nhomMonAnId !== undefined &&
-        nhomTheoMa &&
-        Number(nhomMonAnId) !== Number(nhomTheoMa.id)
-    ) {
-        throw new ApiError(
-            400,
-            `ID nhóm món ăn ${nhomMonAnId} và mã "${rawCode}" không cùng một nhóm món ăn.`
-        );
+    if (nhomMonAnId !== undefined && nhomTheoMa && Number(nhomMonAnId) !== Number(nhomTheoMa.id)) {
+        throw new ApiError(400, `ID nhóm món ăn ${nhomMonAnId} và mã "${rawCode}" không cùng một nhóm món ăn.`);
     }
 
     if (nhomMonAnId !== undefined) {
@@ -136,26 +98,22 @@ async function resolveNhomMonAn(item) {
 }
 
 function readItem(row, rowNumber, getValue, keyConfig) {
-    const codeField = keyConfig.hasCodeKey
-        ? "maMonAn/k"
-        : "maMonAn";
+    const codeField = keyConfig.hasCodeKey ? 'maMonAn/k' : 'maMonAn';
 
     return {
         rowNumbers: [rowNumber],
         idIsKey: keyConfig.hasIdKey,
         codeIsKey: keyConfig.hasCodeKey,
-        id: keyConfig.hasIdKey
-            ? getValue(row, "id/k")
-            : undefined,
+        id: keyConfig.hasIdKey ? getValue(row, 'id/k') : undefined,
         code: getValue(row, codeField),
         maMonAn: getValue(row, codeField),
-        tenMonAn: getValue(row, "tenMonAn"),
-        nhomMonAnId: getValue(row, "nhomMonAnId"),
-        maNhomMonAn: getValue(row, "maNhomMonAn"),
-        giaTien: getValue(row, "giaTien"),
-        calories: getValue(row, "calories"),
-        moTa: getValue(row, "moTa"),
-        active: getValue(row, "active")
+        tenMonAn: getValue(row, 'tenMonAn'),
+        nhomMonAnId: getValue(row, 'nhomMonAnId'),
+        maNhomMonAn: getValue(row, 'maNhomMonAn'),
+        giaTien: getValue(row, 'giaTien'),
+        calories: getValue(row, 'calories'),
+        moTa: getValue(row, 'moTa'),
+        active: getValue(row, 'active')
     };
 }
 
@@ -172,33 +130,21 @@ async function createBusinessData(item) {
         data.nhomMonAnId = nhomMonAnId;
     }
 
-    const giaTien = parseNumber(
-        item.giaTien,
-        "Giá tiền"
-    );
+    const giaTien = parseNumber(item.giaTien, 'Giá tiền');
 
     if (giaTien !== undefined) {
         if (giaTien < 0) {
-            throw new ApiError(
-                400,
-                "Giá tiền không được nhỏ hơn 0."
-            );
+            throw new ApiError(400, 'Giá tiền không được nhỏ hơn 0.');
         }
 
         data.giaTien = giaTien;
     }
 
-    const calories = parseNumber(
-        item.calories,
-        "Calories"
-    );
+    const calories = parseNumber(item.calories, 'Calories');
 
     if (calories !== undefined) {
         if (calories < 0) {
-            throw new ApiError(
-                400,
-                "Calories không được nhỏ hơn 0."
-            );
+            throw new ApiError(400, 'Calories không được nhỏ hơn 0.');
         }
 
         data.calories = calories;
@@ -208,9 +154,7 @@ async function createBusinessData(item) {
         data.moTa = item.moTa;
     }
 
-    const active = parseBoolean(
-        item.active
-    );
+    const active = parseBoolean(item.active);
 
     if (active !== undefined) {
         data.active = active;
@@ -221,131 +165,83 @@ async function createBusinessData(item) {
 
 async function processItem(item) {
     if (item.id !== undefined) {
-        item.id = parsePositiveInteger(
-            item.id,
-            "ID món ăn"
-        );
+        item.id = parsePositiveInteger(item.id, 'ID món ăn');
     }
 
-    const strategy = await resolveImportStrategy(
-        item,
-        {
-            getById: id =>
-                monAnRepository.getChiTiet(id),
+    const strategy = await resolveImportStrategy(item, {
+        getById: (id) => monAnRepository.getChiTiet(id),
 
-            getByCode: code =>
-                monAnRepository.getChiTietByMa(code),
+        getByCode: (code) => monAnRepository.getChiTietByMa(code),
 
-            getRecordCode: record =>
-                record.maMonAn,
+        getRecordCode: (record) => record.maMonAn,
 
-            entityName: "món ăn"
-        }
-    );
+        entityName: 'món ăn'
+    });
 
     const data = await createBusinessData(item);
 
-    if (strategy.action === "UPDATE") {
+    if (strategy.action === 'UPDATE') {
         if (
             strategy.allowCodeChange &&
             item.maMonAn !== undefined &&
-            shouldChangeCode(
-                item.maMonAn,
-                strategy.record.maMonAn
-            )
+            shouldChangeCode(item.maMonAn, strategy.record.maMonAn)
         ) {
             data.maMonAn = item.maMonAn;
         }
 
         if (Object.keys(data).length === 0) {
-            throw new ApiError(
-                400,
-                "Không có dữ liệu cần cập nhật."
-            );
+            throw new ApiError(400, 'Không có dữ liệu cần cập nhật.');
         }
 
-        const result = await monAnService.update(
-            strategy.record.id,
-            data
-        );
+        const result = await monAnService.update(strategy.record.id, data);
 
         return {
             rowNumbers: item.rowNumbers,
             id: result.id,
             maMonAn: result.maMonAn,
-            hanhDong: "CAP_NHAT",
+            hanhDong: 'CAP_NHAT',
             message: `Cập nhật thành công - ID ${result.id}`
         };
     }
 
     if (!item.maMonAn) {
-        throw new ApiError(
-            400,
-            "Thêm mới món ăn phải có mã món ăn."
-        );
+        throw new ApiError(400, 'Thêm mới món ăn phải có mã món ăn.');
     }
 
     data.maMonAn = item.maMonAn;
 
-    const result = await monAnService.create(
-        data
-    );
+    const result = await monAnService.create(data);
 
     return {
         rowNumbers: item.rowNumbers,
         id: result.id,
         maMonAn: result.maMonAn,
-        hanhDong: "THEM_MOI",
+        hanhDong: 'THEM_MOI',
         message: `Thêm mới thành công - ID ${result.id}`
     };
 }
 
 async function importMonAn(file) {
-    const {
-        workbook,
-        worksheet,
-        headerMap,
-        getValue,
-        hasData
-    } = await readExcel(
-        file,
-        {
-            headerRowNumber: HEADER_ROW
-        }
-    );
+    const { workbook, worksheet, headerMap, getValue, hasData } = await readExcel(file, {
+        headerRowNumber: HEADER_ROW
+    });
 
-    const keyConfig = validateKeyHeaders(
-        headerMap,
-        {
-            idKey: "id/k",
-            codeKey: "maMonAn/k",
-            codeField: "maMonAn"
-        }
-    );
+    const keyConfig = validateKeyHeaders(headerMap, {
+        idKey: 'id/k',
+        codeKey: 'maMonAn/k',
+        codeField: 'maMonAn'
+    });
 
     const items = [];
 
-    for (
-        let rowNumber = DATA_START_ROW;
-        rowNumber <= worksheet.rowCount;
-        rowNumber++
-    ) {
-        const row = worksheet.getRow(
-            rowNumber
-        );
+    for (let rowNumber = DATA_START_ROW; rowNumber <= worksheet.rowCount; rowNumber++) {
+        const row = worksheet.getRow(rowNumber);
 
         if (!hasData(row)) {
             continue;
         }
 
-        items.push(
-            readItem(
-                row,
-                rowNumber,
-                getValue,
-                keyConfig
-            )
-        );
+        items.push(readItem(row, rowNumber, getValue, keyConfig));
     }
 
     const successes = [];
@@ -354,39 +250,29 @@ async function importMonAn(file) {
     if (items.length === 0) {
         errors.push({
             rowNumbers: [DATA_START_ROW],
-            message: "File import không có dữ liệu."
+            message: 'File import không có dữ liệu.'
         });
     }
 
     for (const item of items) {
         try {
-            const result = await processItem(
-                item
-            );
+            const result = await processItem(item);
 
-            successes.push(
-                result
-            );
+            successes.push(result);
         } catch (error) {
             errors.push({
                 rowNumbers: item.rowNumbers,
-                message:
-                    error.message ||
-                    "Dữ liệu không hợp lệ."
+                message: error.message || 'Dữ liệu không hợp lệ.'
             });
         }
     }
 
-    return createResultFile(
-        workbook,
-        worksheet,
-        {
-            fileName: `${MA_BAO_CAO}.xlsx`,
-            headerRowNumber: HEADER_ROW,
-            successes,
-            errors
-        }
-    );
+    return createResultFile(workbook, worksheet, {
+        fileName: `${MA_BAO_CAO}.xlsx`,
+        headerRowNumber: HEADER_ROW,
+        successes,
+        errors
+    });
 }
 
 module.exports = {

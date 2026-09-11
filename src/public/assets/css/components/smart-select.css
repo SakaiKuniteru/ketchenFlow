@@ -18,11 +18,13 @@
     border-radius: 10px;
     background: #ffffff;
     cursor: text;
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease;
 }
 
-.smart-select:not(:has(.smart-select__single))
-.smart-select__control {
+.smart-select:not(:has(.smart-select__single)) .smart-select__control {
     padding-right: 42px;
 }
 
@@ -30,8 +32,7 @@
     border-color: #94a3b8;
 }
 
-.smart-select.is-open
-.smart-select__control,
+.smart-select.is-open .smart-select__control,
 .smart-select__control:focus-within {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
@@ -95,28 +96,24 @@
     color: #94a3b8;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__search {
+.smart-select[data-select-mode='multiple'] .smart-select__search {
     flex: 0 0 auto;
     width: auto;
     min-width: 40px;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__control {
+.smart-select[data-select-mode='multiple'] .smart-select__control {
     height: auto;
     min-height: 44px;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__control {
+.smart-select[data-select-mode='multiple'] .smart-select__control {
     height: auto;
     min-height: 44px;
     padding: 6px 42px 6px 12px;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__content {
+.smart-select[data-select-mode='multiple'] .smart-select__content {
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -127,8 +124,7 @@
     overflow: hidden;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection {
+.smart-select[data-select-mode='multiple'] .smart-select__selection {
     display: flex;
     flex: 0 1 auto;
     align-items: center;
@@ -142,25 +138,21 @@
     scrollbar-width: none;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection::-webkit-scrollbar {
+.smart-select[data-select-mode='multiple'] .smart-select__selection::-webkit-scrollbar {
     display: none;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection:not(:has(.smart-select__tag)) {
+.smart-select[data-select-mode='multiple'] .smart-select__selection:not(:has(.smart-select__tag)) {
     flex: 1 1 auto;
     max-width: none;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection:has(.smart-select__tag) {
+.smart-select[data-select-mode='multiple'] .smart-select__selection:has(.smart-select__tag) {
     flex: 0 1 auto;
     width: auto;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__search {
+.smart-select[data-select-mode='multiple'] .smart-select__search {
     display: block;
     flex: 0 0 auto;
     width: auto;
@@ -177,24 +169,19 @@
     font-size: 13px;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection:not(:has(.smart-select__tag))
-+
-.smart-select__search {
+.smart-select[data-select-mode='multiple']
+    .smart-select__selection:not(:has(.smart-select__tag))
+    + .smart-select__search {
     flex: 1 1 100%;
     min-width: 0;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection:has(.smart-select__tag)
-+
-.smart-select__search {
+.smart-select[data-select-mode='multiple'] .smart-select__selection:has(.smart-select__tag) + .smart-select__search {
     flex: 1 1 80px;
     min-width: 60px;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__tag {
+.smart-select[data-select-mode='multiple'] .smart-select__tag {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
@@ -218,7 +205,9 @@
     background: transparent;
     cursor: pointer;
     transform: translateY(-50%);
-    transition: color 160ms ease, background-color 160ms ease;
+    transition:
+        color 160ms ease,
+        background-color 160ms ease;
 }
 
 .smart-select__toggle:hover:not(:disabled) {
@@ -232,8 +221,7 @@
     transition: transform 160ms ease;
 }
 
-.smart-select.is-open
-.smart-select__toggle svg {
+.smart-select.is-open .smart-select__toggle svg {
     transform: rotate(180deg);
 }
 
@@ -255,7 +243,9 @@
     background: transparent;
     cursor: pointer;
     transform: translateY(-50%);
-    transition: color 160ms ease, background-color 160ms ease;
+    transition:
+        color 160ms ease,
+        background-color 160ms ease;
 }
 
 .smart-select__clear:hover:not(:disabled) {
@@ -291,7 +281,9 @@
     border: 1px solid #d8e0eb;
     border-radius: 10px;
     background: #ffffff;
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
+    box-shadow:
+        0 18px 42px rgba(15, 23, 42, 0.16),
+        0 4px 12px rgba(15, 23, 42, 0.06);
     transform-origin: top center;
     animation: smart-select-enter 150ms ease-out;
 }
@@ -323,7 +315,9 @@
     font-weight: 600;
     text-align: left;
     cursor: pointer;
-    transition: color 130ms ease, background-color 130ms ease;
+    transition:
+        color 130ms ease,
+        background-color 130ms ease;
 }
 
 .smart-select__option[hidden] {
@@ -354,22 +348,19 @@
     white-space: nowrap;
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__option {
+.smart-select[data-select-checkbox-options='true'] .smart-select__option {
     justify-content: flex-start;
     gap: 10px;
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__check {
+.smart-select[data-select-checkbox-options='true'] .smart-select__check {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__checkbox {
+.smart-select[data-select-checkbox-options='true'] .smart-select__checkbox {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -380,22 +371,21 @@
     color: #ffffff;
     background: #ffffff;
     font-size: 10px;
-    transition: border-color 150ms ease, background-color 150ms ease;
+    transition:
+        border-color 150ms ease,
+        background-color 150ms ease;
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__checkbox i {
+.smart-select[data-select-checkbox-options='true'] .smart-select__checkbox i {
     opacity: 0;
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__checkbox.is-checked {
+.smart-select[data-select-checkbox-options='true'] .smart-select__checkbox.is-checked {
     border-color: var(--color-primary);
     background: var(--color-primary);
 }
 
-.smart-select[data-select-checkbox-options="true"]
-.smart-select__checkbox.is-checked i {
+.smart-select[data-select-checkbox-options='true'] .smart-select__checkbox.is-checked i {
     opacity: 1;
 }
 
@@ -408,8 +398,7 @@
     opacity: 0;
 }
 
-.smart-select__option.is-selected
-.smart-select__default-check {
+.smart-select__option.is-selected .smart-select__default-check {
     opacity: 1;
 }
 
@@ -471,15 +460,13 @@
     pointer-events: none;
 }
 
-.smart-select.is-disabled
-.smart-select__control {
+.smart-select.is-disabled .smart-select__control {
     color: #94a3b8;
     background: #f1f5f9;
     cursor: not-allowed;
 }
 
-.smart-select.is-disabled
-.smart-select__toggle {
+.smart-select.is-disabled .smart-select__toggle {
     opacity: 0.5;
 }
 
@@ -487,8 +474,7 @@
     display: none;
 }
 
-.smart-select[data-select-mode="single"]
-.smart-select__search {
+.smart-select[data-select-mode='single'] .smart-select__search {
     display: none;
     flex: 1 1 auto;
     width: 100%;
@@ -503,13 +489,11 @@
     font-size: 13px;
 }
 
-.smart-select[data-select-mode="single"].is-searching
-.smart-select__selection {
+.smart-select[data-select-mode='single'].is-searching .smart-select__selection {
     display: none;
 }
 
-.smart-select[data-select-mode="single"].is-searching
-.smart-select__search {
+.smart-select[data-select-mode='single'].is-searching .smart-select__search {
     display: block;
 }
 
@@ -526,10 +510,7 @@
 }
 
 [data-smart-select-dropdown] {
-    max-height: min(
-        360px,
-        calc(100vh - 180px)
-    );
+    max-height: min(360px, calc(100vh - 180px));
     overflow: hidden;
 }
 
@@ -596,7 +577,9 @@
     color: #94a3b8;
     background: transparent;
     cursor: pointer;
-    transition: color 160ms ease, background-color 160ms ease;
+    transition:
+        color 160ms ease,
+        background-color 160ms ease;
 }
 
 .smart-select__single-remove:hover {
@@ -613,8 +596,7 @@
     display: none !important;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__content {
+.smart-select[data-select-mode='multiple'] .smart-select__content {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
@@ -624,8 +606,7 @@
     overflow: hidden;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection {
+.smart-select[data-select-mode='multiple'] .smart-select__selection {
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -639,13 +620,11 @@
     scrollbar-width: none;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__selection::-webkit-scrollbar {
+.smart-select[data-select-mode='multiple'] .smart-select__selection::-webkit-scrollbar {
     display: none;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__search {
+.smart-select[data-select-mode='multiple'] .smart-select__search {
     flex: 1 1 auto;
     width: auto;
     min-width: 0;
@@ -654,13 +633,11 @@
     padding: 0;
 }
 
-.smart-select[data-select-mode="multiple"]
-.smart-select__search[hidden] {
+.smart-select[data-select-mode='multiple'] .smart-select__search[hidden] {
     display: none !important;
 }
 
-.smart-select.has-value
-.smart-select__control {
+.smart-select.has-value .smart-select__control {
     padding-right: 42px;
 }
 
@@ -723,12 +700,7 @@
     pointer-events: none;
 }
 
-.smart-select[
-    data-select-mode="multiple"
-][
-    data-select-compact-multiple="true"
-]
-.smart-select__search {
+.smart-select[data-select-mode='multiple'][data-select-compact-multiple='true'] .smart-select__search {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -736,11 +708,6 @@
     opacity: 0;
 }
 
-.smart-select[
-    data-select-mode="multiple"
-][
-    data-select-compact-multiple="true"
-]
-.smart-select__selection {
+.smart-select[data-select-mode='multiple'][data-select-compact-multiple='true'] .smart-select__selection {
     overflow: hidden;
 }

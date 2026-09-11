@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const nhomMonAnExport =
-    require("./nhom-mon-an.export");
+const nhomMonAnExport = require('./nhom-mon-an.export');
 
-const nhomMonAnImport =
-    require("./nhom-mon-an.import");
-
+const nhomMonAnImport = require('./nhom-mon-an.import');
 
 module.exports = {
     exportData: nhomMonAnExport.exportData,

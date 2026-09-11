@@ -1,19 +1,11 @@
-<header
-    class="detail-panel__header"
-    data-detail-header>
+<header class="detail-panel__header" data-detail-header>
 
     <div class="detail-panel__heading">
 
-        <button
-            type="button"
-            class="detail-panel__back"
-            data-detail-back
-            aria-label="Quay lại danh sách"
+        <button type="button" class="detail-panel__back" data-detail-back aria-label="Quay lại danh sách"
             title="Quay lại danh sách">
 
-            <i
-                class="fa-solid fa-arrow-left"
-                aria-hidden="true">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true">
             </i>
 
         </button>
@@ -21,9 +13,7 @@
 
         <div class="detail-panel__heading-content">
 
-            <h2
-                class="detail-panel__title"
-                data-detail-title>
+            <h2 class="detail-panel__title" data-detail-title>
 
                 {{#if title}}
 
@@ -38,10 +28,7 @@
             </h2>
 
 
-            <p
-                class="detail-panel__subtitle"
-                data-detail-subtitle
-                {{#unless subtitle}}hidden{{/unless}}>
+            <p class="detail-panel__subtitle" data-detail-subtitle {{#unless subtitle}}hidden{{/unless}}>
 
                 {{subtitle}}
 
@@ -52,10 +39,7 @@
     </div>
 
 
-    <div
-        class="detail-panel__header-actions"
-        data-detail-header-actions
-        hidden>
+    <div class="detail-panel__header-actions" data-detail-header-actions hidden>
     </div>
 
 </header>

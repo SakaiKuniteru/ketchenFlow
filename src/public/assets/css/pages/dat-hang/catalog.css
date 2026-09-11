@@ -1,0 +1,3 @@
+.order-page[data-order-page='catalog'] .order-cart-panel {
+    z-index: 1;
+}

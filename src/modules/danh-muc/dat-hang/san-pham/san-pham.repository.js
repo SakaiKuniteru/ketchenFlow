@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class SanPhamRepository {
     mapSanPham(row) {
@@ -84,9 +84,7 @@ class SanPhamRepository {
         const values = [];
         const conditions = [];
         if (query.keyword) {
-            values.push(`%${String(
-                    query.keyword
-                ).trim()}%`);
+            values.push(`%${String(query.keyword).trim()}%`);
             conditions.push(`
                 (
                     sp.ma_san_pham
@@ -100,35 +98,30 @@ class SanPhamRepository {
                 )
             `);
         }
-        if (query.nhomSanPhamId !== undefined && query.nhomSanPhamId !== "") {
+        if (query.nhomSanPhamId !== undefined && query.nhomSanPhamId !== '') {
             values.push(Number(query.nhomSanPhamId));
             conditions.push(`sp.nhom_san_pham_id = $${values.length}`);
         }
-        if (query.loaiSanPham !== undefined && query.loaiSanPham !== "") {
+        if (query.loaiSanPham !== undefined && query.loaiSanPham !== '') {
             values.push(Number(query.loaiSanPham));
             conditions.push(`nsp.loai_san_pham = $${values.length}`);
         }
-        if (query.donViTinhId !== undefined && query.donViTinhId !== "") {
+        if (query.donViTinhId !== undefined && query.donViTinhId !== '') {
             values.push(Number(query.donViTinhId));
             conditions.push(`sp.don_vi_tinh_id = $${values.length}`);
         }
-        for (const [
-                key,
-                column
-            ] of [
-                ["choPhepDat", "sp.cho_phep_dat"],
-                ["laSanPhamMoi", "sp.la_san_pham_moi"],
-                ["laSanPhamNoiBat", "sp.la_san_pham_noi_bat"],
-                ["active", "sp.active"]
-            ]) {
-            if (query[key] !== undefined && query[key] !== "") {
-                values.push(String(query[key]) === "true");
+        for (const [key, column] of [
+            ['choPhepDat', 'sp.cho_phep_dat'],
+            ['laSanPhamMoi', 'sp.la_san_pham_moi'],
+            ['laSanPhamNoiBat', 'sp.la_san_pham_noi_bat'],
+            ['active', 'sp.active']
+        ]) {
+            if (query[key] !== undefined && query[key] !== '') {
+                values.push(String(query[key]) === 'true');
                 conditions.push(`${column} = $${values.length}`);
             }
         }
-        const where = conditions.length > 0 ? `WHERE ${conditions.join(
-                    " AND "
-                )}` : "";
+        const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
         const sql = `
             ${this.getBaseQuery()}
 
@@ -139,7 +132,7 @@ class SanPhamRepository {
                 sp.ma_san_pham ASC
         `;
         const result = await pool.query(sql, values);
-        return result.rows.map(row => this.mapSanPham(row));
+        return result.rows.map((row) => this.mapSanPham(row));
     }
 
     async getChiTiet(id, client = pool) {
@@ -150,10 +143,7 @@ class SanPhamRepository {
 
             LIMIT 1
         `;
-        const result = await client.query(sql,
-            [
-                id
-            ]);
+        const result = await client.query(sql, [id]);
         if (result.rows.length === 0) {
             return null;
         }
@@ -174,10 +164,7 @@ class SanPhamRepository {
 
             LIMIT 1
         `;
-        const result = await pool.query(sql,
-            [
-                maSanPham
-            ]);
+        const result = await pool.query(sql, [maSanPham]);
         if (result.rows.length === 0) {
             return null;
         }
@@ -185,9 +172,7 @@ class SanPhamRepository {
     }
 
     async existsMaSanPham(maSanPham, excludeId = null) {
-        const values = [
-            maSanPham
-        ];
+        const values = [maSanPham];
         let sql = `
             SELECT EXISTS (
 
@@ -216,9 +201,7 @@ class SanPhamRepository {
     }
 
     async existsTenSanPham(tenSanPham, excludeId = null) {
-        const values = [
-            tenSanPham
-        ];
+        const values = [tenSanPham];
         let sql = `
             SELECT EXISTS (
 
@@ -258,10 +241,7 @@ class SanPhamRepository {
 
             ) AS "exists"
         `;
-        const result = await pool.query(sql,
-            [
-                nhomSanPhamId
-            ]);
+        const result = await pool.query(sql, [nhomSanPhamId]);
         return result.rows[0].exists;
     }
 
@@ -280,10 +260,7 @@ class SanPhamRepository {
 
             ) AS "exists"
         `;
-        const result = await pool.query(sql,
-            [
-                donViTinhId
-            ]);
+        const result = await pool.query(sql, [donViTinhId]);
         return result.rows[0].exists;
     }
 

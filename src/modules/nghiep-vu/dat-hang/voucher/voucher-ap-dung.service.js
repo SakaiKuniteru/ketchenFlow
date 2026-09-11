@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
-const ruleService = require("./voucher-rule.service");
+const pool = require('../../../../config/database');
+const ruleService = require('./voucher-rule.service');
 
 class VoucherApDungService {
     async apply(maVoucher, context, items, client = pool, lock = false) {
@@ -14,7 +14,7 @@ class VoucherApDungService {
         const discount = ruleService.calculate(voucher, items);
 
         if (!discount.soTienDuDieuKien) {
-            throw new (require("../../../../utils/api-error"))(400, "Giỏ hàng không có sản phẩm phù hợp với voucher.");
+            throw new (require('../../../../utils/api-error'))(400, 'Giỏ hàng không có sản phẩm phù hợp với voucher.');
         }
 
         return {

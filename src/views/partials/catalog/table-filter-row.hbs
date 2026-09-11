@@ -1,7 +1,4 @@
-<tr
-    class="catalog-table__filter-row"
-    data-table-filter-row
-    hidden>
+<tr class="catalog-table__filter-row" data-table-filter-row hidden>
 
     {{#if selectable}}
 
@@ -22,11 +19,8 @@
             {{#if filterable}}
 
                 {{#if filterOptions}}
-                    <div
-                        class="catalog-table__filter-select"
-                        data-catalog-filter-select
-                        data-filter-key="{{key}}">
-                            {{> forms/select
+                    <div class="catalog-table__filter-select" data-catalog-filter-select data-filter-key="{{key}}">
+                        {{> forms/select
                                 id=filterId
                                 name=filterName
                                 label=""
@@ -40,14 +34,9 @@
                     </div>
                 {{else}}
 
-                    <input
-                        type="{{#if filterType}}{{filterType}}{{else}}text{{/if}}"
-                        class="catalog-table__filter-input"
-                        placeholder="Tìm {{label}}..."
-                        data-filter-key="{{key}}"
-                        autocomplete="off"
-                        aria-label="Lọc theo {{label}}"
-                    >
+                    <input type="{{#if filterType}}{{filterType}}{{else}}text{{/if}}"
+                        class="catalog-table__filter-input" placeholder="Tìm {{label}}..." data-filter-key="{{key}}"
+                        autocomplete="off" aria-label="Lọc theo {{label}}">
 
                 {{/if}}
 

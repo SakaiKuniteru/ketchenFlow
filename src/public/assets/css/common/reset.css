@@ -106,11 +106,7 @@ table {
 }
 
 :focus-visible {
-    outline: 3px solid
-        rgba(
-            var(--color-primary-rgb),
-            0.25
-        );
+    outline: 3px solid rgba(var(--color-primary-rgb), 0.25);
     outline-offset: 2px;
 }
 
@@ -119,7 +115,6 @@ table {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
@@ -128,5 +123,4 @@ table {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-
 }

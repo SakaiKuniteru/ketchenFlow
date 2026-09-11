@@ -1,9 +1,6 @@
 <link rel="stylesheet" href="/assets/css/pages/home/home.css">
 
-<section
-    id="homePage"
-    class="home-page"
-    data-home-page>
+<section id="homePage" class="home-page" data-home-page>
     <div data-home-content hidden>
         <header class="home-page__header">
             <div class="home-page__heading">
@@ -25,52 +22,40 @@
 
             </div>
 
-        <div class="home-page__datetime">
-            <button
-                type="button"
-                class="home-page__datetime-trigger"
-                data-datetime-trigger
-                aria-expanded="false"
-                aria-controls="homeDateTimePopup">
+            <div class="home-page__datetime">
+                <button type="button" class="home-page__datetime-trigger" data-datetime-trigger aria-expanded="false"
+                    aria-controls="homeDateTimePopup">
 
-                <span class="home-page__datetime-icon" aria-hidden="true">🕐</span>
+                    <span class="home-page__datetime-icon" aria-hidden="true">🕐</span>
 
-                <span class="home-page__datetime-content">
-                    <span class="home-page__date-label">Hôm nay</span>
-                    <strong class="home-page__date-value" data-current-date>{{currentDate}}</strong>
-                    <span class="home-page__time-value" data-current-time> --:--:--</span>
-                </span>
-            </button>
+                    <span class="home-page__datetime-content">
+                        <span class="home-page__date-label">Hôm nay</span>
+                        <strong class="home-page__date-value" data-current-date>{{currentDate}}</strong>
+                        <span class="home-page__time-value" data-current-time> --:--:--</span>
+                    </span>
+                </button>
 
-            <div
-                id="homeDateTimePopup"
-                class="home-page__datetime-popup"
-                data-datetime-popup
-                hidden>
+                <div id="homeDateTimePopup" class="home-page__datetime-popup" data-datetime-popup hidden>
 
-                <div class="home-page__clock">
-                    <span class="home-page__clock-time" data-popup-time> --:--:-- </span>
-                    <span class="home-page__clock-date" data-popup-date> — </span>
-                    <span class="home-page__clock-timezone" data-popup-timezone> — </span>
-                </div>
+                    <div class="home-page__clock">
+                        <span class="home-page__clock-time" data-popup-time> --:--:-- </span>
+                        <span class="home-page__clock-date" data-popup-date> — </span>
+                        <span class="home-page__clock-timezone" data-popup-timezone> — </span>
+                    </div>
 
-                <div class="home-page__calendar-summary">
-                    <span class="home-page__calendar-weekday" data-popup-weekday> — </span>
-                    <strong class="home-page__calendar-day" data-popup-day> -- </strong>
-                    <span class="home-page__calendar-month" data-popup-month> Tháng -- </span>
-                    <span class="home-page__calendar-year" data-popup-year> ---- </span>
+                    <div class="home-page__calendar-summary">
+                        <span class="home-page__calendar-weekday" data-popup-weekday> — </span>
+                        <strong class="home-page__calendar-day" data-popup-day> -- </strong>
+                        <span class="home-page__calendar-month" data-popup-month> Tháng -- </span>
+                        <span class="home-page__calendar-year" data-popup-year> ---- </span>
+                    </div>
                 </div>
             </div>
-        </div>
         </header>
 
-        <section
-            class="home-summary"
-            aria-label="Thống kê tổng quan">
+        <section class="home-summary" aria-label="Thống kê tổng quan">
 
-            <article
-                class="home-summary-card"
-                data-summary-card="co-so">
+            <article class="home-summary-card" data-summary-card="co-so">
 
                 <div class="home-summary-card__icon">
 
@@ -86,9 +71,7 @@
                         Cơ sở
                     </span>
 
-                    <strong
-                        class="home-summary-card__value"
-                        data-summary-value="co-so">
+                    <strong class="home-summary-card__value" data-summary-value="co-so">
 
                         {{#if summary.tongCoSo}}
 
@@ -104,9 +87,7 @@
 
                 </div>
 
-                <a
-                    href="/danh-muc/to-chuc/co-so"
-                    class="home-summary-card__link">
+                <a href="/danh-muc/to-chuc/co-so" class="home-summary-card__link">
 
                     Xem chi tiết
 
@@ -119,9 +100,7 @@
             </article>
 
 
-            <article
-                class="home-summary-card"
-                data-summary-card="nha-an">
+            <article class="home-summary-card" data-summary-card="nha-an">
 
                 <div class="home-summary-card__icon">
 
@@ -137,9 +116,7 @@
                         Nhà ăn
                     </span>
 
-                    <strong
-                        class="home-summary-card__value"
-                        data-summary-value="nha-an">
+                    <strong class="home-summary-card__value" data-summary-value="nha-an">
 
                         {{#if summary.tongNhaAn}}
 
@@ -155,9 +132,7 @@
 
                 </div>
 
-                <a
-                    href="/danh-muc/to-chuc/nha-an"
-                    class="home-summary-card__link">
+                <a href="/danh-muc/to-chuc/nha-an" class="home-summary-card__link">
 
                     Xem chi tiết
 
@@ -170,9 +145,7 @@
             </article>
 
 
-            <article
-                class="home-summary-card"
-                data-summary-card="kho">
+            <article class="home-summary-card" data-summary-card="kho">
 
                 <div class="home-summary-card__icon">
 
@@ -188,9 +161,7 @@
                         Kho
                     </span>
 
-                    <strong
-                        class="home-summary-card__value"
-                        data-summary-value="kho">
+                    <strong class="home-summary-card__value" data-summary-value="kho">
 
                         {{#if summary.tongKho}}
 
@@ -206,9 +177,7 @@
 
                 </div>
 
-                <a
-                    href="/danh-muc/to-chuc/kho"
-                    class="home-summary-card__link">
+                <a href="/danh-muc/to-chuc/kho" class="home-summary-card__link">
 
                     Xem chi tiết
 
@@ -221,9 +190,7 @@
             </article>
 
 
-            <article
-                class="home-summary-card"
-                data-summary-card="nhan-vien">
+            <article class="home-summary-card" data-summary-card="nhan-vien">
 
                 <div class="home-summary-card__icon">
 
@@ -239,9 +206,7 @@
                         Nhân viên
                     </span>
 
-                    <strong
-                        class="home-summary-card__value"
-                        data-summary-value="nhan-vien">
+                    <strong class="home-summary-card__value" data-summary-value="nhan-vien">
 
                         {{#if summary.tongNhanVien}}
 
@@ -257,9 +222,7 @@
 
                 </div>
 
-                <a
-                    href="/danh-muc/nhan-su/nhan-vien"
-                    class="home-summary-card__link">
+                <a href="/danh-muc/nhan-su/nhan-vien" class="home-summary-card__link">
 
                     Xem chi tiết
 
@@ -295,13 +258,9 @@
 
                 <div class="home-quick-links">
 
-                    <a
-                        href="/danh-muc/to-chuc/co-so"
-                        class="home-quick-link">
+                    <a href="/danh-muc/to-chuc/co-so" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             🏢
                         </span>
 
@@ -320,13 +279,9 @@
                     </a>
 
 
-                    <a
-                        href="/danh-muc/to-chuc/nha-an"
-                        class="home-quick-link">
+                    <a href="/danh-muc/to-chuc/nha-an" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             🍽
                         </span>
 
@@ -345,13 +300,9 @@
                     </a>
 
 
-                    <a
-                        href="/danh-muc/to-chuc/kho"
-                        class="home-quick-link">
+                    <a href="/danh-muc/to-chuc/kho" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             📦
                         </span>
 
@@ -370,13 +321,9 @@
                     </a>
 
 
-                    <a
-                        href="/danh-muc/suat-an/thuc-pham"
-                        class="home-quick-link">
+                    <a href="/danh-muc/suat-an/thuc-pham" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             🥬
                         </span>
 
@@ -395,13 +342,9 @@
                     </a>
 
 
-                    <a
-                        href="/danh-muc/suat-an/mon-an"
-                        class="home-quick-link">
+                    <a href="/danh-muc/suat-an/mon-an" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             🍲
                         </span>
 
@@ -420,13 +363,9 @@
                     </a>
 
 
-                    <a
-                        href="/danh-muc/nhan-su/tai-khoan"
-                        class="home-quick-link">
+                    <a href="/danh-muc/nhan-su/tai-khoan" class="home-quick-link">
 
-                        <span
-                            class="home-quick-link__icon"
-                            aria-hidden="true">
+                        <span class="home-quick-link__icon" aria-hidden="true">
                             👤
                         </span>
 
@@ -473,9 +412,7 @@
 
                         {{#if currentUser.anhDaiDien}}
 
-                            <img
-                                src="{{currentUser.anhDaiDien}}"
-                                alt="Ảnh đại diện của {{currentUser.hoTen}}">
+                            <img src="{{currentUser.anhDaiDien}}" alt="Ảnh đại diện của {{currentUser.hoTen}}">
 
                         {{else}}
 
@@ -625,10 +562,7 @@
 
                     <div class="home-profile__actions">
 
-                        <button
-                            type="button"
-                            class="home-profile__button"
-                            id="homeChangePasswordButton">
+                        <button type="button" class="home-profile__button" id="homeChangePasswordButton">
 
                             Đổi mật khẩu
 

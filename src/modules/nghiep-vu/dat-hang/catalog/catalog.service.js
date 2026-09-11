@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const ApiError = require("../../../../utils/api-error");
-const repository = require("./catalog.repository");
-const gioHangService = require("../gio-hang/gio-hang.service");
-const { listQuerySchema, tinhGioHangSchema } = require("./catalog.validation");
-const { loaiSanPham } = require("../../../../constants/enums");
+const ApiError = require('../../../../utils/api-error');
+const repository = require('./catalog.repository');
+const gioHangService = require('../gio-hang/gio-hang.service');
+const { listQuerySchema, tinhGioHangSchema } = require('./catalog.validation');
+const { loaiSanPham } = require('../../../../constants/enums');
 
 function validate(schema, data) {
     const { error, value } = schema.validate(data, {
@@ -13,7 +13,7 @@ function validate(schema, data) {
     });
 
     if (error) {
-        throw new ApiError(400, error.details.map(item => item.message).join(", "));
+        throw new ApiError(400, error.details.map((item) => item.message).join(', '));
     }
 
     return value;
@@ -27,15 +27,16 @@ class CatalogService {
         });
 
         if (!data.coSoId) {
-            throw new ApiError(400, "Không xác định được cơ sở đặt hàng.");
+            throw new ApiError(400, 'Không xác định được cơ sở đặt hàng.');
         }
 
         const result = await repository.getDanhSachSanPham(data);
         return {
             ...result,
-            items: result.items.map(item => ({
+            items: result.items.map((item) => ({
                 ...item,
-                thongTinLoaiSanPham: loaiSanPham.find(option => Number(option.value) === Number(item.loaiSanPham)) || null
+                thongTinLoaiSanPham:
+                    loaiSanPham.find((option) => Number(option.value) === Number(item.loaiSanPham)) || null
             }))
         };
     }
@@ -44,7 +45,7 @@ class CatalogService {
         const coSoId = Number(query.coSoId || user.coSoId);
 
         if (!coSoId || !user.nhanVienId) {
-            throw new ApiError(400, "Không xác định được nhân viên hoặc cơ sở đặt hàng.");
+            throw new ApiError(400, 'Không xác định được nhân viên hoặc cơ sở đặt hàng.');
         }
 
         return repository.getThongTinCheckout(coSoId, user.nhanVienId);

@@ -1,15 +1,11 @@
-<div
-    class="
+<div class="
         form-field
         {{#if fieldClass}}{{fieldClass}}{{/if}}
-    "
-    data-form-field="{{name}}">
+    " data-form-field="{{name}}">
 
     {{#if label}}
 
-        <label
-            for="{{id}}Search"
-            class="form-field__label">
+        <label for="{{id}}Search" class="form-field__label">
 
             <span>
                 {{label}}
@@ -17,9 +13,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -30,45 +24,22 @@
     {{/if}}
 
 
-    <div
-        class="
+    <div class="
             smart-select
             {{#if disabled}}is-disabled{{/if}}
-        "
-        data-smart-select
-        data-select-mode="{{#if mode}}{{mode}}{{else}}single{{/if}}"
+        " data-smart-select data-select-mode="{{#if mode}}{{mode}}{{else}}single{{/if}}"
         data-select-placeholder="{{#if placeholder}}{{placeholder}}{{else}}Chọn dữ liệu...{{/if}}"
         data-select-all-label="{{#if allLabel}}{{allLabel}}{{else}}Tất cả{{/if}}"
         data-select-compact-multiple="{{#if compactMultiple}}true{{else}}false{{/if}}"
         data-select-checkbox-options="{{#if checkboxOptions}}true{{else}}false{{/if}}">
-        
-        <select
-            id="{{id}}"
-            name="{{name}}"
-            class="smart-select__native"
-            data-smart-select-native
 
-            {{#if multiple}}
-                multiple
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-
-            tabindex="-1"
-            aria-hidden="true">
+        <select id="{{id}}" name="{{name}}" class="smart-select__native" data-smart-select-native {{#if multiple}}
+            multiple {{/if}} {{#if required}} required aria-required="true" {{/if}} {{#if disabled}} disabled {{/if}}
+            tabindex="-1" aria-hidden="true">
 
             {{#if allowAll}}
 
-                <option
-                    value="__ALL__"
-                    data-option-all="true">
+                <option value="__ALL__" data-option-all="true">
 
                     {{#if allLabel}}
                         {{allLabel}}
@@ -82,10 +53,7 @@
 
             {{#each options}}
 
-                <option
-                    value="{{value}}"
-                    {{#if selected}}selected{{/if}}
-                    {{#if disabled}}disabled{{/if}}>
+                <option value="{{value}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>
 
                     {{label}}
 
@@ -96,15 +64,11 @@
         </select>
 
 
-        <div
-            class="smart-select__control"
-            data-smart-select-control>
+        <div class="smart-select__control" data-smart-select-control>
 
             <div class="smart-select__content">
 
-                <div
-                    class="smart-select__selection"
-                    data-smart-select-selection>
+                <div class="smart-select__selection" data-smart-select-selection>
 
                     <span class="smart-select__placeholder">
 
@@ -118,60 +82,25 @@
 
                 </div>
 
-                <input
-                    type="text"
-                    id="{{id}}Search"
-                    class="smart-select__search"
-                    placeholder=""
-                    autocomplete="off"
-                    spellcheck="false"
-                    data-smart-select-search
-
-                    {{#if disabled}}
-                        disabled
-                    {{/if}}>
+                <input type="text" id="{{id}}Search" class="smart-select__search" placeholder="" autocomplete="off"
+                    spellcheck="false" data-smart-select-search {{#if disabled}} disabled {{/if}}>
 
             </div>
 
 
-            <button
-                type="button"
-                class="smart-select__toggle"
-                data-smart-select-toggle
-                aria-label="Mở danh sách"
-                aria-expanded="false"
+            <button type="button" class="smart-select__toggle" data-smart-select-toggle aria-label="Mở danh sách"
+                aria-expanded="false" {{#if disabled}} disabled {{/if}}>
 
-                {{#if disabled}}
-                    disabled
-                {{/if}}>
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
                     <path d="m6 9 6 6 6-6"></path>
                 </svg>
             </button>
 
-            <button
-                type="button"
-                class="smart-select__clear"
-                data-smart-select-clear
-                aria-label="Xóa lựa chọn"
-                title="Xóa lựa chọn"
-                hidden
+            <button type="button" class="smart-select__clear" data-smart-select-clear aria-label="Xóa lựa chọn"
+                title="Xóa lựa chọn" hidden {{#if disabled}} disabled {{/if}}>
 
-                {{#if disabled}}
-                    disabled
-                {{/if}}>
-
-                <i
-                    class="fa-solid fa-xmark"
-                    aria-hidden="true">
+                <i class="fa-solid fa-xmark" aria-hidden="true">
                 </i>
 
             </button>
@@ -179,20 +108,12 @@
         </div>
 
 
-        <div
-            class="smart-select__dropdown"
-            data-smart-select-dropdown
-            hidden>
+        <div class="smart-select__dropdown" data-smart-select-dropdown hidden>
 
-            <div
-                class="smart-select__options"
-                data-smart-select-options>
+            <div class="smart-select__options" data-smart-select-options>
             </div>
 
-            <div
-                class="smart-select__empty"
-                data-smart-select-empty
-                hidden>
+            <div class="smart-select__empty" data-smart-select-empty hidden>
 
                 Không tìm thấy dữ liệu.
 
@@ -205,9 +126,7 @@
 
     {{#if description}}
 
-        <small
-            id="{{id}}Description"
-            class="form-field__description">
+        <small id="{{id}}Description" class="form-field__description">
 
             {{description}}
 
@@ -216,11 +135,7 @@
     {{/if}}
 
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

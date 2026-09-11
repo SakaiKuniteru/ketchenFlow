@@ -1,9 +1,7 @@
-"use strict";
+'use strict';
 
-const nhanVienExport =
-    require("./dia-chi.export");
-
+const nhanVienExport = require('./dia-chi.export');
 
 module.exports = {
-    exportData: nhanVienExport.exportData,
+    exportData: nhanVienExport.exportData
 };

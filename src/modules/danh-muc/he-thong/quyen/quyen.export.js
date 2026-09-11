@@ -1,193 +1,70 @@
-"use strict";
+'use strict';
 
-const quyenRepository =
-    require(
-        "./quyen.repository"
-    );
+const quyenRepository = require('./quyen.repository');
 
-const {
-    createExportFile
-} =
-    require(
-        "../../../../helpers/excel/excel-export"
-    );
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const {
-    sendExcel
-} =
-    require(
-        "../../../../helpers/excel/excel-response"
-    );
+const { sendExcel } = require('../../../../helpers/excel/excel-response');
 
-const MA_BAO_CAO =
-    "dm_quyen";
+const MA_BAO_CAO = 'dm_quyen';
 
-const HEADER_ROW =
-    3;
+const HEADER_ROW = 3;
 
-const TEMPLATE_ROW =
-    5;
+const TEMPLATE_ROW = 5;
 
-const DATA_START_ROW =
-    5;
+const DATA_START_ROW = 5;
 
-
-function chuanHoaDanhSach(
-    value
-) {
-
-    if (
-        value ===
-        undefined ||
-        value ===
-        null ||
-        value ===
-        ""
-    ) {
-
+function chuanHoaDanhSach(value) {
+    if (value === undefined || value === null || value === '') {
         return [];
-
     }
 
-
-    if (
-        Array.isArray(
-            value
-        )
-    ) {
-
+    if (Array.isArray(value)) {
         return value;
-
     }
 
-
-    if (
-        typeof value ===
-        "string"
-    ) {
-
-        const text =
-            value.trim();
-
+    if (typeof value === 'string') {
+        const text = value.trim();
 
         if (!text) {
-
             return [];
-
         }
 
-
-        if (
-            text.startsWith("[") &&
-            text.endsWith("]")
-        ) {
-
+        if (text.startsWith('[') && text.endsWith(']')) {
             try {
+                const parsed = JSON.parse(text);
 
-                const parsed =
-                    JSON.parse(
-                        text
-                    );
-
-
-                return Array.isArray(
-                    parsed
-                )
-                    ? parsed
-                    : [];
-
-            } catch (
-                error
-            ) {
-
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
                 return text
-                    .slice(
-                        1,
-                        -1
-                    )
-                    .split(
-                        ","
-                    )
-                    .map(
-                        item =>
-                            item
-                                .trim()
-                                .replace(
-                                    /^["']|["']$/g,
-                                    ""
-                                )
-                    )
-                    .filter(
-                        Boolean
-                    );
-
+                    .slice(1, -1)
+                    .split(',')
+                    .map((item) => item.trim().replace(/^["']|["']$/g, ''))
+                    .filter(Boolean);
             }
-
         }
-
 
         return text
-            .split(
-                ","
-            )
-            .map(
-                item =>
-                    item.trim()
-            )
-            .filter(
-                Boolean
-            );
-
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean);
     }
 
-
     return [];
-
 }
 
-
-function noiDanhSach(
-    value
-) {
-
-    return chuanHoaDanhSach(
-        value
-    )
-        .filter(
-            item =>
-                item !==
-                    undefined &&
-                item !==
-                    null &&
-                String(
-                    item
-                ).trim() !==
-                    ""
-        )
-        .map(
-            item =>
-                String(
-                    item
-                ).trim()
-        )
-        .join(
-            ", "
-        );
-
+function noiDanhSach(value) {
+    return chuanHoaDanhSach(value)
+        .filter((item) => item !== undefined && item !== null && String(item).trim() !== '')
+        .map((item) => String(item).trim())
+        .join(', ');
 }
 
-
-function taoDongExport(
-    item
-) {
-
+function taoDongExport(item) {
     return {
+        id: item.id,
 
-        id:
-            item.id,
-
-        maQuyen:
-            item.maQuyen,
+        maQuyen: item.maQuyen,
 
         tenQuyen: item.tenQuyen,
 
@@ -197,47 +74,23 @@ function taoDongExport(
 
         dsMaNhomTinhNang: noiDanhSach(item.dsMaNhomTinhNang),
 
-        dsTenNhomTinhNang:
-            Array.isArray(
-                item.dsNhomTinhNang
-            )
-                ? item.dsNhomTinhNang
-                    .map(
-                        nhom =>
-                            nhom
-                                ?.tenNhomTinhNang
-                    )
-                    .filter(
-                        Boolean
-                    )
-                    .join(
-                        ","
-                    )
-                : "",
-        active:
-            item.active
+        dsTenNhomTinhNang: Array.isArray(item.dsNhomTinhNang)
+            ? item.dsNhomTinhNang
+                  .map((nhom) => nhom?.tenNhomTinhNang)
+                  .filter(Boolean)
+                  .join(',')
+            : '',
+        active: item.active
     };
 }
 
-async function xuLyExport(
-    query = {}
-) {
-    const danhSach =
-        await quyenRepository
-            .getTongHop(
-                query
-            );
+async function xuLyExport(query = {}) {
+    const danhSach = await quyenRepository.getTongHop(query);
 
-    const data =
-        danhSach.map(
-            item =>
-                taoDongExport(
-                    item
-                )
-        );
+    const data = danhSach.map((item) => taoDongExport(item));
 
     return await createExportFile({
-        maBaoCao:  MA_BAO_CAO,
+        maBaoCao: MA_BAO_CAO,
         headerRowNumber: HEADER_ROW,
         templateRowNumber: TEMPLATE_ROW,
         dataStartRowNumber: DATA_START_ROW,
@@ -245,26 +98,12 @@ async function xuLyExport(
     });
 }
 
-async function exportData(
-    req,
-    res,
-    next
-) {
+async function exportData(req, res, next) {
     try {
-        const result =
-            await xuLyExport(
-                req.query
-            );
-        return sendExcel(
-            res,
-            result
-        );
-    } catch (
-        error
-    ) {
-        next(
-            error
-        );
+        const result = await xuLyExport(req.query);
+        return sendExcel(res, result);
+    } catch (error) {
+        next(error);
     }
 }
 

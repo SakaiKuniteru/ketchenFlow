@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 
@@ -9,7 +9,7 @@ window.MCS.checkboxList = (() => {
         {
             name,
             selectAll = true,
-            selectAllLabel = "Chọn tất cả",
+            selectAllLabel = 'Chọn tất cả',
             getValue,
             getTitle,
             getDescription,
@@ -21,17 +21,15 @@ window.MCS.checkboxList = (() => {
             return null;
         }
 
-        container.innerHTML = "";
+        container.innerHTML = '';
 
-        const list = Array.isArray(items)
-            ? items
-            : [];
+        const list = Array.isArray(items) ? items : [];
 
         if (!list.length) {
-            const empty = document.createElement("div");
+            const empty = document.createElement('div');
 
-            empty.className = "td-checkbox-list__empty";
-            empty.textContent = "Không có dữ liệu.";
+            empty.className = 'td-checkbox-list__empty';
+            empty.textContent = 'Không có dữ liệu.';
 
             container.appendChild(empty);
 
@@ -43,24 +41,22 @@ window.MCS.checkboxList = (() => {
         if (selectAll) {
             const selectAllRow = createCheckboxRow({
                 name: `${name}__all`,
-                value: "__all__",
+                value: '__all__',
                 title: selectAllLabel,
-                description: "",
+                description: '',
                 checked: false,
                 isSelectAll: true
             });
 
-            selectAllInput = selectAllRow.querySelector(
-                'input[type="checkbox"]'
-            );
+            selectAllInput = selectAllRow.querySelector('input[type="checkbox"]');
 
             container.appendChild(selectAllRow);
         }
 
-        list.forEach(item => {
+        list.forEach((item) => {
             const value = getValue?.(item) ?? item.id;
-            const title = getTitle?.(item) ?? "-";
-            const description = getDescription?.(item) ?? "";
+            const title = getTitle?.(item) ?? '-';
+            const description = getDescription?.(item) ?? '';
             const checked = !!isChecked?.(item);
 
             const row = createCheckboxRow({
@@ -75,11 +71,7 @@ window.MCS.checkboxList = (() => {
         });
 
         function getInputs() {
-            return Array.from(
-                container.querySelectorAll(
-                    `input[type="checkbox"][name="${name}"]`
-                )
-            );
+            return Array.from(container.querySelectorAll(`input[type="checkbox"][name="${name}"]`));
         }
 
         function refreshSelectAll() {
@@ -89,49 +81,33 @@ window.MCS.checkboxList = (() => {
 
             const inputs = getVisibleInputs();
 
-            const checkedCount = inputs.filter(
-                input => input.checked
-            ).length;
+            const checkedCount = inputs.filter((input) => input.checked).length;
 
-            selectAllInput.checked =
-                inputs.length > 0 &&
-                checkedCount === inputs.length;
+            selectAllInput.checked = inputs.length > 0 && checkedCount === inputs.length;
 
-            selectAllInput.indeterminate =
-                checkedCount > 0 &&
-                checkedCount < inputs.length;
+            selectAllInput.indeterminate = checkedCount > 0 && checkedCount < inputs.length;
         }
 
         function getVisibleInputs() {
-            return getInputs().filter(
-                input =>
-                    !input
-                        .closest(".td-checkbox-list__item")
-                        ?.hidden
-            );
+            return getInputs().filter((input) => !input.closest('.td-checkbox-list__item')?.hidden);
         }
 
-        getInputs().forEach(input => {
-            input.addEventListener("change", event => {
+        getInputs().forEach((input) => {
+            input.addEventListener('change', (event) => {
                 refreshSelectAll();
 
                 onChange?.({
                     input: event.currentTarget,
-                    values: values(
-                        container,
-                        name
-                    )
+                    values: values(container, name)
                 });
             });
         });
 
-        selectAllInput?.addEventListener("change", () => {
+        selectAllInput?.addEventListener('change', () => {
             const checked = selectAllInput.checked;
 
-            getInputs().forEach(input => {
-                const row = input.closest(
-                    ".td-checkbox-list__item"
-                );
+            getInputs().forEach((input) => {
+                const row = input.closest('.td-checkbox-list__item');
 
                 if (row?.hidden) {
                     return;
@@ -145,10 +121,7 @@ window.MCS.checkboxList = (() => {
             onChange?.({
                 input: selectAllInput,
                 selectAll: true,
-                values: values(
-                    container,
-                    name
-                )
+                values: values(container, name)
             });
         });
 
@@ -156,73 +129,57 @@ window.MCS.checkboxList = (() => {
 
         return {
             getValues() {
-                return values(
-                    container,
-                    name
-                );
+                return values(container, name);
             },
 
             refreshSelectAll
         };
     }
 
-    function createCheckboxRow({
-        name,
-        value,
-        title,
-        description,
-        checked,
-        isSelectAll = false
-    }) {
-        const wrapper = document.createElement("div");
+    function createCheckboxRow({ name, value, title, description, checked, isSelectAll = false }) {
+        const wrapper = document.createElement('div');
 
-        wrapper.className =
-            "form-field form-field--checkbox td-checkbox-list__item";
+        wrapper.className = 'form-field form-field--checkbox td-checkbox-list__item';
 
-        wrapper.dataset.searchText = normalizeSearchText(
-            `${title || ""} ${description || ""}`
-        );
+        wrapper.dataset.searchText = normalizeSearchText(`${title || ''} ${description || ''}`);
 
         if (isSelectAll) {
-            wrapper.classList.add("is-select-all");
+            wrapper.classList.add('is-select-all');
         }
 
-        const label = document.createElement("label");
+        const label = document.createElement('label');
 
-        label.className = "form-checkbox";
+        label.className = 'form-checkbox';
 
-        const input = document.createElement("input");
+        const input = document.createElement('input');
 
-        input.type = "checkbox";
+        input.type = 'checkbox';
         input.name = name;
         input.value = String(value);
         input.checked = !!checked;
-        input.className = "form-checkbox__input";
+        input.className = 'form-checkbox__input';
 
-        const box = document.createElement("span");
+        const box = document.createElement('span');
 
-        box.className = "form-checkbox__box";
+        box.className = 'form-checkbox__box';
 
-        box.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+        box.setAttribute('aria-hidden', 'true');
 
-        const content = document.createElement("span");
+        const content = document.createElement('span');
 
-        content.className = "form-checkbox__content";
+        content.className = 'form-checkbox__content';
 
-        const titleElement = document.createElement("span");
+        const titleElement = document.createElement('span');
 
-        titleElement.className = "form-checkbox__label";
+        titleElement.className = 'form-checkbox__label';
         titleElement.textContent = title;
 
         content.appendChild(titleElement);
 
         if (description) {
-            const descriptionElement = document.createElement("small");
+            const descriptionElement = document.createElement('small');
 
-            descriptionElement.className = "form-checkbox__description";
+            descriptionElement.className = 'form-checkbox__description';
             descriptionElement.textContent = description;
 
             content.appendChild(descriptionElement);
@@ -238,11 +195,11 @@ window.MCS.checkboxList = (() => {
     }
 
     function normalizeSearchText(value) {
-        return String(value || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/đ/g, "d")
-            .replace(/Đ/g, "D")
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
             .toLowerCase()
             .trim();
     }
@@ -253,73 +210,48 @@ window.MCS.checkboxList = (() => {
         }
 
         const targetMap = {
-            day: "[data-day-checkbox-list]",
-            group: "[data-group-checkbox-list]",
-            food: "[data-food-checkbox-list]"
+            day: '[data-day-checkbox-list]',
+            group: '[data-group-checkbox-list]',
+            food: '[data-food-checkbox-list]'
         };
 
-        root
-            .querySelectorAll("[data-checkbox-search]")
-            .forEach(input => {
-                if (
-                    input.dataset.checkboxSearchBound ===
-                    "true"
-                ) {
+        root.querySelectorAll('[data-checkbox-search]').forEach((input) => {
+            if (input.dataset.checkboxSearchBound === 'true') {
+                return;
+            }
+
+            input.dataset.checkboxSearchBound = 'true';
+
+            input.addEventListener('input', () => {
+                const target = input.dataset.checkboxSearchTarget;
+
+                const selector = targetMap[target];
+
+                if (!selector) {
                     return;
                 }
 
-                input.dataset.checkboxSearchBound = "true";
+                const list = root.querySelector(selector);
 
-                input.addEventListener("input", () => {
-                    const target =
-                        input.dataset.checkboxSearchTarget;
+                if (!list) {
+                    return;
+                }
 
-                    const selector = targetMap[target];
+                const keyword = normalizeSearchText(input.value);
 
-                    if (!selector) {
-                        return;
-                    }
+                list.querySelectorAll('.td-checkbox-list__item:not(.is-select-all)').forEach((row) => {
+                    const text = row.dataset.searchText || '';
 
-                    const list = root.querySelector(selector);
-
-                    if (!list) {
-                        return;
-                    }
-
-                    const keyword = normalizeSearchText(
-                        input.value
-                    );
-
-                    list
-                        .querySelectorAll(
-                            ".td-checkbox-list__item:not(.is-select-all)"
-                        )
-                        .forEach(row => {
-                            const text =
-                                row.dataset.searchText ||
-                                "";
-
-                            row.hidden =
-                                !!keyword &&
-                                !text.includes(keyword);
-                        });
+                    row.hidden = !!keyword && !text.includes(keyword);
                 });
             });
+        });
     }
 
-    function values(
-        container,
-        name
-    ) {
-        return Array
-            .from(
-                container.querySelectorAll(
-                    `input[type="checkbox"][name="${name}"]:checked`
-                )
-            )
-            .map(
-                input => input.value
-            );
+    function values(container, name) {
+        return Array.from(container.querySelectorAll(`input[type="checkbox"][name="${name}"]:checked`)).map(
+            (input) => input.value
+        );
     }
 
     return {

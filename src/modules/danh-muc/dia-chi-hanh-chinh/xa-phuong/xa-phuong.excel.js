@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const xaPhuongExport =
-    require("./xa-phuong.export");
+const xaPhuongExport = require('./xa-phuong.export');
 
-const xaPhuongImport =
-    require("./xa-phuong.import");
-
+const xaPhuongImport = require('./xa-phuong.import');
 
 module.exports = {
     exportData: xaPhuongExport.exportData,

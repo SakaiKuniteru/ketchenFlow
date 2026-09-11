@@ -2,7 +2,7 @@
     min-width: 0;
 }
 
-#monAnDetailPanel [data-form-field="hinhAnh"] {
+#monAnDetailPanel [data-form-field='hinhAnh'] {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
@@ -10,8 +10,8 @@
     align-self: start;
 }
 
-#monAnDetailPanel [data-form-field="hinhAnh"] [data-image-picker],
-#monAnDetailPanel [data-form-field="hinhAnh"] .image-picker {
+#monAnDetailPanel [data-form-field='hinhAnh'] [data-image-picker],
+#monAnDetailPanel [data-form-field='hinhAnh'] .image-picker {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -21,9 +21,9 @@
     flex: 0 0 100px;
 }
 
-#monAnDetailPanel [data-form-field="hinhAnh"] [data-image-picker-control],
-#monAnDetailPanel [data-form-field="hinhAnh"] .image-picker__control,
-#monAnDetailPanel [data-form-field="hinhAnh"] .image-picker__preview {
+#monAnDetailPanel [data-form-field='hinhAnh'] [data-image-picker-control],
+#monAnDetailPanel [data-form-field='hinhAnh'] .image-picker__control,
+#monAnDetailPanel [data-form-field='hinhAnh'] .image-picker__preview {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -34,8 +34,8 @@
     overflow: hidden;
 }
 
-#monAnDetailPanel [data-form-field="hinhAnh"] .image-picker__preview img,
-#monAnDetailPanel [data-form-field="hinhAnh"] img {
+#monAnDetailPanel [data-form-field='hinhAnh'] .image-picker__preview img,
+#monAnDetailPanel [data-form-field='hinhAnh'] img {
     display: block;
     width: 100px !important;
     min-width: 100px !important;
@@ -84,7 +84,10 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 }
 
 .mon-an-cong-thuc__choose-button:hover {

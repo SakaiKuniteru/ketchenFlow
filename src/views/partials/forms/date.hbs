@@ -1,24 +1,17 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}"
-    data-date-picker
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}" data-date-picker
     data-show-time="{{#if showTime}}true{{else}}false{{/if}}"
     data-default-time="{{#if defaultTime}}{{defaultTime}}{{else}}00:00:00{{/if}}"
     data-default-today="{{#if defaultToday}}true{{else}}false{{/if}}">
 
     {{#if label}}
-        <label
-            for="{{id}}Display"
-            class="form-field__label">
+        <label for="{{id}}Display" class="form-field__label">
 
             <span>
                 {{label}}
             </span>
 
             {{#if required}}
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
             {{/if}}
@@ -26,70 +19,24 @@
     {{/if}}
 
     <div class="date-picker">
-        <input
-            type="hidden"
-            id="{{id}}"
-            name="{{name}}"
-            value="{{value}}"
-            data-date-value>
+        <input type="hidden" id="{{id}}" name="{{name}}" value="{{value}}" data-date-value>
 
         <div class="date-picker__control">
-            <input
-                type="text"
-                id="{{id}}Display"
+            <input type="text" id="{{id}}Display"
                 class="form-input date-picker__input {{#if inputClass}}{{inputClass}}{{/if}}"
-                placeholder="{{#if placeholder}}{{placeholder}}{{else}}dd/mm/yyyy{{/if}}"
-                inputmode="numeric"
-                autocomplete="off"
-                maxlength="{{#if showTime}}19{{else}}10{{/if}}"
-                data-date-input
+                placeholder="{{#if placeholder}}{{placeholder}}{{else}}dd/mm/yyyy{{/if}}" inputmode="numeric"
+                autocomplete="off" maxlength="{{#if showTime}}19{{else}}10{{/if}}" data-date-input {{#if required}}
+                required aria-required="true" {{/if}} {{#if readonly}} readonly {{/if}} {{#if disabled}} disabled
+                {{/if}} {{#if error}} aria-invalid="true" aria-describedby="{{id}}Error" {{else if description}}
+                aria-describedby="{{id}}Description" {{/if}}>
 
-                {{#if required}}
-                    required
-                    aria-required="true"
-                {{/if}}
+            <button type="button" class="date-picker__toggle" data-date-toggle aria-label="Mở lịch"
+                aria-expanded="false" {{#if disabled}} disabled {{/if}}>
 
-                {{#if readonly}}
-                    readonly
-                {{/if}}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
 
-                {{#if disabled}}
-                    disabled
-                {{/if}}
-
-                {{#if error}}
-                    aria-invalid="true"
-                    aria-describedby="{{id}}Error"
-                {{else if description}}
-                    aria-describedby="{{id}}Description"
-                {{/if}}>
-
-            <button
-                type="button"
-                class="date-picker__toggle"
-                data-date-toggle
-                aria-label="Mở lịch"
-                aria-expanded="false"
-
-                {{#if disabled}}
-                    disabled
-                {{/if}}>
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true">
-
-                    <rect
-                        x="3"
-                        y="5"
-                        width="18"
-                        height="16"
-                        rx="2">
+                    <rect x="3" y="5" width="18" height="16" rx="2">
                     </rect>
 
                     <path d="M16 3v4"></path>
@@ -99,60 +46,38 @@
             </button>
         </div>
 
-        <div
-            class="
+        <div class="
                 date-picker__dropdown
                 {{#if showTime}}date-picker__dropdown--datetime{{/if}}
-            "
-            data-date-dropdown
-            hidden>
+            " data-date-dropdown hidden>
 
             <div class="date-picker__main">
                 <div class="date-picker__calendar">
                     <div class="date-picker__header">
-                        <button
-                            type="button"
-                            class="date-picker__navigation"
-                            data-date-previous-large
+                        <button type="button" class="date-picker__navigation" data-date-previous-large
                             aria-label="Lùi nhanh">
                             «
                         </button>
 
-                        <button
-                            type="button"
-                            class="date-picker__navigation"
-                            data-date-previous
-                            aria-label="Lùi">
+                        <button type="button" class="date-picker__navigation" data-date-previous aria-label="Lùi">
                             ‹
                         </button>
 
-                        <button
-                            type="button"
-                            class="date-picker__period"
-                            data-date-period>
+                        <button type="button" class="date-picker__period" data-date-period>
                             Tháng và năm
                         </button>
 
-                        <button
-                            type="button"
-                            class="date-picker__navigation"
-                            data-date-next
-                            aria-label="Tiến">
+                        <button type="button" class="date-picker__navigation" data-date-next aria-label="Tiến">
                             ›
                         </button>
 
-                        <button
-                            type="button"
-                            class="date-picker__navigation"
-                            data-date-next-large
+                        <button type="button" class="date-picker__navigation" data-date-next-large
                             aria-label="Tiến nhanh">
                             »
                         </button>
                     </div>
 
-                    <div
-                        class="date-picker__weekdays"
-                        data-date-weekdays>
+                    <div class="date-picker__weekdays" data-date-weekdays>
 
                         <span>T2</span>
                         <span>T3</span>
@@ -163,40 +88,25 @@
                         <span>CN</span>
                     </div>
 
-                    <div
-                        class="date-picker__body"
-                        data-date-body>
+                    <div class="date-picker__body" data-date-body>
                     </div>
                 </div>
 
                 {{#if showTime}}
-                    <div
-                        class="date-picker__time-panel"
-                        data-date-time>
+                    <div class="date-picker__time-panel" data-date-time>
 
-                        <div
-                            class="date-picker__time-heading"
-                            data-date-time-heading>
+                        <div class="date-picker__time-heading" data-date-time-heading>
                             --/--/---- 00:00:00
                         </div>
 
                         <div class="date-picker__time-columns">
-                            <div
-                                class="date-picker__time-column"
-                                data-date-hour-list
-                                aria-label="Giờ">
+                            <div class="date-picker__time-column" data-date-hour-list aria-label="Giờ">
                             </div>
 
-                            <div
-                                class="date-picker__time-column"
-                                data-date-minute-list
-                                aria-label="Phút">
+                            <div class="date-picker__time-column" data-date-minute-list aria-label="Phút">
                             </div>
 
-                            <div
-                                class="date-picker__time-column"
-                                data-date-second-list
-                                aria-label="Giây">
+                            <div class="date-picker__time-column" data-date-second-list aria-label="Giây">
                             </div>
                         </div>
                     </div>
@@ -204,10 +114,7 @@
             </div>
 
             <div class="date-picker__footer">
-                <button
-                    type="button"
-                    class="date-picker__footer-button"
-                    data-date-now>
+                <button type="button" class="date-picker__footer-button" data-date-now>
 
                     {{#if showTime}}
                         Bây giờ
@@ -218,22 +125,16 @@
 
                 <div class="date-picker__footer-actions">
                     {{#unless showTime}}
-                        <button
-                            type="button"
-                            class="date-picker__footer-button"
-                            data-date-clear>
+                        <button type="button" class="date-picker__footer-button" data-date-clear>
                             Xóa
                         </button>
                     {{/unless}}
 
                     {{#if showTime}}
-                        <button
-                            type="button"
-                            class="
+                        <button type="button" class="
                                 date-picker__footer-button
                                 is-primary
-                            "
-                            data-date-confirm>
+                            " data-date-confirm>
                             OK
                         </button>
                     {{/if}}
@@ -243,19 +144,13 @@
     </div>
 
     {{#if description}}
-        <small
-            id="{{id}}Description"
-            class="form-field__description">
+        <small id="{{id}}Description" class="form-field__description">
 
             {{description}}
         </small>
     {{/if}}
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
     </small>

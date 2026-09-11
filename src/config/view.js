@@ -1,46 +1,27 @@
-const path = require("path");
+const path = require('path');
 
-const { engine } = require("express-handlebars");
+const { engine } = require('express-handlebars');
 
-
-module.exports = function(app){
-
-
+module.exports = function (app) {
     app.engine(
-        "hbs",
+        'hbs',
         engine({
+            extname: 'hbs',
 
-            extname:"hbs",
+            helpers: {
+                eq: (left, right) => left === right,
+                gt: (left, right) => Number(left) > Number(right)
+            },
 
-            defaultLayout:"main",
+            defaultLayout: 'main',
 
-            layoutsDir:path.join(
-                process.cwd(),
-                "src/views/layouts"
-            ),
+            layoutsDir: path.join(process.cwd(), 'src/views/layouts'),
 
-            partialsDir:path.join(
-                process.cwd(),
-                "src/views/partials"
-            )
-
+            partialsDir: path.join(process.cwd(), 'src/views/partials')
         })
     );
 
+    app.set('view engine', 'hbs');
 
-    app.set(
-        "view engine",
-        "hbs"
-    );
-
-
-    app.set(
-        "views",
-        path.join(
-            process.cwd(),
-            "src/views"
-        )
-    );
-
-
+    app.set('views', path.join(process.cwd(), 'src/views'));
 };

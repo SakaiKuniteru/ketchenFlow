@@ -1,230 +1,120 @@
-const Joi = require("joi");
-
+const Joi = require('joi');
 
 const createSchema = Joi.object({
+    maQuyen: Joi.string().trim().max(50).required().messages({
+        'string.empty': 'Mã quyền không được để trống.',
 
-    maQuyen: Joi.string()
-        .trim()
-        .max(50)
-        .required()
-        .messages({
+        'string.max': 'Mã quyền không được vượt quá 50 ký tự.',
 
-            "string.empty":
-                "Mã quyền không được để trống.",
+        'any.required': 'Mã quyền là bắt buộc.'
+    }),
 
-            "string.max":
-                "Mã quyền không được vượt quá 50 ký tự.",
+    tenQuyen: Joi.string().trim().max(255).required().messages({
+        'string.empty': 'Tên quyền không được để trống.',
 
-            "any.required":
-                "Mã quyền là bắt buộc."
+        'string.max': 'Tên quyền không được vượt quá 255 ký tự.',
 
-        }),
+        'any.required': 'Tên quyền là bắt buộc.'
+    }),
 
-    tenQuyen: Joi.string()
-        .trim()
-        .max(255)
-        .required()
-        .messages({
-
-            "string.empty":
-                "Tên quyền không được để trống.",
-
-            "string.max":
-                "Tên quyền không được vượt quá 255 ký tự.",
-
-            "any.required":
-                "Tên quyền là bắt buộc."
-
-        }),
-
-    moTa: Joi.string()
-        .trim()
-        .max(500)
-        .allow("", null)
-        .messages({
-
-            "string.max":
-                "Mô tả không được vượt quá 500 ký tự."
-
-        }),
+    moTa: Joi.string().trim().max(500).allow('', null).messages({
+        'string.max': 'Mô tả không được vượt quá 500 ký tự.'
+    }),
 
     dsNhomTinhNangId: Joi.array()
         .items(
-            Joi.number()
-                .integer()
-                .positive()
-                .messages({
+            Joi.number().integer().positive().messages({
+                'number.base': 'ID nhóm tính năng phải là số.',
 
-                    "number.base":
-                        "ID nhóm tính năng phải là số.",
+                'number.integer': 'ID nhóm tính năng phải là số nguyên.',
 
-                    "number.integer":
-                        "ID nhóm tính năng phải là số nguyên.",
-
-                    "number.positive":
-                        "ID nhóm tính năng phải lớn hơn 0."
-
-                })
+                'number.positive': 'ID nhóm tính năng phải lớn hơn 0.'
+            })
         )
         .min(1)
         .unique()
         .optional()
         .messages({
+            'array.base': 'Nhóm tính năng phải là một danh sách.',
 
-            "array.base":
-                "Nhóm tính năng phải là một danh sách.",
+            'array.min': 'Phải chọn ít nhất một nhóm tính năng.',
 
-            "array.min":
-                "Phải chọn ít nhất một nhóm tính năng.",
-
-            "array.unique":
-                "Danh sách nhóm tính năng không được trùng nhau."
-
+            'array.unique': 'Danh sách nhóm tính năng không được trùng nhau.'
         }),
 
     dsMaNhomTinhNang: Joi.array()
         .items(
-            Joi.string()
-                .trim()
-                .max(50)
-                .messages({
+            Joi.string().trim().max(50).messages({
+                'string.empty': 'Mã nhóm tính năng không được để trống.',
 
-                    "string.empty":
-                        "Mã nhóm tính năng không được để trống.",
-
-                    "string.max":
-                        "Mã nhóm tính năng không được vượt quá 50 ký tự."
-
-                })
+                'string.max': 'Mã nhóm tính năng không được vượt quá 50 ký tự.'
+            })
         )
         .min(1)
         .unique()
         .optional()
         .messages({
+            'array.base': 'Mã nhóm tính năng phải là một danh sách.',
 
-            "array.base":
-                "Mã nhóm tính năng phải là một danh sách.",
+            'array.min': 'Phải chọn ít nhất một mã nhóm tính năng.',
 
-            "array.min":
-                "Phải chọn ít nhất một mã nhóm tính năng.",
-
-            "array.unique":
-                "Danh sách mã nhóm tính năng không được trùng nhau."
-
+            'array.unique': 'Danh sách mã nhóm tính năng không được trùng nhau.'
         }),
 
-    active: Joi.boolean()
-        .optional()
-
+    active: Joi.boolean().optional()
 })
 
-    .or(
-        "dsNhomTinhNangId",
-        "dsMaNhomTinhNang"
-    )
+    .or('dsNhomTinhNangId', 'dsMaNhomTinhNang')
     .messages({
-
-        "object.missing":
-            "Phải truyền dsNhomTinhNangId hoặc dsMaNhomTinhNang."
-
+        'object.missing': 'Phải truyền dsNhomTinhNangId hoặc dsMaNhomTinhNang.'
     });
-
 
 const updateSchema = Joi.object({
+    maQuyen: Joi.string().trim().max(50).optional(),
 
-    maQuyen: Joi.string()
-        .trim()
-        .max(50)
-        .optional(),
+    tenQuyen: Joi.string().trim().max(255).optional(),
 
-    tenQuyen: Joi.string()
-        .trim()
-        .max(255)
-        .optional(),
+    moTa: Joi.string().trim().max(500).allow('', null).optional(),
 
-    moTa: Joi.string()
-        .trim()
-        .max(500)
-        .allow("", null)
-        .optional(),
+    dsNhomTinhNangId: Joi.array().items(Joi.number().integer().positive()).min(1).unique().optional().messages({
+        'array.base': 'Nhóm tính năng phải là một danh sách.',
 
-    dsNhomTinhNangId: Joi.array()
-        .items(
-            Joi.number()
-                .integer()
-                .positive()
-        )
-        .min(1)
-        .unique()
-        .optional()
-        .messages({
+        'array.min': 'Phải chọn ít nhất một nhóm tính năng.',
 
-            "array.base":
-                "Nhóm tính năng phải là một danh sách.",
-
-            "array.min":
-                "Phải chọn ít nhất một nhóm tính năng.",
-
-            "array.unique":
-                "Danh sách nhóm tính năng không được trùng nhau."
-
-        }),
+        'array.unique': 'Danh sách nhóm tính năng không được trùng nhau.'
+    }),
 
     dsMaNhomTinhNang: Joi.array()
         .items(
-            Joi.string()
-                .trim()
-                .max(50)
-                .messages({
+            Joi.string().trim().max(50).messages({
+                'string.empty': 'Mã nhóm tính năng không được để trống.',
 
-                    "string.empty":
-                        "Mã nhóm tính năng không được để trống.",
-
-                    "string.max":
-                        "Mã nhóm tính năng không được vượt quá 50 ký tự."
-
-                })
+                'string.max': 'Mã nhóm tính năng không được vượt quá 50 ký tự.'
+            })
         )
         .min(1)
         .unique()
         .optional()
         .messages({
+            'array.base': 'Mã nhóm tính năng phải là một danh sách.',
 
-            "array.base":
-                "Mã nhóm tính năng phải là một danh sách.",
+            'array.min': 'Phải chọn ít nhất một mã nhóm tính năng.',
 
-            "array.min":
-                "Phải chọn ít nhất một mã nhóm tính năng.",
-
-            "array.unique":
-                "Danh sách mã nhóm tính năng không được trùng nhau."
-
+            'array.unique': 'Danh sách mã nhóm tính năng không được trùng nhau.'
         }),
 
-    active: Joi.boolean()
-        .optional()
-
+    active: Joi.boolean().optional()
 })
     .min(1)
-    .or(
-        "dsNhomTinhNangId",
-        "dsMaNhomTinhNang"
-    )
+    .or('dsNhomTinhNangId', 'dsMaNhomTinhNang')
     .messages({
+        'object.min': 'Phải truyền ít nhất một trường để cập nhật.',
 
-        "object.min":
-            "Phải truyền ít nhất một trường để cập nhật.",
-
-        "object.missing":
-            "Phải truyền dsNhomTinhNangId hoặc dsMaNhomTinhNang."
-
+        'object.missing': 'Phải truyền dsNhomTinhNangId hoặc dsMaNhomTinhNang.'
     });
 
-
 module.exports = {
-
     createSchema,
 
     updateSchema
-
 };

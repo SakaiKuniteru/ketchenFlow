@@ -1,91 +1,49 @@
 .image-picker {
-    position:
-        relative;
+    position: relative;
 
-    width:
-        var(
-            --image-picker-width,
-            150px
-        );
+    width: var(--image-picker-width, 150px);
 
-    max-width:
-        100%;
+    max-width: 100%;
 }
-
 
 .image-picker__input {
-    position:
-        absolute;
+    position: absolute;
 
-    width:
-        1px;
+    width: 1px;
 
-    height:
-        1px;
+    height: 1px;
 
-    overflow:
-        hidden;
+    overflow: hidden;
 
-    opacity:
-        0;
+    opacity: 0;
 
-    pointer-events:
-        none;
+    pointer-events: none;
 }
 
-
 .image-picker__preview {
-    position:
-        relative;
+    position: relative;
 
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    width:
-        var(
-            --image-picker-width,
-            150px
-        );
+    width: var(--image-picker-width, 150px);
 
-    height:
-        var(
-            --image-picker-height,
-            150px
-        );
+    height: var(--image-picker-height, 150px);
 
-    max-width:
-        100%;
+    max-width: 100%;
 
-    overflow:
-        hidden;
+    overflow: hidden;
 
-    border:
-        1px dashed
-        var(
-            --color-border,
-            #d7dee8
-        );
+    border: 1px dashed var(--color-border, #d7dee8);
 
-    border-radius:
-        var(
-            --radius-md,
-            8px
-        );
+    border-radius: var(--radius-md, 8px);
 
-    background:
-        var(
-            --color-surface,
-            #ffffff
-        );
+    background: var(--color-surface, #ffffff);
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
     transition:
         border-color 160ms ease,
@@ -93,232 +51,133 @@
         box-shadow 160ms ease;
 }
 
-
 .image-picker__preview:hover {
-    border-color:
-        var(
-            --color-primary,
-            #2563eb
-        );
+    border-color: var(--color-primary, #2563eb);
 
-    background:
-        #f8fbff;
+    background: #f8fbff;
 }
-
 
 .image-picker__preview:focus-within {
-    border-color:
-        var(
-            --color-primary,
-            #2563eb
-        );
+    border-color: var(--color-primary, #2563eb);
 
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            37,
-            99,
-            235,
-            0.10
-        );
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
-
 
 .image-picker__placeholder {
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    flex-direction:
-        column;
+    flex-direction: column;
 
-    gap:
-        12px;
+    gap: 12px;
 
-    padding:
-        16px;
+    padding: 16px;
 
-    color:
-        var(
-            --color-text-primary,
-            #172033
-        );
+    color: var(--color-text-primary, #172033);
 
-    text-align:
-        center;
+    text-align: center;
 }
-
 
 .image-picker__plus {
-    display:
-        inline-flex;
+    display: inline-flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    font-size:
-        22px;
+    font-size: 22px;
 
-    line-height:
-        1;
+    line-height: 1;
 }
-
 
 .image-picker__upload-label {
-    font-size:
-        15px;
+    font-size: 15px;
 
-    font-weight:
-        700;
+    font-weight: 700;
 }
-
 
 .image-picker__image {
-    display:
-        block;
+    display: block;
 
-    width:
-        100%;
+    width: 100%;
 
-    height:
-        100%;
+    height: 100%;
 
-    object-fit:
-        cover;
+    object-fit: cover;
 }
-
 
 .image-picker__image[hidden] {
-    display:
-        none !important;
+    display: none !important;
 }
-
 
 .image-picker__placeholder[hidden] {
-    display:
-        none !important;
+    display: none !important;
 }
 
-
 .image-picker__remove {
-    position:
-        absolute;
+    position: absolute;
 
-    top:
-        7px;
+    top: 7px;
 
-    right:
-        7px;
+    right: 7px;
 
-    z-index:
-        2;
+    z-index: 2;
 
-    display:
-        inline-flex;
+    display: inline-flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    justify-content:
-        center;
+    justify-content: center;
 
-    width:
-        30px;
+    width: 30px;
 
-    height:
-        30px;
+    height: 30px;
 
-    padding:
-        0;
+    padding: 0;
 
-    border:
-        0;
+    border: 0;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
-    color:
-        #ffffff;
+    color: #ffffff;
 
-    background:
-        rgba(
-            15,
-            23,
-            42,
-            0.70
-        );
+    background: rgba(15, 23, 42, 0.7);
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
     transition:
         background-color 160ms ease,
         transform 160ms ease;
 }
 
-
 .image-picker__remove:hover {
-    background:
-        #dc2626;
+    background: #dc2626;
 
-    transform:
-        scale(
-            1.04
-        );
+    transform: scale(1.04);
 }
-
 
 .image-picker__remove[hidden] {
-    display:
-        none !important;
+    display: none !important;
 }
 
+.image-picker.is-disabled .image-picker__preview {
+    pointer-events: none;
 
-.image-picker.is-disabled
-.image-picker__preview {
-    pointer-events:
-        none;
+    cursor: not-allowed;
 
-    cursor:
-        not-allowed;
-
-    opacity:
-        0.75;
+    opacity: 0.75;
 }
 
-
-.image-picker.is-disabled
-.image-picker__remove {
-    display:
-        none;
+.image-picker.is-disabled .image-picker__remove {
+    display: none;
 }
 
+.form-field.is-invalid .image-picker__preview,
+.image-picker__input[aria-invalid='true'] ~ .image-picker__preview {
+    border-color: var(--color-danger, #ef4444);
 
-.form-field.is-invalid
-.image-picker__preview,
-.image-picker__input[aria-invalid="true"]
-~
-.image-picker__preview {
-    border-color:
-        var(
-            --color-danger,
-            #ef4444
-        );
-
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            239,
-            68,
-            68,
-            0.10
-        );
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }

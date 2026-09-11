@@ -3,10 +3,7 @@
         Thông tin voucher đơn hàng
     </h3>
 
-<div
-    class="catalog-form-grid"
-    style="row-gap: 8px; column-gap: 16px;"
->
+    <div class="catalog-form-grid" style="row-gap: 8px; column-gap: 16px;">
         {{> forms/input
             id="maVoucher"
             name="maVoucher"
@@ -106,10 +103,7 @@
             required=true
         }}
 
-        <div
-            class="voucher-scope-field"
-            data-voucher-scope-wrapper="all"
-            hidden>
+        <div class="voucher-scope-field" data-voucher-scope-wrapper="all" hidden>
 
             {{> forms/input
                 id="phamViApDungToanBo"
@@ -122,10 +116,7 @@
             }}
         </div>
 
-        <div
-            class="voucher-scope-field"
-            data-voucher-scope-wrapper="nhomSanPhamId"
-            hidden>
+        <div class="voucher-scope-field" data-voucher-scope-wrapper="nhomSanPhamId" hidden>
 
             {{> forms/select
                 id="nhomSanPhamId"
@@ -138,10 +129,7 @@
             }}
         </div>
 
-        <div
-            class="voucher-scope-field"
-            data-voucher-scope-wrapper="sanPhamId"
-            hidden>
+        <div class="voucher-scope-field" data-voucher-scope-wrapper="sanPhamId" hidden>
 
             {{> forms/select
                 id="sanPhamId"

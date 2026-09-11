@@ -1,109 +1,59 @@
-const pool =
-    require("../../../config/database");
-
+const pool = require('../../../config/database');
 
 class ThongBaoRepository {
-
     mapThongBao(row) {
-
         if (!row) {
             return null;
         }
 
-
         return {
+            id: Number(row.id),
 
-            id:
-                Number(
-                    row.id
-                ),
+            tieuDe: row.tieu_de,
 
-            tieuDe:
-                row.tieu_de,
+            noiDung: row.noi_dung,
 
-            noiDung:
-                row.noi_dung,
+            guiTatCa: row.gui_tat_ca,
 
-            guiTatCa:
-                row.gui_tat_ca,
+            tuDong: row.tu_dong,
 
-            tuDong:
-                row.tu_dong,
+            maSuKien: row.ma_su_kien,
 
-            maSuKien:
-                row.ma_su_kien,
+            loaiThamChieu: row.loai_tham_chieu,
 
-            loaiThamChieu:
-                row.loai_tham_chieu,
+            thamChieuId: row.tham_chieu_id !== null ? Number(row.tham_chieu_id) : null,
 
-            thamChieuId:
-                row.tham_chieu_id !== null
-                    ? Number(
-                        row.tham_chieu_id
-                    )
-                    : null,
+            duongDan: row.duong_dan,
 
-            duongDan:
-                row.duong_dan,
+            trangThai: Number(row.trang_thai),
 
-            trangThai:
-                Number(
-                    row.trang_thai
-                ),
+            nguoiTao: row.nguoi_tao_id
+                ? {
+                      id: Number(row.nguoi_tao_id),
 
-            nguoiTao:
-                row.nguoi_tao_id
-                    ? {
-                        id:
-                            Number(
-                                row.nguoi_tao_id
-                            ),
+                      tenDangNhap: row.ten_dang_nhap,
 
-                        tenDangNhap:
-                            row.ten_dang_nhap,
+                      nhanVien: row.nhan_vien_id
+                          ? {
+                                id: Number(row.nhan_vien_id),
 
-                        nhanVien:
-                            row.nhan_vien_id
-                                ? {
-                                    id:
-                                        Number(
-                                            row.nhan_vien_id
-                                        ),
+                                maNhanVien: row.ma_nhan_vien,
 
-                                    maNhanVien:
-                                        row.ma_nhan_vien,
+                                hoTen: row.ho_ten
+                            }
+                          : null
+                  }
+                : null,
 
-                                    hoTen:
-                                        row.ho_ten
-                                }
-                                : null
-                    }
-                    : null,
+            thoiGianGui: row.thoi_gian_gui,
 
-            thoiGianGui:
-                row.thoi_gian_gui,
+            soLuongNguoiNhan: row.so_luong_nguoi_nhan !== undefined ? Number(row.so_luong_nguoi_nhan) : undefined,
 
-            soLuongNguoiNhan:
-                row.so_luong_nguoi_nhan !==
-                undefined
-                    ? Number(
-                        row.so_luong_nguoi_nhan
-                    )
-                    : undefined,
+            soLuongDaDoc: row.so_luong_da_doc !== undefined ? Number(row.so_luong_da_doc) : undefined,
 
-            soLuongDaDoc:
-                row.so_luong_da_doc !==
-                undefined
-                    ? Number(
-                        row.so_luong_da_doc
-                    )
-                    : undefined,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
+            updatedAt: row.updated_at
         };
     }
 
@@ -113,77 +63,49 @@ class ThongBaoRepository {
         }
 
         return {
-            id:
-                Number(row.id),
+            id: Number(row.id),
 
-            tieuDe:
-                row.tieu_de,
+            tieuDe: row.tieu_de,
 
-            noiDung:
-                row.noi_dung,
+            noiDung: row.noi_dung,
 
-            maSuKien:
-                row.ma_su_kien,
+            maSuKien: row.ma_su_kien,
 
-            loaiThamChieu:
-                row.loai_tham_chieu,
+            loaiThamChieu: row.loai_tham_chieu,
 
-            thamChieuId:
-                row.tham_chieu_id !==
-                null
-                    ? Number(
-                        row.tham_chieu_id
-                    )
-                    : null,
+            thamChieuId: row.tham_chieu_id !== null ? Number(row.tham_chieu_id) : null,
 
-            duongDan:
-                row.duong_dan,
+            duongDan: row.duong_dan,
 
-            thoiGianGui:
-                row.thoi_gian_gui,
+            thoiGianGui: row.thoi_gian_gui,
 
-            daDoc:
-                row.da_doc,
+            daDoc: row.da_doc,
 
-            thoiGianDoc:
-                row.thoi_gian_doc,
+            thoiGianDoc: row.thoi_gian_doc,
 
-            nguoiTao:
-                row.nguoi_tao_id
-                    ? {
-                        id:
-                            Number(
-                                row.nguoi_tao_id
-                            ),
+            nguoiTao: row.nguoi_tao_id
+                ? {
+                      id: Number(row.nguoi_tao_id),
 
-                        tenDangNhap:
-                            row.ten_dang_nhap,
+                      tenDangNhap: row.ten_dang_nhap,
 
-                        nhanVien:
-                            row.nhan_vien_id
-                                ? {
-                                    id:
-                                        Number(
-                                            row.nhan_vien_id
-                                        ),
+                      nhanVien: row.nhan_vien_id
+                          ? {
+                                id: Number(row.nhan_vien_id),
 
-                                    maNhanVien:
-                                        row.ma_nhan_vien,
+                                maNhanVien: row.ma_nhan_vien,
 
-                                    hoTen:
-                                        row.ho_ten
-                                }
-                                : null
-                    }
-                    : null,
+                                hoTen: row.ho_ten
+                            }
+                          : null
+                  }
+                : null,
 
-            createdAt:
-                row.created_at
+            createdAt: row.created_at
         };
     }
 
     getBaseQuery() {
-
         return `
             SELECT
                 tb.id,
@@ -237,100 +159,54 @@ class ThongBaoRepository {
         `;
     }
 
-    async getTongHop(
-        filters = {}
-    ) {
-
+    async getTongHop(filters = {}) {
         const conditions = [];
         const values = [];
 
         let paramIndex = 1;
 
+        if (filters.trangThai !== undefined) {
+            conditions.push(`tb.trang_thai = $${paramIndex}`);
 
-        if (
-            filters.trangThai !==
-            undefined
-        ) {
-
-            conditions.push(
-                `tb.trang_thai = $${paramIndex}`
-            );
-
-            values.push(
-                filters.trangThai
-            );
+            values.push(filters.trangThai);
 
             paramIndex++;
         }
 
+        if (filters.tuDong !== undefined) {
+            conditions.push(`tb.tu_dong = $${paramIndex}`);
 
-        if (
-            filters.tuDong !==
-            undefined
-        ) {
-
-            conditions.push(
-                `tb.tu_dong = $${paramIndex}`
-            );
-
-            values.push(
-                filters.tuDong
-            );
+            values.push(filters.tuDong);
 
             paramIndex++;
         }
 
+        if (filters.guiTatCa !== undefined) {
+            conditions.push(`tb.gui_tat_ca = $${paramIndex}`);
 
-        if (
-            filters.guiTatCa !==
-            undefined
-        ) {
-
-            conditions.push(
-                `tb.gui_tat_ca = $${paramIndex}`
-            );
-
-            values.push(
-                filters.guiTatCa
-            );
+            values.push(filters.guiTatCa);
 
             paramIndex++;
         }
 
+        if (filters.maSuKien) {
+            conditions.push(`tb.ma_su_kien = $${paramIndex}`);
 
-        if (
-            filters.maSuKien
-        ) {
-
-            conditions.push(
-                `tb.ma_su_kien = $${paramIndex}`
-            );
-
-            values.push(
-                filters.maSuKien
-            );
+            values.push(filters.maSuKien);
 
             paramIndex++;
         }
-
 
         let sql = `
             ${this.getBaseQuery()}
         `;
 
-
-        if (
-            conditions.length > 0
-        ) {
-
+        if (conditions.length > 0) {
             sql += `
                 WHERE
-                    ${conditions.join(
-                        " AND "
-                    )}
+                    ${conditions.join(' AND ')}
             `;
         }
-
 
         sql += `
             ORDER BY
@@ -338,27 +214,12 @@ class ThongBaoRepository {
                 tb.id DESC
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-
-        return result.rows.map(
-            row =>
-                this.mapThongBao(
-                    row
-                )
-        );
+        return result.rows.map((row) => this.mapThongBao(row));
     }
 
-    async getChiTiet(
-        id,
-        client = pool
-    ) {
-
+    async getChiTiet(id, client = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -367,44 +228,20 @@ class ThongBaoRepository {
             LIMIT 1
         `;
 
+        const result = await client.query(sql, [id]);
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
+        const thongBao = this.mapThongBao(result.rows[0]);
 
-        const thongBao =
-            this.mapThongBao(
-                result.rows[0]
-            );
-
-
-        thongBao.doiTuong =
-            await this.getDoiTuong(
-                id,
-                client
-            );
-
+        thongBao.doiTuong = await this.getDoiTuong(id, client);
 
         return thongBao;
     }
 
-    async getDoiTuong(
-        thongBaoId,
-        client = pool
-    ) {
-
+    async getDoiTuong(thongBaoId, client = pool) {
         const sql = `
             SELECT
                 dt.loai_doi_tuong,
@@ -468,58 +305,29 @@ class ThongBaoRepository {
                 dt.doi_tuong_id ASC
         `;
 
+        const result = await client.query(sql, [thongBaoId]);
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    thongBaoId
-                ]
-            );
+        return result.rows.map((row) => ({
+            loaiDoiTuong: Number(row.loai_doi_tuong),
 
+            doiTuongId: Number(row.doi_tuong_id),
 
-        return result.rows.map(
-            row => ({
-                loaiDoiTuong:
-                    Number(
-                        row.loai_doi_tuong
-                    ),
+            maDoiTuong: row.ma_doi_tuong,
 
-                doiTuongId:
-                    Number(
-                        row.doi_tuong_id
-                    ),
-
-                maDoiTuong:
-                    row.ma_doi_tuong,
-
-                tenDoiTuong:
-                    row.ten_doi_tuong
-            })
-        );
+            tenDoiTuong: row.ten_doi_tuong
+        }));
     }
 
-    async getTongHopDoiTuong(
-        loaiDoiTuong
-    ) {
-
-        switch (
-            Number(
-                loaiDoiTuong
-            )
-        ) {
-
+    async getTongHopDoiTuong(loaiDoiTuong) {
+        switch (Number(loaiDoiTuong)) {
             case 10:
-                return await this
-                    .getTongHopVaiTro();
+                return await this.getTongHopVaiTro();
 
             case 20:
-                return await this
-                    .getTongHopChucVu();
+                return await this.getTongHopChucVu();
 
             case 30:
-                return await this
-                    .getTongHopTaiKhoan();
+                return await this.getTongHopTaiKhoan();
 
             default:
                 return [];
@@ -527,9 +335,7 @@ class ThongBaoRepository {
     }
 
     async getTongHopVaiTro() {
-
-        const result =
-            await pool.query(`
+        const result = await pool.query(`
                 SELECT
                     id,
                     ma_vai_tro,
@@ -540,27 +346,17 @@ class ThongBaoRepository {
                     ma_vai_tro ASC
             `);
 
+        return result.rows.map((row) => ({
+            id: Number(row.id),
 
-        return result.rows.map(
-            row => ({
-                id:
-                    Number(
-                        row.id
-                    ),
+            ma: row.ma_vai_tro,
 
-                ma:
-                    row.ma_vai_tro,
-
-                ten:
-                    row.ten_vai_tro
-            })
-        );
+            ten: row.ten_vai_tro
+        }));
     }
 
     async getTongHopChucVu() {
-
-        const result =
-            await pool.query(`
+        const result = await pool.query(`
                 SELECT
                     id,
                     ma_chuc_vu,
@@ -571,27 +367,17 @@ class ThongBaoRepository {
                     ma_chuc_vu ASC
             `);
 
+        return result.rows.map((row) => ({
+            id: Number(row.id),
 
-        return result.rows.map(
-            row => ({
-                id:
-                    Number(
-                        row.id
-                    ),
+            ma: row.ma_chuc_vu,
 
-                ma:
-                    row.ma_chuc_vu,
-
-                ten:
-                    row.ten_chuc_vu
-            })
-        );
+            ten: row.ten_chuc_vu
+        }));
     }
 
     async getTongHopTaiKhoan() {
-
-        const result =
-            await pool.query(`
+        const result = await pool.query(`
                 SELECT
                     tk.id,
                     tk.ten_dang_nhap,
@@ -614,31 +400,18 @@ class ThongBaoRepository {
                     tk.ten_dang_nhap ASC
             `);
 
+        return result.rows.map((row) => ({
+            id: Number(row.id),
 
-        return result.rows.map(
-            row => ({
-                id:
-                    Number(
-                        row.id
-                    ),
+            ma: row.ten_dang_nhap,
 
-                ma:
-                    row.ten_dang_nhap,
+            ten: row.ho_ten,
 
-                ten:
-                    row.ho_ten,
-
-                maNhanVien:
-                    row.ma_nhan_vien
-            })
-        );
+            maNhanVien: row.ma_nhan_vien
+        }));
     }
 
-    async deleteNguoiNhan(
-        thongBaoId,
-        client = pool
-    ) {
-
+    async deleteNguoiNhan(thongBaoId, client = pool) {
         await client.query(
             `
                 DELETE FROM
@@ -647,37 +420,19 @@ class ThongBaoRepository {
                 WHERE
                     thong_bao_id = $1
             `,
-            [
-                thongBaoId
-            ]
+            [thongBaoId]
         );
     }
 
-    async existsDoiTuongIds(
-        loaiDoiTuong,
-        ids,
-        client = pool
-    ) {
-
-        if (
-            !Array.isArray(ids) ||
-            ids.length === 0
-        ) {
+    async existsDoiTuongIds(loaiDoiTuong, ids, client = pool) {
+        if (!Array.isArray(ids) || ids.length === 0) {
             return false;
         }
 
-
         let sql;
 
-
-        switch (
-            Number(
-                loaiDoiTuong
-            )
-        ) {
-
+        switch (Number(loaiDoiTuong)) {
             case 10:
-
                 sql = `
                     SELECT COUNT(*)::INTEGER
                         AS total
@@ -691,9 +446,7 @@ class ThongBaoRepository {
 
                 break;
 
-
             case 20:
-
                 sql = `
                     SELECT COUNT(*)::INTEGER
                         AS total
@@ -707,9 +460,7 @@ class ThongBaoRepository {
 
                 break;
 
-
             case 30:
-
                 sql = `
                     SELECT COUNT(*)::INTEGER
                         AS total
@@ -731,33 +482,16 @@ class ThongBaoRepository {
 
                 break;
 
-
             default:
                 return false;
         }
 
+        const result = await client.query(sql, [ids]);
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    ids
-                ]
-            );
-
-
-        return (
-            Number(
-                result.rows[0].total
-            ) === ids.length
-        );
+        return Number(result.rows[0].total) === ids.length;
     }
 
-    async create(
-        data,
-        client = pool
-    ) {
-
+    async create(data, client = pool) {
         const sql = `
             INSERT INTO nv_thong_bao (
                 tieu_de,
@@ -792,9 +526,7 @@ class ThongBaoRepository {
             RETURNING id
         `;
 
-
         const values = [
-
             data.tieuDe,
 
             data.noiDung,
@@ -818,23 +550,12 @@ class ThongBaoRepository {
             data.thoiGianGui || null
         ];
 
-
-        const result =
-            await client.query(
-                sql,
-                values
-            );
-
+        const result = await client.query(sql, values);
 
         return result.rows[0];
     }
 
-    async update(
-        id,
-        data,
-        client = pool
-    ) {
-
+    async update(id, data, client = pool) {
         const sql = `
             UPDATE nv_thong_bao
             SET
@@ -849,34 +570,20 @@ class ThongBaoRepository {
             RETURNING id
         `;
 
+        const result = await client.query(sql, [
+            data.tieuDe,
+            data.noiDung,
+            data.guiTatCa,
+            data.loaiThamChieu,
+            data.thamChieuId,
+            data.duongDan,
+            id
+        ]);
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    data.tieuDe,
-                    data.noiDung,
-                    data.guiTatCa,
-                    data.loaiThamChieu,
-                    data.thamChieuId,
-                    data.duongDan,
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
-        );
+        return result.rows[0] || null;
     }
 
-    async saveDoiTuong(
-        thongBaoId,
-        doiTuong,
-        client = pool
-    ) {
-
+    async saveDoiTuong(thongBaoId, doiTuong, client = pool) {
         await client.query(
             `
                 DELETE FROM
@@ -884,37 +591,16 @@ class ThongBaoRepository {
                 WHERE
                     thong_bao_id = $1
             `,
-            [
-                thongBaoId
-            ]
+            [thongBaoId]
         );
 
-
-        if (
-            !Array.isArray(doiTuong) ||
-            doiTuong.length === 0
-        ) {
+        if (!Array.isArray(doiTuong) || doiTuong.length === 0) {
             return;
         }
 
+        const loaiDoiTuong = doiTuong.map((item) => Number(item.loaiDoiTuong));
 
-        const loaiDoiTuong =
-            doiTuong.map(
-                item =>
-                    Number(
-                        item.loaiDoiTuong
-                    )
-            );
-
-
-        const doiTuongIds =
-            doiTuong.map(
-                item =>
-                    Number(
-                        item.doiTuongId
-                    )
-            );
-
+        const doiTuongIds = doiTuong.map((item) => Number(item.doiTuongId));
 
         await client.query(
             `
@@ -942,44 +628,25 @@ class ThongBaoRepository {
 
                 ON CONFLICT DO NOTHING
             `,
-            [
-                thongBaoId,
-                loaiDoiTuong,
-                doiTuongIds
-            ]
+            [thongBaoId, loaiDoiTuong, doiTuongIds]
         );
     }
 
-    async getByIdForUpdate(
-        id,
-        client
-    ) {
-
-        const result =
-            await client.query(
-                `
+    async getByIdForUpdate(id, client) {
+        const result = await client.query(
+            `
                     SELECT *
                     FROM nv_thong_bao
                     WHERE id = $1
                     FOR UPDATE
                 `,
-                [
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
+            [id]
         );
+
+        return result.rows[0] || null;
     }
 
-    async getCuaToi(
-        taiKhoanId,
-        filters = {},
-        client = pool
-    ) {
+    async getCuaToi(taiKhoanId, filters = {}, client = pool) {
         const conditions = [
             `
                 nn.tai_khoan_id = $1
@@ -989,23 +656,14 @@ class ThongBaoRepository {
             `
         ];
 
-        const values = [
-            taiKhoanId
-        ];
+        const values = [taiKhoanId];
 
         let paramIndex = 2;
 
-        if (
-            filters.daDoc !==
-            undefined
-        ) {
-            conditions.push(
-                `nn.da_doc = $${paramIndex}`
-            );
+        if (filters.daDoc !== undefined) {
+            conditions.push(`nn.da_doc = $${paramIndex}`);
 
-            values.push(
-                filters.daDoc
-            );
+            values.push(filters.daDoc);
 
             paramIndex++;
         }
@@ -1047,9 +705,7 @@ class ThongBaoRepository {
                     tk.nhan_vien_id
 
             WHERE
-                ${conditions.join(
-                    " AND "
-                )}
+                ${conditions.join(' AND ')}
 
             ORDER BY
                 nn.da_doc ASC,
@@ -1057,25 +713,12 @@ class ThongBaoRepository {
                 tb.id DESC
         `;
 
-        const result =
-            await client.query(
-                sql,
-                values
-            );
+        const result = await client.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapThongBaoCuaToi(
-                    row
-                )
-        );
+        return result.rows.map((row) => this.mapThongBaoCuaToi(row));
     }
 
-    async getSoChuaDoc(
-        taiKhoanId,
-        client = pool
-    ) {
-
+    async getSoChuaDoc(taiKhoanId, client = pool) {
         const sql = `
             SELECT
                 COUNT(*)::INTEGER
@@ -1093,31 +736,14 @@ class ThongBaoRepository {
                 AND tb.trang_thai = 20
         `;
 
-
-        const result =
-            await client.query(
-                sql,
-                [
-                    taiKhoanId
-                ]
-            );
-
+        const result = await client.query(sql, [taiKhoanId]);
 
         return {
-            soChuaDoc:
-                Number(
-                    result.rows[0]
-                        .so_chua_doc
-                )
+            soChuaDoc: Number(result.rows[0].so_chua_doc)
         };
     }
 
-    async danhDauDaDoc(
-        thongBaoId,
-        taiKhoanId,
-        client = pool
-    ) {
-
+    async danhDauDaDoc(thongBaoId, taiKhoanId, client = pool) {
         const sql = `
             UPDATE
                 ct_thong_bao_nguoi_nhan nn
@@ -1147,52 +773,26 @@ class ThongBaoRepository {
                 nn.thoi_gian_doc
         `;
 
+        const result = await client.query(sql, [thongBaoId, taiKhoanId]);
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    thongBaoId,
-                    taiKhoanId
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-
-        const row =
-            result.rows[0];
-
+        const row = result.rows[0];
 
         return {
-            thongBaoId:
-                Number(
-                    row.thong_bao_id
-                ),
+            thongBaoId: Number(row.thong_bao_id),
 
-            taiKhoanId:
-                Number(
-                    row.tai_khoan_id
-                ),
+            taiKhoanId: Number(row.tai_khoan_id),
 
-            daDoc:
-                row.da_doc,
+            daDoc: row.da_doc,
 
-            thoiGianDoc:
-                row.thoi_gian_doc
+            thoiGianDoc: row.thoi_gian_doc
         };
     }
 
-    async danhDauTatCaDaDoc(
-        taiKhoanId,
-        client = pool
-    ) {
-
+    async danhDauTatCaDaDoc(taiKhoanId, client = pool) {
         const sql = `
             UPDATE
                 ct_thong_bao_nguoi_nhan nn
@@ -1211,30 +811,15 @@ class ThongBaoRepository {
                 AND tb.trang_thai = 20
         `;
 
-
-        const result =
-            await client.query(
-                sql,
-                [
-                    taiKhoanId
-                ]
-            );
-
+        const result = await client.query(sql, [taiKhoanId]);
 
         return {
-            soLuongDaCapNhat:
-                Number(
-                    result.rowCount
-                )
+            soLuongDaCapNhat: Number(result.rowCount)
         };
     }
 
-    async getTaiKhoanIdsTatCa(
-        client = pool
-    ) {
-
-        const result =
-            await client.query(`
+    async getTaiKhoanIdsTatCa(client = pool) {
+        const result = await client.query(`
                 SELECT
                     tk.id
 
@@ -1250,31 +835,16 @@ class ThongBaoRepository {
                     AND nv.active = TRUE
             `);
 
-
-        return result.rows.map(
-            row =>
-                Number(
-                    row.id
-                )
-        );
+        return result.rows.map((row) => Number(row.id));
     }
 
-
-    async getTaiKhoanIdsTheoVaiTro(
-        vaiTroIds,
-        client = pool
-    ) {
-
-        if (
-            vaiTroIds.length === 0
-        ) {
+    async getTaiKhoanIdsTheoVaiTro(vaiTroIds, client = pool) {
+        if (vaiTroIds.length === 0) {
             return [];
         }
 
-
-        const result =
-            await client.query(
-                `
+        const result = await client.query(
+            `
                     SELECT DISTINCT
                         tk.id
 
@@ -1313,36 +883,19 @@ class ThongBaoRepository {
                         AND nv.active =
                             TRUE
                 `,
-                [
-                    vaiTroIds
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                Number(
-                    row.id
-                )
+            [vaiTroIds]
         );
+
+        return result.rows.map((row) => Number(row.id));
     }
 
-
-    async getTaiKhoanIdsTheoChucVu(
-        chucVuIds,
-        client = pool
-    ) {
-
-        if (
-            chucVuIds.length === 0
-        ) {
+    async getTaiKhoanIdsTheoChucVu(chucVuIds, client = pool) {
+        if (chucVuIds.length === 0) {
             return [];
         }
 
-
-        const result =
-            await client.query(
-                `
+        const result = await client.query(
+            `
                     SELECT DISTINCT
                         tk.id
 
@@ -1374,30 +927,15 @@ class ThongBaoRepository {
                         AND tk.bi_khoa =
                             FALSE
                 `,
-                [
-                    chucVuIds
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                Number(
-                    row.id
-                )
+            [chucVuIds]
         );
+
+        return result.rows.map((row) => Number(row.id));
     }
 
-    async thuHoiDuongDanTheoThamChieu(
-        loaiThamChieu,
-        thamChieuId,
-        maSuKien,
-        client = pool
-    ) {
-
-        const result =
-            await client.query(
-                `
+    async thuHoiDuongDanTheoThamChieu(loaiThamChieu, thamChieuId, maSuKien, client = pool) {
+        const result = await client.query(
+            `
                     UPDATE nv_thong_bao
 
                     SET
@@ -1418,33 +956,19 @@ class ThongBaoRepository {
 
                     RETURNING id
                 `,
-                [
-                    loaiThamChieu,
-                    thamChieuId,
-                    maSuKien
-                ]
-            );
-
+            [loaiThamChieu, thamChieuId, maSuKien]
+        );
 
         return result.rows;
-
     }
 
-    async getTaiKhoanIdsTrucTiep(
-        taiKhoanIds,
-        client = pool
-    ) {
-
-        if (
-            taiKhoanIds.length === 0
-        ) {
+    async getTaiKhoanIdsTrucTiep(taiKhoanIds, client = pool) {
+        if (taiKhoanIds.length === 0) {
             return [];
         }
 
-
-        const result =
-            await client.query(
-                `
+        const result = await client.query(
+            `
                     SELECT
                         tk.id
 
@@ -1469,33 +993,16 @@ class ThongBaoRepository {
                         AND nv.active =
                             TRUE
                 `,
-                [
-                    taiKhoanIds
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                Number(
-                    row.id
-                )
+            [taiKhoanIds]
         );
+
+        return result.rows.map((row) => Number(row.id));
     }
 
-
-    async saveNguoiNhan(
-        thongBaoId,
-        taiKhoanIds,
-        client = pool
-    ) {
-
-        if (
-            taiKhoanIds.length === 0
-        ) {
+    async saveNguoiNhan(thongBaoId, taiKhoanIds, client = pool) {
+        if (taiKhoanIds.length === 0) {
             return;
         }
-
 
         await client.query(
             `
@@ -1523,21 +1030,13 @@ class ThongBaoRepository {
                 )
                 DO NOTHING
             `,
-            [
-                thongBaoId,
-                taiKhoanIds
-            ]
+            [thongBaoId, taiKhoanIds]
         );
     }
 
-    async danhDauDaGui(
-        id,
-        client = pool
-    ) {
-
-        const result =
-            await client.query(
-                `
+    async danhDauDaGui(id, client = pool) {
+        const result = await client.query(
+            `
                     UPDATE nv_thong_bao
 
                     SET
@@ -1549,27 +1048,15 @@ class ThongBaoRepository {
 
                     RETURNING id
                 `,
-                [
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
+            [id]
         );
 
+        return result.rows[0] || null;
     }
 
-    async danhDauDaHuy(
-        id,
-        client = pool
-    ) {
-
-        const result =
-            await client.query(
-                `
+    async danhDauDaHuy(id, client = pool) {
+        const result = await client.query(
+            `
                     UPDATE nv_thong_bao
 
                     SET
@@ -1580,21 +1067,11 @@ class ThongBaoRepository {
 
                     RETURNING id
                 `,
-                [
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
+            [id]
         );
 
+        return result.rows[0] || null;
     }
-
 }
 
-
-module.exports =
-    new ThongBaoRepository();
+module.exports = new ThongBaoRepository();

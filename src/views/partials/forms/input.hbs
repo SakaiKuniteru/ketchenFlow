@@ -1,12 +1,8 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
     {{#if label}}
 
-        <label
-            for="{{id}}"
-            class="form-field__label">
+        <label for="{{id}}" class="form-field__label">
 
             <span>
                 {{label}}
@@ -14,9 +10,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -36,54 +30,14 @@
 
         {{/if}}
 
-        <input
-            type="{{#if type}}{{type}}{{else}}text{{/if}}"
-            id="{{id}}"
-            name="{{name}}"
-            class="form-input {{#if inputClass}}{{inputClass}}{{/if}}"
-            value="{{value}}"
-
-            {{#if placeholder}}
-                placeholder="{{placeholder}}"
-            {{/if}}
-
-            {{#if autocomplete}}
-                autocomplete="{{autocomplete}}"
-            {{else}}
-                autocomplete="off"
-            {{/if}}
-
-            {{#if maxlength}}
-                maxlength="{{maxlength}}"
-            {{/if}}
-
-            {{#if minlength}}
-                minlength="{{minlength}}"
-            {{/if}}
-
-            {{#if pattern}}
-                pattern="{{pattern}}"
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if readonly}}
-                readonly
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-
-            {{#if error}}
-                aria-invalid="true"
-                aria-describedby="{{id}}Error"
-            {{else if description}}
-                aria-describedby="{{id}}Description"
-            {{/if}}>
+        <input type="{{#if type}}{{type}}{{else}}text{{/if}}" id="{{id}}" name="{{name}}"
+            class="form-input {{#if inputClass}}{{inputClass}}{{/if}}" value="{{value}}" {{#if placeholder}}
+            placeholder="{{placeholder}}" {{/if}} {{#if autocomplete}} autocomplete="{{autocomplete}}" {{else}}
+            autocomplete="off" {{/if}} {{#if maxlength}} maxlength="{{maxlength}}" {{/if}} {{#if minlength}}
+            minlength="{{minlength}}" {{/if}} {{#if pattern}} pattern="{{pattern}}" {{/if}} {{#if required}} required
+            aria-required="true" {{/if}} {{#if readonly}} readonly {{/if}} {{#if disabled}} disabled {{/if}}
+            {{#if error}} aria-invalid="true" aria-describedby="{{id}}Error" {{else if description}}
+            aria-describedby="{{id}}Description" {{/if}}>
 
         {{#if suffix}}
 
@@ -97,19 +51,13 @@
 
     {{#if description}}
 
-        <small
-            id="{{id}}Description"
-            class="form-field__description">
+        <small id="{{id}}Description" class="form-field__description">
             {{description}}
         </small>
 
     {{/if}}
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

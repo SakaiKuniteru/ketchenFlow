@@ -1,7 +1,5 @@
-<header
-    class="catalog-toolbar {{#if toolbarClass}}{{toolbarClass}}{{/if}}"
-    data-catalog-toolbar>
-    
+<header class="catalog-toolbar {{#if toolbarClass}}{{toolbarClass}}{{/if}}" data-catalog-toolbar>
+
     <div class="catalog-toolbar__top">
         <div class="catalog-toolbar__heading">
             <div class="catalog-toolbar__title-group">
@@ -21,9 +19,7 @@
             </div>
 
             {{#if totalLabel}}
-                <span
-                    class="catalog-toolbar__total"
-                    data-catalog-total>
+                <span class="catalog-toolbar__total" data-catalog-total>
                     {{totalLabel}}
                 </span>
             {{/if}}
@@ -44,14 +40,9 @@
 
     <div class="catalog-toolbar__bottom">
         <div class="catalog-toolbar__actions">
-            <div
-                class="catalog-toolbar__utility"
-                data-catalog-utility>
-                <button
-                    type="button"
-                    class="catalog-toolbar__button catalog-toolbar__button--secondary"
-                    data-catalog-utility-toggle
-                    aria-expanded="false">
+            <div class="catalog-toolbar__utility" data-catalog-utility>
+                <button type="button" class="catalog-toolbar__button catalog-toolbar__button--secondary"
+                    data-catalog-utility-toggle aria-expanded="false">
                     <span aria-hidden="true">
                         ⚙
                     </span>
@@ -60,51 +51,31 @@
                     </span>
                 </button>
 
-                <div
-                    class="catalog-toolbar__utility-menu"
-                    data-catalog-utility-menu
-                    hidden>
+                <div class="catalog-toolbar__utility-menu" data-catalog-utility-menu hidden>
                 </div>
             </div>
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     catalog-toolbar__icon-button
                     catalog-toolbar__icon-button--expand-table
-                "
-                data-catalog-expand-table
-                aria-pressed="false"
-                aria-label="Mở rộng danh sách"
+                " data-catalog-expand-table aria-pressed="false" aria-label="Mở rộng danh sách"
                 title="Mở rộng danh sách">
-                <i
-                    class="fa-solid fa-arrows-left-right"
-                    aria-hidden="true">
+                <i class="fa-solid fa-arrows-left-right" aria-hidden="true">
                 </i>
             </button>
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     catalog-toolbar__icon-button
                     catalog-toolbar__icon-button--expand-info
-                "
-                data-catalog-expand-info
-                aria-pressed="false"
-                aria-label="Mở rộng thông tin"
+                " data-catalog-expand-info aria-pressed="false" aria-label="Mở rộng thông tin"
                 title="Mở rộng thông tin">
-                <i
-                    class="fa-solid fa-table-columns"
-                    aria-hidden="true">
+                <i class="fa-solid fa-table-columns" aria-hidden="true">
                 </i>
             </button>
 
             {{#unless hideCreateButton}}
-                <button
-                    type="button"
-                    id="{{createButtonId}}"
-                    class="catalog-toolbar__button catalog-toolbar__button--primary"
-                    data-catalog-create>
+                <button type="button" id="{{createButtonId}}"
+                    class="catalog-toolbar__button catalog-toolbar__button--primary" data-catalog-create>
                     <span aria-hidden="true">
                         +
                     </span>

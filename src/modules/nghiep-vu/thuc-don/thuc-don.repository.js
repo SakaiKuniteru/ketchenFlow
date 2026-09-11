@@ -1,4 +1,4 @@
-const pool = require("../../../config/database");
+const pool = require('../../../config/database');
 
 class ThucDonRepository {
     mapThucDon(row) {
@@ -16,28 +16,28 @@ class ThucDonRepository {
             coSoId: row.co_so_id,
             coSo: row.co_so_id
                 ? {
-                    id: row.co_so_id,
-                    maCoSo: row.ma_co_so,
-                    tenCoSo: row.ten_co_so
-                }
+                      id: row.co_so_id,
+                      maCoSo: row.ma_co_so,
+                      tenCoSo: row.ten_co_so
+                  }
                 : null,
             nhaAnId: row.nha_an_id,
             nhaAn: row.nha_an_id
                 ? {
-                    id: row.nha_an_id,
-                    maNhaAn: row.ma_nha_an,
-                    tenNhaAn: row.ten_nha_an
-                }
+                      id: row.nha_an_id,
+                      maNhaAn: row.ma_nha_an,
+                      tenNhaAn: row.ten_nha_an
+                  }
                 : null,
             caAnId: row.ca_an_id,
             caAn: row.ca_an_id
                 ? {
-                    id: row.ca_an_id,
-                    maCaAn: row.ma_ca_an,
-                    tenCaAn: row.ten_ca_an,
-                    thoiGianBatDau: row.thoi_gian_bat_dau,
-                    thoiGianKetThuc: row.thoi_gian_ket_thuc
-                }
+                      id: row.ca_an_id,
+                      maCaAn: row.ma_ca_an,
+                      tenCaAn: row.ten_ca_an,
+                      thoiGianBatDau: row.thoi_gian_bat_dau,
+                      thoiGianKetThuc: row.thoi_gian_ket_thuc
+                  }
                 : null,
             trangThai: row.trang_thai,
             trangThaiTruocHuy: row.trang_thai_truoc_huy,
@@ -76,12 +76,12 @@ class ThucDonRepository {
             nhomMonAnId: row.nhom_mon_an_id,
             nhomMonAn: row.nhom_mon_an_id
                 ? {
-                    id: row.nhom_mon_an_id,
-                    maNhomMonAn: row.ma_nhom_mon_an,
-                    tenNhomMonAn: row.ten_nhom_mon_an,
-                    moTa: row.mo_ta_nhom_mon_an,
-                    active: row.nhom_mon_an_active
-                }
+                      id: row.nhom_mon_an_id,
+                      maNhomMonAn: row.ma_nhom_mon_an,
+                      tenNhomMonAn: row.ten_nhom_mon_an,
+                      moTa: row.mo_ta_nhom_mon_an,
+                      active: row.nhom_mon_an_active
+                  }
                 : null,
             thuTuHienThi: row.thu_tu_hien_thi,
             ghiChu: row.ghi_chu,
@@ -102,36 +102,30 @@ class ThucDonRepository {
             monAnId: row.mon_an_id,
             monAn: row.mon_an_id
                 ? {
-                    id: row.mon_an_id,
-                    maMonAn: row.ma_mon_an,
-                    tenMonAn: row.ten_mon_an,
-                    nhomMonAnId: row.mon_an_nhom_mon_an_id,
-                    giaTien: row.gia_tien !== null
-                        ? Number(row.gia_tien)
-                        : null,
-                    giaDuKien: row.gia_du_kien !== null
-                        ? Number(row.gia_du_kien)
-                        : null,
-                    calories: row.calories,
-                    moTa: row.mo_ta_mon_an,
-                    hinhAnh: row.hinh_anh,
-                    active: row.mon_an_active
-                }
+                      id: row.mon_an_id,
+                      maMonAn: row.ma_mon_an,
+                      tenMonAn: row.ten_mon_an,
+                      nhomMonAnId: row.mon_an_nhom_mon_an_id,
+                      giaTien: row.gia_tien !== null ? Number(row.gia_tien) : null,
+                      giaDuKien: row.gia_du_kien !== null ? Number(row.gia_du_kien) : null,
+                      calories: row.calories,
+                      moTa: row.mo_ta_mon_an,
+                      hinhAnh: row.hinh_anh,
+                      active: row.mon_an_active
+                  }
                 : null,
             thuTuHienThi: row.thu_tu_hien_thi,
-            dinhLuong: row.dinh_luong !== null
-                ? Number(row.dinh_luong)
-                : null,
+            dinhLuong: row.dinh_luong !== null ? Number(row.dinh_luong) : null,
             donViTinhId: row.don_vi_tinh_id,
             donViTinh: row.don_vi_tinh_id
                 ? {
-                    id: row.don_vi_tinh_id,
-                    maDonViTinh: row.ma_don_vi_tinh,
-                    tenDonViTinh: row.ten_don_vi_tinh,
-                    kyHieu: row.ky_hieu,
-                    loaiDonVi: row.loai_don_vi,
-                    active: row.don_vi_tinh_active
-                }
+                      id: row.don_vi_tinh_id,
+                      maDonViTinh: row.ma_don_vi_tinh,
+                      tenDonViTinh: row.ten_don_vi_tinh,
+                      kyHieu: row.ky_hieu,
+                      loaiDonVi: row.loai_don_vi,
+                      active: row.don_vi_tinh_active
+                  }
                 : null,
             ghiChu: row.ghi_chu,
             active: row.active,
@@ -194,13 +188,13 @@ class ThucDonRepository {
         const conditions = [];
         const values = [];
 
-        const addValue = value => {
+        const addValue = (value) => {
             values.push(value);
 
             return `$${values.length}`;
         };
 
-        const keyword = String(query.keyword || "").trim();
+        const keyword = String(query.keyword || '').trim();
 
         if (keyword) {
             const param = addValue(`%${keyword}%`);
@@ -227,10 +221,7 @@ class ThucDonRepository {
         }
 
         if (query.loaiThucDon) {
-            const valuesFilter = String(query.loaiThucDon)
-                .split(",")
-                .map(Number)
-                .filter(Number.isInteger);
+            const valuesFilter = String(query.loaiThucDon).split(',').map(Number).filter(Number.isInteger);
 
             if (valuesFilter.length) {
                 const param = addValue(valuesFilter);
@@ -247,10 +238,7 @@ class ThucDonRepository {
         }
 
         if (query.coSoId) {
-            const valuesFilter = String(query.coSoId)
-                .split(",")
-                .map(Number)
-                .filter(Number.isInteger);
+            const valuesFilter = String(query.coSoId).split(',').map(Number).filter(Number.isInteger);
 
             if (valuesFilter.length) {
                 const param = addValue(valuesFilter);
@@ -267,10 +255,7 @@ class ThucDonRepository {
         }
 
         if (query.nhaAnId) {
-            const valuesFilter = String(query.nhaAnId)
-                .split(",")
-                .map(Number)
-                .filter(Number.isInteger);
+            const valuesFilter = String(query.nhaAnId).split(',').map(Number).filter(Number.isInteger);
 
             if (valuesFilter.length) {
                 const param = addValue(valuesFilter);
@@ -287,10 +272,7 @@ class ThucDonRepository {
         }
 
         if (query.caAnId) {
-            const valuesFilter = String(query.caAnId)
-                .split(",")
-                .map(Number)
-                .filter(Number.isInteger);
+            const valuesFilter = String(query.caAnId).split(',').map(Number).filter(Number.isInteger);
 
             if (valuesFilter.length) {
                 const param = addValue(valuesFilter);
@@ -307,10 +289,7 @@ class ThucDonRepository {
         }
 
         if (query.trangThai) {
-            const valuesFilter = String(query.trangThai)
-                .split(",")
-                .map(Number)
-                .filter(Number.isInteger);
+            const valuesFilter = String(query.trangThai).split(',').map(Number).filter(Number.isInteger);
 
             if (valuesFilter.length) {
                 const param = addValue(valuesFilter);
@@ -329,9 +308,9 @@ class ThucDonRepository {
         const whereClause = conditions.length
             ? `
                     WHERE
-                        ${conditions.join("\nAND\n")}
+                        ${conditions.join('\nAND\n')}
                 `
-            : "";
+            : '';
 
         const sql = `
             ${this.getBaseQuery()}
@@ -343,20 +322,12 @@ class ThucDonRepository {
                 td.ma_thuc_don ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row => this.mapThucDon(row)
-        );
+        return result.rows.map((row) => this.mapThucDon(row));
     }
 
-    async getThongTinChung(
-        id,
-        client = pool
-    ) {
+    async getThongTinChung(id, client = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -365,26 +336,16 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await client.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapThucDon(
-            result.rows[0]
-        );
+        return this.mapThucDon(result.rows[0]);
     }
 
-    async getDsNgay(
-        thucDonId,
-        client = pool
-    ) {
+    async getDsNgay(thucDonId, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -405,22 +366,12 @@ class ThucDonRepository {
             ORDER BY ngay ASC
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonId
-            ]
-        );
+        const result = await client.query(sql, [thucDonId]);
 
-        return result.rows.map(
-            row => this.mapNgay(row)
-        );
+        return result.rows.map((row) => this.mapNgay(row));
     }
 
-    async getDsNhomMonAn(
-        thucDonId,
-        client = pool
-    ) {
+    async getDsNhomMonAn(thucDonId, client = pool) {
         const sql = `
             SELECT
                 tdnma.id,
@@ -454,22 +405,12 @@ class ThucDonRepository {
                 nma.ma_nhom_mon_an ASC
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonId
-            ]
-        );
+        const result = await client.query(sql, [thucDonId]);
 
-        return result.rows.map(
-            row => this.mapNhomMonAn(row)
-        );
+        return result.rows.map((row) => this.mapNhomMonAn(row));
     }
 
-    async getDsMonAn(
-        thucDonId,
-        client = pool
-    ) {
+    async getDsMonAn(thucDonId, client = pool) {
         const sql = `
             SELECT
                 tdma.id,
@@ -528,113 +469,63 @@ class ThucDonRepository {
                 ma.ma_mon_an ASC
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonId
-            ]
-        );
+        const result = await client.query(sql, [thucDonId]);
 
-        return result.rows.map(
-            row => this.mapMonAn(row)
-        );
+        return result.rows.map((row) => this.mapMonAn(row));
     }
 
-    async getChiTiet(
-        id,
-        client = pool
-    ) {
-        const thucDon = await this.getThongTinChung(
-            id,
-            client
-        );
+    async getChiTiet(id, client = pool) {
+        const thucDon = await this.getThongTinChung(id, client);
 
         if (!thucDon) {
             return null;
         }
 
-        const [
-            dsNgay,
-            dsNhomMonAn,
-            dsMonAn
-        ] = await Promise.all([
-            this.getDsNgay(
-                id,
-                client
-            ),
-            this.getDsNhomMonAn(
-                id,
-                client
-            ),
-            this.getDsMonAn(
-                id,
-                client
-            )
+        const [dsNgay, dsNhomMonAn, dsMonAn] = await Promise.all([
+            this.getDsNgay(id, client),
+            this.getDsNhomMonAn(id, client),
+            this.getDsMonAn(id, client)
         ]);
 
         const mapMonTheoNhom = new Map();
 
         for (const monAn of dsMonAn) {
-            const key = Number(
-                monAn.thucDonNhomMonAnId
-            );
+            const key = Number(monAn.thucDonNhomMonAnId);
 
             if (!mapMonTheoNhom.has(key)) {
-                mapMonTheoNhom.set(
-                    key,
-                    []
-                );
+                mapMonTheoNhom.set(key, []);
             }
 
-            mapMonTheoNhom
-                .get(key)
-                .push(monAn);
+            mapMonTheoNhom.get(key).push(monAn);
         }
 
         const mapNhomTheoNgay = new Map();
 
         for (const nhom of dsNhomMonAn) {
-            const key = Number(
-                nhom.thucDonNgayId
-            );
+            const key = Number(nhom.thucDonNgayId);
 
             if (!mapNhomTheoNgay.has(key)) {
-                mapNhomTheoNgay.set(
-                    key,
-                    []
-                );
+                mapNhomTheoNgay.set(key, []);
             }
 
-            const dsMon = mapMonTheoNhom.get(
-                Number(nhom.id)
-            ) || [];
+            const dsMon = mapMonTheoNhom.get(Number(nhom.id)) || [];
 
-            mapNhomTheoNgay
-                .get(key)
-                .push({
-                    ...nhom,
-                    dsMonAnId: dsMon.map(
-                        item => item.monAnId
-                    ),
-                    dsMonAn: dsMon
-                });
+            mapNhomTheoNgay.get(key).push({
+                ...nhom,
+                dsMonAnId: dsMon.map((item) => item.monAnId),
+                dsMonAn: dsMon
+            });
         }
 
-        const danhSachNgay = dsNgay.map(
-            ngay => {
-                const dsNhom = mapNhomTheoNgay.get(
-                    Number(ngay.id)
-                ) || [];
+        const danhSachNgay = dsNgay.map((ngay) => {
+            const dsNhom = mapNhomTheoNgay.get(Number(ngay.id)) || [];
 
-                return {
-                    ...ngay,
-                    dsNhomMonAnId: dsNhom.map(
-                        item => item.nhomMonAnId
-                    ),
-                    dsNhomMonAn: dsNhom
-                };
-            }
-        );
+            return {
+                ...ngay,
+                dsNhomMonAnId: dsNhom.map((item) => item.nhomMonAnId),
+                dsNhomMonAn: dsNhom
+            };
+        });
 
         return {
             ...thucDon,
@@ -642,10 +533,7 @@ class ThucDonRepository {
         };
     }
 
-    async getChiTietByMa(
-        maThucDon,
-        client = pool
-    ) {
+    async getChiTietByMa(maThucDon, client = pool) {
         const sql = `
             SELECT id
             FROM nv_thuc_don
@@ -654,31 +542,17 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maThucDon
-            ]
-        );
+        const result = await client.query(sql, [maThucDon]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id,
-            client
-        );
+        return await this.getChiTiet(result.rows[0].id, client);
     }
 
-    async existsMaThucDon(
-        maThucDon,
-        excludeId = null,
-        client = pool
-    ) {
-        const values = [
-            maThucDon
-        ];
+    async existsMaThucDon(maThucDon, excludeId = null, client = pool) {
+        const values = [maThucDon];
 
         let sql = `
             SELECT EXISTS (
@@ -695,13 +569,8 @@ class ThucDonRepository {
                 )
         `;
 
-        if (
-            excludeId !== null &&
-            excludeId !== undefined
-        ) {
-            values.push(
-                excludeId
-            );
+        if (excludeId !== null && excludeId !== undefined) {
+            values.push(excludeId);
 
             sql += `
                 AND id <> $2
@@ -712,18 +581,12 @@ class ThucDonRepository {
             ) AS "exists"
         `;
 
-        const result = await client.query(
-            sql,
-            values
-        );
+        const result = await client.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsCoSo(
-        coSoId,
-        client = pool
-    ) {
+    async existsCoSo(coSoId, client = pool) {
         const sql = `
             SELECT EXISTS (
                 SELECT 1
@@ -733,21 +596,12 @@ class ThucDonRepository {
             ) AS "exists"
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                coSoId
-            ]
-        );
+        const result = await client.query(sql, [coSoId]);
 
         return result.rows[0].exists;
     }
 
-    async existsNhaAn(
-        nhaAnId,
-        coSoId,
-        client = pool
-    ) {
+    async existsNhaAn(nhaAnId, coSoId, client = pool) {
         const sql = `
             SELECT EXISTS (
                 SELECT 1
@@ -758,21 +612,12 @@ class ThucDonRepository {
             ) AS "exists"
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                nhaAnId,
-                coSoId
-            ]
-        );
+        const result = await client.query(sql, [nhaAnId, coSoId]);
 
         return result.rows[0].exists;
     }
 
-    async existsCaAn(
-        caAnId,
-        client = pool
-    ) {
+    async existsCaAn(caAnId, client = pool) {
         const sql = `
             SELECT EXISTS (
                 SELECT 1
@@ -782,20 +627,12 @@ class ThucDonRepository {
             ) AS "exists"
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                caAnId
-            ]
-        );
+        const result = await client.query(sql, [caAnId]);
 
         return result.rows[0].exists;
     }
 
-    async getNhomMonAnById(
-        nhomMonAnId,
-        client = pool
-    ) {
+    async getNhomMonAnById(nhomMonAnId, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -808,20 +645,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                nhomMonAnId
-            ]
-        );
+        const result = await client.query(sql, [nhomMonAnId]);
 
         return result.rows[0] || null;
     }
 
-    async getMonAnById(
-        monAnId,
-        client = pool
-    ) {
+    async getMonAnById(monAnId, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -834,24 +663,13 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                monAnId
-            ]
-        );
+        const result = await client.query(sql, [monAnId]);
 
         return result.rows[0] || null;
     }
 
-    async existsDonViTinh(
-        donViTinhId,
-        client = pool
-    ) {
-        if (
-            donViTinhId === null ||
-            donViTinhId === undefined
-        ) {
+    async existsDonViTinh(donViTinhId, client = pool) {
+        if (donViTinhId === null || donViTinhId === undefined) {
             return true;
         }
 
@@ -864,20 +682,12 @@ class ThucDonRepository {
             ) AS "exists"
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                donViTinhId
-            ]
-        );
+        const result = await client.query(sql, [donViTinhId]);
 
         return result.rows[0].exists;
     }
 
-    async getCoSoByMa(
-        maCoSo,
-        client = pool
-    ) {
+    async getCoSoByMa(maCoSo, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -890,21 +700,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maCoSo
-            ]
-        );
+        const result = await client.query(sql, [maCoSo]);
 
         return result.rows[0] || null;
     }
 
-    async getNhaAnByMa(
-        maNhaAn,
-        coSoId,
-        client = pool
-    ) {
+    async getNhaAnByMa(maNhaAn, coSoId, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -919,21 +720,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maNhaAn,
-                coSoId
-            ]
-        );
+        const result = await client.query(sql, [maNhaAn, coSoId]);
 
         return result.rows[0] || null;
     }
 
-    async getCaAnByMa(
-        maCaAn,
-        client = pool
-    ) {
+    async getCaAnByMa(maCaAn, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -946,20 +738,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maCaAn
-            ]
-        );
+        const result = await client.query(sql, [maCaAn]);
 
         return result.rows[0] || null;
     }
 
-    async getNhomMonAnByMa(
-        maNhomMonAn,
-        client = pool
-    ) {
+    async getNhomMonAnByMa(maNhomMonAn, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -973,20 +757,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maNhomMonAn
-            ]
-        );
+        const result = await client.query(sql, [maNhomMonAn]);
 
         return result.rows[0] || null;
     }
 
-    async getMonAnByMa(
-        maMonAn,
-        client = pool
-    ) {
+    async getMonAnByMa(maMonAn, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -1000,20 +776,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maMonAn
-            ]
-        );
+        const result = await client.query(sql, [maMonAn]);
 
         return result.rows[0] || null;
     }
 
-    async getDonViTinhByMa(
-        maDonViTinh,
-        client = pool
-    ) {
+    async getDonViTinhByMa(maDonViTinh, client = pool) {
         const sql = `
             SELECT
                 id,
@@ -1026,20 +794,12 @@ class ThucDonRepository {
             LIMIT 1
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                maDonViTinh
-            ]
-        );
+        const result = await client.query(sql, [maDonViTinh]);
 
         return result.rows[0] || null;
     }
 
-    async createThucDon(
-        client,
-        data
-    ) {
+    async createThucDon(client, data) {
         const sql = `
             INSERT INTO nv_thuc_don (
                 ma_thuc_don,
@@ -1092,28 +852,17 @@ class ThucDonRepository {
             data.coSoId,
             data.nhaAnId,
             data.caAnId ?? null,
-            data.trangThai !== undefined
-                ? data.trangThai
-                : 10,
+            data.trangThai !== undefined ? data.trangThai : 10,
             data.moTa || null,
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result = await client.query(
-            sql,
-            values
-        );
+        const result = await client.query(sql, values);
 
         return result.rows[0].id;
     }
 
-    async createNgay(
-        client,
-        thucDonId,
-        data
-    ) {
+    async createNgay(client, thucDonId, data) {
         const sql = `
             INSERT INTO ct_thuc_don_ngay (
                 thuc_don_id,
@@ -1140,26 +889,17 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonId,
-                data.ngay,
-                data.ghiChu || null,
-                data.active !== undefined
-                    ? data.active
-                    : true
-            ]
-        );
+        const result = await client.query(sql, [
+            thucDonId,
+            data.ngay,
+            data.ghiChu || null,
+            data.active !== undefined ? data.active : true
+        ]);
 
         return result.rows[0].id;
     }
 
-    async createNhomMonAn(
-        client,
-        thucDonNgayId,
-        data
-    ) {
+    async createNhomMonAn(client, thucDonNgayId, data) {
         const sql = `
             INSERT INTO ct_thuc_don_nhom_mon_an (
                 thuc_don_ngay_id,
@@ -1182,27 +922,18 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonNgayId,
-                data.nhomMonAnId,
-                data.thuTuHienThi ?? null,
-                data.ghiChu || null,
-                data.active !== undefined
-                    ? data.active
-                    : true
-            ]
-        );
+        const result = await client.query(sql, [
+            thucDonNgayId,
+            data.nhomMonAnId,
+            data.thuTuHienThi ?? null,
+            data.ghiChu || null,
+            data.active !== undefined ? data.active : true
+        ]);
 
         return result.rows[0].id;
     }
 
-    async createMonAn(
-        client,
-        thucDonNhomMonAnId,
-        data
-    ) {
+    async createMonAn(client, thucDonNhomMonAnId, data) {
         const sql = `
             INSERT INTO ct_thuc_don_mon_an (
                 thuc_don_nhom_mon_an_id,
@@ -1229,20 +960,15 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                thucDonNhomMonAnId,
-                data.monAnId,
-                data.thuTuHienThi ?? null,
-                data.dinhLuong ?? null,
-                data.donViTinhId ?? null,
-                data.ghiChu || null,
-                data.active !== undefined
-                    ? data.active
-                    : true
-            ]
-        );
+        const result = await client.query(sql, [
+            thucDonNhomMonAnId,
+            data.monAnId,
+            data.thuTuHienThi ?? null,
+            data.dinhLuong ?? null,
+            data.donViTinhId ?? null,
+            data.ghiChu || null,
+            data.active !== undefined ? data.active : true
+        ]);
 
         return result.rows[0].id;
     }
@@ -1251,59 +977,27 @@ class ThucDonRepository {
         const client = await pool.connect();
 
         try {
-            await client.query(
-                "BEGIN"
-            );
+            await client.query('BEGIN');
 
-            const thucDonId = await this.createThucDon(
-                client,
-                data
-            );
+            const thucDonId = await this.createThucDon(client, data);
 
-            for (
-                const ngay of
-                data.dsNgay || []
-            ) {
-                const thucDonNgayId = await this.createNgay(
-                    client,
-                    thucDonId,
-                    ngay
-                );
+            for (const ngay of data.dsNgay || []) {
+                const thucDonNgayId = await this.createNgay(client, thucDonId, ngay);
 
-                for (
-                    const nhom of
-                    ngay.dsNhomMonAn || []
-                ) {
-                    const thucDonNhomMonAnId = await this.createNhomMonAn(
-                        client,
-                        thucDonNgayId,
-                        nhom
-                    );
+                for (const nhom of ngay.dsNhomMonAn || []) {
+                    const thucDonNhomMonAnId = await this.createNhomMonAn(client, thucDonNgayId, nhom);
 
-                    for (
-                        const mon of
-                        nhom.dsMonAn || []
-                    ) {
-                        await this.createMonAn(
-                            client,
-                            thucDonNhomMonAnId,
-                            mon
-                        );
+                    for (const mon of nhom.dsMonAn || []) {
+                        await this.createMonAn(client, thucDonNhomMonAnId, mon);
                     }
                 }
             }
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                thucDonId
-            );
+            return await this.getChiTiet(thucDonId);
         } catch (error) {
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -1311,11 +1005,7 @@ class ThucDonRepository {
         }
     }
 
-    async updateThucDon(
-        client,
-        id,
-        data
-    ) {
+    async updateThucDon(client, id, data) {
         const sql = `
             UPDATE nv_thuc_don
             SET
@@ -1344,23 +1034,20 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await client.query(
-            sql,
-            [
-                data.maThucDon,
-                data.tenThucDon,
-                data.loaiThucDon,
-                data.tuNgay,
-                data.denNgay,
-                data.coSoId,
-                data.nhaAnId,
-                data.caAnId ?? null,
-                data.trangThai,
-                data.moTa || null,
-                data.active,
-                id
-            ]
-        );
+        const result = await client.query(sql, [
+            data.maThucDon,
+            data.tenThucDon,
+            data.loaiThucDon,
+            data.tuNgay,
+            data.denNgay,
+            data.coSoId,
+            data.nhaAnId,
+            data.caAnId ?? null,
+            data.trangThai,
+            data.moTa || null,
+            data.active,
+            id
+        ]);
 
         if (result.rows.length === 0) {
             return null;
@@ -1369,97 +1056,51 @@ class ThucDonRepository {
         return result.rows[0].id;
     }
 
-    async deleteChiTiet(
-        client,
-        thucDonId
-    ) {
+    async deleteChiTiet(client, thucDonId) {
         await client.query(
             `
                 DELETE FROM ct_thuc_don_ngay
                 WHERE thuc_don_id = $1
             `,
-            [
-                thucDonId
-            ]
+            [thucDonId]
         );
     }
 
-    async update(
-        id,
-        data
-    ) {
+    async update(id, data) {
         const client = await pool.connect();
 
         try {
-            await client.query(
-                "BEGIN"
-            );
+            await client.query('BEGIN');
 
-            const thucDonId = await this.updateThucDon(
-                client,
-                id,
-                data
-            );
+            const thucDonId = await this.updateThucDon(client, id, data);
 
             if (!thucDonId) {
-                await client.query(
-                    "ROLLBACK"
-                );
+                await client.query('ROLLBACK');
 
                 return null;
             }
 
             if (data.dsNgay !== undefined) {
-                await this.deleteChiTiet(
-                    client,
-                    id
-                );
+                await this.deleteChiTiet(client, id);
 
-                for (
-                    const ngay of
-                    data.dsNgay || []
-                ) {
-                    const thucDonNgayId = await this.createNgay(
-                        client,
-                        id,
-                        ngay
-                    );
+                for (const ngay of data.dsNgay || []) {
+                    const thucDonNgayId = await this.createNgay(client, id, ngay);
 
-                    for (
-                        const nhom of
-                        ngay.dsNhomMonAn || []
-                    ) {
-                        const thucDonNhomMonAnId = await this.createNhomMonAn(
-                            client,
-                            thucDonNgayId,
-                            nhom
-                        );
+                    for (const nhom of ngay.dsNhomMonAn || []) {
+                        const thucDonNhomMonAnId = await this.createNhomMonAn(client, thucDonNgayId, nhom);
 
-                        for (
-                            const mon of
-                            nhom.dsMonAn || []
-                        ) {
-                            await this.createMonAn(
-                                client,
-                                thucDonNhomMonAnId,
-                                mon
-                            );
+                        for (const mon of nhom.dsMonAn || []) {
+                            await this.createMonAn(client, thucDonNhomMonAnId, mon);
                         }
                     }
                 }
             }
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                id
-            );
+            return await this.getChiTiet(id);
         } catch (error) {
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -1474,12 +1115,7 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
@@ -1501,27 +1137,18 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-    async existsBinhChonHieuLucTheoThucDon(
-        thucDonId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async existsBinhChonHieuLucTheoThucDon(thucDonId) {
+        const result = await pool.query(
+            `
                     SELECT 1
 
                     FROM ct_thuc_don_ngay tdn
@@ -1536,23 +1163,13 @@ class ThucDonRepository {
 
                     LIMIT 1
                 `,
-                [
-                    thucDonId
-                ]
-            );
-
-
-        return (
-            result.rowCount >
-            0
+            [thucDonId]
         );
 
+        return result.rowCount > 0;
     }
 
-    async huyDuyet(
-        id
-    ) {
-
+    async huyDuyet(id) {
         const sql = `
             UPDATE nv_thuc_don td
 
@@ -1584,28 +1201,13 @@ class ThucDonRepository {
             RETURNING td.id
         `;
 
+        const result = await pool.query(sql, [id]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
-
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async huy(id) {
@@ -1620,18 +1222,13 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async hoanHuy(id) {
@@ -1653,31 +1250,21 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-    async dongBoTrangThaiKetThuc(
-        id = null
-    ) {
+    async dongBoTrangThaiKetThuc(id = null) {
         const values = [];
 
-        let dieuKienId = "";
+        let dieuKienId = '';
 
-        if (
-            id !== null &&
-            id !== undefined
-        ) {
+        if (id !== null && id !== undefined) {
             values.push(id);
 
             dieuKienId = `
@@ -1700,10 +1287,7 @@ class ThucDonRepository {
             ${dieuKienId}
         `;
 
-        await pool.query(
-            sql,
-            values
-        );
+        await pool.query(sql, values);
     }
 
     async khoiPhucTrangThaiKetThuc(id) {
@@ -1724,18 +1308,13 @@ class ThucDonRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 }
 

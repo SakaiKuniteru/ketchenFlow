@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const API_BASE = "/api/mcs/v1/dm-nhan-vien";
-    const API_GIOI_TINH = "/api/mcs/v1/enums?name=gioiTinh";
-    const API_CHUC_VU = "/api/mcs/v1/dm-chuc-vu/tong-hop?active=true";
-    const API_CO_SO = "/api/mcs/v1/dm-co-so/tong-hop?active=true";
-    const API_PHONG_BAN = "/api/mcs/v1/dm-phong-ban/tong-hop?active=true";
-    const API_QUOC_GIA = "/api/mcs/v1/dm-quoc-gia/tong-hop?active=true";
-    const API_TINH_THANH = "/api/mcs/v1/dm-tinh-thanh/tong-hop?active=true";
-    const API_XA_PHUONG = "/api/mcs/v1/dm-xa-phuong/tong-hop?active=true";
+document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = '/api/mcs/v1/dm-nhan-vien';
+    const API_GIOI_TINH = '/api/mcs/v1/enums?name=gioiTinh';
+    const API_CHUC_VU = '/api/mcs/v1/dm-chuc-vu/tong-hop?active=true';
+    const API_CO_SO = '/api/mcs/v1/dm-co-so/tong-hop?active=true';
+    const API_PHONG_BAN = '/api/mcs/v1/dm-phong-ban/tong-hop?active=true';
+    const API_QUOC_GIA = '/api/mcs/v1/dm-quoc-gia/tong-hop?active=true';
+    const API_TINH_THANH = '/api/mcs/v1/dm-tinh-thanh/tong-hop?active=true';
+    const API_XA_PHUONG = '/api/mcs/v1/dm-xa-phuong/tong-hop?active=true';
 
     let catalog = null;
     let dsGioiTinh = [];
@@ -39,229 +39,229 @@ document.addEventListener("DOMContentLoaded", () => {
     async function initializeCatalog() {
         try {
             catalog = await window.MCS.pages.createCatalogPage({
-                moduleName: "nhan-vien",
+                moduleName: 'nhan-vien',
                 permissionCodes: {
-                    view: "Q000562",
-                    create: "Q000563",
-                    update: "Q000564"
+                    view: 'Q000562',
+                    create: 'Q000563',
+                    update: 'Q000564'
                 },
                 columns: [
                     {
-                        key: "maNhanVien",
-                        label: "Mã nhân viên",
-                        width: "150px",
+                        key: 'maNhanVien',
+                        label: 'Mã nhân viên',
+                        width: '150px',
                         sortable: true,
                         filterable: true
                     },
                     {
-                        key: "tenDangNhap",
-                        label: "Tên tài khoản",
-                        width: "170px",
+                        key: 'tenDangNhap',
+                        label: 'Tên tài khoản',
+                        width: '170px',
                         sortable: true,
                         filterable: true
                     },
                     {
-                        key: "hoTen",
-                        label: "Họ tên",
-                        width: "220px",
+                        key: 'hoTen',
+                        label: 'Họ tên',
+                        width: '220px',
                         sortable: true,
                         filterable: true
                     },
                     {
-                        key: "email",
-                        label: "Email",
-                        width: "220px",
+                        key: 'email',
+                        label: 'Email',
+                        width: '220px',
                         filterable: true,
                         render: renderHiddenEmail
                     },
                     {
-                        key: "soDienThoai",
-                        label: "Số điện thoại",
-                        width: "150px",
+                        key: 'soDienThoai',
+                        label: 'Số điện thoại',
+                        width: '150px',
                         filterable: true,
                         render: renderHiddenPhone
                     },
                     {
-                        key: "ngaySinh",
-                        label: "Ngày sinh",
-                        width: "130px",
+                        key: 'ngaySinh',
+                        label: 'Ngày sinh',
+                        width: '130px',
                         sortable: true,
                         filterable: true,
-                        render: value => formatDisplayDate(value)
+                        render: (value) => formatDisplayDate(value)
                     },
                     {
-                        key: "gioiTinhText",
-                        label: "Giới tính",
-                        width: "120px",
+                        key: 'gioiTinhText',
+                        label: 'Giới tính',
+                        width: '120px',
                         filterable: true
                     },
                     {
-                        key: "tenChucVu",
-                        label: "Chức vụ",
-                        width: "180px",
+                        key: 'tenChucVu',
+                        label: 'Chức vụ',
+                        width: '180px',
                         filterable: true
                     },
                     {
-                        key: "tenPhongBan",
-                        label: "Phòng ban",
-                        width: "190px",
+                        key: 'tenPhongBan',
+                        label: 'Phòng ban',
+                        width: '190px',
                         filterable: true
                     },
                     {
-                        key: "tenCoSo",
-                        label: "Cơ sở",
-                        width: "190px",
+                        key: 'tenCoSo',
+                        label: 'Cơ sở',
+                        width: '190px',
                         filterable: true
                     },
                     {
-                        key: "diaChi",
-                        label: "Địa chỉ",
-                        width: "260px",
+                        key: 'diaChi',
+                        label: 'Địa chỉ',
+                        width: '260px',
                         filterable: true
                     },
                     {
-                        key: "tenQuocGia",
-                        label: "Quốc gia",
-                        width: "160px",
+                        key: 'tenQuocGia',
+                        label: 'Quốc gia',
+                        width: '160px',
                         filterable: true
                     },
                     {
-                        key: "tenTinhThanh",
-                        label: "Tỉnh/Thành",
-                        width: "180px",
+                        key: 'tenTinhThanh',
+                        label: 'Tỉnh/Thành',
+                        width: '180px',
                         filterable: true
                     },
                     {
-                        key: "tenXaPhuong",
-                        label: "Xã/Phường",
-                        width: "180px",
+                        key: 'tenXaPhuong',
+                        label: 'Xã/Phường',
+                        width: '180px',
                         filterable: true
                     },
                     {
-                        key: "maThe",
-                        label: "Mã thẻ",
-                        width: "150px",
+                        key: 'maThe',
+                        label: 'Mã thẻ',
+                        width: '150px',
                         filterable: true
                     },
                     {
-                        key: "ghiChu",
-                        label: "Ghi chú",
-                        width: "220px",
+                        key: 'ghiChu',
+                        label: 'Ghi chú',
+                        width: '220px',
                         filterable: true
                     },
                     {
-                        key: "active",
-                        label: "Hiệu lực",
-                        width: "130px",
+                        key: 'active',
+                        label: 'Hiệu lực',
+                        width: '130px',
                         sortable: true,
-                        className: "catalog-table__cell--center",
+                        className: 'catalog-table__cell--center',
                         render: window.createStatusBadge
                     }
                 ],
 
                 defaultValues: {
-                    maNhanVien: "",
-                    tenDangNhap: "",
-                    hoTen: "",
-                    email: "",
-                    soDienThoai: "",
-                    ngaySinh: "",
-                    gioiTinh: "",
-                    anhDaiDien: "",
-                    chucVuId: "",
-                    coSoId: "",
-                    phongBanId: "",
-                    quocGiaId: "",
-                    tinhThanhId: "",
-                    xaPhuongId: "",
-                    diaChi: "",
-                    maThe: "",
-                    ghiChu: "",
+                    maNhanVien: '',
+                    tenDangNhap: '',
+                    hoTen: '',
+                    email: '',
+                    soDienThoai: '',
+                    ngaySinh: '',
+                    gioiTinh: '',
+                    anhDaiDien: '',
+                    chucVuId: '',
+                    coSoId: '',
+                    phongBanId: '',
+                    quocGiaId: '',
+                    tinhThanhId: '',
+                    xaPhuongId: '',
+                    diaChi: '',
+                    maThe: '',
+                    ghiChu: '',
                     active: true
                 },
 
                 validation: {
                     maNhanVien: {
-                        label: "Mã nhân viên",
+                        label: 'Mã nhân viên',
                         required: true,
                         maxLength: 50,
                         unique: true,
-                        requiredMessage: "Vui lòng điền vào trường này.",
-                        maxLengthMessage: "Mã nhân viên không được vượt quá 50 ký tự.",
-                        uniqueMessage: "Mã nhân viên đã tồn tại."
+                        requiredMessage: 'Vui lòng điền vào trường này.',
+                        maxLengthMessage: 'Mã nhân viên không được vượt quá 50 ký tự.',
+                        uniqueMessage: 'Mã nhân viên đã tồn tại.'
                     },
 
                     hoTen: {
-                        label: "Họ và tên",
+                        label: 'Họ và tên',
                         required: true,
                         maxLength: 150,
-                        requiredMessage: "Vui lòng điền vào trường này.",
-                        maxLengthMessage: "Họ và tên không được vượt quá 150 ký tự."
+                        requiredMessage: 'Vui lòng điền vào trường này.',
+                        maxLengthMessage: 'Họ và tên không được vượt quá 150 ký tự.'
                     },
 
                     email: {
-                        label: "Email",
+                        label: 'Email',
                         maxLength: 150,
                         unique: true,
-                        maxLengthMessage: "Email không được vượt quá 150 ký tự.",
-                        uniqueMessage: "Email đã tồn tại."
+                        maxLengthMessage: 'Email không được vượt quá 150 ký tự.',
+                        uniqueMessage: 'Email đã tồn tại.'
                     },
 
                     soDienThoai: {
-                        label: "Số điện thoại",
+                        label: 'Số điện thoại',
                         maxLength: 20,
                         unique: true,
-                        maxLengthMessage: "Số điện thoại không được vượt quá 20 ký tự.",
-                        uniqueMessage: "Số điện thoại đã tồn tại."
+                        maxLengthMessage: 'Số điện thoại không được vượt quá 20 ký tự.',
+                        uniqueMessage: 'Số điện thoại đã tồn tại.'
                     },
 
                     maThe: {
-                        label: "Mã thẻ",
+                        label: 'Mã thẻ',
                         maxLength: 100,
                         unique: true,
-                        maxLengthMessage: "Mã thẻ không được vượt quá 100 ký tự.",
-                        uniqueMessage: "Mã thẻ đã tồn tại."
+                        maxLengthMessage: 'Mã thẻ không được vượt quá 100 ký tự.',
+                        uniqueMessage: 'Mã thẻ đã tồn tại.'
                     },
 
                     coSoId: {
-                        label: "Cơ sở",
+                        label: 'Cơ sở',
                         required: true,
-                        requiredMessage: "Vui lòng chọn cơ sở."
+                        requiredMessage: 'Vui lòng chọn cơ sở.'
                     },
 
                     quocGiaId: {
-                        label: "Quốc gia",
+                        label: 'Quốc gia',
                         required: true,
-                        requiredMessage: "Vui lòng chọn quốc gia."
+                        requiredMessage: 'Vui lòng chọn quốc gia.'
                     },
 
                     diaChi: {
-                        label: "Địa chỉ",
+                        label: 'Địa chỉ',
                         maxLength: 500,
-                        maxLengthMessage: "Địa chỉ không được vượt quá 500 ký tự."
+                        maxLengthMessage: 'Địa chỉ không được vượt quá 500 ký tự.'
                     },
 
                     ghiChu: {
-                        label: "Ghi chú",
+                        label: 'Ghi chú',
                         maxLength: 500,
-                        maxLengthMessage: "Ghi chú không được vượt quá 500 ký tự."
+                        maxLengthMessage: 'Ghi chú không được vượt quá 500 ký tự.'
                     }
                 },
 
-                detailTitle: "Thông tin nhân viên",
-                createTitle: "Thêm nhân viên",
-                updateTitle: "Cập nhật nhân viên",
+                detailTitle: 'Thông tin nhân viên',
+                createTitle: 'Thêm nhân viên',
+                updateTitle: 'Cập nhật nhân viên',
 
                 getRecordSubtitle(record) {
-                    return record?.maNhanVien || "";
+                    return record?.maNhanVien || '';
                 },
 
                 mapListResponse(result) {
                     const records = Array.isArray(result?.data)
                         ? result.data
-                        : (result?.data?.items || result?.data?.data || []);
+                        : result?.data?.items || result?.data?.data || [];
 
-                    return records.map(record => mapListRecord(record));
+                    return records.map((record) => mapListRecord(record));
                 },
 
                 mapDetailResponse(result) {
@@ -270,32 +270,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 mapRecordToForm(record) {
                     return {
-                        id: record?.id ?? "",
-                        maNhanVien: record?.maNhanVien || "",
-                        tenDangNhap: record?.tenDangNhap || record?.taiKhoan?.tenDangNhap || "",
-                        hoTen: record?.hoTen || "",
-                        email: record?.email || "",
-                        soDienThoai: record?.soDienThoai || "",
+                        id: record?.id ?? '',
+                        maNhanVien: record?.maNhanVien || '',
+                        tenDangNhap: record?.tenDangNhap || record?.taiKhoan?.tenDangNhap || '',
+                        hoTen: record?.hoTen || '',
+                        email: record?.email || '',
+                        soDienThoai: record?.soDienThoai || '',
                         ngaySinh: normalizeDate(record?.ngaySinh),
-                        gioiTinh: record?.gioiTinh ?? "",
-                        anhDaiDien: record?.anhDaiDien || "",
-                        chucVuId: record?.chucVuId ?? record?.chucVu?.id ?? "",
-                        coSoId: record?.coSoId ?? record?.coSo?.id ?? "",
-                        phongBanId: record?.phongBanId ?? record?.phongBan?.id ?? "",
-                        quocGiaId: record?.quocGiaId ?? record?.quocGia?.id ?? "",
-                        tinhThanhId: record?.tinhThanhId ?? record?.tinhThanh?.id ?? "",
-                        xaPhuongId: record?.xaPhuongId ?? record?.xaPhuong?.id ?? "",
-                        diaChi: record?.diaChi || "",
-                        maThe: record?.maThe || "",
-                        ghiChu: record?.ghiChu || "",
+                        gioiTinh: record?.gioiTinh ?? '',
+                        anhDaiDien: record?.anhDaiDien || '',
+                        chucVuId: record?.chucVuId ?? record?.chucVu?.id ?? '',
+                        coSoId: record?.coSoId ?? record?.coSo?.id ?? '',
+                        phongBanId: record?.phongBanId ?? record?.phongBan?.id ?? '',
+                        quocGiaId: record?.quocGiaId ?? record?.quocGia?.id ?? '',
+                        tinhThanhId: record?.tinhThanhId ?? record?.tinhThanh?.id ?? '',
+                        xaPhuongId: record?.xaPhuongId ?? record?.xaPhuong?.id ?? '',
+                        diaChi: record?.diaChi || '',
+                        maThe: record?.maThe || '',
+                        ghiChu: record?.ghiChu || '',
                         active: record?.active === true
                     };
                 },
 
                 transformPayload(formData) {
                     return {
-                        maNhanVien: String(formData.maNhanVien || "").trim().toUpperCase(),
-                        hoTen: String(formData.hoTen || "").trim(),
+                        maNhanVien: String(formData.maNhanVien || '')
+                            .trim()
+                            .toUpperCase(),
+                        hoTen: String(formData.hoTen || '').trim(),
                         email: normalizeNullableText(formData.email),
                         soDienThoai: normalizeNullableText(formData.soDienThoai),
                         ngaySinh: buildDateTimeWithTimezone(formData.ngaySinh),
@@ -315,8 +317,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
 
                 onRecordLoaded(record, mode) {
-                    syncDateField("ngaySinh", record?.ngaySinh);
-                    syncImageField("anhDaiDien", record?.anhDaiDien, mode);
+                    syncDateField('ngaySinh', record?.ngaySinh);
+                    syncImageField('anhDaiDien', record?.anhDaiDien, mode);
                     syncAllSelects(record, mode);
                     syncOrganizationHierarchy(record, mode);
                     syncAddressHierarchy(record, mode);
@@ -324,56 +326,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 toolbarActions: [
                     {
-                        action: "filter",
-                        label: "Tìm kiếm chi tiết",
-                        icon: "search"
+                        action: 'filter',
+                        label: 'Tìm kiếm chi tiết',
+                        icon: 'search'
                     },
                     {
-                        action: "export-nhan-vien",
-                        label: "Xuất danh mục nhân viên",
-                        icon: "download"
+                        action: 'export-nhan-vien',
+                        label: 'Xuất danh mục nhân viên',
+                        icon: 'download'
                     },
                     {
-                        action: "import-nhan-vien",
-                        label: "Nhập danh mục nhân viên",
-                        icon: "upload"
+                        action: 'import-nhan-vien',
+                        label: 'Nhập danh mục nhân viên',
+                        icon: 'upload'
                     }
                 ],
 
                 onAction(action, id, catalogInstance) {
-                    if (action === "export-nhan-vien") {
+                    if (action === 'export-nhan-vien') {
                         exportData();
                         return;
                     }
 
-                    if (action === "import-nhan-vien") {
+                    if (action === 'import-nhan-vien') {
                         importData(catalogInstance);
                     }
                 }
             });
         } catch (error) {
-            console.error(
-                "Không thể khởi tạo danh mục nhân viên.",
-                error
-            );
+            console.error('Không thể khởi tạo danh mục nhân viên.', error);
 
-            window.MCS?.toast?.error(
-                error?.message ||
-                "Không thể tải danh mục nhân viên."
-            );
+            window.MCS?.toast?.error(error?.message || 'Không thể tải danh mục nhân viên.');
         }
     }
 
     function buildAddress(formData) {
-        const diaChi = String(formData.diaChi || "").trim();
+        const diaChi = String(formData.diaChi || '').trim();
 
         if (diaChi) {
             return diaChi;
         }
 
-        const tenXaPhuong = getSelectedLabel("xaPhuongId");
-        const tenTinhThanh = getSelectedLabel("tinhThanhId");
-        const tenQuocGia = getSelectedLabel("quocGiaId");
+        const tenXaPhuong = getSelectedLabel('xaPhuongId');
+        const tenTinhThanh = getSelectedLabel('tinhThanhId');
+        const tenQuocGia = getSelectedLabel('quocGiaId');
 
         const danhSach = [
             removeCodeFromLabel(tenXaPhuong),
@@ -381,31 +377,29 @@ document.addEventListener("DOMContentLoaded", () => {
             removeCodeFromLabel(tenQuocGia)
         ].filter(Boolean);
 
-        return danhSach.length
-            ? danhSach.join(", ")
-            : null;
+        return danhSach.length ? danhSach.join(', ') : null;
     }
 
     function getSelectedLabel(selectId) {
         const select = document.getElementById(selectId);
 
         if (!select) {
-            return "";
+            return '';
         }
 
         const option = select.options[select.selectedIndex];
 
-        return (option?.textContent || "").trim();
+        return (option?.textContent || '').trim();
     }
 
     function removeCodeFromLabel(value) {
-        const text = String(value || "").trim();
+        const text = String(value || '').trim();
 
         if (!text) {
-            return "";
+            return '';
         }
 
-        const index = text.indexOf(" - ");
+        const index = text.indexOf(' - ');
 
         if (index === -1) {
             return text;
@@ -415,20 +409,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function mapListRecord(record) {
-        const gioiTinh = dsGioiTinh.find(
-            item => Number(item.value) === Number(record?.gioiTinh)
-        );
+        const gioiTinh = dsGioiTinh.find((item) => Number(item.value) === Number(record?.gioiTinh));
 
         return {
             ...record,
-            tenDangNhap: record?.tenDangNhap || record?.taiKhoan?.tenDangNhap || "",
-            gioiTinhText: gioiTinh?.label || record?.gioiTinhText || "",
-            tenChucVu: record?.tenChucVu || record?.chucVu?.tenChucVu || record?.chucVu?.ten || "",
-            tenPhongBan: record?.tenPhongBan || record?.phongBan?.tenPhongBan || record?.phongBan?.ten || "",
-            tenCoSo: record?.tenCoSo || record?.coSo?.tenCoSo || record?.coSo?.ten || "",
-            tenQuocGia: record?.tenQuocGia || record?.quocGia?.tenQuocGia || record?.quocGia?.ten || "",
-            tenTinhThanh: record?.tenTinhThanh || record?.tinhThanh?.tenTinhThanh || record?.tinhThanh?.ten || "",
-            tenXaPhuong: record?.tenXaPhuong || record?.xaPhuong?.tenXaPhuong || record?.xaPhuong?.ten || ""
+            tenDangNhap: record?.tenDangNhap || record?.taiKhoan?.tenDangNhap || '',
+            gioiTinhText: gioiTinh?.label || record?.gioiTinhText || '',
+            tenChucVu: record?.tenChucVu || record?.chucVu?.tenChucVu || record?.chucVu?.ten || '',
+            tenPhongBan: record?.tenPhongBan || record?.phongBan?.tenPhongBan || record?.phongBan?.ten || '',
+            tenCoSo: record?.tenCoSo || record?.coSo?.tenCoSo || record?.coSo?.ten || '',
+            tenQuocGia: record?.tenQuocGia || record?.quocGia?.tenQuocGia || record?.quocGia?.ten || '',
+            tenTinhThanh: record?.tenTinhThanh || record?.tinhThanh?.tenTinhThanh || record?.tinhThanh?.ten || '',
+            tenXaPhuong: record?.tenXaPhuong || record?.xaPhuong?.tenXaPhuong || record?.xaPhuong?.ten || ''
         };
     }
 
@@ -439,35 +431,32 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             dsGioiTinh = [];
 
-            window.MCS?.toast?.error(
-                error?.message ||
-                "Không thể tải danh sách giới tính."
-            );
+            window.MCS?.toast?.error(error?.message || 'Không thể tải danh sách giới tính.');
         }
     }
 
     async function loadChucVu() {
-        dsChucVu = await loadLookup(API_CHUC_VU, "chức vụ");
+        dsChucVu = await loadLookup(API_CHUC_VU, 'chức vụ');
     }
 
     async function loadCoSo() {
-        dsCoSo = await loadLookup(API_CO_SO, "cơ sở");
+        dsCoSo = await loadLookup(API_CO_SO, 'cơ sở');
     }
 
     async function loadPhongBan() {
-        dsPhongBan = await loadLookup(API_PHONG_BAN, "phòng ban");
+        dsPhongBan = await loadLookup(API_PHONG_BAN, 'phòng ban');
     }
 
     async function loadQuocGia() {
-        dsQuocGia = await loadLookup(API_QUOC_GIA, "quốc gia");
+        dsQuocGia = await loadLookup(API_QUOC_GIA, 'quốc gia');
     }
 
     async function loadTinhThanh() {
-        dsTinhThanh = await loadLookup(API_TINH_THANH, "tỉnh thành");
+        dsTinhThanh = await loadLookup(API_TINH_THANH, 'tỉnh thành');
     }
 
     async function loadXaPhuong() {
-        dsXaPhuong = await loadLookup(API_XA_PHUONG, "xã phường");
+        dsXaPhuong = await loadLookup(API_XA_PHUONG, 'xã phường');
     }
 
     async function loadLookup(url, label) {
@@ -475,40 +464,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await window.MCS.api.request(url);
             const data = response?.data;
 
-            const records = Array.isArray(data)
-                ? data
-                : (data?.items || data?.data || []);
+            const records = Array.isArray(data) ? data : data?.items || data?.data || [];
 
-            return records.filter(item => item?.active !== false);
+            return records.filter((item) => item?.active !== false);
         } catch (error) {
-            console.error(
-                `Không thể tải ${label}.`,
-                error
-            );
+            console.error(`Không thể tải ${label}.`, error);
 
-            window.MCS?.toast?.error(
-                error?.message ||
-                `Không thể tải danh sách ${label}.`
-            );
+            window.MCS?.toast?.error(error?.message || `Không thể tải danh sách ${label}.`);
 
             return [];
         }
     }
 
     function normalizeEnumData(data) {
-        const records = Array.isArray(data)
-            ? data
-            : [];
+        const records = Array.isArray(data) ? data : [];
 
         return records
-            .map(item => {
-                if (
-                    item &&
-                    typeof item === "object"
-                ) {
+            .map((item) => {
+                if (item && typeof item === 'object') {
                     return {
                         value: item.value ?? item.id ?? item.ma,
-                        label: item.label ?? item.ten ?? item.name ?? String(item.value ?? "")
+                        label: item.label ?? item.ten ?? item.name ?? String(item.value ?? '')
                     };
                 }
 
@@ -517,154 +493,109 @@ document.addEventListener("DOMContentLoaded", () => {
                     label: String(item)
                 };
             })
-            .filter(
-                item =>
-                    item.value !== undefined &&
-                    item.value !== null
-            );
+            .filter((item) => item.value !== undefined && item.value !== null);
     }
 
     function renderAllSelects() {
         renderSelect(
-            "gioiTinh",
+            'gioiTinh',
             dsGioiTinh,
-            item => item.value,
-            item => item.label,
-            ""
+            (item) => item.value,
+            (item) => item.label,
+            ''
         );
 
         renderSelect(
-            "chucVuId",
+            'chucVuId',
             dsChucVu,
-            item => item.id,
-            item => buildLabel(item.maChucVu, item.tenChucVu),
-            ""
+            (item) => item.id,
+            (item) => buildLabel(item.maChucVu, item.tenChucVu),
+            ''
         );
 
         renderSelect(
-            "coSoId",
+            'coSoId',
             dsCoSo,
-            item => item.id,
-            item => buildLabel(item.maCoSo, item.tenCoSo),
-            ""
+            (item) => item.id,
+            (item) => buildLabel(item.maCoSo, item.tenCoSo),
+            ''
         );
 
-        renderPhongBanSelect(null, "");
+        renderPhongBanSelect(null, '');
 
         renderSelect(
-            "quocGiaId",
+            'quocGiaId',
             dsQuocGia,
-            item => item.id,
-            item => buildLabel(
-                item.maQuocGia || item.ma,
-                item.tenQuocGia || item.ten
-            ),
-            ""
+            (item) => item.id,
+            (item) => buildLabel(item.maQuocGia || item.ma, item.tenQuocGia || item.ten),
+            ''
         );
 
-        renderTinhThanhSelect(null, "");
-        renderXaPhuongSelect(null, "");
+        renderTinhThanhSelect(null, '');
+        renderXaPhuongSelect(null, '');
     }
 
-    function renderSelect(
-        selectId,
-        items,
-        getValue,
-        getLabel,
-        selectedValue = ""
-    ) {
+    function renderSelect(selectId, items, getValue, getLabel, selectedValue = '') {
         const select = document.getElementById(selectId);
 
         if (!select) {
             return;
         }
 
-        const selected =
-            selectedValue === null ||
-            selectedValue === undefined
-                ? ""
-                : String(selectedValue);
+        const selected = selectedValue === null || selectedValue === undefined ? '' : String(selectedValue);
 
-        select.innerHTML = "";
+        select.innerHTML = '';
 
-        const emptyOption = document.createElement("option");
+        const emptyOption = document.createElement('option');
 
-        emptyOption.value = "";
-        emptyOption.textContent = "";
-        emptyOption.selected = selected === "";
+        emptyOption.value = '';
+        emptyOption.textContent = '';
+        emptyOption.selected = selected === '';
 
         select.appendChild(emptyOption);
 
-        items.forEach(item => {
+        items.forEach((item) => {
             const value = String(getValue(item));
-            const option = document.createElement("option");
+            const option = document.createElement('option');
 
             option.value = value;
             option.textContent = getLabel(item);
-            option.selected =
-                selected !== "" &&
-                value === selected;
+            option.selected = selected !== '' && value === selected;
 
             select.appendChild(option);
         });
 
         select.value = selected;
 
-        const smartSelect = select
-            .closest("[data-smart-select]")
-            ?.smartSelect;
+        const smartSelect = select.closest('[data-smart-select]')?.smartSelect;
 
         smartSelect?.refresh?.();
 
-        if (selected === "") {
+        if (selected === '') {
             smartSelect?.clear?.();
         }
     }
 
-    function renderPhongBanSelect(
-        coSoId = null,
-        selectedValue = ""
-    ) {
+    function renderPhongBanSelect(coSoId = null, selectedValue = '') {
         const id = normalizeNullableNumber(coSoId);
 
-        const records = id === null
-            ? []
-            : dsPhongBan.filter(
-                item =>
-                    Number(item.coSoId ?? item.coSo?.id) === id
-            );
+        const records = id === null ? [] : dsPhongBan.filter((item) => Number(item.coSoId ?? item.coSo?.id) === id);
 
         renderSelect(
-            "phongBanId",
+            'phongBanId',
             records,
-            item => item.id,
-            item => buildLabel(
-                item.maPhongBan || item.ma,
-                item.tenPhongBan || item.ten
-            ),
+            (item) => item.id,
+            (item) => buildLabel(item.maPhongBan || item.ma, item.tenPhongBan || item.ten),
             selectedValue
         );
 
-        setSelectPlaceholder(
-            "phongBanId",
-            id === null
-                ? "Chọn cơ sở trước"
-                : "Chọn phòng ban..."
-        );
+        setSelectPlaceholder('phongBanId', id === null ? 'Chọn cơ sở trước' : 'Chọn phòng ban...');
 
-        setSelectDisabled(
-            "phongBanId",
-            id === null
-        );
+        setSelectDisabled('phongBanId', id === null);
     }
 
-    function setSelectPlaceholder(
-        selectId,
-        placeholder
-    ) {
-        const root = document
-            .getElementById(selectId)
-            ?.closest("[data-smart-select]");
+    function setSelectPlaceholder(selectId, placeholder) {
+        const root = document.getElementById(selectId)?.closest('[data-smart-select]');
 
         if (!root) {
             return;
@@ -672,122 +603,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
         root.dataset.selectPlaceholder = placeholder;
 
-        const placeholderElement = root.querySelector(
-            ".smart-select__placeholder"
-        );
+        const placeholderElement = root.querySelector('.smart-select__placeholder');
 
         if (placeholderElement) {
             placeholderElement.textContent = placeholder;
         }
     }
 
-    function renderTinhThanhSelect(
-        quocGiaId = null,
-        selectedValue = ""
-    ) {
+    function renderTinhThanhSelect(quocGiaId = null, selectedValue = '') {
         const id = normalizeNullableNumber(quocGiaId);
 
-        const records = id === null
-            ? []
-            : dsTinhThanh.filter(
-                item =>
-                    Number(item.quocGiaId ?? item.quocGia?.id) === id
-            );
+        const records =
+            id === null ? [] : dsTinhThanh.filter((item) => Number(item.quocGiaId ?? item.quocGia?.id) === id);
 
         renderSelect(
-            "tinhThanhId",
+            'tinhThanhId',
             records,
-            item => item.id,
-            item => buildLabel(
-                item.maTinhThanh || item.ma,
-                item.tenTinhThanh || item.ten
-            ),
+            (item) => item.id,
+            (item) => buildLabel(item.maTinhThanh || item.ma, item.tenTinhThanh || item.ten),
             selectedValue
         );
 
-        setSelectDisabled(
-            "tinhThanhId",
-            id === null
-        );
+        setSelectDisabled('tinhThanhId', id === null);
     }
 
-    function renderXaPhuongSelect(
-        tinhThanhId = null,
-        selectedValue = ""
-    ) {
+    function renderXaPhuongSelect(tinhThanhId = null, selectedValue = '') {
         const id = normalizeNullableNumber(tinhThanhId);
 
-        const records = id === null
-            ? []
-            : dsXaPhuong.filter(
-                item =>
-                    Number(item.tinhThanhId ?? item.tinhThanh?.id) === id
-            );
+        const records =
+            id === null ? [] : dsXaPhuong.filter((item) => Number(item.tinhThanhId ?? item.tinhThanh?.id) === id);
 
         renderSelect(
-            "xaPhuongId",
+            'xaPhuongId',
             records,
-            item => item.id,
-            item => buildLabel(
-                item.maXaPhuong || item.ma,
-                item.tenXaPhuong || item.ten
-            ),
+            (item) => item.id,
+            (item) => buildLabel(item.maXaPhuong || item.ma, item.tenXaPhuong || item.ten),
             selectedValue
         );
 
-        setSelectDisabled(
-            "xaPhuongId",
-            id === null
-        );
+        setSelectDisabled('xaPhuongId', id === null);
     }
 
     function bindDependentSelects() {
-        document
-            .getElementById("coSoId")
-            ?.addEventListener("change", event => {
-                renderPhongBanSelect(
-                    event.target.value,
-                    ""
-                );
-            });
+        document.getElementById('coSoId')?.addEventListener('change', (event) => {
+            renderPhongBanSelect(event.target.value, '');
+        });
 
-        document
-            .getElementById("quocGiaId")
-            ?.addEventListener("change", event => {
-                const quocGiaId = event.target.value;
+        document.getElementById('quocGiaId')?.addEventListener('change', (event) => {
+            const quocGiaId = event.target.value;
 
-                renderTinhThanhSelect(
-                    quocGiaId,
-                    ""
-                );
+            renderTinhThanhSelect(quocGiaId, '');
 
-                renderXaPhuongSelect(
-                    null,
-                    ""
-                );
-            });
+            renderXaPhuongSelect(null, '');
+        });
 
-        document
-            .getElementById("tinhThanhId")
-            ?.addEventListener("change", event => {
-                renderXaPhuongSelect(
-                    event.target.value,
-                    ""
-                );
-            });
+        document.getElementById('tinhThanhId')?.addEventListener('change', (event) => {
+            renderXaPhuongSelect(event.target.value, '');
+        });
     }
 
-    function syncDateField(
-        inputId,
-        value
-    ) {
+    function syncDateField(inputId, value) {
         const input = document.getElementById(inputId);
 
         if (!input) {
             return;
         }
 
-        const root = input.closest("[data-date-picker]");
+        const root = input.closest('[data-date-picker]');
 
         if (!root) {
             return;
@@ -796,10 +678,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const normalizedValue = normalizeDate(value);
 
         if (root.datePicker?.setValue) {
-            root.datePicker.setValue(
-                normalizedValue,
-                false
-            );
+            root.datePicker.setValue(normalizedValue, false);
 
             return;
         }
@@ -807,209 +686,123 @@ document.addEventListener("DOMContentLoaded", () => {
         input.value = normalizedValue;
     }
 
-    function syncImageField(
-        inputId,
-        value,
-        mode
-    ) {
-        const field = document.querySelector(
-            `[data-form-field="${inputId}"]`
-        );
+    function syncImageField(inputId, value, mode) {
+        const field = document.querySelector(`[data-form-field="${inputId}"]`);
 
-        const root = field?.querySelector(
-            "[data-image-picker]"
-        );
+        const root = field?.querySelector('[data-image-picker]');
 
         if (!root) {
             return;
         }
 
-        const imagePicker = window.MCS.imagePicker
-            ?.initialize(root);
+        const imagePicker = window.MCS.imagePicker?.initialize(root);
 
         if (!imagePicker) {
             return;
         }
 
-        imagePicker.setValue(
-            value || ""
-        );
+        imagePicker.setValue(value || '');
 
-        imagePicker.setDisabled(
-            mode === "view"
-        );
+        imagePicker.setDisabled(mode === 'view');
     }
 
     function normalizeImageUrl(value) {
-        const path = String(value || "").trim();
+        const path = String(value || '').trim();
 
         if (!path) {
-            return "";
+            return '';
         }
 
-        if (
-            path.startsWith("http://") ||
-            path.startsWith("https://") ||
-            path.startsWith("/")
-        ) {
+        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) {
             return path;
         }
 
         return `/${path}`;
     }
 
-    function syncAllSelects(
-        record,
-        mode
-    ) {
+    function syncAllSelects(record, mode) {
         renderSelect(
-            "gioiTinh",
+            'gioiTinh',
             dsGioiTinh,
-            item => item.value,
-            item => item.label,
-            record?.gioiTinh ?? ""
+            (item) => item.value,
+            (item) => item.label,
+            record?.gioiTinh ?? ''
         );
 
         renderSelect(
-            "chucVuId",
+            'chucVuId',
             dsChucVu,
-            item => item.id,
-            item => buildLabel(item.maChucVu, item.tenChucVu),
-            record?.chucVuId ?? record?.chucVu?.id ?? ""
+            (item) => item.id,
+            (item) => buildLabel(item.maChucVu, item.tenChucVu),
+            record?.chucVuId ?? record?.chucVu?.id ?? ''
         );
 
         renderSelect(
-            "coSoId",
+            'coSoId',
             dsCoSo,
-            item => item.id,
-            item => buildLabel(item.maCoSo, item.tenCoSo),
-            record?.coSoId ?? record?.coSo?.id ?? ""
+            (item) => item.id,
+            (item) => buildLabel(item.maCoSo, item.tenCoSo),
+            record?.coSoId ?? record?.coSo?.id ?? ''
         );
 
         renderSelect(
-            "quocGiaId",
+            'quocGiaId',
             dsQuocGia,
-            item => item.id,
-            item => buildLabel(
-                item.maQuocGia || item.ma,
-                item.tenQuocGia || item.ten
-            ),
-            record?.quocGiaId ?? record?.quocGia?.id ?? ""
+            (item) => item.id,
+            (item) => buildLabel(item.maQuocGia || item.ma, item.tenQuocGia || item.ten),
+            record?.quocGiaId ?? record?.quocGia?.id ?? ''
         );
 
-        setSelectMode("gioiTinh", mode);
-        setSelectMode("chucVuId", mode);
-        setSelectMode("coSoId", mode);
-        setSelectMode("quocGiaId", mode);
+        setSelectMode('gioiTinh', mode);
+        setSelectMode('chucVuId', mode);
+        setSelectMode('coSoId', mode);
+        setSelectMode('quocGiaId', mode);
     }
 
-    function syncAddressHierarchy(
-        record,
-        mode
-    ) {
-        const quocGiaId =
-            record?.quocGiaId ??
-            record?.quocGia?.id ??
-            null;
+    function syncAddressHierarchy(record, mode) {
+        const quocGiaId = record?.quocGiaId ?? record?.quocGia?.id ?? null;
 
-        const tinhThanhId =
-            record?.tinhThanhId ??
-            record?.tinhThanh?.id ??
-            null;
+        const tinhThanhId = record?.tinhThanhId ?? record?.tinhThanh?.id ?? null;
 
-        const xaPhuongId =
-            record?.xaPhuongId ??
-            record?.xaPhuong?.id ??
-            null;
+        const xaPhuongId = record?.xaPhuongId ?? record?.xaPhuong?.id ?? null;
 
-        renderTinhThanhSelect(
-            quocGiaId,
-            tinhThanhId
-        );
+        renderTinhThanhSelect(quocGiaId, tinhThanhId);
 
-        renderXaPhuongSelect(
-            tinhThanhId,
-            xaPhuongId
-        );
+        renderXaPhuongSelect(tinhThanhId, xaPhuongId);
 
-        setSelectMode(
-            "tinhThanhId",
-            mode,
-            !quocGiaId
-        );
+        setSelectMode('tinhThanhId', mode, !quocGiaId);
 
-        setSelectMode(
-            "xaPhuongId",
-            mode,
-            !tinhThanhId
-        );
+        setSelectMode('xaPhuongId', mode, !tinhThanhId);
     }
 
-    function setSelectMode(
-        selectId,
-        mode,
-        forceDisabled = false
-    ) {
-        const root = document
-            .getElementById(selectId)
-            ?.closest("[data-smart-select]");
+    function setSelectMode(selectId, mode, forceDisabled = false) {
+        const root = document.getElementById(selectId)?.closest('[data-smart-select]');
 
-        root?.smartSelect?.setDisabled?.(
-            mode === "view" ||
-            forceDisabled
-        );
+        root?.smartSelect?.setDisabled?.(mode === 'view' || forceDisabled);
     }
 
-    function setSelectDisabled(
-        selectId,
-        disabled
-    ) {
+    function setSelectDisabled(selectId, disabled) {
         document
             .getElementById(selectId)
-            ?.closest("[data-smart-select]")
-            ?.smartSelect
-            ?.setDisabled?.(
-                Boolean(disabled)
-            );
+            ?.closest('[data-smart-select]')
+            ?.smartSelect?.setDisabled?.(Boolean(disabled));
     }
 
-    function syncOrganizationHierarchy(
-        record,
-        mode
-    ) {
-        const coSoId =
-            record?.coSoId ??
-            record?.coSo?.id ??
-            null;
+    function syncOrganizationHierarchy(record, mode) {
+        const coSoId = record?.coSoId ?? record?.coSo?.id ?? null;
 
-        const phongBanId =
-            record?.phongBanId ??
-            record?.phongBan?.id ??
-            null;
+        const phongBanId = record?.phongBanId ?? record?.phongBan?.id ?? null;
 
-        renderPhongBanSelect(
-            coSoId,
-            phongBanId
-        );
+        renderPhongBanSelect(coSoId, phongBanId);
 
-        setSelectMode(
-            "phongBanId",
-            mode,
-            !coSoId
-        );
+        setSelectMode('phongBanId', mode, !coSoId);
     }
 
-    function buildLabel(
-        code,
-        name
-    ) {
-        const ma = String(code || "").trim();
-        const ten = String(name || "").trim();
+    function buildLabel(code, name) {
+        const ma = String(code || '').trim();
+        const ten = String(name || '').trim();
 
-        if (
-            ma &&
-            ten
-        ) {
+        if (ma && ten) {
             return `${ma} - ${ten}`;
         }
 
@@ -1017,63 +810,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function normalizeNullableText(value) {
-        const text = String(value ?? "").trim();
+        const text = String(value ?? '').trim();
 
         return text || null;
     }
 
     function normalizeNullableNumber(value) {
-        if (
-            value === "" ||
-            value === null ||
-            value === undefined
-        ) {
+        if (value === '' || value === null || value === undefined) {
             return null;
         }
 
         const number = Number(value);
 
-        return Number.isFinite(number)
-            ? number
-            : null;
+        return Number.isFinite(number) ? number : null;
     }
 
     function normalizeDate(value) {
-        if (
-            value === undefined ||
-            value === null ||
-            value === ""
-        ) {
-            return "";
+        if (value === undefined || value === null || value === '') {
+            return '';
         }
 
         const text = String(value).trim();
 
-        const isoMatch = text.match(
-            /^(\d{4})-(\d{2})-(\d{2})/
-        );
+        const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
         if (isoMatch) {
             return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
         }
 
-        const displayMatch = text.match(
-            /^(\d{2})[\/\-](\d{2})[\/\-](\d{4})/
-        );
+        const displayMatch = text.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})/);
 
         if (displayMatch) {
             return `${displayMatch[3]}-${displayMatch[2]}-${displayMatch[1]}`;
         }
 
-        return "";
+        return '';
     }
 
     function buildDateTimeWithTimezone(value) {
-        if (
-            value === undefined ||
-            value === null ||
-            value === ""
-        ) {
+        if (value === undefined || value === null || value === '') {
             return null;
         }
 
@@ -1087,43 +862,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function maskPhone(value) {
-        const text = String(value || "").trim();
+        const text = String(value || '').trim();
 
         if (!text) {
-            return "";
+            return '';
         }
 
         if (text.length <= 4) {
-            return "*".repeat(text.length);
+            return '*'.repeat(text.length);
         }
 
         const first = text.substring(0, 2);
         const last = text.substring(text.length - 2);
         const hiddenLength = Math.max(4, text.length - 4);
 
-        return (
-            first +
-            "x".repeat(hiddenLength) +
-            last
-        );
+        return first + 'x'.repeat(hiddenLength) + last;
     }
 
     function renderHiddenPhone(value) {
-        return createPrivateValue(
-            value,
-            maskPhone(value),
-            "số điện thoại"
-        );
+        return createPrivateValue(value, maskPhone(value), 'số điện thoại');
     }
 
     function maskEmail(value) {
-        const text = String(value || "").trim();
+        const text = String(value || '').trim();
 
         if (!text) {
-            return "";
+            return '';
         }
 
-        const atIndex = text.indexOf("@");
+        const atIndex = text.indexOf('@');
 
         if (atIndex <= 0) {
             return text;
@@ -1133,88 +900,50 @@ document.addEventListener("DOMContentLoaded", () => {
         const domain = text.substring(atIndex);
 
         if (local.length <= 2) {
-            return (
-                local.substring(0, 1) +
-                "xxxx" +
-                domain
-            );
+            return local.substring(0, 1) + 'xxxx' + domain;
         }
 
-        const firstLength = Math.min(
-            2,
-            local.length
-        );
+        const firstLength = Math.min(2, local.length);
 
-        const lastLength =
-            local.length >= 5
-                ? 2
-                : 1;
+        const lastLength = local.length >= 5 ? 2 : 1;
 
-        const first = local.substring(
-            0,
-            firstLength
-        );
+        const first = local.substring(0, firstLength);
 
-        const last = local.substring(
-            local.length - lastLength
-        );
+        const last = local.substring(local.length - lastLength);
 
-        return (
-            first +
-            "xxxxx" +
-            last +
-            domain
-        );
+        return first + 'xxxxx' + last + domain;
     }
 
     function renderHiddenEmail(value) {
-        return createPrivateValue(
-            value,
-            maskEmail(value),
-            "email"
-        );
+        return createPrivateValue(value, maskEmail(value), 'email');
     }
 
-    function createPrivateValue(
-        value,
-        maskedValue,
-        label
-    ) {
-        const fullValue = String(value || "").trim();
+    function createPrivateValue(value, maskedValue, label) {
+        const fullValue = String(value || '').trim();
 
         if (!fullValue) {
-            return document.createTextNode("—");
+            return document.createTextNode('—');
         }
 
-        const button = document.createElement("button");
+        const button = document.createElement('button');
 
-        button.type = "button";
-        button.className = "nhan-vien-private-value";
+        button.type = 'button';
+        button.className = 'nhan-vien-private-value';
         button.textContent = maskedValue;
-        button.dataset.visible = "false";
+        button.dataset.visible = 'false';
         button.title = `Nhấn để xem ${label}`;
 
-        button.addEventListener("click", event => {
+        button.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
 
-            const visible =
-                button.dataset.visible === "true";
+            const visible = button.dataset.visible === 'true';
 
-            button.dataset.visible =
-                visible
-                    ? "false"
-                    : "true";
+            button.dataset.visible = visible ? 'false' : 'true';
 
-            button.textContent =
-                visible
-                    ? maskedValue
-                    : fullValue;
+            button.textContent = visible ? maskedValue : fullValue;
 
-            button.title =
-                visible
-                    ? `Nhấn để xem ${label}`
-                    : `Nhấn để ẩn ${label}`;
+            button.title = visible ? `Nhấn để xem ${label}` : `Nhấn để ẩn ${label}`;
         });
 
         return button;
@@ -1222,11 +951,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function formatDisplayDate(value) {
         if (!value) {
-            return "";
+            return '';
         }
 
         const text = String(value).substring(0, 10);
-        const parts = text.split("-");
+        const parts = text.split('-');
 
         if (parts.length !== 3) {
             return text;
@@ -1237,45 +966,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function exportData() {
         try {
-            const result = await window.MCS.api.requestFile(
-                `${API_BASE}/xuat-du-lieu`,
-                {
-                    method: "GET"
-                }
-            );
+            const result = await window.MCS.api.requestFile(`${API_BASE}/xuat-du-lieu`, {
+                method: 'GET'
+            });
 
-            window.MCS.api.downloadBlob(
-                result.blob,
-                result.fileName ||
-                "dm_nhan_vien.xlsx"
-            );
+            window.MCS.api.downloadBlob(result.blob, result.fileName || 'dm_nhan_vien.xlsx');
 
-            window.MCS?.toast?.success(
-                "Xuất dữ liệu thành công."
-            );
+            window.MCS?.toast?.success('Xuất dữ liệu thành công.');
         } catch (error) {
-            console.error(
-                "Xuất dữ liệu nhân viên thất bại:",
-                error
-            );
+            console.error('Xuất dữ liệu nhân viên thất bại:', error);
 
-            window.MCS?.toast?.error(
-                error?.message ||
-                "Xuất dữ liệu thất bại."
-            );
+            window.MCS?.toast?.error(error?.message || 'Xuất dữ liệu thất bại.');
         }
     }
 
     function importData(catalogInstance) {
-        const input = document.createElement("input");
+        const input = document.createElement('input');
 
-        input.type = "file";
-        input.accept = ".xlsx,.xls,.xlsm";
+        input.type = 'file';
+        input.accept = '.xlsx,.xls,.xlsm';
         input.hidden = true;
 
         document.body.appendChild(input);
 
-        input.addEventListener("change", async () => {
+        input.addEventListener('change', async () => {
             const file = input.files?.[0];
 
             if (!file) {
@@ -1286,42 +1000,24 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const body = new FormData();
 
-                body.append(
-                    "file",
-                    file
-                );
+                body.append('file', file);
 
-                const result = await window.MCS.api.requestFile(
-                    `${API_BASE}/import-du-lieu`,
-                    {
-                        method: "POST",
-                        body
-                    }
-                );
+                const result = await window.MCS.api.requestFile(`${API_BASE}/import-du-lieu`, {
+                    method: 'POST',
+                    body
+                });
 
-                window.MCS.api.downloadBlob(
-                    result.blob,
-                    result.fileName ||
-                    `dm_nhan_vien_import_${Date.now()}.xlsx`
-                );
+                window.MCS.api.downloadBlob(result.blob, result.fileName || `dm_nhan_vien_import_${Date.now()}.xlsx`);
 
                 if (catalogInstance?.load) {
                     await catalogInstance.load();
                 }
 
-                window.MCS?.toast?.success(
-                    "Đã xử lý import. Vui lòng kiểm tra file kết quả."
-                );
+                window.MCS?.toast?.success('Đã xử lý import. Vui lòng kiểm tra file kết quả.');
             } catch (error) {
-                console.error(
-                    "Import dữ liệu nhân viên thất bại:",
-                    error
-                );
+                console.error('Import dữ liệu nhân viên thất bại:', error);
 
-                window.MCS?.toast?.error(
-                    error?.message ||
-                    "Import dữ liệu thất bại."
-                );
+                window.MCS?.toast?.error(error?.message || 'Import dữ liệu thất bại.');
             } finally {
                 input.remove();
             }

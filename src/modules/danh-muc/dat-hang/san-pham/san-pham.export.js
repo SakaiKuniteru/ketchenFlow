@@ -1,13 +1,10 @@
-"use strict";
-const {
-    createExportFile
-} = require("../../../../helpers/excel/excel-export");
-const sanPhamRepository = require("./san-pham.repository");
-const MA_BAO_CAO = "dm_san_pham";
+'use strict';
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
+const sanPhamRepository = require('./san-pham.repository');
+const MA_BAO_CAO = 'dm_san_pham';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
-
 
 function mapExportItem(item) {
     return {

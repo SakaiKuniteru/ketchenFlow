@@ -1,34 +1,24 @@
 .time-picker {
-
     position: relative;
 
     width: 100%;
 
     min-width: 0;
-
 }
-
 
 .time-picker__control {
-
     position: relative;
 
     width: 100%;
 
     min-width: 0;
-
 }
-
 
 .time-picker__input {
-
     padding-right: 48px;
-
 }
 
-
 .time-picker__toggle {
-
     position: absolute;
 
     top: 50%;
@@ -51,68 +41,35 @@
 
     border-radius: 8px;
 
-    color:
-        var(
-            --color-text-muted
-        );
+    color: var(--color-text-muted);
 
-    background:
-        transparent;
+    background: transparent;
 
     cursor: pointer;
 
-    transform:
-        translateY(
-            -50%
-        );
+    transform: translateY(-50%);
 
     transition:
-        color
-        var(
-            --transition-fast
-        ),
-        background-color
-        var(
-            --transition-fast
-        );
-
+        color var(--transition-fast),
+        background-color var(--transition-fast);
 }
 
+.time-picker__toggle:hover:not(:disabled) {
+    color: var(--color-primary);
 
-.time-picker__toggle:hover:not(
-    :disabled
-) {
-
-    color:
-        var(
-            --color-primary
-        );
-
-    background:
-        var(
-            --color-primary-soft
-        );
-
+    background: var(--color-primary-soft);
 }
-
 
 .time-picker__toggle:disabled {
-
     opacity: 0.55;
 
     cursor: not-allowed;
-
 }
 
-
 .time-picker__dropdown {
-
     position: absolute;
 
-    top:
-        calc(
-            100% + 7px
-        );
+    top: calc(100% + 7px);
 
     left: 0;
 
@@ -120,56 +77,26 @@
 
     width: 290px;
 
-    max-width:
-        calc(
-            100vw - 32px
-        );
+    max-width: calc(100vw - 32px);
 
     overflow: hidden;
 
-    border:
-        1px solid
-        var(
-            --color-border-light
-        );
+    border: 1px solid var(--color-border-light);
 
-    border-radius:
-        12px;
+    border-radius: 12px;
 
-    background:
-        var(
-            --color-surface
-        );
+    background: var(--color-surface);
 
     box-shadow:
-        0 20px 55px
-        rgba(
-            15,
-            23,
-            42,
-            0.18
-        ),
-        0 5px 14px
-        rgba(
-            15,
-            23,
-            42,
-            0.08
-        );
-
+        0 20px 55px rgba(15, 23, 42, 0.18),
+        0 5px 14px rgba(15, 23, 42, 0.08);
 }
-
 
 .time-picker__dropdown[hidden] {
-
-    display:
-        none !important;
-
+    display: none !important;
 }
 
-
 .time-picker__fields {
-
     display: flex;
 
     align-items: flex-end;
@@ -178,15 +105,10 @@
 
     gap: 7px;
 
-    padding:
-        16px
-        14px;
-
+    padding: 16px 14px;
 }
 
-
 .time-picker__field {
-
     display: grid;
 
     gap: 7px;
@@ -194,71 +116,44 @@
     width: 62px;
 
     min-width: 0;
-
 }
 
-
 .time-picker__label {
-
-    color:
-        var(
-            --color-text-muted
-        );
+    color: var(--color-text-muted);
 
     font-size: 11px;
 
     font-weight: 700;
 
     text-align: center;
-
 }
 
-
 .time-picker__number {
-
     display: grid;
 
     justify-items: center;
 
     gap: 3px;
-
 }
 
-
 .time-picker__number-input {
-
     display: block;
 
     width: 54px;
 
     height: 42px;
 
-    padding:
-        0
-        5px;
+    padding: 0 5px;
 
-    border:
-        1px solid
-        var(
-            --color-border
-        );
+    border: 1px solid var(--color-border);
 
-    border-radius:
-        var(
-            --radius-md
-        );
+    border-radius: var(--radius-md);
 
     outline: none;
 
-    color:
-        var(
-            --color-text-primary
-        );
+    color: var(--color-text-primary);
 
-    background:
-        var(
-            --color-surface
-        );
+    background: var(--color-surface);
 
     font-family: inherit;
 
@@ -267,31 +162,15 @@
     font-weight: 700;
 
     text-align: center;
-
 }
-
 
 .time-picker__number-input:focus {
+    border-color: var(--color-primary);
 
-    border-color:
-        var(
-            --color-primary
-        );
-
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            var(
-                --color-primary-rgb
-            ),
-            0.1
-        );
-
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
-
 .time-picker__step {
-
     display: inline-flex;
 
     align-items: center;
@@ -308,56 +187,34 @@
 
     border-radius: 6px;
 
-    color:
-        var(
-            --color-text-muted
-        );
+    color: var(--color-text-muted);
 
-    background:
-        transparent;
+    background: transparent;
 
     font-size: 10px;
 
     cursor: pointer;
-
 }
-
 
 .time-picker__step:hover {
+    color: var(--color-primary);
 
-    color:
-        var(
-            --color-primary
-        );
-
-    background:
-        var(
-            --color-primary-soft
-        );
-
+    background: var(--color-primary-soft);
 }
 
-
 .time-picker__separator {
-
     align-self: center;
 
     margin-top: 20px;
 
-    color:
-        var(
-            --color-text-muted
-        );
+    color: var(--color-text-muted);
 
     font-size: 18px;
 
     font-weight: 800;
-
 }
 
-
 .time-picker__footer {
-
     display: flex;
 
     align-items: center;
@@ -368,21 +225,12 @@
 
     min-height: 48px;
 
-    padding:
-        8px
-        12px;
+    padding: 8px 12px;
 
-    border-top:
-        1px solid
-        var(
-            --color-border-light
-        );
-
+    border-top: 1px solid var(--color-border-light);
 }
 
-
 .time-picker__footer-button {
-
     display: inline-flex;
 
     align-items: center;
@@ -393,24 +241,15 @@
 
     min-height: 32px;
 
-    padding:
-        0
-        11px;
+    padding: 0 11px;
 
     border: 0;
 
-    border-radius:
-        var(
-            --radius-sm
-        );
+    border-radius: var(--radius-sm);
 
-    color:
-        var(
-            --color-primary
-        );
+    color: var(--color-primary);
 
-    background:
-        transparent;
+    background: transparent;
 
     font-family: inherit;
 
@@ -419,78 +258,32 @@
     font-weight: 700;
 
     cursor: pointer;
-
 }
-
 
 .time-picker__footer-button:hover {
-
-    background:
-        var(
-            --color-primary-soft
-        );
-
+    background: var(--color-primary-soft);
 }
-
 
 .time-picker__footer-button--primary {
+    color: #ffffff;
 
-    color:
-        #ffffff;
-
-    background:
-        var(
-            --color-primary
-        );
-
+    background: var(--color-primary);
 }
-
 
 .time-picker__footer-button--primary:hover {
-
-    background:
-        var(
-            --color-primary-hover
-        );
-
+    background: var(--color-primary-hover);
 }
 
-
-.detail-panel[
-    data-mode="view"
-]
-.time-picker__toggle {
-
+.detail-panel[data-mode='view'] .time-picker__toggle {
     pointer-events: none;
-
 }
 
-
-.detail-panel[
-    data-mode="view"
-]
-.time-picker__dropdown {
-
-    display:
-        none !important;
-
+.detail-panel[data-mode='view'] .time-picker__dropdown {
+    display: none !important;
 }
 
-
-@media (
-    max-width: 420px
-) {
-
+@media (max-width: 420px) {
     .time-picker__dropdown {
-
-        width:
-            min(
-                290px,
-                calc(
-                    100vw - 24px
-                )
-            );
-
+        width: min(290px, calc(100vw - 24px));
     }
-
 }

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="vi">
-    <head>
-        {{> common/head}}
-        <link rel="stylesheet" href="/assets/css/common/modal.css">
-        <link rel="stylesheet" href="/assets/css/common/toast.css">
-        <link rel="stylesheet" href="/assets/css/pages/auth/login.css">
-    </head>
-    
-    <body>
-        {{> common/loading}}
-        <div id="auth-layout">
-            <main class="auth-content">
-                {{{body}}}
-            </main>
-        </div>
-        {{> common/toast}}
-        {{> modals/alert}}
-        {{> modals/change-password}}
-        <script defer src="/assets/js/common/modal.js"></script>
-        <script defer src="/assets/js/common/toast.js"></script>
-        <script defer src="/assets/js/common/change-password.js"></script>
-        <script defer src="/assets/js/pages/auth/login.js"></script>
-    </body>
+
+<head>
+    {{> common/head}}
+    <link rel="stylesheet" href="/assets/css/common/modal.css">
+    <link rel="stylesheet" href="/assets/css/common/toast.css">
+    <link rel="stylesheet" href="/assets/css/pages/auth/login.css">
+</head>
+
+<body>
+    {{> common/loading}}
+    <div id="auth-layout">
+        <main class="auth-content">
+            {{{body}}}
+        </main>
+    </div>
+    {{> common/toast}}
+    {{> modals/alert}}
+    {{> modals/change-password}}
+    <script defer src="/assets/js/common/modal.js"></script>
+    <script defer src="/assets/js/common/toast.js"></script>
+    <script defer src="/assets/js/common/change-password.js"></script>
+    <script defer src="/assets/js/pages/auth/login.js"></script>
+</body>
+
 </html>

@@ -1,24 +1,16 @@
-<div
-    id="employeeProfileModal"
-    class="modal"
-    hidden>
+<div id="employeeProfileModal" class="modal" hidden>
 
     <div class="modal__backdrop">
     </div>
 
-    <section
-        class="modal__dialog employee-profile-modal"
-        role="dialog"
-        aria-modal="true"
+    <section class="modal__dialog employee-profile-modal" role="dialog" aria-modal="true"
         aria-labelledby="employeeProfileTitle">
 
         <header class="modal__header">
 
             <div>
 
-                <h2
-                    id="employeeProfileTitle"
-                    class="modal__title">
+                <h2 id="employeeProfileTitle" class="modal__title">
 
                     Thông tin nhân viên
 
@@ -30,11 +22,7 @@
 
             </div>
 
-            <button
-                type="button"
-                class="modal__close"
-                data-modal-close
-                aria-label="Đóng">
+            <button type="button" class="modal__close" data-modal-close aria-label="Đóng">
 
                 ×
 
@@ -42,23 +30,15 @@
 
         </header>
 
-        <form
-            id="employeeProfileForm"
-            class="employee-profile-form"
-            enctype="multipart/form-data"
-            novalidate>
+        <form id="employeeProfileForm" class="employee-profile-form" enctype="multipart/form-data" novalidate>
 
             <div class="modal__body">
 
                 <div class="employee-profile__avatar-section" data-form-field="anhDaiDien">
 
-                    <label
-                        class="employee-profile__avatar-picker"
-                        title="Nhấn để thay ảnh đại diện">
+                    <label class="employee-profile__avatar-picker" title="Nhấn để thay ảnh đại diện">
 
-                        <span
-                            class="employee-profile__avatar"
-                            data-employee-profile-avatar>
+                        <span class="employee-profile__avatar" data-employee-profile-avatar>
 
                             <span aria-hidden="true">
                                 👤
@@ -66,38 +46,24 @@
 
                         </span>
 
-                        <span
-                            class="employee-profile__avatar-overlay"
-                            aria-hidden="true">
+                        <span class="employee-profile__avatar-overlay" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                                stroke-linecap="round"
-                                stroke-linejoin="round">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
 
                                 <path
                                     d="M14.5 4 16 6h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l1.5-2h5Z">
                                 </path>
 
-                                <circle
-                                    cx="12"
-                                    cy="13"
-                                    r="3">
+                                <circle cx="12" cy="13" r="3">
                                 </circle>
 
                             </svg>
 
                         </span>
 
-                        <input
-                            type="file"
-                            name="anhDaiDien"
-                            accept="image/png,image/jpeg,image/webp"
-                            data-employee-avatar-input
-                            hidden>
+                        <input type="file" name="anhDaiDien" accept="image/png,image/jpeg,image/webp"
+                            data-employee-avatar-input hidden>
 
                     </label>
 
@@ -105,11 +71,7 @@
                         Nhấn vào ảnh để thay đổi
                     </span>
 
-                    <small
-                        id="anhDaiDienError"
-                        class="form-field__error"
-                        data-field-error="anhDaiDien"
-                        hidden>
+                    <small id="anhDaiDienError" class="form-field__error" data-field-error="anhDaiDien" hidden>
                     </small>
 
                 </div>
@@ -122,97 +84,54 @@
                             Mã nhân viên
                         </label>
 
-                        <input
-                            type="text"
-                            name="maNhanVien"
-                            class="form-input"
-                            disabled>
+                        <input type="text" name="maNhanVien" class="form-input" disabled>
 
                     </div>
 
-                    <div
-                        class="form-field"
-                        data-form-field="hoTen">
+                    <div class="form-field" data-form-field="hoTen">
 
-                        <label
-                            for="employeeHoTen"
-                            class="form-field__label">
+                        <label for="employeeHoTen" class="form-field__label">
 
                             Họ tên
 
                         </label>
 
-                        <input
-                            type="text"
-                            id="employeeHoTen"
-                            name="hoTen"
-                            class="form-input"
-                            maxlength="255"
+                        <input type="text" id="employeeHoTen" name="hoTen" class="form-input" maxlength="255"
                             autocomplete="name">
 
-                        <small
-                            id="hoTenError"
-                            class="form-field__error"
-                            data-field-error="hoTen"
-                            hidden>
+                        <small id="hoTenError" class="form-field__error" data-field-error="hoTen" hidden>
                         </small>
 
                     </div>
 
-                    <div
-                        class="form-field"
-                        data-form-field="email">
+                    <div class="form-field" data-form-field="email">
 
-                        <label
-                            for="employeeEmail"
-                            class="form-field__label">
+                        <label for="employeeEmail" class="form-field__label">
 
                             Email
 
                         </label>
 
-                        <input
-                            type="email"
-                            id="employeeEmail"
-                            name="email"
-                            class="form-input"
-                            maxlength="255"
+                        <input type="email" id="employeeEmail" name="email" class="form-input" maxlength="255"
                             autocomplete="email">
 
-                        <small
-                            id="emailError"
-                            class="form-field__error"
-                            data-field-error="email"
-                            hidden>
+                        <small id="emailError" class="form-field__error" data-field-error="email" hidden>
                         </small>
 
                     </div>
 
-                    <div
-                        class="form-field"
-                        data-form-field="soDienThoai">
+                    <div class="form-field" data-form-field="soDienThoai">
 
-                        <label
-                            for="employeeSoDienThoai"
-                            class="form-field__label">
+                        <label for="employeeSoDienThoai" class="form-field__label">
 
                             Số điện thoại
 
                         </label>
 
-                        <input
-                            type="tel"
-                            id="employeeSoDienThoai"
-                            name="soDienThoai"
-                            class="form-input"
-                            maxlength="20"
+                        <input type="tel" id="employeeSoDienThoai" name="soDienThoai" class="form-input" maxlength="20"
                             autocomplete="tel">
 
-                        <small
-                            id="soDienThoaiError"
-                            class="form-field__error"
-                            data-field-error="soDienThoai"
-                            hidden>
+                        <small id="soDienThoaiError" class="form-field__error" data-field-error="soDienThoai" hidden>
                         </small>
 
                     </div>
@@ -223,11 +142,7 @@
                             Cơ sở
                         </label>
 
-                        <input
-                            type="text"
-                            name="coSo"
-                            class="form-input"
-                            disabled>
+                        <input type="text" name="coSo" class="form-input" disabled>
 
                     </div>
 
@@ -237,11 +152,7 @@
                             Phòng ban
                         </label>
 
-                        <input
-                            type="text"
-                            name="phongBan"
-                            class="form-input"
-                            disabled>
+                        <input type="text" name="phongBan" class="form-input" disabled>
 
                     </div>
 
@@ -251,11 +162,7 @@
                             Chức vụ
                         </label>
 
-                        <input
-                            type="text"
-                            name="chucVu"
-                            class="form-input"
-                            disabled>
+                        <input type="text" name="chucVu" class="form-input" disabled>
 
                     </div>
 
@@ -301,66 +208,44 @@
                         disabled=true
                     }}
 
-                <div
-                    class="
+                    <div class="
                         form-field
                         employee-profile__full-width
-                    "
-                    data-form-field="diaChi">
+                    " data-form-field="diaChi">
 
-                    <label
-                        for="employeeDiaChi"
-                        class="form-field__label">
+                        <label for="employeeDiaChi" class="form-field__label">
 
-                        Địa chỉ
+                            Địa chỉ
 
-                    </label>
+                        </label>
 
-                    <textarea
-                        id="employeeDiaChi"
-                        name="diaChi"
-                        class="
+                        <textarea id="employeeDiaChi" name="diaChi" class="
                             form-input
                             employee-profile__textarea
-                        "
-                        maxlength="500">
+                        " maxlength="500">
                     </textarea>
 
-                    <small
-                        id="diaChiError"
-                        class="form-field__error"
-                        data-field-error="diaChi"
-                        hidden>
-                    </small>
+                        <small id="diaChiError" class="form-field__error" data-field-error="diaChi" hidden>
+                        </small>
+
+                    </div>
 
                 </div>
 
-                </div>
-
-                <div
-                    class="employee-profile__message"
-                    data-employee-profile-message
-                    role="alert"
-                    hidden>
+                <div class="employee-profile__message" data-employee-profile-message role="alert" hidden>
                 </div>
 
             </div>
 
             <footer class="modal__footer">
 
-                <button
-                    type="button"
-                    class="modal-button modal-button--secondary"
-                    data-modal-close>
+                <button type="button" class="modal-button modal-button--secondary" data-modal-close>
 
                     Hủy
 
                 </button>
 
-                <button
-                    type="submit"
-                    class="modal-button modal-button--primary"
-                    data-employee-profile-submit>
+                <button type="submit" class="modal-button modal-button--primary" data-employee-profile-submit>
 
                     Cập nhật
 

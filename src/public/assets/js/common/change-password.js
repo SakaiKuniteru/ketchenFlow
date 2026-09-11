@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("changePasswordForm");
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('changePasswordForm');
 
     if (!form) {
         return;
@@ -25,83 +25,50 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = form.querySelector('[type="submit"]');
 
     const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/;
-    const CHANGE_PASSWORD_ENDPOINT = "/api/mcs/v1/auth/doi-mat-khau";
+    const CHANGE_PASSWORD_ENDPOINT = '/api/mcs/v1/auth/doi-mat-khau';
 
     initializePasswordToggles();
     initializeValidation();
 
     async function requestChangePassword(payload) {
-        if (
-            window.MCS?.api &&
-            typeof window.MCS.api.request === "function"
-        ) {
-            return await window.MCS.api.request(
-                CHANGE_PASSWORD_ENDPOINT,
-                {
-                    method: "PATCH",
-                    body: JSON.stringify(payload)
-                }
-            );
+        if (window.MCS?.api && typeof window.MCS.api.request === 'function') {
+            return await window.MCS.api.request(CHANGE_PASSWORD_ENDPOINT, {
+                method: 'PATCH',
+                body: JSON.stringify(payload)
+            });
         }
 
-        const accessToken =
-            localStorage.getItem(
-                "accessToken"
-            );
+        const accessToken = localStorage.getItem('accessToken');
 
-        const response = await fetch(
-            CHANGE_PASSWORD_ENDPOINT,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    ...(accessToken
-                        ? {
-                            Authorization:
-                                `Bearer ${accessToken}`
-                        }
-                        : {})
-                },
-                credentials: "include",
-                body: JSON.stringify(
-                    payload
-                )
-            }
-        );
+        const response = await fetch(CHANGE_PASSWORD_ENDPOINT, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                ...(accessToken
+                    ? {
+                          Authorization: `Bearer ${accessToken}`
+                      }
+                    : {})
+            },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
 
-        const contentType =
-            response.headers.get(
-                "content-type"
-            ) || "";
+        const contentType = response.headers.get('content-type') || '';
 
         let result = null;
 
-        if (
-            contentType.includes(
-                "application/json"
-            )
-        ) {
-            result =
-                await response.json();
+        if (contentType.includes('application/json')) {
+            result = await response.json();
         }
 
-        if (
-            !response.ok ||
-            result?.success === false
-        ) {
-            const error =
-                new Error(
-                    result?.message ||
-                    result?.data?.message ||
-                    "Không thể đổi mật khẩu."
-                );
+        if (!response.ok || result?.success === false) {
+            const error = new Error(result?.message || result?.data?.message || 'Không thể đổi mật khẩu.');
 
-            error.statusCode =
-                response.status;
+            error.statusCode = response.status;
 
-            error.data =
-                result?.data;
+            error.data = result?.data;
 
             throw error;
         }
@@ -110,62 +77,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initializePasswordToggles() {
-        form
-            .querySelectorAll("[data-password-toggle]")
-            .forEach(button => {
-                button.addEventListener("click", event => {
-                    event.preventDefault();
-                    event.stopPropagation();
+        form.querySelectorAll('[data-password-toggle]').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
 
-                    const passwordField = button.closest(".password-field");
-                    const input = passwordField?.querySelector("input");
+                const passwordField = button.closest('.password-field');
+                const input = passwordField?.querySelector('input');
 
-                    if (!input) {
-                        return;
-                    }
+                if (!input) {
+                    return;
+                }
 
-                    const willShow = input.type === "password";
+                const willShow = input.type === 'password';
 
-                    input.type = willShow
-                        ? "text"
-                        : "password";
+                input.type = willShow ? 'text' : 'password';
 
-                    button.classList.toggle(
-                        "is-visible",
-                        willShow
-                    );
+                button.classList.toggle('is-visible', willShow);
 
-                    button.setAttribute(
-                        "aria-pressed",
-                        String(willShow)
-                    );
+                button.setAttribute('aria-pressed', String(willShow));
 
-                    button.setAttribute(
-                        "aria-label",
-                        willShow
-                            ? "Ẩn mật khẩu"
-                            : "Hiện mật khẩu"
-                    );
+                button.setAttribute('aria-label', willShow ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
 
-                    const length = input.value.length;
+                const length = input.value.length;
 
-                    input.focus({
-                        preventScroll: true
-                    });
-
-                    try {
-                        input.setSelectionRange(
-                            length,
-                            length
-                        );
-                    } catch (error) {
-                    }
+                input.focus({
+                    preventScroll: true
                 });
+
+                try {
+                    input.setSelectionRange(length, length);
+                } catch (error) {}
             });
+        });
     }
 
     function initializeValidation() {
-        form.addEventListener("submit", async event => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
             event.stopPropagation();
 
@@ -180,8 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setSubmitting(true);
 
             try {
-            const result =
-                await requestChangePassword({
+                const result = await requestChangePassword({
                     matKhauCu: fields.matKhauCu.value,
 
                     matKhauMoi: fields.matKhauMoi.value,
@@ -189,79 +136,51 @@ document.addEventListener("DOMContentLoaded", () => {
                     xacNhanMatKhau: fields.xacNhanMatKhauMoi.value
                 });
 
-                window.MCS?.toast?.success(
-                    result?.message ||
-                    "Đổi mật khẩu thành công."
-                );
+                window.MCS?.toast?.success(result?.message || 'Đổi mật khẩu thành công.');
 
                 window.dispatchEvent(
-                    new CustomEvent(
-                        "mcs:password-changed",
-                        {
-                            detail: {
-                                result
-                            }
+                    new CustomEvent('mcs:password-changed', {
+                        detail: {
+                            result
                         }
-                    )
+                    })
                 );
 
                 form.reset();
 
                 clearAllErrors();
 
-                updatePasswordRules("");
+                updatePasswordRules('');
 
                 resetPasswordToggles();
 
-                window.MCS.modal.close(
-                    "changePasswordModal"
-                );
+                window.MCS.modal.close('changePasswordModal');
 
-                window.setTimeout(
-                    () => {
-                        localStorage.removeItem("accessToken");
-                        localStorage.removeItem("refreshToken");
-                        localStorage.removeItem("currentUser");
+                window.setTimeout(() => {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('currentUser');
 
-                        sessionStorage.clear();
+                    sessionStorage.clear();
 
-                        window.location.replace(
-                            "/auth/login"
-                        );
-                    },
-                    1000
-                );
+                    window.location.replace('/auth/login');
+                }, 1000);
             } catch (error) {
-                console.error(
-                    "Lỗi đổi mật khẩu:",
-                    error
-                );
+                console.error('Lỗi đổi mật khẩu:', error);
 
-                const message =
-                    error?.message ||
-                    "Không thể đổi mật khẩu.";
+                const message = error?.message || 'Không thể đổi mật khẩu.';
 
                 const normalizedMessage = message.toLowerCase();
 
-                if (
-                    normalizedMessage.includes("mật khẩu cũ") ||
-                    normalizedMessage.includes("mật khẩu hiện tại")
-                ) {
-                    setFieldError(
-                        "matKhauCu",
-                        message
-                    );
+                if (normalizedMessage.includes('mật khẩu cũ') || normalizedMessage.includes('mật khẩu hiện tại')) {
+                    setFieldError('matKhauCu', message);
 
                     fields.matKhauCu?.focus();
                 } else {
                     if (window.MCS?.toast?.error) {
-                        window.MCS.toast.error(
-                            message
-                        );
+                        window.MCS.toast.error(message);
                     } else {
-                        window.alert(
-                            message
-                        );
+                        window.alert(message);
                     }
                 }
             } finally {
@@ -269,32 +188,23 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        Object.values(fields)
-            .forEach(field => {
-                field?.addEventListener("input", () => {
-                    clearFieldError(
-                        field.name
-                    );
+        Object.values(fields).forEach((field) => {
+            field?.addEventListener('input', () => {
+                clearFieldError(field.name);
 
-                    if (field.name === "matKhauMoi") {
-                        updatePasswordRules(
-                            field.value
-                        );
+                if (field.name === 'matKhauMoi') {
+                    updatePasswordRules(field.value);
 
-                        if (fields.xacNhanMatKhauMoi.value) {
-                            validateSingleField(
-                                "xacNhanMatKhauMoi"
-                            );
-                        }
+                    if (fields.xacNhanMatKhauMoi.value) {
+                        validateSingleField('xacNhanMatKhauMoi');
                     }
-                });
-
-                field?.addEventListener("blur", () => {
-                    validateSingleField(
-                        field.name
-                    );
-                });
+                }
             });
+
+            field?.addEventListener('blur', () => {
+                validateSingleField(field.name);
+            });
+        });
     }
 
     function updatePasswordRules(value) {
@@ -307,52 +217,33 @@ document.addEventListener("DOMContentLoaded", () => {
             noSpace: value.length > 0 && !/\s/.test(value)
         };
 
-        Object.entries(rules)
-            .forEach(([
-                key,
-                valid
-            ]) => {
-                passwordRules[key]?.classList.toggle(
-                    "is-valid",
-                    valid
-                );
-            });
+        Object.entries(rules).forEach(([key, valid]) => {
+            passwordRules[key]?.classList.toggle('is-valid', valid);
+        });
     }
 
     function validateForm() {
         let valid = true;
 
-        Object.keys(fields)
-            .forEach(fieldName => {
-                const fieldValid = validateSingleField(
-                    fieldName
-                );
+        Object.keys(fields).forEach((fieldName) => {
+            const fieldValid = validateSingleField(fieldName);
 
-                if (!fieldValid) {
-                    valid = false;
-                }
-            });
+            if (!fieldValid) {
+                valid = false;
+            }
+        });
 
         const matKhauCu = fields.matKhauCu.value;
         const matKhauMoi = fields.matKhauMoi.value;
 
-        if (
-            matKhauCu &&
-            matKhauMoi &&
-            matKhauCu === matKhauMoi
-        ) {
-            setFieldError(
-                "matKhauMoi",
-                "Mật khẩu mới phải khác mật khẩu hiện tại."
-            );
+        if (matKhauCu && matKhauMoi && matKhauCu === matKhauMoi) {
+            setFieldError('matKhauMoi', 'Mật khẩu mới phải khác mật khẩu hiện tại.');
 
             valid = false;
         }
 
         if (!valid) {
-            const firstInvalid = form.querySelector(
-                '[aria-invalid="true"]'
-            );
+            const firstInvalid = form.querySelector('[aria-invalid="true"]');
 
             firstInvalid?.focus();
         }
@@ -367,18 +258,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return true;
         }
 
-        clearFieldError(
-            fieldName
-        );
+        clearFieldError(fieldName);
 
         const value = field.value;
 
-        if (fieldName === "matKhauCu") {
+        if (fieldName === 'matKhauCu') {
             if (!value) {
-                setFieldError(
-                    fieldName,
-                    "Vui lòng nhập mật khẩu hiện tại."
-                );
+                setFieldError(fieldName, 'Vui lòng nhập mật khẩu hiện tại.');
 
                 return false;
             }
@@ -386,30 +272,19 @@ document.addEventListener("DOMContentLoaded", () => {
             return true;
         }
 
-        if (fieldName === "matKhauMoi") {
-            return validateNewPassword(
-                value
-            );
+        if (fieldName === 'matKhauMoi') {
+            return validateNewPassword(value);
         }
 
-        if (fieldName === "xacNhanMatKhauMoi") {
+        if (fieldName === 'xacNhanMatKhauMoi') {
             if (!value) {
-                setFieldError(
-                    fieldName,
-                    "Vui lòng nhập lại mật khẩu mới."
-                );
+                setFieldError(fieldName, 'Vui lòng nhập lại mật khẩu mới.');
 
                 return false;
             }
 
-            if (
-                value !==
-                fields.matKhauMoi.value
-            ) {
-                setFieldError(
-                    fieldName,
-                    "Mật khẩu nhập lại không khớp."
-                );
+            if (value !== fields.matKhauMoi.value) {
+                setFieldError(fieldName, 'Mật khẩu nhập lại không khớp.');
 
                 return false;
             }
@@ -421,76 +296,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function validateNewPassword(value) {
-        const fieldName = "matKhauMoi";
+        const fieldName = 'matKhauMoi';
 
         if (!value) {
-            setFieldError(
-                fieldName,
-                "Vui lòng nhập mật khẩu mới."
-            );
+            setFieldError(fieldName, 'Vui lòng nhập mật khẩu mới.');
 
             return false;
         }
 
         if (value.length < 8) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu mới phải có ít nhất 8 ký tự."
-            );
+            setFieldError(fieldName, 'Mật khẩu mới phải có ít nhất 8 ký tự.');
 
             return false;
         }
 
         if (/\s/.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu không được chứa khoảng trắng."
-            );
+            setFieldError(fieldName, 'Mật khẩu không được chứa khoảng trắng.');
 
             return false;
         }
 
         if (!/[a-z]/.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu phải có ít nhất một chữ thường."
-            );
+            setFieldError(fieldName, 'Mật khẩu phải có ít nhất một chữ thường.');
 
             return false;
         }
 
         if (!/[A-Z]/.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu phải có ít nhất một chữ hoa."
-            );
+            setFieldError(fieldName, 'Mật khẩu phải có ít nhất một chữ hoa.');
 
             return false;
         }
 
         if (!/\d/.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu phải có ít nhất một chữ số."
-            );
+            setFieldError(fieldName, 'Mật khẩu phải có ít nhất một chữ số.');
 
             return false;
         }
 
         if (!/[^A-Za-z0-9\s]/.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu phải có ít nhất một ký tự đặc biệt."
-            );
+            setFieldError(fieldName, 'Mật khẩu phải có ít nhất một ký tự đặc biệt.');
 
             return false;
         }
 
         if (!PASSWORD_PATTERN.test(value)) {
-            setFieldError(
-                fieldName,
-                "Mật khẩu chưa đáp ứng yêu cầu bảo mật."
-            );
+            setFieldError(fieldName, 'Mật khẩu chưa đáp ứng yêu cầu bảo mật.');
 
             return false;
         }
@@ -498,33 +349,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
-    function setFieldError(
-        fieldName,
-        message
-    ) {
+    function setFieldError(fieldName, message) {
         const field = fields[fieldName];
 
-        const container = form.querySelector(
-            `[data-form-field="${fieldName}"]`
-        );
+        const container = form.querySelector(`[data-form-field="${fieldName}"]`);
 
-        const errorElement = form.querySelector(
-            `[data-field-error="${fieldName}"]`
-        );
+        const errorElement = form.querySelector(`[data-field-error="${fieldName}"]`);
 
-        field?.setAttribute(
-            "aria-invalid",
-            "true"
-        );
+        field?.setAttribute('aria-invalid', 'true');
 
-        field?.setAttribute(
-            "aria-describedby",
-            `${fieldName}Error`
-        );
+        field?.setAttribute('aria-describedby', `${fieldName}Error`);
 
-        container?.classList.add(
-            "is-invalid"
-        );
+        container?.classList.add('is-invalid');
 
         if (errorElement) {
             errorElement.id = `${fieldName}Error`;
@@ -536,39 +372,26 @@ document.addEventListener("DOMContentLoaded", () => {
     function clearFieldError(fieldName) {
         const field = fields[fieldName];
 
-        const container = form.querySelector(
-            `[data-form-field="${fieldName}"]`
-        );
+        const container = form.querySelector(`[data-form-field="${fieldName}"]`);
 
-        const errorElement = form.querySelector(
-            `[data-field-error="${fieldName}"]`
-        );
+        const errorElement = form.querySelector(`[data-field-error="${fieldName}"]`);
 
-        field?.removeAttribute(
-            "aria-invalid"
-        );
+        field?.removeAttribute('aria-invalid');
 
-        field?.removeAttribute(
-            "aria-describedby"
-        );
+        field?.removeAttribute('aria-describedby');
 
-        container?.classList.remove(
-            "is-invalid"
-        );
+        container?.classList.remove('is-invalid');
 
         if (errorElement) {
-            errorElement.textContent = "";
+            errorElement.textContent = '';
             errorElement.hidden = true;
         }
     }
 
     function clearAllErrors() {
-        Object.keys(fields)
-            .forEach(fieldName => {
-                clearFieldError(
-                    fieldName
-                );
-            });
+        Object.keys(fields).forEach((fieldName) => {
+            clearFieldError(fieldName);
+        });
     }
 
     function setSubmitting(submitting) {
@@ -576,46 +399,30 @@ document.addEventListener("DOMContentLoaded", () => {
             submitButton.disabled = submitting;
         }
 
-        form
-            .querySelectorAll("input, button")
-            .forEach(element => {
-                if (element === submitButton) {
-                    return;
-                }
+        form.querySelectorAll('input, button').forEach((element) => {
+            if (element === submitButton) {
+                return;
+            }
 
-                element.disabled = submitting;
-            });
+            element.disabled = submitting;
+        });
     }
 
     function resetPasswordToggles() {
-        form
-            .querySelectorAll("[data-password-toggle]")
-            .forEach(button => {
-                button.classList.remove(
-                    "is-visible"
-                );
+        form.querySelectorAll('[data-password-toggle]').forEach((button) => {
+            button.classList.remove('is-visible');
 
-                button.setAttribute(
-                    "aria-pressed",
-                    "false"
-                );
+            button.setAttribute('aria-pressed', 'false');
 
-                button.setAttribute(
-                    "aria-label",
-                    "Hiện mật khẩu"
-                );
+            button.setAttribute('aria-label', 'Hiện mật khẩu');
 
-                const passwordField = button.closest(
-                    ".password-field"
-                );
+            const passwordField = button.closest('.password-field');
 
-                const input = passwordField?.querySelector(
-                    "input"
-                );
+            const input = passwordField?.querySelector('input');
 
-                if (input) {
-                    input.type = "password";
-                }
-            });
+            if (input) {
+                input.type = 'password';
+            }
+        });
     }
 });

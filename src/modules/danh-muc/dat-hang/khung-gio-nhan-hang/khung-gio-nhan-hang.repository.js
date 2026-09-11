@@ -1,100 +1,60 @@
-const pool =
-    require(
-        "../../../../config/database"
-    );
-
+const pool = require('../../../../config/database');
 
 class KhungGioNhanHangRepository {
-
-    mapKhungGioNhanHang(
-        row
-    ) {
-
+    mapKhungGioNhanHang(row) {
         if (!row) {
             return null;
         }
 
         const soDonToiDa =
-            row.so_don_toi_da !== null &&
-            row.so_don_toi_da !== undefined
+            row.so_don_toi_da !== null && row.so_don_toi_da !== undefined
                 ? String(row.so_don_toi_da)
-                    .replace(/(\.\d*?)0+$/, "$1")
-                    .replace(/\.$/, "")
+                      .replace(/(\.\d*?)0+$/, '$1')
+                      .replace(/\.$/, '')
                 : null;
 
-        const soDonDaDat =
-            Number(
-                row.so_don_da_dat ||
-                0
-            );
+        const soDonDaDat = Number(row.so_don_da_dat || 0);
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maKhungGio: row.ma_khung_gio,
 
-            maKhungGio:
-                row.ma_khung_gio,
+            tenKhungGio: row.ten_khung_gio,
 
-            tenKhungGio:
-                row.ten_khung_gio,
+            coSoId: row.co_so_id,
 
-            coSoId:
-                row.co_so_id,
+            maCoSo: row.ma_co_so,
 
-            maCoSo:
-                row.ma_co_so,
+            tenCoSo: row.ten_co_so,
 
-            tenCoSo:
-                row.ten_co_so,
+            gioBatDau: row.gio_bat_dau,
 
-            gioBatDau:
-                row.gio_bat_dau,
-
-            gioKetThuc:
-                row.gio_ket_thuc,
+            gioKetThuc: row.gio_ket_thuc,
 
             soDonToiDa,
 
             soDonDaDat,
 
-            soChoConLai:
-                soDonToiDa === null
-                    ? null
-                    : Math.max(
-                        soDonToiDa -
-                        soDonDaDat,
-                        0
-                    ),
+            soChoConLai: soDonToiDa === null ? null : Math.max(soDonToiDa - soDonDaDat, 0),
 
-            thoiGianNhanTu:
-                row.thoi_gian_nhan_tu,
+            thoiGianNhanTu: row.thoi_gian_nhan_tu,
 
-            thoiGianNhanDen:
-                row.thoi_gian_nhan_den,
+            thoiGianNhanDen: row.thoi_gian_nhan_den,
 
-            thoiGianDatMuonNhat:
-                row.thoi_gian_dat_muon_nhat,
+            thoiGianDatMuonNhat: row.thoi_gian_dat_muon_nhat,
 
-            conThoiGianDat:
-                row.con_thoi_gian_dat,
+            conThoiGianDat: row.con_thoi_gian_dat,
 
-            active:
-                row.active,
+            active: row.active,
 
-            createdAt:
-                row.created_at,
+            createdAt: row.created_at,
 
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
-
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -120,27 +80,15 @@ class KhungGioNhanHangRepository {
                     kg.co_so_id
 
         `;
-
     }
 
+    async getTongHop(query = {}) {
+        const values = [];
 
-    async getTongHop(
-        query = {}
-    ) {
-
-        const values =
-            [];
-
-        const conditions =
-            [];
+        const conditions = [];
 
         if (query.keyword) {
-
-            values.push(
-                `%${String(
-                    query.keyword
-                ).trim()}%`
-            );
+            values.push(`%${String(query.keyword).trim()}%`);
 
             conditions.push(`
                 (
@@ -151,49 +99,21 @@ class KhungGioNhanHangRepository {
                         ILIKE $${values.length}
                 )
             `);
-
         }
 
-        if (
-            query.coSoId !== undefined &&
-            query.coSoId !== ""
-        ) {
+        if (query.coSoId !== undefined && query.coSoId !== '') {
+            values.push(Number(query.coSoId));
 
-            values.push(
-                Number(
-                    query.coSoId
-                )
-            );
-
-            conditions.push(
-                `kg.co_so_id = $${values.length}`
-            );
-
+            conditions.push(`kg.co_so_id = $${values.length}`);
         }
 
-        if (
-            query.active !== undefined &&
-            query.active !== ""
-        ) {
+        if (query.active !== undefined && query.active !== '') {
+            values.push(String(query.active) === 'true');
 
-            values.push(
-                String(
-                    query.active
-                ) === "true"
-            );
-
-            conditions.push(
-                `kg.active = $${values.length}`
-            );
-
+            conditions.push(`kg.active = $${values.length}`);
         }
 
-        const where =
-            conditions.length > 0
-                ? `WHERE ${conditions.join(
-                    " AND "
-                )}`
-                : "";
+        const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
         const sql = `
             ${this.getBaseQuery()}
@@ -206,27 +126,12 @@ class KhungGioNhanHangRepository {
                 kg.gio_ket_thuc ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapKhungGioNhanHang(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapKhungGioNhanHang(row));
     }
 
-
-    async getChiTiet(
-        id,
-        client = pool
-    ) {
-
+    async getChiTiet(id, client = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -235,32 +140,16 @@ class KhungGioNhanHangRepository {
             LIMIT 1
         `;
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    id
-                ]
-            );
+        const result = await client.query(sql, [id]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapKhungGioNhanHang(
-            result.rows[0]
-        );
-
+        return this.mapKhungGioNhanHang(result.rows[0]);
     }
 
-
-    async existsCoSo(
-        coSoId
-    ) {
-
+    async existsCoSo(coSoId) {
         const sql = `
             SELECT EXISTS (
 
@@ -272,29 +161,13 @@ class KhungGioNhanHangRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    coSoId
-                ]
-            );
+        const result = await pool.query(sql, [coSoId]);
 
         return result.rows[0].exists;
-
     }
 
-
-    async existsMaKhungGio(
-        coSoId,
-        maKhungGio,
-        excludeId = null
-    ) {
-
-        const values = [
-            coSoId,
-            maKhungGio
-        ];
+    async existsMaKhungGio(coSoId, maKhungGio, excludeId = null) {
+        const values = [coSoId, maKhungGio];
 
         let sql = `
             SELECT EXISTS (
@@ -311,42 +184,24 @@ class KhungGioNhanHangRepository {
         `;
 
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-
-    async existsTenKhungGio(
-        coSoId,
-        tenKhungGio,
-        excludeId = null
-    ) {
-
-        const values = [
-            coSoId,
-            tenKhungGio
-        ];
+    async existsTenKhungGio(coSoId, tenKhungGio, excludeId = null) {
+        const values = [coSoId, tenKhungGio];
 
         let sql = `
             SELECT EXISTS (
@@ -363,44 +218,24 @@ class KhungGioNhanHangRepository {
         `;
 
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-
-    async existsKhungGioGiaoNhau(
-        coSoId,
-        gioBatDau,
-        gioKetThuc,
-        excludeId = null
-    ) {
-
-        const values = [
-            coSoId,
-            gioBatDau,
-            gioKetThuc
-        ];
+    async existsKhungGioGiaoNhau(coSoId, gioBatDau, gioKetThuc, excludeId = null) {
+        const values = [coSoId, gioBatDau, gioKetThuc];
 
         let sql = `
             SELECT EXISTS (
@@ -415,39 +250,23 @@ class KhungGioNhanHangRepository {
         `;
 
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $4
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-
-    async getKhungGioKhaDung(
-        coSoId,
-        ngayNhan,
-        soPhutDatTruoc,
-        dsTrangThaiLoaiTru
-    ) {
-
+    async getKhungGioKhaDung(coSoId, ngayNhan, soPhutDatTruoc, dsTrangThaiLoaiTru) {
         const sql = `
 
             SELECT
@@ -562,38 +381,14 @@ class KhungGioNhanHangRepository {
 
         `;
 
-        const values = [
-            coSoId,
-            ngayNhan,
-            soPhutDatTruoc,
-            dsTrangThaiLoaiTru
-        ];
+        const values = [coSoId, ngayNhan, soPhutDatTruoc, dsTrangThaiLoaiTru];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapKhungGioNhanHang(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapKhungGioNhanHang(row));
     }
 
-
-    async getKhungGioDeDat(
-        id,
-        coSoId,
-        ngayNhan,
-        soPhutDatTruoc,
-        dsTrangThaiLoaiTru,
-        client = pool
-    ) {
-
+    async getKhungGioDeDat(id, coSoId, ngayNhan, soPhutDatTruoc, dsTrangThaiLoaiTru, client = pool) {
         const sql = `
 
             SELECT
@@ -689,38 +484,18 @@ class KhungGioNhanHangRepository {
 
         `;
 
-        const values = [
-            id,
-            coSoId,
-            ngayNhan,
-            soPhutDatTruoc,
-            dsTrangThaiLoaiTru
-        ];
+        const values = [id, coSoId, ngayNhan, soPhutDatTruoc, dsTrangThaiLoaiTru];
 
-        const result =
-            await client.query(
-                sql,
-                values
-            );
+        const result = await client.query(sql, values);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapKhungGioNhanHang(
-            result.rows[0]
-        );
-
+        return this.mapKhungGioNhanHang(result.rows[0]);
     }
 
-
-    async create(
-        data
-    ) {
-
+    async create(data) {
         const sql = `
             INSERT INTO dm_khung_gio_nhan_hang (
 
@@ -761,24 +536,12 @@ class KhungGioNhanHangRepository {
             data.active
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-
-    async update(
-        id,
-        data
-    ) {
-
+    async update(id, data) {
         const sql = `
             UPDATE dm_khung_gio_nhan_hang
             SET
@@ -808,27 +571,14 @@ class KhungGioNhanHangRepository {
             id
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
-
 }
 
-
-module.exports =
-    new KhungGioNhanHangRepository();
+module.exports = new KhungGioNhanHangRepository();

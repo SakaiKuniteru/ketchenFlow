@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class KhoRepository {
     mapKho(row) {
@@ -11,51 +11,61 @@ class KhoRepository {
             maKho: row.ma_kho,
             tenKho: row.ten_kho,
             nhaAnId: row.nha_an_id,
-            nhaAn: row.nha_an_id ? {
-                id: row.nha_an_id,
-                ma: row.ma_nha_an,
-                ten: row.ten_nha_an,
-                coSoId: row.co_so_id,
-                coSo: row.co_so_id ? {
-                    id: row.co_so_id,
-                    ma: row.ma_co_so,
-                    ten: row.ten_co_so,
-                    diaChi: row.dia_chi_co_so,
-                    logo: row.logo_co_so,
-                    favicon: row.favicon_co_so,
-                    logoDoiTac: row.logo_doi_tac,
-                    quocGiaId: row.quoc_gia_id,
-                    quocGia: row.quoc_gia_id ? {
-                        id: row.quoc_gia_id,
-                        ma: row.ma_quoc_gia,
-                        ten: row.ten_quoc_gia,
-                        tenTiengAnh: row.ten_tieng_anh,
-                        tenQuocGiaEn: row.ten_quoc_gia_en,
-                        tenVietTat: row.ten_viet_tat_quoc_gia,
-                        maDienThoai: row.ma_dien_thoai,
-                        maIso2: row.ma_iso2,
-                        maIso3: row.ma_iso3,
-                    } : null,
-                    tinhThanhId: row.tinh_thanh_id,
-                    tinhThanh: row.tinh_thanh_id ? {
-                        id: row.tinh_thanh_id,
-                        ma: row.ma_tinh_thanh,
-                        ten: row.ten_tinh_thanh,
-                        tenVietTat: row.ten_viet_tat_tinh_thanh,
-                        active: row.tinh_thanh_active
-                    } : null,
-                    xaPhuongId: row.xa_phuong_id,
-                    xaPhuong: row.xa_phuong_id ? {
-                        id: row.xa_phuong_id,
-                        ma: row.ma_xa_phuong,
-                        ten: row.ten_xa_phuong,
-                        tenVietTat: row.ten_viet_tat_xa_phuong,
-                        active: row.xa_phuong_active
-                    } : null,
-                    active: row.co_so_active
-                } : null,
-                active: row.nha_an_active
-            } : null,
+            nhaAn: row.nha_an_id
+                ? {
+                      id: row.nha_an_id,
+                      ma: row.ma_nha_an,
+                      ten: row.ten_nha_an,
+                      coSoId: row.co_so_id,
+                      coSo: row.co_so_id
+                          ? {
+                                id: row.co_so_id,
+                                ma: row.ma_co_so,
+                                ten: row.ten_co_so,
+                                diaChi: row.dia_chi_co_so,
+                                logo: row.logo_co_so,
+                                favicon: row.favicon_co_so,
+                                logoDoiTac: row.logo_doi_tac,
+                                quocGiaId: row.quoc_gia_id,
+                                quocGia: row.quoc_gia_id
+                                    ? {
+                                          id: row.quoc_gia_id,
+                                          ma: row.ma_quoc_gia,
+                                          ten: row.ten_quoc_gia,
+                                          tenTiengAnh: row.ten_tieng_anh,
+                                          tenQuocGiaEn: row.ten_quoc_gia_en,
+                                          tenVietTat: row.ten_viet_tat_quoc_gia,
+                                          maDienThoai: row.ma_dien_thoai,
+                                          maIso2: row.ma_iso2,
+                                          maIso3: row.ma_iso3
+                                      }
+                                    : null,
+                                tinhThanhId: row.tinh_thanh_id,
+                                tinhThanh: row.tinh_thanh_id
+                                    ? {
+                                          id: row.tinh_thanh_id,
+                                          ma: row.ma_tinh_thanh,
+                                          ten: row.ten_tinh_thanh,
+                                          tenVietTat: row.ten_viet_tat_tinh_thanh,
+                                          active: row.tinh_thanh_active
+                                      }
+                                    : null,
+                                xaPhuongId: row.xa_phuong_id,
+                                xaPhuong: row.xa_phuong_id
+                                    ? {
+                                          id: row.xa_phuong_id,
+                                          ma: row.ma_xa_phuong,
+                                          ten: row.ten_xa_phuong,
+                                          tenVietTat: row.ten_viet_tat_xa_phuong,
+                                          active: row.xa_phuong_active
+                                      }
+                                    : null,
+                                active: row.co_so_active
+                            }
+                          : null,
+                      active: row.nha_an_active
+                  }
+                : null,
             loaiKho: row.loai_kho,
             diaDiem: row.dia_diem,
             dienTich: row.dien_tich !== null ? Number(row.dien_tich) : null,
@@ -134,7 +144,7 @@ class KhoRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(row => this.mapKho(row));
+        return result.rows.map((row) => this.mapKho(row));
     }
 
     async getChiTiet(id) {
@@ -144,22 +154,15 @@ class KhoRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        const kho = this.mapKho(
-            result.rows[0]
-        );
+        const kho = this.mapKho(result.rows[0]);
 
-        kho.dsNvQuanLy = await this.getDsNvQuanLy(
-            id
-        );
+        kho.dsNvQuanLy = await this.getDsNvQuanLy(id);
 
         return kho;
     }
@@ -296,39 +299,35 @@ class KhoRepository {
                 nv.ho_ten ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [khoId]
-        );
+        const result = await pool.query(sql, [khoId]);
 
-        return result.rows.map(
-            row => ({
-                id: row.id,
-                maNhanVien: row.ma_nhan_vien,
-                hoTen: row.ho_ten,
-                email: row.email,
-                active: row.active,
+        return result.rows.map((row) => ({
+            id: row.id,
+            maNhanVien: row.ma_nhan_vien,
+            hoTen: row.ho_ten,
+            email: row.email,
+            active: row.active,
 
-                chucVu: row.chuc_vu_id ? {
-                    id: row.chuc_vu_id,
-                    ma: row.ma_chuc_vu,
-                    ten: row.ten_chuc_vu
-                } : null,
+            chucVu: row.chuc_vu_id
+                ? {
+                      id: row.chuc_vu_id,
+                      ma: row.ma_chuc_vu,
+                      ten: row.ten_chuc_vu
+                  }
+                : null,
 
-                phongBan: row.phong_ban_id ? {
-                    id: row.phong_ban_id,
-                    ma: row.ma_phong_ban,
-                    ten: row.ten_phong_ban
-                } : null
-            })
-        );
+            phongBan: row.phong_ban_id
+                ? {
+                      id: row.phong_ban_id,
+                      ma: row.ma_phong_ban,
+                      ten: row.ten_phong_ban
+                  }
+                : null
+        }));
     }
 
     async getDsNhanVienByIds(dsId) {
-        if (
-            !Array.isArray(dsId) ||
-            dsId.length === 0
-        ) {
+        if (!Array.isArray(dsId) || dsId.length === 0) {
             return [];
         }
 
@@ -343,12 +342,9 @@ class KhoRepository {
             ORDER BY id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [dsId]
-        );
+        const result = await pool.query(sql, [dsId]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: Number(row.id),
             maNhanVien: row.ma_nhan_vien,
             hoTen: row.ho_ten,
@@ -357,24 +353,11 @@ class KhoRepository {
     }
 
     async getDsNhanVienByMa(dsMaNhanVien) {
-        if (
-            !Array.isArray(dsMaNhanVien) ||
-            dsMaNhanVien.length === 0
-        ) {
+        if (!Array.isArray(dsMaNhanVien) || dsMaNhanVien.length === 0) {
             return [];
         }
 
-        const dsMa = [
-            ...new Set(
-                dsMaNhanVien
-                    .map(ma =>
-                        String(ma)
-                            .trim()
-                            .toUpperCase()
-                    )
-                    .filter(Boolean)
-            )
-        ];
+        const dsMa = [...new Set(dsMaNhanVien.map((ma) => String(ma).trim().toUpperCase()).filter(Boolean))];
 
         if (dsMa.length === 0) {
             return [];
@@ -391,12 +374,9 @@ class KhoRepository {
             ORDER BY id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [dsMa]
-        );
+        const result = await pool.query(sql, [dsMa]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: Number(row.id),
             maNhanVien: row.ma_nhan_vien,
             hoTen: row.ho_ten,
@@ -404,14 +384,8 @@ class KhoRepository {
         }));
     }
 
-    async getDsNhanVienThuocNhaAnByIds(
-        dsId,
-        nhaAnId
-    ) {
-        if (
-            !Array.isArray(dsId) ||
-            dsId.length === 0
-        ) {
+    async getDsNhanVienThuocNhaAnByIds(dsId, nhaAnId) {
+        if (!Array.isArray(dsId) || dsId.length === 0) {
             return [];
         }
 
@@ -429,43 +403,21 @@ class KhoRepository {
             ORDER BY nv.id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                dsId,
-                nhaAnId
-            ]
-        );
+        const result = await pool.query(sql, [dsId, nhaAnId]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: Number(row.id),
             maNhanVien: row.ma_nhan_vien,
             hoTen: row.ho_ten
         }));
     }
 
-    async getDsNhanVienThuocNhaAnByMa(
-        dsMaNhanVien,
-        nhaAnId
-    ) {
-        if (
-            !Array.isArray(dsMaNhanVien) ||
-            dsMaNhanVien.length === 0
-        ) {
+    async getDsNhanVienThuocNhaAnByMa(dsMaNhanVien, nhaAnId) {
+        if (!Array.isArray(dsMaNhanVien) || dsMaNhanVien.length === 0) {
             return [];
         }
 
-        const dsMa = [
-            ...new Set(
-                dsMaNhanVien
-                    .map(ma =>
-                        String(ma)
-                            .trim()
-                            .toUpperCase()
-                    )
-                    .filter(Boolean)
-            )
-        ];
+        const dsMa = [...new Set(dsMaNhanVien.map((ma) => String(ma).trim().toUpperCase()).filter(Boolean))];
 
         if (dsMa.length === 0) {
             return [];
@@ -485,15 +437,9 @@ class KhoRepository {
             ORDER BY nv.id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                dsMa,
-                nhaAnId
-            ]
-        );
+        const result = await pool.query(sql, [dsMa, nhaAnId]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: Number(row.id),
             maNhanVien: row.ma_nhan_vien,
             hoTen: row.ho_ten
@@ -520,9 +466,7 @@ class KhoRepository {
         const client = await pool.connect();
 
         try {
-            await client.query(
-                "BEGIN"
-            );
+            await client.query('BEGIN');
 
             const sql = `
                 INSERT INTO dm_kho (
@@ -565,43 +509,24 @@ class KhoRepository {
                 data.loaiKho,
                 data.diaDiem || null,
 
-                data.dienTich !== undefined
-                    ? data.dienTich
-                    : null,
+                data.dienTich !== undefined ? data.dienTich : null,
 
-                data.nhietDoToiThieu !== undefined
-                    ? data.nhietDoToiThieu
-                    : null,
+                data.nhietDoToiThieu !== undefined ? data.nhietDoToiThieu : null,
 
-                data.nhietDoToiDa !== undefined
-                    ? data.nhietDoToiDa
-                    : null,
+                data.nhietDoToiDa !== undefined ? data.nhietDoToiDa : null,
 
                 data.moTa || null,
                 data.ghiChu || null,
 
-                data.active !== undefined
-                    ? data.active
-                    : true
+                data.active !== undefined ? data.active : true
             ];
 
-            const result = await client.query(
-                sql,
-                values
-            );
+            const result = await client.query(sql, values);
 
             const khoId = result.rows[0].id;
 
-            if (
-                Array.isArray(
-                    data.dsNvQuanLyId
-                ) &&
-                data.dsNvQuanLyId.length > 0
-            ) {
-                for (
-                    const nhanVienId
-                    of data.dsNvQuanLyId
-                ) {
+            if (Array.isArray(data.dsNvQuanLyId) && data.dsNvQuanLyId.length > 0) {
+                for (const nhanVienId of data.dsNvQuanLyId) {
                     await client.query(
                         `
                             INSERT INTO
@@ -620,25 +545,16 @@ class KhoRepository {
                                 NOW()
                             )
                         `,
-                        [
-                            khoId,
-                            nhanVienId
-                        ]
+                        [khoId, nhanVienId]
                     );
                 }
             }
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                khoId
-            );
+            return await this.getChiTiet(khoId);
         } catch (error) {
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -650,9 +566,7 @@ class KhoRepository {
         const client = await pool.connect();
 
         try {
-            await client.query(
-                "BEGIN"
-            );
+            await client.query('BEGIN');
 
             const sql = `
                 UPDATE dm_kho
@@ -680,17 +594,11 @@ class KhoRepository {
                 data.loaiKho,
                 data.diaDiem || null,
 
-                data.dienTich !== undefined
-                    ? data.dienTich
-                    : null,
+                data.dienTich !== undefined ? data.dienTich : null,
 
-                data.nhietDoToiThieu !== undefined
-                    ? data.nhietDoToiThieu
-                    : null,
+                data.nhietDoToiThieu !== undefined ? data.nhietDoToiThieu : null,
 
-                data.nhietDoToiDa !== undefined
-                    ? data.nhietDoToiDa
-                    : null,
+                data.nhietDoToiDa !== undefined ? data.nhietDoToiDa : null,
 
                 data.moTa || null,
                 data.ghiChu || null,
@@ -698,24 +606,15 @@ class KhoRepository {
                 id
             ];
 
-            const result = await client.query(
-                sql,
-                values
-            );
+            const result = await client.query(sql, values);
 
-            if (
-                result.rows.length === 0
-            ) {
-                await client.query(
-                    "ROLLBACK"
-                );
+            if (result.rows.length === 0) {
+                await client.query('ROLLBACK');
 
                 return null;
             }
 
-            if (
-                data.dsNvQuanLyId !== undefined
-            ) {
+            if (data.dsNvQuanLyId !== undefined) {
                 await client.query(
                     `
                         DELETE FROM
@@ -744,25 +643,16 @@ class KhoRepository {
                                 NOW()
                             )
                         `,
-                        [
-                            id,
-                            nhanVienId
-                        ]
+                        [id, nhanVienId]
                     );
                 }
             }
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                id
-            );
+            return await this.getChiTiet(id);
         } catch (error) {
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {

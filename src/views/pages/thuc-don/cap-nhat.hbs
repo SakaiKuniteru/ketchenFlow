@@ -1,18 +1,11 @@
-<link rel="stylesheet" href="/assets/css/pages/thuc-don/form.css" >
-<link rel="stylesheet" href="/assets/css/pages/thuc-don/form-editor.css" >
+<link rel="stylesheet" href="/assets/css/pages/thuc-don/form.css">
+<link rel="stylesheet" href="/assets/css/pages/thuc-don/form-editor.css">
 
-<main
-    class="td-page td-editor"
-    data-thuc-don-page
-    data-page-mode="update"
-    data-thuc-don-id="{{thucDonId}}">
+<main class="td-page td-editor" data-thuc-don-page data-page-mode="update" data-thuc-don-id="{{thucDonId}}">
 
     <div class="td-topline">
 
-        <button
-            type="button"
-            class="td-back-link"
-            data-form-back>
+        <button type="button" class="td-back-link" data-form-back>
 
             <i class="fa-solid fa-arrow-left"></i>
 
@@ -38,83 +31,58 @@
         </div>
 
 
-    <div class="td-page-actions">
+        <div class="td-page-actions">
 
-        <button class="td-btn td-responsive-action"
-            type="button"
-            data-form-cancel
-            title="Hủy bỏ"
-            aria-label="Hủy bỏ"
-            hidden>
+            <button class="td-btn td-responsive-action" type="button" data-form-cancel title="Hủy bỏ"
+                aria-label="Hủy bỏ" hidden>
 
-            <i
-                class="fa-solid fa-xmark"
-                aria-hidden="true">
-            </i>
+                <i class="fa-solid fa-xmark" aria-hidden="true">
+                </i>
 
-            <span class="td-responsive-action__label">
-                Hủy bỏ
-            </span>
+                <span class="td-responsive-action__label">
+                    Hủy bỏ
+                </span>
 
-        </button>
+            </button>
 
 
-        <button
-            class="
+            <button class="
                 td-btn
                 td-btn--primary
                 td-responsive-action
-            "
-            type="button"
-            data-form-save
-            title="Lưu"
-            aria-label="Lưu"
-            hidden>
+            " type="button" data-form-save title="Lưu" aria-label="Lưu" hidden>
 
-            <i
-                class="fa-regular fa-floppy-disk"
-                aria-hidden="true">
-            </i>
+                <i class="fa-regular fa-floppy-disk" aria-hidden="true">
+                </i>
 
-            <span class="td-responsive-action__label">
-                Lưu
-            </span>
+                <span class="td-responsive-action__label">
+                    Lưu
+                </span>
 
-        </button>
+            </button>
 
 
-        <button
-            class="
+            <button class="
                 td-btn
                 td-btn--success
                 td-responsive-action
-            "
-            type="button"
-            data-form-save-approve
-            title="Lưu & duyệt"
-            aria-label="Lưu & duyệt"
-            hidden>
+            " type="button" data-form-save-approve title="Lưu & duyệt" aria-label="Lưu & duyệt" hidden>
 
-            <i
-                class="fa-solid fa-check-double"
-                aria-hidden="true">
-            </i>
+                <i class="fa-solid fa-check-double" aria-hidden="true">
+                </i>
 
-            <span class="td-responsive-action__label">
-                Lưu & duyệt
-            </span>
+                <span class="td-responsive-action__label">
+                    Lưu & duyệt
+                </span>
 
-        </button>
+            </button>
 
-    </div>
+        </div>
 
     </header>
 
 
-    <div
-        class="td-form"
-        data-thuc-don-form
-        data-form-mode="update">
+    <div class="td-form" data-thuc-don-form data-form-mode="update">
         {{> thuc-don/form-thong-tin-chung}}
         {{> thuc-don/form-noi-dung}}
     </div>

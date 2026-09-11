@@ -1,133 +1,39 @@
-const express =
-    require("express");
+const express = require('express');
 
-const multer =
-    require("multer");
+const multer = require('multer');
 
-const validate =
-    require(
-        "../../../../middlewares/validate.middleware"
-    );
+const validate = require('../../../../middlewares/validate.middleware');
 
-const authenticate =
-    require(
-        "../../../../middlewares/authenticate.middleware"
-    );
+const authenticate = require('../../../../middlewares/authenticate.middleware');
 
-const authorize =
-    require(
-        "../../../../middlewares/authorize.middleware"
-    );
+const authorize = require('../../../../middlewares/authorize.middleware');
 
-const controller =
-    require(
-        "./nhom-san-pham.controller"
-    );
+const controller = require('./nhom-san-pham.controller');
 
-const excelController =
-    require(
-        "./nhom-san-pham.excel"
-    );
+const excelController = require('./nhom-san-pham.excel');
 
-const {
-    createSchema,
-    updateSchema
-} = require(
-    "./nhom-san-pham.validation"
-);
+const { createSchema, updateSchema } = require('./nhom-san-pham.validation');
 
+const router = express.Router();
 
-const router =
-    express.Router();
+const upload = multer({
+    storage: multer.memoryStorage(),
 
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    }
+});
 
-const upload =
-    multer({
+router.get('/tong-hop', authenticate, authorize('Q000032'), controller.getTongHop);
 
-        storage:
-            multer.memoryStorage(),
+router.get('/xuat-du-lieu', authenticate, authorize('Q100001'), excelController.exportData);
 
-        limits: {
+router.post('/import-du-lieu', authenticate, authorize('Q100002'), upload.single('file'), excelController.importData);
 
-            fileSize:
-                10 * 1024 * 1024
+router.get('/:id', authenticate, authorize('Q002021', 'Q002022', 'Q002023'), controller.getChiTiet);
 
-        }
+router.post('/them-moi', authenticate, authorize('Q002022', 'Q002023'), validate(createSchema), controller.create);
 
-    });
+router.patch('/cap-nhat/:id', authenticate, authorize('Q002023'), validate(updateSchema), controller.update);
 
-
-router.get(
-    "/tong-hop",
-    authenticate,
-    authorize(
-        "Q000032"
-    ),
-    controller.getTongHop
-);
-
-
-router.get(
-    "/xuat-du-lieu",
-    authenticate,
-    authorize(
-        "Q100001"
-    ),
-    excelController.exportData
-);
-
-
-router.post(
-    "/import-du-lieu",
-    authenticate,
-    authorize(
-        "Q100002"
-    ),
-    upload.single(
-        "file"
-    ),
-    excelController.importData
-);
-
-
-router.get(
-    "/:id",
-    authenticate,
-    authorize(
-        "Q002021",
-        "Q002022",
-        "Q002023"
-    ),
-    controller.getChiTiet
-);
-
-
-router.post(
-    "/them-moi",
-    authenticate,
-    authorize(
-        "Q002022",
-        "Q002023"
-    ),
-    validate(
-        createSchema
-    ),
-    controller.create
-);
-
-
-router.patch(
-    "/cap-nhat/:id",
-    authenticate,
-    authorize(
-        "Q002023"
-    ),
-    validate(
-        updateSchema
-    ),
-    controller.update
-);
-
-
-module.exports =
-    router;
+module.exports = router;

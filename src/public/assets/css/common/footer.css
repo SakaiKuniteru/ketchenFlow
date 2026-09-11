@@ -5,8 +5,7 @@
     gap: 16px;
     min-height: 54px;
     padding: 12px 24px;
-    border-top: 1px solid
-        var(--color-border-light);
+    border-top: 1px solid var(--color-border-light);
     color: var(--color-text-muted);
     background: var(--color-surface);
     font-size: var(--font-size-xs);
@@ -23,11 +22,9 @@
 }
 
 @media (max-width: 640px) {
-
     .app-footer {
         align-items: flex-start;
         flex-direction: column;
         padding: 14px 16px;
     }
-
 }

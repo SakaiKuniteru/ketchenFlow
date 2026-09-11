@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class VeAnRepository {
     mapVeAn(row) {
@@ -151,333 +151,123 @@ class VeAnRepository {
         `;
     }
 
-    async getTongHop(
-        query = {}
-    ) {
+    async getTongHop(query = {}) {
+        const conditions = [];
 
-        const conditions =
-            [];
+        const values = [];
 
-        const values =
-            [];
+        const addNumberCondition = (rawValue, builder) => {
+            if (rawValue === undefined || rawValue === null || rawValue === '') {
+                return;
+            }
 
+            const value = Number(rawValue);
 
-        const addNumberCondition =
-            (
-                rawValue,
-                builder
-            ) => {
+            if (!Number.isFinite(value)) {
+                return;
+            }
 
-                if (
-                    rawValue ===
-                        undefined ||
-                    rawValue ===
-                        null ||
-                    rawValue ===
-                        ""
-                ) {
-                    return;
-                }
+            values.push(value);
 
+            conditions.push(builder(`$${values.length}`));
+        };
 
-                const value =
-                    Number(
-                        rawValue
-                    );
+        const normalizeNumberValues = (rawValue) => {
+            if (rawValue === undefined || rawValue === null || rawValue === '') {
+                return [];
+            }
 
+            const rawItems = Array.isArray(rawValue) ? rawValue : String(rawValue).split(',');
 
-                if (
-                    !Number.isFinite(
-                        value
-                    )
-                ) {
-                    return;
-                }
+            return [
+                ...new Set(
+                    rawItems
+                        .flatMap((item) => String(item).split(','))
+                        .map((item) => String(item).trim())
+                        .filter((item) => item !== '')
+                        .map((item) => Number(item))
+                        .filter((item) => Number.isFinite(item))
+                )
+            ];
+        };
 
+        const addNumberListCondition = (rawValue, column) => {
+            if (rawValue === undefined || rawValue === null || rawValue === '') {
+                return;
+            }
 
-                values.push(
-                    value
-                );
+            const numbers = normalizeNumberValues(rawValue);
 
+            if (!numbers.length) {
+                return;
+            }
 
-                conditions.push(
-                    builder(
-                        `$${values.length}`
-                    )
-                );
+            values.push(numbers);
 
-            };
+            conditions.push(`${column} = ANY($${values.length}::int[])`);
+        };
 
-        const normalizeNumberValues =
-            rawValue => {
+        const addDateCondition = (rawValue, builder) => {
+            if (!rawValue) {
+                return;
+            }
 
-                if (
-                    rawValue ===
-                        undefined ||
-                    rawValue ===
-                        null ||
-                    rawValue ===
-                        ""
-                ) {
-                    return [];
-                }
+            values.push(rawValue);
 
+            conditions.push(builder(`$${values.length}`));
+        };
 
-                const rawItems =
-                    Array.isArray(
-                        rawValue
-                    )
-                        ? rawValue
-                        : String(
-                            rawValue
-                        )
-                            .split(
-                                ","
-                            );
+        addNumberCondition(query.phieuLayVeId, (parameter) => `v.phieu_lay_ve_id = ${parameter}`);
 
+        addNumberCondition(query.thucDonNgayId, (parameter) => `v.thuc_don_ngay_id = ${parameter}`);
 
-                return [
-                    ...new Set(
-                        rawItems
-                            .flatMap(
-                                item =>
-                                    String(
-                                        item
-                                    )
-                                        .split(
-                                            ","
-                                        )
-                            )
-                            .map(
-                                item =>
-                                    String(
-                                        item
-                                    )
-                                        .trim()
-                            )
-                            .filter(
-                                item =>
-                                    item !==
-                                    ""
-                            )
-                            .map(
-                                item =>
-                                    Number(
-                                        item
-                                    )
-                            )
-                            .filter(
-                                item =>
-                                    Number.isFinite(
-                                        item
-                                    )
-                            )
-                    )
-                ];
+        addNumberListCondition(query.trangThai, 'v.trang_thai');
 
-            };
+        addNumberListCondition(query.trangThaiThanhToan, 'p.trang_thai');
 
-        const addNumberListCondition =
-            (
-                rawValue,
-                column
-            ) => {
+        addNumberListCondition(query.coSoId, 'td.co_so_id');
 
-                if (
-                    rawValue ===
-                        undefined ||
-                    rawValue ===
-                        null ||
-                    rawValue ===
-                        ""
-                ) {
-                    return;
-                }
+        addNumberListCondition(query.nhaAnId, 'td.nha_an_id');
 
+        addNumberListCondition(query.caAnId, 'td.ca_an_id');
 
-                const numbers =
-                    normalizeNumberValues(
-                        rawValue
-                    );
+        if (query.maVe) {
+            values.push(String(query.maVe).trim());
 
-
-                if (
-                    !numbers.length
-                ) {
-                    return;
-                }
-
-
-                values.push(
-                    numbers
-                );
-
-
-                conditions.push(
-                    `${column} = ANY($${values.length}::int[])`
-                );
-
-            };
-
-        const addDateCondition =
-            (
-                rawValue,
-                builder
-            ) => {
-
-                if (
-                    !rawValue
-                ) {
-                    return;
-                }
-
-
-                values.push(
-                    rawValue
-                );
-
-
-                conditions.push(
-                    builder(
-                        `$${values.length}`
-                    )
-                );
-
-            };
-
-
-        addNumberCondition(
-            query.phieuLayVeId,
-            parameter =>
-                `v.phieu_lay_ve_id = ${parameter}`
-        );
-
-
-        addNumberCondition(
-            query.thucDonNgayId,
-            parameter =>
-                `v.thuc_don_ngay_id = ${parameter}`
-        );
-
-
-        addNumberListCondition(
-            query.trangThai,
-            "v.trang_thai"
-        );
-
-
-        addNumberListCondition(
-            query.trangThaiThanhToan,
-            "p.trang_thai"
-        );
-
-
-        addNumberListCondition(
-            query.coSoId,
-            "td.co_so_id"
-        );
-
-
-        addNumberListCondition(
-            query.nhaAnId,
-            "td.nha_an_id"
-        );
-
-
-        addNumberListCondition(
-            query.caAnId,
-            "td.ca_an_id"
-        );
-
-
-        if (
-            query.maVe
-        ) {
-
-            values.push(
-                String(
-                    query.maVe
-                ).trim()
-            );
-
-
-            conditions.push(
-                `UPPER(v.ma_ve) = UPPER($${values.length})`
-            );
-
+            conditions.push(`UPPER(v.ma_ve) = UPPER($${values.length})`);
         }
 
+        /*
+         * Ngày sử dụng.
+         */
+        addDateCondition(query.tuNgay, (parameter) => `tdn.ngay >= ${parameter}::date`);
+
+        addDateCondition(query.denNgay, (parameter) => `tdn.ngay <= ${parameter}::date`);
 
         /*
-        * Ngày sử dụng.
-        */
-        addDateCondition(
-            query.tuNgay,
-            parameter =>
-                `tdn.ngay >= ${parameter}::date`
-        );
+         * Thời gian tạo vé.
+         */
+        addDateCondition(query.tuNgayTao, (parameter) => `v.created_at >= ${parameter}::timestamp`);
 
-
-        addDateCondition(
-            query.denNgay,
-            parameter =>
-                `tdn.ngay <= ${parameter}::date`
-        );
-
+        addDateCondition(query.denNgayTao, (parameter) => `v.created_at <= ${parameter}::timestamp`);
 
         /*
-        * Thời gian tạo vé.
-        */
-        addDateCondition(
-            query.tuNgayTao,
-            parameter =>
-                `v.created_at >= ${parameter}::timestamp`
-        );
+         * Thời gian thanh toán.
+         */
+        addDateCondition(query.tuNgayThanhToan, (parameter) => `p.thoi_gian_thanh_toan >= ${parameter}::timestamp`);
 
-
-        addDateCondition(
-            query.denNgayTao,
-            parameter =>
-                `v.created_at <= ${parameter}::timestamp`
-        );
-
-
-        /*
-        * Thời gian thanh toán.
-        */
-        addDateCondition(
-            query.tuNgayThanhToan,
-            parameter =>
-                `p.thoi_gian_thanh_toan >= ${parameter}::timestamp`
-        );
-
-
-        addDateCondition(
-            query.denNgayThanhToan,
-            parameter =>
-                `p.thoi_gian_thanh_toan <= ${parameter}::timestamp`
-        );
-
+        addDateCondition(query.denNgayThanhToan, (parameter) => `p.thoi_gian_thanh_toan <= ${parameter}::timestamp`);
 
         let sql = `
             ${this.getBaseQuery()}
         `;
 
-
-        if (
-            conditions.length >
-            0
-        ) {
-
+        if (conditions.length > 0) {
             sql += `
                 WHERE
-                    ${conditions.join(
-                        "\nAND "
-                    )}
+                    ${conditions.join('\nAND ')}
             `;
-
         }
-
 
         sql += `
 
@@ -491,27 +281,12 @@ class VeAnRepository {
 
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-
-        return result.rows.map(
-            row =>
-                this.mapVeAn(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapVeAn(row));
     }
 
-    async getChiTiet(
-        id,
-        db = pool
-    ) {
+    async getChiTiet(id, db = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -520,29 +295,16 @@ class VeAnRepository {
             LIMIT 1
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await db.query(sql, [id]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapVeAn(
-            result.rows[0]
-        );
+        return this.mapVeAn(result.rows[0]);
     }
 
-    async getByQrToken(
-        qrToken,
-        db = pool
-    ) {
+    async getByQrToken(qrToken, db = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -551,31 +313,16 @@ class VeAnRepository {
             LIMIT 1
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                qrToken
-            ]
-        );
+        const result = await db.query(sql, [qrToken]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapVeAn(
-            result.rows[0]
-        );
+        return this.mapVeAn(result.rows[0]);
     }
 
-    async xacNhanSuDung(
-        id,
-        nguoiXacNhanId,
-        trangThai,
-        db = pool
-    ) {
+    async xacNhanSuDung(id, nguoiXacNhanId, trangThai, db = pool) {
         const sql = `
 
             UPDATE ct_ve_an
@@ -596,26 +343,12 @@ class VeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id,
-                trangThai,
-                nguoiXacNhanId
-            ]
-        );
+        const result = await db.query(sql, [id, trangThai, nguoiXacNhanId]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
-    async huy(
-        id,
-        nguoiHuyId,
-        lyDoHuy,
-        trangThai,
-        db = pool
-    ) {
+    async huy(id, nguoiHuyId, lyDoHuy, trangThai, db = pool) {
         const sql = `
 
             UPDATE ct_ve_an
@@ -638,28 +371,13 @@ class VeAnRepository {
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id,
-                trangThai,
-                nguoiHuyId,
-                lyDoHuy
-            ]
-        );
+        const result = await db.query(sql, [id, trangThai, nguoiHuyId, lyDoHuy]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
-async huyXacNhan(
-    id,
-    trangThaiHienTai,
-    trangThaiMoi,
-    db = pool
-) {
-
-    const sql = `
+    async huyXacNhan(id, trangThaiHienTai, trangThaiMoi, db = pool) {
+        const sql = `
 
         UPDATE ct_ve_an
 
@@ -680,31 +398,12 @@ async huyXacNhan(
 
     `;
 
+        const result = await db.query(sql, [id, trangThaiHienTai, trangThaiMoi]);
 
-    const result =
-        await db.query(
-            sql,
-            [
-                id,
-                trangThaiHienTai,
-                trangThaiMoi
-            ]
-        );
+        return result.rows[0] || null;
+    }
 
-
-    return result.rows[0] ||
-        null;
-
-}
-
-
-    async huyHuy(
-        id,
-        trangThaiHienTai,
-        trangThaiMoi,
-        db = pool
-    ) {
-
+    async huyHuy(id, trangThaiHienTai, trangThaiMoi, db = pool) {
         const sql = `
 
             UPDATE ct_ve_an
@@ -728,28 +427,12 @@ async huyXacNhan(
 
         `;
 
+        const result = await db.query(sql, [id, trangThaiHienTai, trangThaiMoi]);
 
-        const result =
-            await db.query(
-                sql,
-                [
-                    id,
-                    trangThaiHienTai,
-                    trangThaiMoi
-                ]
-            );
-
-
-        return result.rows[0] ||
-            null;
-
+        return result.rows[0] || null;
     }
 
-    async hetHan(
-        id,
-        trangThai,
-        db = pool
-    ) {
+    async hetHan(id, trangThai, db = pool) {
         const sql = `
 
             UPDATE ct_ve_an
@@ -766,16 +449,9 @@ async huyXacNhan(
 
         `;
 
-        const result = await db.query(
-            sql,
-            [
-                id,
-                trangThai
-            ]
-        );
+        const result = await db.query(sql, [id, trangThai]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 }
 

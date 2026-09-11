@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
-const { TRANG_THAI_SU_DUNG } = require("./voucher.constants");
+const pool = require('../../../../config/database');
+const { TRANG_THAI_SU_DUNG } = require('./voucher.constants');
 
 class VoucherSuDungRepository {
     create(data, client = pool) {

@@ -1,17 +1,13 @@
-"use strict";
+'use strict';
 
-const { renderPage } = require("../utils/render-page.util");
+const { renderPage } = require('../utils/render-page.util');
 
-function column(
-    key,
-    label,
-    options = {}
-) {
+function column(key, label, options = {}) {
     return {
         key,
         label,
-        type: options.type || "text",
-        width: options.width || "",
+        type: options.type || 'text',
+        width: options.width || '',
         sortable: options.sortable !== false
     };
 }
@@ -20,266 +16,276 @@ class VeAnWebController {
     async danhSachLayVe(req, res, next) {
         try {
             const columns = [
-                column("soPhieu", "Mã phiếu", { width: "150px" }),
-                column("nguoiLayVe", "Người lấy vé", { width: "190px" }),
-                column("doiTuongLayVe", "Đối tượng", { width: "120px" }),
-                column("tenCoSo", "Cơ sở", { width: "150px" }),
-                column("tenNhaAn", "Nhà ăn", { width: "150px" }),
-                column("tenCaAn", "Ca ăn", { width: "120px" }),
-                column("ngay", "Ngày sử dụng", { type: "date", width: "130px" }),
-                column("tenThucDon", "Thực đơn", { width: "180px" }),
-                column("soLuong", "SL", { width: "70px" }),
-                column("tienGoc", "Tiền trước miễn giảm", { type: "money", width: "160px" }),
-                column("tongMienGiam", "Tiền miễn giảm", { type: "money", width: "145px" }),
-                column("thanhTien", "Thành tiền", { type: "money", width: "140px" }),
-                column("phuongThucThanhToan", "PTTT", { width: "125px" }),
-                column("trangThai", "Trạng thái thanh toán", { width: "180px" }),
-                column("createdAt", "Thời gian tạo", { type: "datetime", width: "175px" }),
-                column("thoiGianThanhToan", "Thời gian thanh toán", { type: "datetime", width: "185px" }),
-                column("trangThaiSuDung", "Trạng thái sử dụng", { width: "165px" })
+                column('soPhieu', 'Mã phiếu', { width: '150px' }),
+                column('nguoiLayVe', 'Người lấy vé', { width: '190px' }),
+                column('doiTuongLayVe', 'Đối tượng', { width: '120px' }),
+                column('tenCoSo', 'Cơ sở', { width: '150px' }),
+                column('tenNhaAn', 'Nhà ăn', { width: '150px' }),
+                column('tenCaAn', 'Ca ăn', { width: '120px' }),
+                column('ngay', 'Ngày sử dụng', { type: 'date', width: '130px' }),
+                column('tenThucDon', 'Thực đơn', { width: '180px' }),
+                column('soLuong', 'SL', { width: '70px' }),
+                column('tienGoc', 'Tiền trước miễn giảm', {
+                    type: 'money',
+                    width: '160px'
+                }),
+                column('tongMienGiam', 'Tiền miễn giảm', {
+                    type: 'money',
+                    width: '145px'
+                }),
+                column('thanhTien', 'Thành tiền', { type: 'money', width: '140px' }),
+                column('phuongThucThanhToan', 'PTTT', { width: '125px' }),
+                column('trangThai', 'Trạng thái thanh toán', { width: '180px' }),
+                column('createdAt', 'Thời gian tạo', {
+                    type: 'datetime',
+                    width: '175px'
+                }),
+                column('thoiGianThanhToan', 'Thời gian thanh toán', {
+                    type: 'datetime',
+                    width: '185px'
+                }),
+                column('trangThaiSuDung', 'Trạng thái sử dụng', { width: '165px' })
             ];
 
             const filters = [
                 {
-                    type: "dateRange",
-                    label: "Thời gian tạo",
+                    type: 'dateRange',
+                    label: 'Thời gian tạo',
                     from: {
-                        id: "filterTuNgayTao",
-                        name: "tuNgayTao",
-                        label: "Từ ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterTuNgayTao',
+                        name: 'tuNgayTao',
+                        label: 'Từ ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: true,
-                        defaultTime: "00:00:00"
+                        defaultTime: '00:00:00'
                     },
                     to: {
-                        id: "filterDenNgayTao",
-                        name: "denNgayTao",
-                        label: "Đến ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterDenNgayTao',
+                        name: 'denNgayTao',
+                        label: 'Đến ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: true,
-                        defaultTime: "23:59:59"
+                        defaultTime: '23:59:59'
                     }
                 },
 
                 {
-                    type: "dateRange",
-                    label: "Thời gian thanh toán",
+                    type: 'dateRange',
+                    label: 'Thời gian thanh toán',
                     from: {
-                        id: "filterTuNgayThanhToan",
-                        name: "tuNgayThanhToan",
-                        label: "Từ ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterTuNgayThanhToan',
+                        name: 'tuNgayThanhToan',
+                        label: 'Từ ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: false,
-                        defaultTime: "00:00:00"
+                        defaultTime: '00:00:00'
                     },
                     to: {
-                        id: "filterDenNgayThanhToan",
-                        name: "denNgayThanhToan",
-                        label: "Đến ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterDenNgayThanhToan',
+                        name: 'denNgayThanhToan',
+                        label: 'Đến ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: false,
-                        defaultTime: "23:59:59"
+                        defaultTime: '23:59:59'
                     }
                 },
 
                 {
-                    type: "dateRange",
-                    label: "Thời gian miễn giảm",
+                    type: 'dateRange',
+                    label: 'Thời gian miễn giảm',
                     from: {
-                        id: "filterTuNgayMienGiam",
-                        name: "tuNgayMienGiam",
-                        label: "Từ ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterTuNgayMienGiam',
+                        name: 'tuNgayMienGiam',
+                        label: 'Từ ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: false,
-                        defaultTime: "00:00:00"
+                        defaultTime: '00:00:00'
                     },
                     to: {
-                        id: "filterDenNgayMienGiam",
-                        name: "denNgayMienGiam",
-                        label: "Đến ngày",
-                        placeholder: "dd/mm/yyyy hh:mm:ss",
+                        id: 'filterDenNgayMienGiam',
+                        name: 'denNgayMienGiam',
+                        label: 'Đến ngày',
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
                         showTime: true,
                         defaultToday: false,
-                        defaultTime: "23:59:59"
+                        defaultTime: '23:59:59'
                     }
                 },
 
                 {
-                    type: "select",
-                    id: "filterTrangThaiThanhToan",
-                    name: "trangThai",
-                    label: "Trạng thái thanh toán",
-                    placeholder: "Chọn trạng thái thanh toán",
-                    source: "/api/mcs/v1/enums?name=trangThaiPhieuThu",
-                    valueKey: "value",
-                    labelKey: "name"
+                    type: 'select',
+                    id: 'filterTrangThaiThanhToan',
+                    name: 'trangThai',
+                    label: 'Trạng thái thanh toán',
+                    placeholder: 'Chọn trạng thái thanh toán',
+                    source: '/api/mcs/v1/enums?name=trangThaiPhieuThu',
+                    valueKey: 'value',
+                    labelKey: 'name'
                 },
 
                 {
-                    type: "select",
-                    id: "filterTrangThaiSuDung",
-                    name: "trangThaiSuDung",
-                    label: "Trạng thái sử dụng",
-                    placeholder: "Chọn trạng thái sử dụng",
-                    source: "/api/mcs/v1/enums?name=trangThaiVe",
-                    valueKey: "value",
-                    labelKey: "name"
+                    type: 'select',
+                    id: 'filterTrangThaiSuDung',
+                    name: 'trangThaiSuDung',
+                    label: 'Trạng thái sử dụng',
+                    placeholder: 'Chọn trạng thái sử dụng',
+                    source: '/api/mcs/v1/enums?name=trangThaiVe',
+                    valueKey: 'value',
+                    labelKey: 'name'
                 },
 
                 {
-                    type: "select",
-                    id: "filterCoSoId",
-                    name: "coSoId",
-                    label: "Cơ sở",
-                    placeholder: "Chọn cơ sở",
-                    source: "/api/mcs/v1/dm-co-so/tong-hop?active=true",
-                    valueKey: "id",
-                    labelKey: "tenCoSo"
+                    type: 'select',
+                    id: 'filterCoSoId',
+                    name: 'coSoId',
+                    label: 'Cơ sở',
+                    placeholder: 'Chọn cơ sở',
+                    source: '/api/mcs/v1/dm-co-so/tong-hop?active=true',
+                    valueKey: 'id',
+                    labelKey: 'tenCoSo'
                 },
 
                 {
-                    type: "select",
-                    id: "filterNhaAnId",
-                    name: "nhaAnId",
-                    label: "Nhà ăn",
-                    placeholder: "Chọn nhà ăn",
-                    source: "/api/mcs/v1/dm-nha-an/tong-hop?active=true",
-                    valueKey: "id",
-                    labelKey: "tenNhaAn"
+                    type: 'select',
+                    id: 'filterNhaAnId',
+                    name: 'nhaAnId',
+                    label: 'Nhà ăn',
+                    placeholder: 'Chọn nhà ăn',
+                    source: '/api/mcs/v1/dm-nha-an/tong-hop?active=true',
+                    valueKey: 'id',
+                    labelKey: 'tenNhaAn'
                 },
 
                 {
-                    type: "select",
-                    id: "filterCaAnId",
-                    name: "caAnId",
-                    label: "Ca ăn",
-                    placeholder: "Chọn ca ăn",
-                    source: "/api/mcs/v1/dm-ca-an/tong-hop?active=true",
-                    valueKey: "id",
-                    labelKey: "tenCaAn"
+                    type: 'select',
+                    id: 'filterCaAnId',
+                    name: 'caAnId',
+                    label: 'Ca ăn',
+                    placeholder: 'Chọn ca ăn',
+                    source: '/api/mcs/v1/dm-ca-an/tong-hop?active=true',
+                    valueKey: 'id',
+                    labelKey: 'tenCaAn'
                 },
 
                 {
-                    type: "select",
-                    id: "filterPhuongThucThanhToan",
-                    name: "phuongThucThanhToan",
-                    label: "PTTT",
-                    placeholder: "Chọn phương thức thanh toán",
-                    source: "/api/mcs/v1/enums?name=phuongThucThanhToan",
-                    valueKey: "value",
-                    labelKey: "name"
+                    type: 'select',
+                    id: 'filterPhuongThucThanhToan',
+                    name: 'phuongThucThanhToan',
+                    label: 'PTTT',
+                    placeholder: 'Chọn phương thức thanh toán',
+                    source: '/api/mcs/v1/enums?name=phuongThucThanhToan',
+                    valueKey: 'value',
+                    labelKey: 'name'
                 },
 
                 {
-                    type: "select",
-                    id: "filterThuNganId",
-                    name: "thuNganId",
-                    label: "Thu ngân",
-                    placeholder: "Chọn thu ngân",
-                    source: "/api/mcs/v1/dm-nhan-vien/tong-hop?active=true",
-                    valueKey: "id",
-                    labelKey: "hoTen"
+                    type: 'select',
+                    id: 'filterThuNganId',
+                    name: 'thuNganId',
+                    label: 'Thu ngân',
+                    placeholder: 'Chọn thu ngân',
+                    source: '/api/mcs/v1/dm-nhan-vien/tong-hop?active=true',
+                    valueKey: 'id',
+                    labelKey: 'hoTen'
                 },
 
                 {
-                    type: "select",
-                    id: "filterNguoiTaoMienGiamId",
-                    name: "nguoiTaoMienGiamId",
-                    label: "Người tạo miễn giảm",
-                    placeholder: "Chọn người tạo miễn giảm",
-                    source: "/api/mcs/v1/dm-nhan-vien/tong-hop?active=true",
-                    valueKey: "id",
-                    labelKey: "hoTen"
+                    type: 'select',
+                    id: 'filterNguoiTaoMienGiamId',
+                    name: 'nguoiTaoMienGiamId',
+                    label: 'Người tạo miễn giảm',
+                    placeholder: 'Chọn người tạo miễn giảm',
+                    source: '/api/mcs/v1/dm-nhan-vien/tong-hop?active=true',
+                    valueKey: 'id',
+                    labelKey: 'hoTen'
                 },
 
                 {
-                    type: "select",
-                    id: "filterDoiTuongLayVe",
-                    name: "doiTuongLayVe",
-                    label: "Đối tượng",
-                    placeholder: "Chọn đối tượng",
-                    source: "/api/mcs/v1/enums?name=doiTuongLayVe",
-                    valueKey: "value",
-                    labelKey: "name"
+                    type: 'select',
+                    id: 'filterDoiTuongLayVe',
+                    name: 'doiTuongLayVe',
+                    label: 'Đối tượng',
+                    placeholder: 'Chọn đối tượng',
+                    source: '/api/mcs/v1/enums?name=doiTuongLayVe',
+                    valueKey: 'value',
+                    labelKey: 'name'
                 },
 
                 {
-                    type: "select",
-                    id: "filterLoaiMienGiam",
-                    name: "loaiMienGiam",
-                    label: "Loại miễn giảm",
-                    placeholder: "Chọn loại miễn giảm",
-                    source: "/api/mcs/v1/enums?name=loaiMienGiam",
-                    valueKey: "value",
-                    labelKey: "name"
+                    type: 'select',
+                    id: 'filterLoaiMienGiam',
+                    name: 'loaiMienGiam',
+                    label: 'Loại miễn giảm',
+                    placeholder: 'Chọn loại miễn giảm',
+                    source: '/api/mcs/v1/enums?name=loaiMienGiam',
+                    valueKey: 'value',
+                    labelKey: 'name'
                 }
             ];
 
-            const normalizedFilters = filters.map(
-                filter => ({
-                    ...filter,
-                    isDateRange: filter.type === "dateRange",
-                    isSelect: filter.type === "select",
-                    isInput: filter.type === "input",
-                    isNumber: filter.type === "number"
-                })
-            );
+            const normalizedFilters = filters.map((filter) => ({
+                ...filter,
+                isDateRange: filter.type === 'dateRange',
+                isSelect: filter.type === 'select',
+                isInput: filter.type === 'input',
+                isNumber: filter.type === 'number'
+            }));
 
             const listPage = {
-                moduleName: "danh-sach-lay-ve",
-                title: "Danh sách lấy vé",
-                description: "Theo dõi danh sách vé ăn đã tạo và trạng thái thanh toán.",
-                listEndpoint: "/api/mcs/v1/nv-phieu-lay-ve-an/tong-hop",
+                moduleName: 'danh-sach-lay-ve',
+                title: 'Danh sách lấy vé',
+                description: 'Theo dõi danh sách vé ăn đã tạo và trạng thái thanh toán.',
+                listEndpoint: '/api/mcs/v1/nv-phieu-lay-ve-an/tong-hop',
                 showIndex: true,
                 showSearch: true,
-                searchId: "layVeListSearch",
-                searchPlaceholder: "Tìm kiếm theo mã phiếu, người lấy vé...",
+                searchId: 'layVeListSearch',
+                searchPlaceholder: 'Tìm kiếm theo mã phiếu, người lấy vé...',
                 actions: [
                     {
-                        action: "create",
-                        label: "Lấy vé",
-                        icon: "fa-solid fa-plus",
-                        className: "data-list-btn--primary"
+                        action: 'create',
+                        label: 'Lấy vé',
+                        icon: 'fa-solid fa-plus',
+                        className: 'data-list-btn--primary'
                     },
                     {
-                        action: "export",
-                        label: "Xuất dữ liệu",
-                        icon: "fa-solid fa-download",
-                        className: "data-list-btn--outline"
+                        action: 'export',
+                        label: 'Xuất dữ liệu',
+                        icon: 'fa-solid fa-download',
+                        className: 'data-list-btn--outline'
                     },
                     {
-                        action: "filter",
-                        label: "Bộ lọc",
-                        icon: "fa-solid fa-filter",
-                        className: "data-list-btn--outline"
+                        action: 'filter',
+                        label: 'Bộ lọc',
+                        icon: 'fa-solid fa-filter',
+                        className: 'data-list-btn--outline'
                     }
                 ],
                 summaryCards: [
                     {
-                        key: "total",
-                        label: "Tổng vé",
-                        description: "Tổng số lượng vé",
-                        theme: "primary",
-                        icon: "fa-regular fa-file-lines"
+                        key: 'total',
+                        label: 'Tổng vé',
+                        description: 'Tổng số lượng vé',
+                        theme: 'primary',
+                        icon: 'fa-regular fa-file-lines'
                     },
                     {
-                        key: "paid",
-                        label: "Đã thanh toán",
-                        description: "Số vé đã thanh toán",
-                        theme: "success",
-                        icon: "fa-regular fa-circle-check"
+                        key: 'paid',
+                        label: 'Đã thanh toán',
+                        description: 'Số vé đã thanh toán',
+                        theme: 'success',
+                        icon: 'fa-regular fa-circle-check'
                     },
                     {
-                        key: "unpaid",
-                        label: "Chưa thanh toán",
-                        description: "Số vé chưa thanh toán",
-                        theme: "warning",
-                        icon: "fa-regular fa-clock"
+                        key: 'unpaid',
+                        label: 'Chưa thanh toán',
+                        description: 'Số vé chưa thanh toán',
+                        theme: 'warning',
+                        icon: 'fa-regular fa-clock'
                     }
                 ],
                 columns,
@@ -287,753 +293,479 @@ class VeAnWebController {
                 colspan: columns.length + 1
             };
 
-            return renderPage(
-                req,
-                res,
-                "pages/ve-an/danh-sach-lay-ve",
-                {
-                    title: "Danh sách lấy vé",
-                    pageDescription: "Danh sách lấy vé ăn.",
-                    listPage,
-                    breadcrumbs: [
-                        { label: "Danh sách lấy vé" }
-                    ]
-                }
-            );
+            return renderPage(req, res, 'pages/ve-an/danh-sach-lay-ve', {
+                title: 'Danh sách lấy vé',
+                pageDescription: 'Danh sách lấy vé ăn.',
+                listPage,
+                breadcrumbs: [{ label: 'Danh sách lấy vé' }]
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    async xacNhanSuDungVe(
-        req,
-        res,
-        next
-    ) {
-
+    async xacNhanSuDungVe(req, res, next) {
         try {
-
             const columns = [
+                column('maVe', 'Mã vé', {
+                    width: '150px'
+                }),
 
-                column(
-                    "maVe",
-                    "Mã vé",
-                    {
-                        width:
-                            "150px"
-                    }
-                ),
+                column('soPhieu', 'Mã phiếu', {
+                    width: '150px'
+                }),
 
-                column(
-                    "soPhieu",
-                    "Mã phiếu",
-                    {
-                        width:
-                            "150px"
-                    }
-                ),
+                column('nguoiLayVe', 'Người lấy vé', {
+                    width: '190px'
+                }),
 
-                column(
-                    "nguoiLayVe",
-                    "Người lấy vé",
-                    {
-                        width:
-                            "190px"
-                    }
-                ),
+                column('doiTuongLayVe', 'Đối tượng', {
+                    width: '120px'
+                }),
 
-                column(
-                    "doiTuongLayVe",
-                    "Đối tượng",
-                    {
-                        width:
-                            "120px"
-                    }
-                ),
+                column('tenCoSo', 'Cơ sở', {
+                    width: '150px'
+                }),
 
-                column(
-                    "tenCoSo",
-                    "Cơ sở",
-                    {
-                        width:
-                            "150px"
-                    }
-                ),
+                column('tenNhaAn', 'Nhà ăn', {
+                    width: '150px'
+                }),
 
-                column(
-                    "tenNhaAn",
-                    "Nhà ăn",
-                    {
-                        width:
-                            "150px"
-                    }
-                ),
+                column('tenCaAn', 'Ca ăn', {
+                    width: '120px'
+                }),
 
-                column(
-                    "tenCaAn",
-                    "Ca ăn",
-                    {
-                        width:
-                            "120px"
-                    }
-                ),
+                column('ngay', 'Ngày sử dụng', {
+                    type: 'date',
 
-                column(
-                    "ngay",
-                    "Ngày sử dụng",
-                    {
-                        type:
-                            "date",
+                    width: '135px'
+                }),
 
-                        width:
-                            "135px"
-                    }
-                ),
+                column('khungGio', 'Khung giờ', {
+                    width: '135px',
 
-                column(
-                    "khungGio",
-                    "Khung giờ",
-                    {
-                        width:
-                            "135px",
+                    sortable: false
+                }),
 
-                        sortable:
-                            false
-                    }
-                ),
+                column('tenThucDon', 'Thực đơn', {
+                    width: '190px'
+                }),
 
-                column(
-                    "tenThucDon",
-                    "Thực đơn",
-                    {
-                        width:
-                            "190px"
-                    }
-                ),
+                column('trangThai', 'Trạng thái', {
+                    width: '150px'
+                }),
 
-                column(
-                    "trangThai",
-                    "Trạng thái",
-                    {
-                        width:
-                            "150px"
-                    }
-                ),
+                column('thoiGianSuDung', 'Thời gian sử dụng', {
+                    type: 'datetime',
 
-                column(
-                    "thoiGianSuDung",
-                    "Thời gian sử dụng",
-                    {
-                        type:
-                            "datetime",
-
-                        width:
-                            "180px"
-                    }
-                )
-
+                    width: '180px'
+                })
             ];
 
             const filters = [
-
                 {
-                    type:
-                        "dateRange",
+                    type: 'dateRange',
 
-                    label:
-                        "Ngày sử dụng",
+                    label: 'Ngày sử dụng',
 
                     from: {
-                        id:
-                            "filterVeTuNgay",
+                        id: 'filterVeTuNgay',
 
-                        name:
-                            "tuNgay",
+                        name: 'tuNgay',
 
-                        label:
-                            "Từ ngày",
+                        label: 'Từ ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy",
+                        placeholder: 'dd/mm/yyyy',
 
-                        showTime:
-                            false,
+                        showTime: false,
 
-                        defaultToday:
-                            true
+                        defaultToday: true
                     },
 
                     to: {
-                        id:
-                            "filterVeDenNgay",
+                        id: 'filterVeDenNgay',
 
-                        name:
-                            "denNgay",
+                        name: 'denNgay',
 
-                        label:
-                            "Đến ngày",
+                        label: 'Đến ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy",
+                        placeholder: 'dd/mm/yyyy',
 
-                        showTime:
-                            false,
+                        showTime: false,
 
-                        defaultToday:
-                            true
+                        defaultToday: true
                     }
                 },
 
                 {
-                    type:
-                        "dateRange",
+                    type: 'dateRange',
 
-                    label:
-                        "Thời gian tạo",
+                    label: 'Thời gian tạo',
 
                     from: {
-                        id:
-                            "filterVeTuNgayTao",
+                        id: 'filterVeTuNgayTao',
 
-                        name:
-                            "tuNgayTao",
+                        name: 'tuNgayTao',
 
-                        label:
-                            "Từ ngày",
+                        label: 'Từ ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy hh:mm:ss",
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
 
-                        showTime:
-                            true,
+                        showTime: true,
 
-                        defaultToday:
-                            false,
+                        defaultToday: false,
 
-                        defaultTime:
-                            "00:00:00"
+                        defaultTime: '00:00:00'
                     },
 
                     to: {
-                        id:
-                            "filterVeDenNgayTao",
+                        id: 'filterVeDenNgayTao',
 
-                        name:
-                            "denNgayTao",
+                        name: 'denNgayTao',
 
-                        label:
-                            "Đến ngày",
+                        label: 'Đến ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy hh:mm:ss",
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
 
-                        showTime:
-                            true,
+                        showTime: true,
 
-                        defaultToday:
-                            false,
+                        defaultToday: false,
 
-                        defaultTime:
-                            "23:59:59"
+                        defaultTime: '23:59:59'
                     }
                 },
 
                 {
-                    type:
-                        "dateRange",
+                    type: 'dateRange',
 
-                    label:
-                        "Thời gian thanh toán",
+                    label: 'Thời gian thanh toán',
 
                     from: {
-                        id:
-                            "filterVeTuNgayThanhToan",
+                        id: 'filterVeTuNgayThanhToan',
 
-                        name:
-                            "tuNgayThanhToan",
+                        name: 'tuNgayThanhToan',
 
-                        label:
-                            "Từ ngày",
+                        label: 'Từ ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy hh:mm:ss",
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
 
-                        showTime:
-                            true,
+                        showTime: true,
 
-                        defaultToday:
-                            false,
+                        defaultToday: false,
 
-                        defaultTime:
-                            "00:00:00"
+                        defaultTime: '00:00:00'
                     },
 
                     to: {
-                        id:
-                            "filterVeDenNgayThanhToan",
+                        id: 'filterVeDenNgayThanhToan',
 
-                        name:
-                            "denNgayThanhToan",
+                        name: 'denNgayThanhToan',
 
-                        label:
-                            "Đến ngày",
+                        label: 'Đến ngày',
 
-                        placeholder:
-                            "dd/mm/yyyy hh:mm:ss",
+                        placeholder: 'dd/mm/yyyy hh:mm:ss',
 
-                        showTime:
-                            true,
+                        showTime: true,
 
-                        defaultToday:
-                            false,
+                        defaultToday: false,
 
-                        defaultTime:
-                            "23:59:59"
+                        defaultTime: '23:59:59'
                     }
                 },
 
                 {
-                    type:
-                        "select",
+                    type: 'select',
 
-                    id:
-                        "filterTrangThaiVe",
+                    id: 'filterTrangThaiVe',
 
-                    name:
-                        "trangThai",
+                    name: 'trangThai',
 
-                    label:
-                        "Trạng thái vé",
+                    label: 'Trạng thái vé',
 
-                    placeholder:
-                        "Chọn trạng thái vé",
+                    placeholder: 'Chọn trạng thái vé',
 
-                    source:
-                        "/api/mcs/v1/enums?name=trangThaiVe",
+                    source: '/api/mcs/v1/enums?name=trangThaiVe',
 
-                    mode:
-                        "multiple",
+                    mode: 'multiple',
 
-                    multiple:
-                        true,
+                    multiple: true,
 
-                    allowAll:
-                        true,
+                    allowAll: true,
 
-                    valueKey:
-                        "value",
+                    valueKey: 'value',
 
-                    labelKey:
-                        "name"
+                    labelKey: 'name'
                 },
 
                 {
-                    type:
-                        "select",
+                    type: 'select',
 
-                    id:
-                        "filterTrangThaiThanhToanVe",
+                    id: 'filterTrangThaiThanhToanVe',
 
-                    name:
-                        "trangThaiThanhToan",
+                    name: 'trangThaiThanhToan',
 
-                    label:
-                        "Trạng thái thanh toán",
+                    label: 'Trạng thái thanh toán',
 
-                    placeholder:
-                        "Chọn trạng thái thanh toán",
+                    placeholder: 'Chọn trạng thái thanh toán',
 
-                    source:
-                        "/api/mcs/v1/enums?name=trangThaiPhieuThu",
+                    source: '/api/mcs/v1/enums?name=trangThaiPhieuThu',
 
-                    mode:
-                        "multiple",
+                    mode: 'multiple',
 
-                    multiple:
-                        true,
+                    multiple: true,
 
-                    allowAll:
-                        true,
+                    allowAll: true,
 
-                    valueKey:
-                        "value",
+                    valueKey: 'value',
 
-                    labelKey:
-                        "name"
+                    labelKey: 'name'
                 },
 
                 {
-                    type:
-                        "select",
+                    type: 'select',
 
-                    id:
-                        "filterVeCoSoId",
+                    id: 'filterVeCoSoId',
 
-                    name:
-                        "coSoId",
+                    name: 'coSoId',
 
-                    label:
-                        "Cơ sở",
+                    label: 'Cơ sở',
 
-                    placeholder:
-                        "Chọn cơ sở",
+                    placeholder: 'Chọn cơ sở',
 
-                    source:
-                        "/api/mcs/v1/dm-co-so/tong-hop?active=true",
+                    source: '/api/mcs/v1/dm-co-so/tong-hop?active=true',
 
-                    mode:
-                        "multiple",
+                    mode: 'multiple',
 
-                    multiple:
-                        true,
+                    multiple: true,
 
-                    allowAll:
-                        true,
+                    allowAll: true,
 
-                    valueKey:
-                        "id",
+                    valueKey: 'id',
 
-                    labelKey:
-                        "tenCoSo"
+                    labelKey: 'tenCoSo'
                 },
 
                 {
-                    type:
-                        "select",
+                    type: 'select',
 
-                    id:
-                        "filterVeNhaAnId",
+                    id: 'filterVeNhaAnId',
 
-                    name:
-                        "nhaAnId",
+                    name: 'nhaAnId',
 
-                    label:
-                        "Nhà ăn",
+                    label: 'Nhà ăn',
 
-                    placeholder:
-                        "Chọn nhà ăn",
+                    placeholder: 'Chọn nhà ăn',
 
-                    source:
-                        "/api/mcs/v1/dm-nha-an/tong-hop?active=true",
+                    source: '/api/mcs/v1/dm-nha-an/tong-hop?active=true',
 
-                    mode:
-                        "multiple",
+                    mode: 'multiple',
 
-                    multiple:
-                        true,
+                    multiple: true,
 
-                    allowAll:
-                        true,
+                    allowAll: true,
 
-                    valueKey:
-                        "id",
+                    valueKey: 'id',
 
-                    labelKey:
-                        "tenNhaAn"
+                    labelKey: 'tenNhaAn'
                 },
 
                 {
-                    type:
-                        "select",
+                    type: 'select',
 
-                    id:
-                        "filterVeCaAnId",
+                    id: 'filterVeCaAnId',
 
-                    name:
-                        "caAnId",
+                    name: 'caAnId',
 
-                    label:
-                        "Ca ăn",
+                    label: 'Ca ăn',
 
-                    placeholder:
-                        "Chọn ca ăn",
+                    placeholder: 'Chọn ca ăn',
 
-                    source:
-                        "/api/mcs/v1/dm-ca-an/tong-hop?active=true",
+                    source: '/api/mcs/v1/dm-ca-an/tong-hop?active=true',
 
-                    mode:
-                        "multiple",
+                    mode: 'multiple',
 
-                    multiple:
-                        true,
+                    multiple: true,
 
-                    allowAll:
-                        true,
+                    allowAll: true,
 
-                    valueKey:
-                        "id",
+                    valueKey: 'id',
 
-                    labelKey:
-                        "tenCaAn"
+                    labelKey: 'tenCaAn'
                 }
-
             ];
 
-            const normalizedFilters =
-                filters.map(
-                    filter => ({
-                        ...filter,
+            const normalizedFilters = filters.map((filter) => ({
+                ...filter,
 
-                        isDateRange:
-                            filter.type ===
-                            "dateRange",
+                isDateRange: filter.type === 'dateRange',
 
-                        isSelect:
-                            filter.type ===
-                            "select",
+                isSelect: filter.type === 'select',
 
-                        isInput:
-                            filter.type ===
-                            "input",
+                isInput: filter.type === 'input',
 
-                        isNumber:
-                            filter.type ===
-                            "number"
-                    })
-                );
-
+                isNumber: filter.type === 'number'
+            }));
 
             const listPage = {
+                moduleName: 'xac-nhan-su-dung-ve',
 
-                moduleName:
-                    "xac-nhan-su-dung-ve",
+                title: 'Xác nhận sử dụng vé',
 
-                title:
-                    "Xác nhận sử dụng vé",
+                description: 'Kiểm tra và xác nhận vé ăn khi người dùng sử dụng vé.',
 
-                description:
-                    "Kiểm tra và xác nhận vé ăn khi người dùng sử dụng vé.",
+                listEndpoint: '/api/mcs/v1/ct-ve-an/tong-hop',
 
-                listEndpoint:
-                    "/api/mcs/v1/ct-ve-an/tong-hop",
+                showIndex: true,
 
-                showIndex:
-                    true,
+                showSearch: true,
 
-                showSearch:
-                    true,
+                selectable: true,
 
-                selectable:
-                    true,
+                showRowActions: true,
 
-                showRowActions:
-                    true,
+                searchId: 'xacNhanSuDungVeSearch',
 
-                searchId:
-                    "xacNhanSuDungVeSearch",
-
-                searchPlaceholder:
-                    "Tìm theo mã vé, mã phiếu, người lấy vé...",
-
+                searchPlaceholder: 'Tìm theo mã vé, mã phiếu, người lấy vé...',
 
                 actions: [
-
                     {
-                        action:
-                            "filter",
+                        action: 'filter',
 
-                        label:
-                            "Bộ lọc",
+                        label: 'Bộ lọc',
 
-                        icon:
-                            "fa-solid fa-filter",
+                        icon: 'fa-solid fa-filter',
 
-                        className:
-                            "data-list-btn--outline"
+                        className: 'data-list-btn--outline'
                     }
-
                 ],
 
                 bulkActions: [
-
                     {
-                        action:
-                            "confirm",
+                        action: 'confirm',
 
-                        label:
-                            "Xác nhận",
+                        label: 'Xác nhận',
 
-                        icon:
-                            "fa-solid fa-circle-check",
+                        icon: 'fa-solid fa-circle-check',
 
-                        className:
-                            "data-list-btn--success"
+                        className: 'data-list-btn--success'
                     },
 
                     {
-                        action:
-                            "unconfirm",
+                        action: 'unconfirm',
 
-                        label:
-                            "Hủy xác nhận",
+                        label: 'Hủy xác nhận',
 
-                        icon:
-                            "fa-solid fa-rotate-left",
+                        icon: 'fa-solid fa-rotate-left',
 
-                        className:
-                            "data-list-btn--outline"
+                        className: 'data-list-btn--outline'
                     },
 
                     {
-                        action:
-                            "cancel",
+                        action: 'cancel',
 
-                        label:
-                            "Hủy",
+                        label: 'Hủy',
 
-                        icon:
-                            "fa-solid fa-ban",
+                        icon: 'fa-solid fa-ban',
 
-                        className:
-                            "data-list-btn--danger"
+                        className: 'data-list-btn--danger'
                     },
 
                     {
-                        action:
-                            "uncancel",
+                        action: 'uncancel',
 
-                        label:
-                            "Hủy hủy",
+                        label: 'Hủy hủy',
 
-                        icon:
-                            "fa-solid fa-arrow-rotate-left",
+                        icon: 'fa-solid fa-arrow-rotate-left',
 
-                        className:
-                            "data-list-btn--outline"
+                        className: 'data-list-btn--outline'
                     }
-
                 ],
 
                 summaryCards: [
-
                     {
-                        key:
-                            "total",
+                        key: 'total',
 
-                        label:
-                            "Tổng vé",
+                        label: 'Tổng vé',
 
-                        description:
-                            "Tổng số vé trong danh sách",
+                        description: 'Tổng số vé trong danh sách',
 
-                        theme:
-                            "primary",
+                        theme: 'primary',
 
-                        icon:
-                            "fa-solid fa-ticket"
+                        icon: 'fa-solid fa-ticket'
                     },
 
                     {
-                        key:
-                            "unused",
+                        key: 'unused',
 
-                        label:
-                            "Chưa sử dụng",
+                        label: 'Chưa sử dụng',
 
-                        description:
-                            "Vé đang chờ xác nhận",
+                        description: 'Vé đang chờ xác nhận',
 
-                        theme:
-                            "warning",
+                        theme: 'warning',
 
-                        icon:
-                            "fa-regular fa-clock"
+                        icon: 'fa-regular fa-clock'
                     },
 
                     {
-                        key:
-                            "used",
+                        key: 'used',
 
-                        label:
-                            "Đã sử dụng",
+                        label: 'Đã sử dụng',
 
-                        description:
-                            "Vé đã được xác nhận",
+                        description: 'Vé đã được xác nhận',
 
-                        theme:
-                            "success",
+                        theme: 'success',
 
-                        icon:
-                            "fa-regular fa-circle-check"
+                        icon: 'fa-regular fa-circle-check'
                     }
-
                 ],
-
 
                 columns,
 
-                filters:
-                    normalizedFilters,
-
+                filters: normalizedFilters,
 
                 /*
-                * columns
-                * + checkbox
-                * + STT
-                * + thao tác
-                */
-                colspan:
-                    columns.length +
-                    3
-
+                 * columns
+                 * + checkbox
+                 * + STT
+                 * + thao tác
+                 */
+                colspan: columns.length + 3
             };
 
+            return renderPage(req, res, 'pages/ve-an/xac-nhan-su-dung-ve', {
+                title: 'Xác nhận sử dụng vé',
 
-            return renderPage(
-                req,
-                res,
-                "pages/ve-an/xac-nhan-su-dung-ve",
-                {
-                    title:
-                        "Xác nhận sử dụng vé",
+                pageDescription: 'Danh sách xác nhận sử dụng vé ăn.',
 
-                    pageDescription:
-                        "Danh sách xác nhận sử dụng vé ăn.",
+                listPage,
 
-                    listPage,
-
-                    breadcrumbs: [
-                        {
-                            label:
-                                "Xác nhận sử dụng vé"
-                        }
-                    ]
-                }
-            );
-
-        } catch (
-            error
-        ) {
-
-            next(
-                error
-            );
-
+                breadcrumbs: [
+                    {
+                        label: 'Xác nhận sử dụng vé'
+                    }
+                ]
+            });
+        } catch (error) {
+            next(error);
         }
-
     }
 
     async layVeAn(req, res, next) {
         try {
-            return renderPage(
-                req,
-                res,
-                "pages/ve-an/lay-ve-an",
-                {
-                    title: "Lấy vé ăn",
-                    pageDescription: "Lấy vé ăn.",
-                    pageId: String(req.params.id || ""),
-                    breadcrumbs: [
-                        {
-                            label: "Danh sách lấy vé",
-                            path: "/ve-an/danh-sach-lay-ve"
-                        },
-                        {
-                            label: "Lấy vé ăn"
-                        }
-                    ]
-                }
-            );
+            return renderPage(req, res, 'pages/ve-an/lay-ve-an', {
+                title: 'Lấy vé ăn',
+                pageDescription: 'Lấy vé ăn.',
+                pageId: String(req.params.id || ''),
+                breadcrumbs: [
+                    {
+                        label: 'Danh sách lấy vé',
+                        path: '/ve-an/danh-sach-lay-ve'
+                    },
+                    {
+                        label: 'Lấy vé ăn'
+                    }
+                ]
+            });
         } catch (error) {
             next(error);
         }

@@ -1,325 +1,174 @@
-const pool = require("../../../config/database");
-
+const pool = require('../../../config/database');
 
 class BinhChonSuatAnRepository {
-
-    mapDotBinhChon(
-        row
-    ) {
-
+    mapDotBinhChon(row) {
         if (!row) {
-
             return null;
-
         }
 
-
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            thucDonNgayId: row.thuc_don_ngay_id,
 
-            thucDonNgayId:
-                row.thuc_don_ngay_id,
+            thucDonId: row.thuc_don_id,
 
-            thucDonId:
-                row.thuc_don_id,
+            ngay: row.ngay,
 
-            ngay:
-                row.ngay,
+            batDauBinhChon: row.bat_dau_binh_chon,
 
-            batDauBinhChon:
-                row.bat_dau_binh_chon,
+            hanBinhChon: row.han_binh_chon,
 
-            hanBinhChon:
-                row.han_binh_chon,
+            choPhepThayDoi: row.cho_phep_thay_doi,
 
-            choPhepThayDoi:
-                row.cho_phep_thay_doi,
+            trangThai: row.trang_thai,
 
-            trangThai:
-                row.trang_thai,
+            nguoiTaoId: row.nguoi_tao_id,
 
-            nguoiTaoId:
-                row.nguoi_tao_id,
+            nguoiGuiId: row.nguoi_gui_id,
 
-            nguoiGuiId:
-                row.nguoi_gui_id,
+            thoiGianGui: row.thoi_gian_gui,
 
-            thoiGianGui:
-                row.thoi_gian_gui,
+            nguoiHuyId: row.nguoi_huy_id,
 
-            nguoiHuyId:
-                row.nguoi_huy_id,
+            thoiGianHuy: row.thoi_gian_huy,
 
-            thoiGianHuy:
-                row.thoi_gian_huy,
+            lyDoHuy: row.ly_do_huy,
 
-            lyDoHuy:
-                row.ly_do_huy,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
+            updatedAt: row.updated_at,
 
-            updatedAt:
-                row.updated_at,
+            maThucDon: row.ma_thuc_don,
 
-            maThucDon:
-                row.ma_thuc_don,
+            tenThucDon: row.ten_thuc_don,
 
-            tenThucDon:
-                row.ten_thuc_don,
+            coSoId: row.co_so_id,
 
-            coSoId:
-                row.co_so_id,
+            maCoSo: row.ma_co_so,
 
-            maCoSo:
-                row.ma_co_so,
+            tenCoSo: row.ten_co_so,
 
-            tenCoSo:
-                row.ten_co_so,
+            nhaAnId: row.nha_an_id,
 
-            nhaAnId:
-                row.nha_an_id,
+            maNhaAn: row.ma_nha_an,
 
-            maNhaAn:
-                row.ma_nha_an,
+            tenNhaAn: row.ten_nha_an,
 
-            tenNhaAn:
-                row.ten_nha_an,
+            caAnId: row.ca_an_id,
 
-            caAnId:
-                row.ca_an_id,
+            maCaAn: row.ma_ca_an,
 
-            maCaAn:
-                row.ma_ca_an,
+            tenCaAn: row.ten_ca_an,
 
-            tenCaAn:
-                row.ten_ca_an,
+            thoiGianBatDauCa: row.thoi_gian_bat_dau_ca,
 
-            thoiGianBatDauCa:
-                row.thoi_gian_bat_dau_ca,
+            thoiGianKetThucCa: row.thoi_gian_ket_thuc_ca,
 
-            thoiGianKetThucCa:
-                row.thoi_gian_ket_thuc_ca,
-
-            hanBinhChonToiDa:
-                row.han_binh_chon_toi_da,
+            hanBinhChonToiDa: row.han_binh_chon_toi_da,
 
             nguoiTao: row.nguoi_tao_ho_ten
                 ? {
-                    id:
-                        row.nguoi_tao_id,
+                      id: row.nguoi_tao_id,
 
-                    hoTen:
-                        row.nguoi_tao_ho_ten
-                }
+                      hoTen: row.nguoi_tao_ho_ten
+                  }
                 : null,
 
             nguoiGui: row.nguoi_gui_ho_ten
                 ? {
-                    id:
-                        row.nguoi_gui_id,
+                      id: row.nguoi_gui_id,
 
-                    hoTen:
-                        row.nguoi_gui_ho_ten
-                }
+                      hoTen: row.nguoi_gui_ho_ten
+                  }
                 : null,
 
             nguoiHuy: row.nguoi_huy_ho_ten
                 ? {
-                    id:
-                        row.nguoi_huy_id,
+                      id: row.nguoi_huy_id,
 
-                    hoTen:
-                        row.nguoi_huy_ho_ten
-                }
+                      hoTen: row.nguoi_huy_ho_ten
+                  }
                 : null,
 
-            tongBinhChon:
-                Number(
-                    row.tong_binh_chon ||
-                    0
-                ),
+            tongBinhChon: Number(row.tong_binh_chon || 0),
 
-            coThamGia:
-                Number(
-                    row.co_tham_gia ||
-                    0
-                ),
+            coThamGia: Number(row.co_tham_gia || 0),
 
-            khongThamGia:
-                Number(
-                    row.khong_tham_gia ||
-                    0
-                )
-
+            khongThamGia: Number(row.khong_tham_gia || 0)
         };
-
     }
 
-
-    mapBinhChon(
-        row
-    ) {
-
+    mapBinhChon(row) {
         if (!row) {
-
             return null;
-
         }
 
-
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            dotBinhChonId: row.dot_binh_chon_id,
 
-            dotBinhChonId:
-                row.dot_binh_chon_id,
+            taiKhoanId: row.tai_khoan_id,
 
-            taiKhoanId:
-                row.tai_khoan_id,
+            luaChon: row.lua_chon,
 
-            luaChon:
-                row.lua_chon,
+            thoiGianBinhChon: row.thoi_gian_binh_chon,
 
-            thoiGianBinhChon:
-                row.thoi_gian_binh_chon,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
-
-    async getTongHop(
-        filters = {}
-    ) {
-
+    async getTongHop(filters = {}) {
         const values = [];
 
         const conditions = [];
 
+        if (filters.trangThai !== undefined) {
+            values.push(filters.trangThai);
 
-        if (
-            filters.trangThai !==
-            undefined
-        ) {
-
-            values.push(
-                filters.trangThai
-            );
-
-            conditions.push(
-                `dbc.trang_thai = $${values.length}`
-            );
-
+            conditions.push(`dbc.trang_thai = $${values.length}`);
         }
 
+        if (filters.thucDonNgayId) {
+            values.push(filters.thucDonNgayId);
 
-        if (
-            filters.thucDonNgayId
-        ) {
-
-            values.push(
-                filters.thucDonNgayId
-            );
-
-            conditions.push(
-                `dbc.thuc_don_ngay_id = $${values.length}`
-            );
-
+            conditions.push(`dbc.thuc_don_ngay_id = $${values.length}`);
         }
 
+        if (filters.thucDonId) {
+            values.push(filters.thucDonId);
 
-        if (
-            filters.thucDonId
-        ) {
-
-            values.push(
-                filters.thucDonId
-            );
-
-            conditions.push(
-                `td.id = $${values.length}`
-            );
-
+            conditions.push(`td.id = $${values.length}`);
         }
 
+        if (filters.nhaAnId) {
+            values.push(filters.nhaAnId);
 
-        if (
-            filters.nhaAnId
-        ) {
-
-            values.push(
-                filters.nhaAnId
-            );
-
-            conditions.push(
-                `td.nha_an_id = $${values.length}`
-            );
-
+            conditions.push(`td.nha_an_id = $${values.length}`);
         }
 
+        if (filters.caAnId) {
+            values.push(filters.caAnId);
 
-        if (
-            filters.caAnId
-        ) {
-
-            values.push(
-                filters.caAnId
-            );
-
-            conditions.push(
-                `td.ca_an_id = $${values.length}`
-            );
-
+            conditions.push(`td.ca_an_id = $${values.length}`);
         }
 
+        if (filters.tuNgay) {
+            values.push(filters.tuNgay);
 
-        if (
-            filters.tuNgay
-        ) {
-
-            values.push(
-                filters.tuNgay
-            );
-
-            conditions.push(
-                `tdn.ngay >= $${values.length}`
-            );
-
+            conditions.push(`tdn.ngay >= $${values.length}`);
         }
 
+        if (filters.denNgay) {
+            values.push(filters.denNgay);
 
-        if (
-            filters.denNgay
-        ) {
-
-            values.push(
-                filters.denNgay
-            );
-
-            conditions.push(
-                `tdn.ngay <= $${values.length}`
-            );
-
+            conditions.push(`tdn.ngay <= $${values.length}`);
         }
 
-
-        const whereClause =
-            conditions.length > 0
-                ? `WHERE ${conditions.join(
-                    " AND "
-                )}`
-                : "";
-
+        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
         const sql = `
 
@@ -508,28 +357,12 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-
-        return result.rows.map(
-            row =>
-                this.mapDotBinhChon(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapDotBinhChon(row));
     }
 
-
-    async getChiTiet(
-        id
-    ) {
-
+    async getChiTiet(id) {
         const sql = `
 
             SELECT
@@ -658,27 +491,12 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [id]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
-
-        return this.mapDotBinhChon(
-            result.rows[0]
-        );
-
+        return this.mapDotBinhChon(result.rows[0]);
     }
 
-
-    async getDanhSachMonAn(
-        dotBinhChonId
-    ) {
-
+    async getDanhSachMonAn(dotBinhChonId) {
         const sql = `
 
             SELECT
@@ -762,123 +580,60 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [dotBinhChonId]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    dotBinhChonId
-                ]
-            );
+        const nhomMap = new Map();
 
+        result.rows.forEach((row) => {
+            if (!nhomMap.has(row.nhom_mon_an_id)) {
+                nhomMap.set(row.nhom_mon_an_id, {
+                    id: row.nhom_mon_an_id,
 
-        const nhomMap =
-            new Map();
+                    maNhomMonAn: row.ma_nhom_mon_an,
 
+                    tenNhomMonAn: row.ten_nhom_mon_an,
 
-        result.rows.forEach(
-            row => {
+                    thuTuHienThi: row.thu_tu_nhom,
 
-                if (
-                    !nhomMap.has(
-                        row.nhom_mon_an_id
-                    )
-                ) {
-
-                    nhomMap.set(
-                        row.nhom_mon_an_id,
-                        {
-
-                            id:
-                                row.nhom_mon_an_id,
-
-                            maNhomMonAn:
-                                row.ma_nhom_mon_an,
-
-                            tenNhomMonAn:
-                                row.ten_nhom_mon_an,
-
-                            thuTuHienThi:
-                                row.thu_tu_nhom,
-
-                            dsMonAn: []
-
-                        }
-                    );
-
-                }
-
-
-                if (
-                    row.mon_an_id
-                ) {
-
-                    nhomMap
-                        .get(
-                            row.nhom_mon_an_id
-                        )
-                        .dsMonAn
-                        .push({
-
-                            id:
-                                row.mon_an_id,
-
-                            maMonAn:
-                                row.ma_mon_an,
-
-                            tenMonAn:
-                                row.ten_mon_an,
-
-                            hinhAnh:
-                                row.hinh_anh,
-
-                            thuTuHienThi:
-                                row.thu_tu_mon,
-
-                            dinhLuong:
-                                row.dinh_luong,
-
-                            donViTinhId:
-                                row.don_vi_tinh_id,
-
-                            donViTinh:
-                                row.don_vi_tinh_id
-                                    ? {
-
-                                        id:
-                                            row.don_vi_tinh_id,
-
-                                        maDonViTinh:
-                                            row.ma_don_vi_tinh,
-
-                                        tenDonViTinh:
-                                            row.ten_don_vi_tinh,
-
-                                        kyHieu:
-                                            row.ky_hieu
-
-                                    }
-                                    : null
-
-                        });
-
-                }
-
+                    dsMonAn: []
+                });
             }
-        );
 
+            if (row.mon_an_id) {
+                nhomMap.get(row.nhom_mon_an_id).dsMonAn.push({
+                    id: row.mon_an_id,
 
-        return Array.from(
-            nhomMap.values()
-        );
+                    maMonAn: row.ma_mon_an,
 
+                    tenMonAn: row.ten_mon_an,
+
+                    hinhAnh: row.hinh_anh,
+
+                    thuTuHienThi: row.thu_tu_mon,
+
+                    dinhLuong: row.dinh_luong,
+
+                    donViTinhId: row.don_vi_tinh_id,
+
+                    donViTinh: row.don_vi_tinh_id
+                        ? {
+                              id: row.don_vi_tinh_id,
+
+                              maDonViTinh: row.ma_don_vi_tinh,
+
+                              tenDonViTinh: row.ten_don_vi_tinh,
+
+                              kyHieu: row.ky_hieu
+                          }
+                        : null
+                });
+            }
+        });
+
+        return Array.from(nhomMap.values());
     }
 
-
-    async getThongKe(
-        dotBinhChonId
-    ) {
-
+    async getThongKe(dotBinhChonId) {
         const sql = `
 
             SELECT
@@ -903,114 +658,42 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [dotBinhChonId]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    dotBinhChonId
-                ]
-            );
+        const row = result.rows[0];
 
+        const tong = Number(row.tong_binh_chon || 0);
 
-        const row =
-            result.rows[0];
+        const co = Number(row.co_tham_gia || 0);
 
-
-        const tong =
-            Number(
-                row.tong_binh_chon ||
-                0
-            );
-
-        const co =
-            Number(
-                row.co_tham_gia ||
-                0
-            );
-
-        const khong =
-            Number(
-                row.khong_tham_gia ||
-                0
-            );
-
+        const khong = Number(row.khong_tham_gia || 0);
 
         return {
+            tongBinhChon: tong,
 
-            tongBinhChon:
-                tong,
+            coThamGia: co,
 
-            coThamGia:
-                co,
+            khongThamGia: khong,
 
-            khongThamGia:
-                khong,
+            tyLeCoThamGia: tong > 0 ? Number(((co * 100) / tong).toFixed(2)) : 0,
 
-            tyLeCoThamGia:
-                tong > 0
-                    ? Number(
-                        (
-                            co *
-                            100 /
-                            tong
-                        ).toFixed(2)
-                    )
-                    : 0,
-
-            tyLeKhongThamGia:
-                tong > 0
-                    ? Number(
-                        (
-                            khong *
-                            100 /
-                            tong
-                        ).toFixed(2)
-                    )
-                    : 0
-
+            tyLeKhongThamGia: tong > 0 ? Number(((khong * 100) / tong).toFixed(2)) : 0
         };
-
     }
 
+    async getNguoiBinhChon(dotBinhChonId, filters = {}) {
+        const values = [dotBinhChonId];
 
-    async getNguoiBinhChon(
-        dotBinhChonId,
-        filters = {}
-    ) {
+        const conditions = ['bc.dot_binh_chon_id = $1'];
 
-        const values = [
-            dotBinhChonId
-        ];
+        if (filters.luaChon !== undefined) {
+            values.push(filters.luaChon);
 
-        const conditions = [
-            "bc.dot_binh_chon_id = $1"
-        ];
-
-
-        if (
-            filters.luaChon !==
-            undefined
-        ) {
-
-            values.push(
-                filters.luaChon
-            );
-
-            conditions.push(
-                `bc.lua_chon = $${values.length}`
-            );
-
+            conditions.push(`bc.lua_chon = $${values.length}`);
         }
 
-
-        if (
-            filters.tuKhoa
-        ) {
-
-            values.push(
-                `%${filters.tuKhoa}%`
-            );
+        if (filters.tuKhoa) {
+            values.push(`%${filters.tuKhoa}%`);
 
             conditions.push(
                 `(
@@ -1019,9 +702,7 @@ class BinhChonSuatAnRepository {
                     nv.ho_ten ILIKE $${values.length}
                 )`
             );
-
         }
-
 
         const sql = `
 
@@ -1062,9 +743,7 @@ class BinhChonSuatAnRepository {
 
 
             WHERE
-                ${conditions.join(
-                    " AND "
-                )}
+                ${conditions.join(' AND ')}
 
 
             ORDER BY
@@ -1075,57 +754,32 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        return result.rows.map((row) => ({
+            id: row.id,
 
+            dotBinhChonId: row.dot_binh_chon_id,
 
-        return result.rows.map(
-            row => ({
+            taiKhoanId: row.tai_khoan_id,
 
-                id:
-                    row.id,
+            nhanVienId: row.nhan_vien_id,
 
-                dotBinhChonId:
-                    row.dot_binh_chon_id,
+            maNhanVien: row.ma_nhan_vien,
 
-                taiKhoanId:
-                    row.tai_khoan_id,
+            hoTen: row.ho_ten,
 
-                nhanVienId:
-                    row.nhan_vien_id,
+            email: row.email,
 
-                maNhanVien:
-                    row.ma_nhan_vien,
+            soDienThoai: row.so_dien_thoai,
 
-                hoTen:
-                    row.ho_ten,
+            luaChon: row.lua_chon,
 
-                email:
-                    row.email,
-
-                soDienThoai:
-                    row.so_dien_thoai,
-
-                luaChon:
-                    row.lua_chon,
-
-                thoiGianBinhChon:
-                    row.thoi_gian_binh_chon
-
-            })
-        );
-
+            thoiGianBinhChon: row.thoi_gian_binh_chon
+        }));
     }
 
-
-    async getHienTaiCuaToi(
-        taiKhoanId
-    ) {
-
+    async getHienTaiCuaToi(taiKhoanId) {
         const sql = `
 
             SELECT DISTINCT
@@ -1220,30 +874,12 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [taiKhoanId]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    taiKhoanId
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                this.mapDotBinhChon(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapDotBinhChon(row));
     }
 
-
-    async getSapToiCuaToi(
-        taiKhoanId
-    ) {
-
+    async getSapToiCuaToi(taiKhoanId) {
         const sql = `
 
             SELECT DISTINCT
@@ -1333,31 +969,12 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [taiKhoanId]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    taiKhoanId
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                this.mapDotBinhChon(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapDotBinhChon(row));
     }
 
-
-    async getLuaChonCuaTaiKhoan(
-        dotBinhChonId,
-        taiKhoanId
-    ) {
-
+    async getLuaChonCuaTaiKhoan(dotBinhChonId, taiKhoanId) {
         const sql = `
 
             SELECT *
@@ -1372,108 +989,52 @@ class BinhChonSuatAnRepository {
 
         `;
 
+        const result = await pool.query(sql, [dotBinhChonId, taiKhoanId]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    dotBinhChonId,
-                    taiKhoanId
-                ]
-            );
-
-
-        return this.mapBinhChon(
-            result.rows[0]
-        );
-
+        return this.mapBinhChon(result.rows[0]);
     }
 
-
-    async getLichSuTong(
-        filters = {}
-    ) {
-
-        return await this
-            .getLichSu(
-                null,
-                filters
-            );
-
+    async getLichSuTong(filters = {}) {
+        return await this.getLichSu(null, filters);
     }
 
-    async getLichSuCuaToi(
-        taiKhoanId,
-        filters = {}
-    ) {
-        const values = [
-            taiKhoanId
-        ];
+    async getLichSuCuaToi(taiKhoanId, filters = {}) {
+        const values = [taiKhoanId];
 
         const conditions = [
-            "dbc.trang_thai = 20",
-            "dbc.han_binh_chon < LOCALTIMESTAMP",
-            "tdn.active = TRUE",
-            "td.active = TRUE",
-            "tk.active = TRUE",
-            "tk.bi_khoa = FALSE",
-            "nv.active = TRUE",
-            "na.active = TRUE"
+            'dbc.trang_thai = 20',
+            'dbc.han_binh_chon < LOCALTIMESTAMP',
+            'tdn.active = TRUE',
+            'td.active = TRUE',
+            'tk.active = TRUE',
+            'tk.bi_khoa = FALSE',
+            'nv.active = TRUE',
+            'na.active = TRUE'
         ];
 
+        if (filters.dotBinhChonId) {
+            values.push(filters.dotBinhChonId);
 
-        if (
-            filters.dotBinhChonId
-        ) {
-            values.push(
-                filters.dotBinhChonId
-            );
-
-            conditions.push(
-                `dbc.id = $${values.length}`
-            );
+            conditions.push(`dbc.id = $${values.length}`);
         }
 
+        if (filters.luaChon !== undefined) {
+            values.push(filters.luaChon);
 
-        if (
-            filters.luaChon !==
-            undefined
-        ) {
-            values.push(
-                filters.luaChon
-            );
-
-            conditions.push(
-                `bc.lua_chon = $${values.length}`
-            );
+            conditions.push(`bc.lua_chon = $${values.length}`);
         }
 
+        if (filters.tuNgay) {
+            values.push(filters.tuNgay);
 
-        if (
-            filters.tuNgay
-        ) {
-            values.push(
-                filters.tuNgay
-            );
-
-            conditions.push(
-                `tdn.ngay >= $${values.length}`
-            );
+            conditions.push(`tdn.ngay >= $${values.length}`);
         }
 
+        if (filters.denNgay) {
+            values.push(filters.denNgay);
 
-        if (
-            filters.denNgay
-        ) {
-            values.push(
-                filters.denNgay
-            );
-
-            conditions.push(
-                `tdn.ngay <= $${values.length}`
-            );
+            conditions.push(`tdn.ngay <= $${values.length}`);
         }
-
 
         const sql = `
             SELECT DISTINCT
@@ -1542,180 +1103,80 @@ class BinhChonSuatAnRepository {
                 td.ca_an_id
 
             WHERE
-                ${conditions.join(
-                    " AND "
-                )}
+                ${conditions.join(' AND ')}
 
             ORDER BY
                 dbc.han_binh_chon DESC,
                 tdn.ngay DESC
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        return result.rows.map((row) => {
+            const dot = this.mapDotBinhChon(row);
 
+            return {
+                ...dot,
 
-        return result.rows.map(
-            row => {
-                const dot =
-                    this.mapDotBinhChon(
-                        row
-                    );
+                dotBinhChonId: dot.id,
 
-                return {
-                    ...dot,
+                maNhanVien: row.ma_nhan_vien,
 
-                    dotBinhChonId:
-                        dot.id,
+                hoTen: row.ho_ten,
 
-                    maNhanVien:
-                        row.ma_nhan_vien,
+                luaChon: row.lua_chon,
 
-                    hoTen:
-                        row.ho_ten,
+                luaChonCuaToi: row.lua_chon,
 
-                    luaChon:
-                        row.lua_chon,
-
-                    luaChonCuaToi:
-                        row.lua_chon,
-
-                    thoiGianBinhChon:
-                        row.thoi_gian_binh_chon
-                };
-            }
-        );
+                thoiGianBinhChon: row.thoi_gian_binh_chon
+            };
+        });
     }
 
-    async getLichSu(
-        taiKhoanId = null,
-        filters = {}
-    ) {
+    async getLichSu(taiKhoanId = null, filters = {}) {
+        const values = [];
 
-        const values =
-            [];
+        const conditions = ['dbc.trang_thai = 20'];
 
+        if (taiKhoanId) {
+            values.push(taiKhoanId);
 
-        const conditions = [
-            "dbc.trang_thai = 20"
-        ];
-
-
-        if (
-            taiKhoanId
-        ) {
-
-            values.push(
-                taiKhoanId
-            );
-
-
-            conditions.push(
-                `bc.tai_khoan_id = $${values.length}`
-            );
-
+            conditions.push(`bc.tai_khoan_id = $${values.length}`);
         }
 
+        if (Array.isArray(filters.taiKhoanIds) && filters.taiKhoanIds.length > 0) {
+            const placeholders = filters.taiKhoanIds.map((id) => {
+                values.push(id);
 
-        if (
-            Array.isArray(
-                filters.taiKhoanIds
-            ) &&
-            filters.taiKhoanIds.length >
-                0
-        ) {
+                return `$${values.length}`;
+            });
 
-            const placeholders =
-                filters.taiKhoanIds
-                    .map(
-                        id => {
-
-                            values.push(
-                                id
-                            );
-
-
-                            return `$${values.length}`;
-
-                        }
-                    );
-
-
-            conditions.push(
-                `bc.tai_khoan_id IN (${placeholders.join(", ")})`
-            );
-
+            conditions.push(`bc.tai_khoan_id IN (${placeholders.join(', ')})`);
         }
 
+        if (filters.dotBinhChonId) {
+            values.push(filters.dotBinhChonId);
 
-        if (
-            filters.dotBinhChonId
-        ) {
-
-            values.push(
-                filters.dotBinhChonId
-            );
-
-
-            conditions.push(
-                `dbc.id = $${values.length}`
-            );
-
+            conditions.push(`dbc.id = $${values.length}`);
         }
 
+        if (filters.luaChon !== undefined) {
+            values.push(filters.luaChon);
 
-        if (
-            filters.luaChon !==
-            undefined
-        ) {
-
-            values.push(
-                filters.luaChon
-            );
-
-
-            conditions.push(
-                `bc.lua_chon = $${values.length}`
-            );
-
+            conditions.push(`bc.lua_chon = $${values.length}`);
         }
 
+        if (filters.tuNgay) {
+            values.push(filters.tuNgay);
 
-        if (
-            filters.tuNgay
-        ) {
-
-            values.push(
-                filters.tuNgay
-            );
-
-
-            conditions.push(
-                `tdn.ngay >= $${values.length}`
-            );
-
+            conditions.push(`tdn.ngay >= $${values.length}`);
         }
 
+        if (filters.denNgay) {
+            values.push(filters.denNgay);
 
-        if (
-            filters.denNgay
-        ) {
-
-            values.push(
-                filters.denNgay
-            );
-
-
-            conditions.push(
-                `tdn.ngay <= $${values.length}`
-            );
-
+            conditions.push(`tdn.ngay <= $${values.length}`);
         }
-
 
         const sql = `
             SELECT
@@ -1792,104 +1253,65 @@ class BinhChonSuatAnRepository {
                 td.ca_an_id
 
             WHERE
-                ${conditions.join(" AND ")}
+                ${conditions.join(' AND ')}
 
             ORDER BY
                 tdn.ngay DESC,
                 bc.thoi_gian_binh_chon DESC
         `;
 
+        const result = await pool.query(sql, values);
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        return result.rows.map((row) => ({
+            id: row.id,
 
+            dotBinhChonId: row.dot_binh_chon_id,
 
-        return result.rows.map(
-            row => ({
+            taiKhoanId: row.tai_khoan_id,
 
-                id:
-                    row.id,
+            nhanVienId: row.nhan_vien_id,
 
-                dotBinhChonId:
-                    row.dot_binh_chon_id,
+            maNhanVien: row.ma_nhan_vien,
 
-                taiKhoanId:
-                    row.tai_khoan_id,
+            hoTen: row.ho_ten,
 
-                nhanVienId:
-                    row.nhan_vien_id,
+            ngay: row.ngay,
 
-                maNhanVien:
-                    row.ma_nhan_vien,
+            thucDonId: row.thuc_don_id,
 
-                hoTen:
-                    row.ho_ten,
+            thucDonNgayId: row.thuc_don_ngay_id,
 
-                ngay:
-                    row.ngay,
+            maThucDon: row.ma_thuc_don,
 
-                thucDonId:
-                    row.thuc_don_id,
+            tenThucDon: row.ten_thuc_don,
 
-                thucDonNgayId:
-                    row.thuc_don_ngay_id,
+            nhaAnId: row.nha_an_id,
 
-                maThucDon:
-                    row.ma_thuc_don,
+            tenNhaAn: row.ten_nha_an,
 
-                tenThucDon:
-                    row.ten_thuc_don,
+            caAnId: row.ca_an_id,
 
-                nhaAnId:
-                    row.nha_an_id,
+            tenCaAn: row.ten_ca_an,
 
-                tenNhaAn:
-                    row.ten_nha_an,
+            trangThaiThoiGian: {
+                value: row.trang_thai_thoi_gian_value,
 
-                caAnId:
-                    row.ca_an_id,
+                name: row.trang_thai_thoi_gian_name
+            },
 
-                tenCaAn:
-                    row.ten_ca_an,
+            luaChon: row.lua_chon,
 
-                trangThaiThoiGian: {
-                    value:
-                        row.trang_thai_thoi_gian_value,
-
-                    name:
-                        row.trang_thai_thoi_gian_name
-                },
-
-                luaChon:
-                    row.lua_chon,
-
-                thoiGianBinhChon:
-                    row.thoi_gian_binh_chon
-            })
-        );
-
+            thoiGianBinhChon: row.thoi_gian_binh_chon
+        }));
     }
 
-    async getDanhSachThucDonNgayHopLe(
-        dotBinhChonId = null
-    ) {
-
+    async getDanhSachThucDonNgayHopLe(dotBinhChonId = null) {
         const values = [];
 
-        let excludeSql = "";
+        let excludeSql = '';
 
-
-        if (
-            dotBinhChonId
-        ) {
-
-            values.push(
-                dotBinhChonId
-            );
-
+        if (dotBinhChonId) {
+            values.push(dotBinhChonId);
 
             excludeSql = `
 
@@ -1909,9 +1331,7 @@ class BinhChonSuatAnRepository {
                 )
 
             `;
-
         } else {
-
             excludeSql = `
 
                 AND NOT EXISTS (
@@ -1928,13 +1348,10 @@ class BinhChonSuatAnRepository {
                 )
 
             `;
-
         }
 
-
-        const result =
-            await pool.query(
-                `
+        const result = await pool.query(
+            `
 
                     SELECT
 
@@ -2042,76 +1459,49 @@ class BinhChonSuatAnRepository {
                         ca.ten_ca_an ASC
 
                 `,
-                values
-            );
-
-
-        return result.rows.map(
-            row => ({
-
-                id:
-                    row.id,
-
-                thucDonId:
-                    row.thuc_don_id,
-
-                ngay:
-                    row.ngay,
-
-                maThucDon:
-                    row.ma_thuc_don,
-
-                tenThucDon:
-                    row.ten_thuc_don,
-
-                coSoId:
-                    row.co_so_id,
-
-                maCoSo:
-                    row.ma_co_so,
-
-                tenCoSo:
-                    row.ten_co_so,
-
-                nhaAnId:
-                    row.nha_an_id,
-
-                maNhaAn:
-                    row.ma_nha_an,
-
-                tenNhaAn:
-                    row.ten_nha_an,
-
-                caAnId:
-                    row.ca_an_id,
-
-                maCaAn:
-                    row.ma_ca_an,
-
-                tenCaAn:
-                    row.ten_ca_an,
-
-                thoiGianBatDauCa:
-                    row.thoi_gian_bat_dau_ca,
-
-                thoiGianKetThucCa:
-                    row.thoi_gian_ket_thuc_ca,
-
-                hanBinhChonToiDa:
-                    row.han_binh_chon_toi_da
-
-            })
+            values
         );
 
+        return result.rows.map((row) => ({
+            id: row.id,
+
+            thucDonId: row.thuc_don_id,
+
+            ngay: row.ngay,
+
+            maThucDon: row.ma_thuc_don,
+
+            tenThucDon: row.ten_thuc_don,
+
+            coSoId: row.co_so_id,
+
+            maCoSo: row.ma_co_so,
+
+            tenCoSo: row.ten_co_so,
+
+            nhaAnId: row.nha_an_id,
+
+            maNhaAn: row.ma_nha_an,
+
+            tenNhaAn: row.ten_nha_an,
+
+            caAnId: row.ca_an_id,
+
+            maCaAn: row.ma_ca_an,
+
+            tenCaAn: row.ten_ca_an,
+
+            thoiGianBatDauCa: row.thoi_gian_bat_dau_ca,
+
+            thoiGianKetThucCa: row.thoi_gian_ket_thuc_ca,
+
+            hanBinhChonToiDa: row.han_binh_chon_toi_da
+        }));
     }
 
-    async getThucDonNgayHopLe(
-        thucDonNgayId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async getThucDonNgayHopLe(thucDonNgayId) {
+        const result = await pool.query(
+            `
                     SELECT
                         tdn.id,
                         tdn.thuc_don_id,
@@ -2171,23 +1561,15 @@ class BinhChonSuatAnRepository {
 
                     LIMIT 1
                 `,
-                [
-                    thucDonNgayId
-                ]
-            );
-
+            [thucDonNgayId]
+        );
 
         return result.rows[0] || null;
-
     }
 
-    async getTaiKhoanNhanThongBao(
-        dotBinhChonId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async getTaiKhoanNhanThongBao(dotBinhChonId) {
+        const result = await pool.query(
+            `
                     SELECT DISTINCT
                         tk.id
 
@@ -2227,28 +1609,15 @@ class BinhChonSuatAnRepository {
                     AND tk.bi_khoa =
                         FALSE
                 `,
-                [
-                    dotBinhChonId
-                ]
-            );
-
-
-        return result.rows.map(
-            row =>
-                Number(
-                    row.id
-                )
+            [dotBinhChonId]
         );
 
+        return result.rows.map((row) => Number(row.id));
     }
 
-    async existsMonAnTheoThucDonNgay(
-        thucDonNgayId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async existsMonAnTheoThucDonNgay(thucDonNgayId) {
+        const result = await pool.query(
+            `
 
                     SELECT 1
 
@@ -2273,46 +1642,25 @@ class BinhChonSuatAnRepository {
                     LIMIT 1
 
                 `,
-                [
-                    thucDonNgayId
-                ]
-            );
-
+            [thucDonNgayId]
+        );
 
         return result.rowCount > 0;
-
     }
 
+    async existsDotHieuLucTheoThucDonNgay(thucDonNgayId, excludeId = null) {
+        const values = [thucDonNgayId];
 
-    async existsDotHieuLucTheoThucDonNgay(
-        thucDonNgayId,
-        excludeId = null
-    ) {
+        let excludeSql = '';
 
-        const values = [
-            thucDonNgayId
-        ];
+        if (excludeId) {
+            values.push(excludeId);
 
-        let excludeSql = "";
-
-
-        if (
-            excludeId
-        ) {
-
-            values.push(
-                excludeId
-            );
-
-            excludeSql =
-                `AND id <> $${values.length}`;
-
+            excludeSql = `AND id <> $${values.length}`;
         }
 
-
-        const result =
-            await pool.query(
-                `
+        const result = await pool.query(
+            `
 
                     SELECT 1
 
@@ -2327,22 +1675,15 @@ class BinhChonSuatAnRepository {
                     LIMIT 1
 
                 `,
-                values
-            );
-
+            values
+        );
 
         return result.rowCount > 0;
-
     }
 
-    async kiemTraDuocBinhChon(
-        dotBinhChonId,
-        taiKhoanId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async kiemTraDuocBinhChon(dotBinhChonId, taiKhoanId) {
+        const result = await pool.query(
+            `
                     SELECT 1
 
                     FROM nv_dot_binh_chon dbc
@@ -2381,24 +1722,15 @@ class BinhChonSuatAnRepository {
 
                     LIMIT 1
                 `,
-                [
-                    dotBinhChonId,
-                    taiKhoanId
-                ]
-            );
-
+            [dotBinhChonId, taiKhoanId]
+        );
 
         return result.rowCount > 0;
-
     }
 
-    async getHoTenTaiKhoan(
-        taiKhoanId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async getHoTenTaiKhoan(taiKhoanId) {
+        const result = await pool.query(
+            `
                     SELECT
                         nv.ho_ten
 
@@ -2412,24 +1744,13 @@ class BinhChonSuatAnRepository {
 
                     LIMIT 1
                 `,
-                [
-                    taiKhoanId
-                ]
-            );
-
-
-        return (
-            result.rows[0]
-                ?.ho_ten ||
-            null
+            [taiKhoanId]
         );
 
+        return result.rows[0]?.ho_ten || null;
     }
 
-    async create(
-        data
-    ) {
-
+    async create(data) {
         const sql = `
 
             INSERT INTO nv_dot_binh_chon (
@@ -2463,30 +1784,18 @@ class BinhChonSuatAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    data.thucDonNgayId,
-                    data.batDauBinhChon,
-                    data.hanBinhChon,
-                    data.choPhepThayDoi,
-                    data.nguoiTaoId
-                ]
-            );
-
+        const result = await pool.query(sql, [
+            data.thucDonNgayId,
+            data.batDauBinhChon,
+            data.hanBinhChon,
+            data.choPhepThayDoi,
+            data.nguoiTaoId
+        ]);
 
         return result.rows[0];
-
     }
 
-
-    async update(
-        id,
-        data
-    ) {
-
+    async update(id, data) {
         const sql = `
 
             UPDATE nv_dot_binh_chon
@@ -2507,32 +1816,20 @@ class BinhChonSuatAnRepository {
 
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    data.thucDonNgayId,
-                    data.batDauBinhChon,
-                    data.hanBinhChon,
-                    data.choPhepThayDoi,
-                    id
-                ]
-            );
-
+        const result = await pool.query(sql, [
+            data.thucDonNgayId,
+            data.batDauBinhChon,
+            data.hanBinhChon,
+            data.choPhepThayDoi,
+            id
+        ]);
 
         return result.rows[0] || null;
-
     }
 
-    async gui(
-        id,
-        nguoiGuiId
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async gui(id, nguoiGuiId) {
+        const result = await pool.query(
+            `
                     UPDATE nv_dot_binh_chon
 
                     SET
@@ -2564,28 +1861,15 @@ class BinhChonSuatAnRepository {
 
                     RETURNING id
                 `,
-                [
-                    nguoiGuiId,
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
+            [nguoiGuiId, id]
         );
 
+        return result.rows[0] || null;
     }
 
-    async moLai(
-        id,
-        hanBinhChon
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async moLai(id, hanBinhChon) {
+        const result = await pool.query(
+            `
                     UPDATE nv_dot_binh_chon
 
                     SET
@@ -2600,29 +1884,15 @@ class BinhChonSuatAnRepository {
 
                     RETURNING id
                 `,
-                [
-                    hanBinhChon,
-                    id
-                ]
-            );
-
-
-        return (
-            result.rows[0] ||
-            null
+            [hanBinhChon, id]
         );
 
+        return result.rows[0] || null;
     }
 
-    async huy(
-        id,
-        nguoiHuyId,
-        lyDoHuy
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async huy(id, nguoiHuyId, lyDoHuy) {
+        const result = await pool.query(
+            `
 
                     UPDATE nv_dot_binh_chon
 
@@ -2644,47 +1914,28 @@ class BinhChonSuatAnRepository {
                     RETURNING id
 
                 `,
-                [
-                    nguoiHuyId,
-                    lyDoHuy,
-                    id
-                ]
-            );
-
+            [nguoiHuyId, lyDoHuy, id]
+        );
 
         return result.rows[0] || null;
-
     }
 
-    async remove(
-        id
-    ) {
-
-        const client =
-            await pool.connect();
-
+    async remove(id) {
+        const client = await pool.connect();
 
         try {
-
-            await client.query(
-                "BEGIN"
-            );
-
+            await client.query('BEGIN');
 
             await client.query(
                 `
                     DELETE FROM ct_binh_chon_suat_an
                     WHERE dot_binh_chon_id = $1
                 `,
-                [
-                    id
-                ]
+                [id]
             );
 
-
-            const result =
-                await client.query(
-                    `
+            const result = await client.query(
+                `
                         DELETE FROM nv_dot_binh_chon
 
                         WHERE id = $1
@@ -2696,50 +1947,24 @@ class BinhChonSuatAnRepository {
 
                         RETURNING id
                     `,
-                    [
-                        id
-                    ]
-                );
-
-
-            await client.query(
-                "COMMIT"
+                [id]
             );
 
+            await client.query('COMMIT');
 
-            return (
-                result.rows[0] ||
-                null
-            );
-
-        } catch (
-            error
-        ) {
-
-            await client.query(
-                "ROLLBACK"
-            );
-
+            return result.rows[0] || null;
+        } catch (error) {
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
 
-    async upsertBinhChon(
-        dotBinhChonId,
-        taiKhoanId,
-        luaChon
-    ) {
-
-        const result =
-            await pool.query(
-                `
+    async upsertBinhChon(dotBinhChonId, taiKhoanId, luaChon) {
+        const result = await pool.query(
+            `
 
                     INSERT INTO ct_binh_chon_suat_an (
 
@@ -2776,22 +2001,11 @@ class BinhChonSuatAnRepository {
                     RETURNING *
 
                 `,
-                [
-                    dotBinhChonId,
-                    taiKhoanId,
-                    luaChon
-                ]
-            );
-
-
-        return this.mapBinhChon(
-            result.rows[0]
+            [dotBinhChonId, taiKhoanId, luaChon]
         );
 
+        return this.mapBinhChon(result.rows[0]);
     }
-
 }
 
-
-module.exports =
-    new BinhChonSuatAnRepository();
+module.exports = new BinhChonSuatAnRepository();

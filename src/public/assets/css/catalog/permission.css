@@ -42,9 +42,7 @@
     overflow: hidden;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.76);
-    box-shadow:
-        0 12px 40px
-        rgba(30, 64, 175, 0.06);
+    box-shadow: 0 12px 40px rgba(30, 64, 175, 0.06);
     transform: translateX(-50%);
 }
 
@@ -115,11 +113,7 @@
     justify-content: center;
     color: #3f68bf;
     font-size: 182px;
-    filter:
-        drop-shadow(
-            0 14px 16px
-            rgba(44, 87, 170, 0.13)
-        );
+    filter: drop-shadow(0 14px 16px rgba(44, 87, 170, 0.13));
     transform: translateX(-50%);
 }
 
@@ -151,9 +145,7 @@
     border-radius: 50%;
     color: #ffffff;
     background: #f05252;
-    box-shadow:
-        0 10px 25px
-        rgba(240, 82, 82, 0.22);
+    box-shadow: 0 10px 25px rgba(240, 82, 82, 0.22);
     font-size: 46px;
 }
 
@@ -195,18 +187,13 @@ body.catalog-permission-denied {
     overscroll-behavior: none;
 }
 
-body.catalog-permission-denied
-.app-content {
-    height: calc(
-        100dvh -
-        var(--header-height)
-    );
+body.catalog-permission-denied .app-content {
+    height: calc(100dvh - var(--header-height));
     min-height: 0;
     overflow: hidden;
 }
 
-body.catalog-permission-denied
-.page-content {
+body.catalog-permission-denied .page-content {
     position: relative;
     display: flex;
     flex: 1 1 0;
@@ -219,9 +206,7 @@ body.catalog-permission-denied
     overflow: hidden;
 }
 
-body.catalog-permission-denied
-.page-content >
-.catalog-no-permission {
+body.catalog-permission-denied .page-content > .catalog-no-permission {
     position: absolute;
     inset: 0;
     z-index: 10;
@@ -237,10 +222,7 @@ body.catalog-permission-denied
     overflow: hidden;
 }
 
-body.catalog-permission-denied
-.page-content >
-.catalog-no-permission
-.catalog-no-permission__content {
+body.catalog-permission-denied .page-content > .catalog-no-permission .catalog-no-permission__content {
     display: flex;
     width: 100%;
     max-width: 760px;

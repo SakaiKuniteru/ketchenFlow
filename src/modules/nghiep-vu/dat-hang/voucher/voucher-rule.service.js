@@ -1,16 +1,15 @@
-"use strict";
+'use strict';
 
-const ApiError = require("../../../../utils/api-error");
-const pool = require("../../../../config/database");
-const { LOAI_GIAM, PHAM_VI, TRANG_THAI_SU_DUNG, LOAI_SAN_PHAM } = require("./voucher.constants");
+const ApiError = require('../../../../utils/api-error');
+const pool = require('../../../../config/database');
+const { LOAI_GIAM, PHAM_VI, TRANG_THAI_SU_DUNG, LOAI_SAN_PHAM } = require('./voucher.constants');
 
 class VoucherRuleService {
     async getVoucher(maVoucher, nhanVienId, client = pool, lock = false) {
         if (lock) {
-            await client.query(
-                `SELECT id FROM dm_voucher_don_hang WHERE UPPER(ma_voucher) = UPPER($1) FOR UPDATE`,
-                [maVoucher]
-            );
+            await client.query(`SELECT id FROM dm_voucher_don_hang WHERE UPPER(ma_voucher) = UPPER($1) FOR UPDATE`, [
+                maVoucher
+            ]);
         }
 
         const result = await client.query(
@@ -45,19 +44,19 @@ class VoucherRuleService {
 
     validate(voucher, context) {
         if (!voucher || !voucher.active) {
-            throw new ApiError(400, "Voucher không tồn tại hoặc đã ngừng áp dụng.");
+            throw new ApiError(400, 'Voucher không tồn tại hoặc đã ngừng áp dụng.');
         }
 
         const now = new Date();
         if (now < new Date(voucher.thoi_gian_bat_dau) || now > new Date(voucher.thoi_gian_ket_thuc)) {
-            throw new ApiError(400, "Voucher chưa đến thời gian áp dụng hoặc đã hết hạn.");
+            throw new ApiError(400, 'Voucher chưa đến thời gian áp dụng hoặc đã hết hạn.');
         }
 
         const rules = [
-            [voucher.co_so_ids, context.coSoId, "Voucher không áp dụng tại cơ sở này."],
-            [voucher.phong_ban_ids, context.phongBanId, "Voucher không áp dụng cho phòng ban này."],
-            [voucher.chuc_vu_ids, context.chucVuId, "Voucher không áp dụng cho chức vụ này."],
-            [voucher.nhan_vien_ids, context.nhanVienId, "Voucher không áp dụng cho nhân viên này."]
+            [voucher.co_so_ids, context.coSoId, 'Voucher không áp dụng tại cơ sở này.'],
+            [voucher.phong_ban_ids, context.phongBanId, 'Voucher không áp dụng cho phòng ban này.'],
+            [voucher.chuc_vu_ids, context.chucVuId, 'Voucher không áp dụng cho chức vụ này.'],
+            [voucher.nhan_vien_ids, context.nhanVienId, 'Voucher không áp dụng cho nhân viên này.']
         ];
 
         for (const [ids, value, message] of rules) {
@@ -68,48 +67,45 @@ class VoucherRuleService {
 
         if (
             voucher.nha_an_ids?.length &&
-            !voucher.nha_an_ids
-                .map(Number)
-                .some(id =>
-                    (context.nhaAnIds || [])
-                        .map(Number)
-                        .includes(id)
-                )
+            !voucher.nha_an_ids.map(Number).some((id) => (context.nhaAnIds || []).map(Number).includes(id))
         ) {
-            throw new ApiError(400, "Voucher không áp dụng cho nhà ăn này.");
+            throw new ApiError(400, 'Voucher không áp dụng cho nhà ăn này.');
         }
 
         if (Number(context.tamTinh) < Number(voucher.gia_tri_don_hang_toi_thieu)) {
-            throw new ApiError(400, "Giỏ hàng chưa đạt giá trị tối thiểu của voucher.");
+            throw new ApiError(400, 'Giỏ hàng chưa đạt giá trị tối thiểu của voucher.');
         }
 
         if (voucher.so_luong_phat_hanh !== null && voucher.so_luot_da_dung >= voucher.so_luong_phat_hanh) {
-            throw new ApiError(400, "Voucher đã hết lượt sử dụng.");
+            throw new ApiError(400, 'Voucher đã hết lượt sử dụng.');
         }
 
         if (voucher.so_luot_moi_nhan_vien !== null && voucher.so_luot_nhan_vien >= voucher.so_luot_moi_nhan_vien) {
-            throw new ApiError(400, "Bạn đã sử dụng hết số lượt của voucher này.");
+            throw new ApiError(400, 'Bạn đã sử dụng hết số lượt của voucher này.');
         }
     }
 
     calculate(voucher, items) {
-        let eligibleItems = voucher.loai_giam === LOAI_GIAM.MIEN_PHI_DICH_VU
-            ? items.filter(item => Number(item.loaiSanPham) === LOAI_SAN_PHAM.DICH_VU_KHAC)
-            : items;
+        let eligibleItems =
+            voucher.loai_giam === LOAI_GIAM.MIEN_PHI_DICH_VU
+                ? items.filter((item) => Number(item.loaiSanPham) === LOAI_SAN_PHAM.DICH_VU_KHAC)
+                : items;
 
         if (voucher.pham_vi_ap_dung === PHAM_VI.NHOM_SAN_PHAM) {
-            eligibleItems = items.filter(item => voucher.nhom_san_pham_ids.map(Number).includes(Number(item.nhomSanPhamId)));
+            eligibleItems = items.filter((item) =>
+                voucher.nhom_san_pham_ids.map(Number).includes(Number(item.nhomSanPhamId))
+            );
         }
 
         if (voucher.pham_vi_ap_dung === PHAM_VI.SAN_PHAM) {
-            eligibleItems = items.filter(item => voucher.san_pham_ids.map(Number).includes(Number(item.sanPhamId)));
+            eligibleItems = items.filter((item) => voucher.san_pham_ids.map(Number).includes(Number(item.sanPhamId)));
         }
 
         const soTienDuDieuKien = eligibleItems.reduce((sum, item) => sum + Number(item.thanhTien), 0);
         let soTienGiam = 0;
 
         if (voucher.loai_giam === LOAI_GIAM.PHAN_TRAM) {
-            soTienGiam = soTienDuDieuKien * Number(voucher.gia_tri) / 100;
+            soTienGiam = (soTienDuDieuKien * Number(voucher.gia_tri)) / 100;
         } else if (voucher.loai_giam === LOAI_GIAM.SO_TIEN) {
             soTienGiam = Number(voucher.gia_tri);
         } else if (voucher.loai_giam === LOAI_GIAM.MIEN_PHI_DICH_VU) {

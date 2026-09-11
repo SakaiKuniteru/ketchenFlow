@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class VoucherRepository {
     mapVoucher(row) {
@@ -11,14 +11,10 @@ class VoucherRepository {
             maVoucher: row.ma_voucher,
             tenVoucher: row.ten_voucher,
             loaiMienGiam: row.loai_mien_giam,
-            giaTri: Number(
-                row.gia_tri
-            ),
+            giaTri: Number(row.gia_tri),
             soLuong: row.so_luong,
             daSuDung: row.da_su_dung,
-            soLuongConLai: Number(
-                row.so_luong_con_lai
-            ),
+            soLuongConLai: Number(row.so_luong_con_lai),
             thoiGianBatDau: row.thoi_gian_bat_dau,
             thoiGianKetThuc: row.thoi_gian_ket_thuc,
             moTa: row.mo_ta,
@@ -58,12 +54,9 @@ class VoucherRepository {
             ORDER BY v.ma_voucher ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapVoucher(row)
-        );
+        return result.rows.map((row) => this.mapVoucher(row));
     }
 
     async getChiTiet(id) {
@@ -73,28 +66,17 @@ class VoucherRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapVoucher(
-            result.rows[0]
-        );
+        return this.mapVoucher(result.rows[0]);
     }
 
-    async existsMaVoucher(
-        maVoucher,
-        excludeId = null
-    ) {
-        const values = [
-            maVoucher
-        ];
+    async existsMaVoucher(maVoucher, excludeId = null) {
+        const values = [maVoucher];
 
         let sql = `
             SELECT EXISTS (
@@ -116,22 +98,13 @@ class VoucherRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenVoucher(
-        tenVoucher,
-        excludeId = null
-    ) {
-        const values = [
-            tenVoucher,
-        ];
+    async existsTenVoucher(tenVoucher, excludeId = null) {
+        const values = [tenVoucher];
 
         let sql = `
             SELECT EXISTS (
@@ -153,19 +126,12 @@ class VoucherRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async suDungVoucher(
-        id,
-        client = pool
-    ) {
+    async suDungVoucher(id, client = pool) {
         const sql = `
             UPDATE dm_voucher
             SET
@@ -184,27 +150,16 @@ class VoucherRepository {
                 da_su_dung
         `;
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    id
-                ]
-            );
+        const result = await client.query(sql, [id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
         return result.rows[0];
     }
 
-    async hoanVoucher(
-        id,
-        client = pool
-    ) {
+    async hoanVoucher(id, client = pool) {
         const sql = `
             UPDATE dm_voucher
             SET
@@ -221,17 +176,9 @@ class VoucherRepository {
                 da_su_dung
         `;
 
-        const result =
-            await client.query(
-                sql,
-                [
-                    id
-                ]
-            );
+        const result = await client.query(sql, [id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
@@ -281,20 +228,12 @@ class VoucherRepository {
             data.thoiGianBatDau,
             data.thoiGianKetThuc,
             data.moTa || null,
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
@@ -330,19 +269,13 @@ class VoucherRepository {
             id
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 }
 

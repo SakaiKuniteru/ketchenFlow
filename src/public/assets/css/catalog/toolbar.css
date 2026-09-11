@@ -103,7 +103,11 @@
     white-space: nowrap;
     font-size: var(--font-size-sm);
     font-weight: 700;
-    transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        background-color var(--transition-fast),
+        transform var(--transition-fast);
 }
 
 .catalog-toolbar__button--primary {
@@ -147,7 +151,9 @@
     font-family: inherit;
     font-size: 15px;
     cursor: pointer;
-    transition: color var(--transition-fast), background var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        background var(--transition-fast);
 }
 
 .catalog-toolbar__icon-button:hover {
@@ -155,7 +161,7 @@
     background: var(--color-primary-soft);
 }
 
-.catalog-toolbar__icon-button[aria-pressed="true"] {
+.catalog-toolbar__icon-button[aria-pressed='true'] {
     color: var(--color-primary);
     background: var(--color-primary-soft);
 }

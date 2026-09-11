@@ -1,49 +1,47 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const root = document.querySelector("[data-vote-list-page]");
+document.addEventListener('DOMContentLoaded', async () => {
+    const root = document.querySelector('[data-vote-list-page]');
 
     if (!root) {
         return;
     }
 
     const API = {
-        current: "/api/mcs/v1/binh-chon/cua-toi/hien-tai",
-        upcoming: "/api/mcs/v1/binh-chon/cua-toi/sap-toi",
-        history: "/api/mcs/v1/binh-chon/cua-toi/lich-su",
-        nhaAn: "/api/mcs/v1/dm-nha-an/tong-hop?active=true",
-        caAn: "/api/mcs/v1/dm-ca-an/tong-hop?active=true"
+        current: '/api/mcs/v1/binh-chon/cua-toi/hien-tai',
+        upcoming: '/api/mcs/v1/binh-chon/cua-toi/sap-toi',
+        history: '/api/mcs/v1/binh-chon/cua-toi/lich-su',
+        nhaAn: '/api/mcs/v1/dm-nha-an/tong-hop?active=true',
+        caAn: '/api/mcs/v1/dm-ca-an/tong-hop?active=true'
     };
 
     const PAGE_SIZE = 20;
     let pagination = null;
 
     const elements = {
-        list: root.querySelector("[data-vote-list-items]"),
-        loading: root.querySelector("[data-vote-list-loading]"),
-        empty: root.querySelector("[data-vote-list-empty]"),
-        pagination: root.querySelector("[data-vote-list-pagination]"),
-        tabs: root.querySelectorAll("[data-vote-tab]"),
-        search:
-            root.querySelector("#binhChonSearch") ||
-            root.querySelector(".vote-list-search input"),
-        filter: root.querySelector("[data-vote-filter]"),
-        filterToggle: root.querySelector("[data-vote-filter-toggle]"),
-        filterDropdown: root.querySelector("[data-vote-filter-dropdown]"),
-        filterClose: root.querySelector("[data-vote-filter-close]"),
-        filterReset: root.querySelector("[data-vote-filter-reset]"),
-        filterApply: root.querySelector("[data-vote-filter-apply]"),
-        summaryTotal: root.querySelector("[data-summary-total]"),
-        summaryRequired: root.querySelector("[data-summary-required]"),
-        summaryUpcoming: root.querySelector("[data-summary-upcoming]"),
-        summaryParticipated: root.querySelector("[data-summary-participated]")
+        list: root.querySelector('[data-vote-list-items]'),
+        loading: root.querySelector('[data-vote-list-loading]'),
+        empty: root.querySelector('[data-vote-list-empty]'),
+        pagination: root.querySelector('[data-vote-list-pagination]'),
+        tabs: root.querySelectorAll('[data-vote-tab]'),
+        search: root.querySelector('#binhChonSearch') || root.querySelector('.vote-list-search input'),
+        filter: root.querySelector('[data-vote-filter]'),
+        filterToggle: root.querySelector('[data-vote-filter-toggle]'),
+        filterDropdown: root.querySelector('[data-vote-filter-dropdown]'),
+        filterClose: root.querySelector('[data-vote-filter-close]'),
+        filterReset: root.querySelector('[data-vote-filter-reset]'),
+        filterApply: root.querySelector('[data-vote-filter-apply]'),
+        summaryTotal: root.querySelector('[data-summary-total]'),
+        summaryRequired: root.querySelector('[data-summary-required]'),
+        summaryUpcoming: root.querySelector('[data-summary-upcoming]'),
+        summaryParticipated: root.querySelector('[data-summary-participated]')
     };
 
     const state = {
         records: [],
         filtered: [],
-        activeTab: "all",
-        search: "",
+        activeTab: 'all',
+        search: '',
         page: 1,
         pageSize: PAGE_SIZE,
         filters: {
@@ -56,15 +54,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const permissions = getPermissionSet();
 
-    const canViewCurrent =
-        permissions.has("Q001023") ||
-        permissions.has("Q001025");
+    const canViewCurrent = permissions.has('Q001023') || permissions.has('Q001025');
 
-    const canViewUpcoming = permissions.has("Q001024");
+    const canViewUpcoming = permissions.has('Q001024');
 
-    const canViewHistory =
-        permissions.has("Q001027") ||
-        permissions.has("Q001026");
+    const canViewHistory = permissions.has('Q001027') || permissions.has('Q001026');
 
     initializePagination();
     bindEvents();
@@ -74,33 +68,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         setLoading(true);
 
         try {
-            const [
-                currentResult,
-                upcomingResult,
-                historyResult,
-                nhaAnResult,
-                caAnResult
-            ] = await Promise.all([
-                safeRequest(
-                    API.current,
-                    canViewCurrent
-                ),
-                safeRequest(
-                    API.upcoming,
-                    canViewUpcoming
-                ),
-                safeRequest(
-                    API.history,
-                    canViewHistory
-                ),
-                safeRequest(
-                    API.nhaAn,
-                    true
-                ),
-                safeRequest(
-                    API.caAn,
-                    true
-                )
+            const [currentResult, upcomingResult, historyResult, nhaAnResult, caAnResult] = await Promise.all([
+                safeRequest(API.current, canViewCurrent),
+                safeRequest(API.upcoming, canViewUpcoming),
+                safeRequest(API.history, canViewHistory),
+                safeRequest(API.nhaAn, true),
+                safeRequest(API.caAn, true)
             ]);
 
             const current = extractArray(currentResult);
@@ -109,40 +82,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             const nhaAn = extractList(nhaAnResult);
             const caAn = extractList(caAnResult);
 
-            state.records = mergeRecords(
-                current,
-                upcoming,
-                history
-            );
+            state.records = mergeRecords(current, upcoming, history);
 
-            buildFilterOptions(
-                nhaAn,
-                caAn
-            );
+            buildFilterOptions(nhaAn, caAn);
 
             renderSummary();
             applyFilters();
         } catch (error) {
-            console.error(
-                "Không thể tải danh sách bình chọn:",
-                error
-            );
+            console.error('Không thể tải danh sách bình chọn:', error);
 
-            window.MCS
-                ?.toast
-                ?.error?.(
-                    error?.message ||
-                    "Không thể tải danh sách bình chọn."
-                );
+            window.MCS?.toast?.error?.(error?.message || 'Không thể tải danh sách bình chọn.');
         } finally {
             setLoading(false);
         }
     }
 
-    async function safeRequest(
-        url,
-        enabled = true
-    ) {
+    async function safeRequest(url, enabled = true) {
         if (!enabled) {
             return null;
         }
@@ -150,10 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             return await request(url);
         } catch (error) {
-            console.warn(
-                `Không thể tải API ${url}:`,
-                error
-            );
+            console.warn(`Không thể tải API ${url}:`, error);
 
             return null;
         }
@@ -164,59 +116,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             currentUser =
-                window.MCS
-                    ?.storage
-                    ?.getCurrentUser
-                    ?.() ||
-                JSON.parse(
-                    localStorage.getItem("currentUser") ||
-                    "null"
-                );
+                window.MCS?.storage?.getCurrentUser?.() || JSON.parse(localStorage.getItem('currentUser') || 'null');
         } catch (error) {
             currentUser = null;
         }
 
-        const permissions = Array.isArray(currentUser?.dsQuyen)
-            ? currentUser.dsQuyen
-            : [];
+        const permissions = Array.isArray(currentUser?.dsQuyen) ? currentUser.dsQuyen : [];
 
         return new Set(
             permissions
-                .map(
-                    item =>
-                        typeof item === "string"
-                            ? item
-                            : (
-                                item?.maQuyen ||
-                                item?.ma_quyen ||
-                                ""
-                            )
-                )
-                .map(
-                    item =>
-                        String(item)
-                            .trim()
-                            .toUpperCase()
-                )
+                .map((item) => (typeof item === 'string' ? item : item?.maQuyen || item?.ma_quyen || ''))
+                .map((item) => String(item).trim().toUpperCase())
                 .filter(Boolean)
         );
     }
 
     async function request(url) {
-        return await window.MCS.api.request(
-            url,
-            {
-                method: "GET"
-            }
-        );
+        return await window.MCS.api.request(url, {
+            method: 'GET'
+        });
     }
 
     function extractArray(result) {
         const data = result?.data ?? result;
 
-        return Array.isArray(data)
-            ? data
-            : [];
+        return Array.isArray(data) ? data : [];
     }
 
     function extractList(response) {
@@ -226,60 +150,32 @@ document.addEventListener("DOMContentLoaded", async () => {
             return data;
         }
 
-        const list =
-            data?.danhSach ??
-            data?.items ??
-            data?.rows ??
-            data?.data ??
-            [];
+        const list = data?.danhSach ?? data?.items ?? data?.rows ?? data?.data ?? [];
 
-        return Array.isArray(list)
-            ? list
-            : [];
+        return Array.isArray(list) ? list : [];
     }
 
-    function mergeRecords(
-        current,
-        upcoming,
-        history
-    ) {
+    function mergeRecords(current, upcoming, history) {
         const map = new Map();
 
-        current.forEach(record => {
-            const item = normalizeRecord(
-                record,
-                "current"
-            );
+        current.forEach((record) => {
+            const item = normalizeRecord(record, 'current');
 
             if (item.id) {
-                map.set(
-                    String(item.id),
-                    item
-                );
+                map.set(String(item.id), item);
             }
         });
 
-        upcoming.forEach(record => {
-            const item = normalizeRecord(
-                record,
-                "upcoming"
-            );
+        upcoming.forEach((record) => {
+            const item = normalizeRecord(record, 'upcoming');
 
-            if (
-                item.id &&
-                !map.has(String(item.id))
-            ) {
-                map.set(
-                    String(item.id),
-                    item
-                );
+            if (item.id && !map.has(String(item.id))) {
+                map.set(String(item.id), item);
             }
         });
 
-        history.forEach(record => {
-            const id =
-                record.dotBinhChonId ??
-                record.id;
+        history.forEach((record) => {
+            const id = record.dotBinhChonId ?? record.id;
 
             if (!id) {
                 return;
@@ -301,35 +197,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                         ...record,
                         id
                     },
-                    "history"
+                    'history'
                 )
             );
         });
 
-        return Array
-            .from(map.values())
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    getDateTime(b.ngay) -
-                    getDateTime(a.ngay)
-            );
+        return Array.from(map.values()).sort((a, b) => getDateTime(b.ngay) - getDateTime(a.ngay));
     }
 
-    function normalizeRecord(
-        record,
-        source
-    ) {
-        const id =
-            record.id ??
-            record.dotBinhChonId;
+    function normalizeRecord(record, source) {
+        const id = record.id ?? record.dotBinhChonId;
 
-        const luaChon =
-            record.luaChonCuaToi ??
-            record.luaChon ??
-            null;
+        const luaChon = record.luaChonCuaToi ?? record.luaChon ?? null;
 
         return {
             ...record,
@@ -338,27 +217,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             luaChonCuaToi: luaChon,
             nhaAnId: record.nhaAnId ?? null,
             caAnId: record.caAnId ?? null,
-            dsNhomMonAn: Array.isArray(record.dsNhomMonAn)
-                ? record.dsNhomMonAn
-                : []
+            dsNhomMonAn: Array.isArray(record.dsNhomMonAn) ? record.dsNhomMonAn : []
         };
     }
 
     function applyFilters() {
         const keyword = normalizeText(state.search);
 
-        state.filtered = state.records.filter(record => {
+        state.filtered = state.records.filter((record) => {
             if (!matchTab(record)) {
                 return false;
             }
 
-            if (
-                keyword &&
-                !matchSearch(
-                    record,
-                    keyword
-                )
-            ) {
+            if (keyword && !matchSearch(record, keyword)) {
                 return false;
             }
 
@@ -366,34 +237,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return false;
             }
 
-            if (
-                !matchMultiSelect(
-                    record.nhaAnId,
-                    state.filters.nhaAnIds
-                )
-            ) {
+            if (!matchMultiSelect(record.nhaAnId, state.filters.nhaAnIds)) {
                 return false;
             }
 
-            if (
-                !matchMultiSelect(
-                    record.caAnId,
-                    state.filters.caAnIds
-                )
-            ) {
+            if (!matchMultiSelect(record.caAnId, state.filters.caAnIds)) {
                 return false;
             }
 
             return true;
         });
 
-        const totalPages = Math.max(
-            1,
-            Math.ceil(
-                state.filtered.length /
-                state.pageSize
-            )
-        );
+        const totalPages = Math.max(1, Math.ceil(state.filtered.length / state.pageSize));
 
         if (state.page > totalPages) {
             state.page = totalPages;
@@ -405,27 +260,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function matchTab(record) {
         switch (state.activeTab) {
-            case "active":
-                return getRecordStatus(record) === "active";
+            case 'active':
+                return getRecordStatus(record) === 'active';
 
-            case "upcoming":
-                return getRecordStatus(record) === "upcoming";
+            case 'upcoming':
+                return getRecordStatus(record) === 'upcoming';
 
-            case "participated":
+            case 'participated':
                 return hasParticipated(record);
 
-            case "ended":
-                return getRecordStatus(record) === "ended";
+            case 'ended':
+                return getRecordStatus(record) === 'ended';
 
             default:
                 return true;
         }
     }
 
-    function matchSearch(
-        record,
-        keyword
-    ) {
+    function matchSearch(record, keyword) {
         const values = [
             record.ngay,
             formatDate(record.ngay),
@@ -436,11 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ...getFoodNames(record)
         ];
 
-        return values.some(
-            value =>
-                normalizeText(value)
-                    .includes(keyword)
-        );
+        return values.some((value) => normalizeText(value).includes(keyword));
     }
 
     function matchDate(record) {
@@ -453,10 +301,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (state.filters.tuNgay) {
             const from = getDateTime(state.filters.tuNgay);
 
-            if (
-                Number.isFinite(from) &&
-                ngay < from
-            ) {
+            if (Number.isFinite(from) && ngay < from) {
                 return false;
             }
         }
@@ -464,10 +309,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (state.filters.denNgay) {
             const to = getDateTime(state.filters.denNgay);
 
-            if (
-                Number.isFinite(to) &&
-                ngay > to
-            ) {
+            if (Number.isFinite(to) && ngay > to) {
                 return false;
             }
         }
@@ -475,20 +317,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return true;
     }
 
-    function matchMultiSelect(
-        value,
-        selected
-    ) {
-        if (
-            !selected ||
-            selected.length === 0
-        ) {
+    function matchMultiSelect(value, selected) {
+        if (!selected || selected.length === 0) {
             return true;
         }
 
-        return selected.includes(
-            String(value)
-        );
+        return selected.includes(String(value));
     }
 
     function getRecordStatus(record) {
@@ -496,96 +330,56 @@ document.addEventListener("DOMContentLoaded", async () => {
         const start = getDateTime(record.batDauBinhChon);
         const end = getDateTime(record.hanBinhChon);
 
-        if (
-            Number.isFinite(end) &&
-            now > end
-        ) {
-            return "ended";
+        if (Number.isFinite(end) && now > end) {
+            return 'ended';
         }
 
-        if (
-            Number.isFinite(start) &&
-            now < start
-        ) {
-            return "upcoming";
+        if (Number.isFinite(start) && now < start) {
+            return 'upcoming';
         }
 
-        if (record.source === "upcoming") {
-            return "upcoming";
+        if (record.source === 'upcoming') {
+            return 'upcoming';
         }
 
-        return "active";
+        return 'active';
     }
 
     function hasParticipated(record) {
-        return (
-            record.luaChonCuaToi === true ||
-            record.luaChonCuaToi === false
-        );
+        return record.luaChonCuaToi === true || record.luaChonCuaToi === false;
     }
 
     function renderSummary() {
         const records = state.records;
 
         const required = records.filter(
-            record =>
-                getRecordStatus(record) === "active" &&
-                !hasParticipated(record)
+            (record) => getRecordStatus(record) === 'active' && !hasParticipated(record)
         ).length;
 
-        const upcoming = records.filter(
-            record =>
-                getRecordStatus(record) === "upcoming"
-        ).length;
+        const upcoming = records.filter((record) => getRecordStatus(record) === 'upcoming').length;
 
-        const participated = records.filter(
-            hasParticipated
-        ).length;
+        const participated = records.filter(hasParticipated).length;
 
-        setText(
-            elements.summaryTotal,
-            records.length
-        );
+        setText(elements.summaryTotal, records.length);
 
-        setText(
-            elements.summaryRequired,
-            required
-        );
+        setText(elements.summaryRequired, required);
 
-        setText(
-            elements.summaryUpcoming,
-            upcoming
-        );
+        setText(elements.summaryUpcoming, upcoming);
 
-        setText(
-            elements.summaryParticipated,
-            participated
-        );
+        setText(elements.summaryParticipated, participated);
     }
 
     function renderList() {
-        const start =
-            (
-                state.page -
-                1
-            ) *
-            state.pageSize;
+        const start = (state.page - 1) * state.pageSize;
 
-        const records = state.filtered.slice(
-            start,
-            start +
-            state.pageSize
-        );
+        const records = state.filtered.slice(start, start + state.pageSize);
 
-        elements.list.innerHTML = "";
+        elements.list.innerHTML = '';
         elements.empty.hidden = records.length > 0;
         elements.list.hidden = records.length === 0;
 
-        records.forEach(record => {
-            elements.list.insertAdjacentHTML(
-                "beforeend",
-                createCardHtml(record)
-            );
+        records.forEach((record) => {
+            elements.list.insertAdjacentHTML('beforeend', createCardHtml(record));
         });
     }
 
@@ -594,34 +388,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         const participated = hasParticipated(record);
         const foods = getFoodNames(record);
 
-        const foodHtml =
-            foods.length
-                ? foods
-                    .slice(
-                        0,
-                        6
-                    )
-                    .map(
-                        food =>
-                            `
+        const foodHtml = foods.length
+            ? foods
+                  .slice(0, 6)
+                  .map(
+                      (food) =>
+                          `
                                     <span class="vote-list-card__food">
                                         ${escapeHtml(food)}
                                     </span>
                                 `
-                    )
-                    .join("")
-                : `
+                  )
+                  .join('')
+            : `
                         <span class="vote-list-card__food">
-                            ${escapeHtml(
-                                record.tenThucDon ||
-                                "Thực đơn"
-                            )}
+                            ${escapeHtml(record.tenThucDon || 'Thực đơn')}
                         </span>
                     `;
 
-        let timeHtml = "";
+        let timeHtml = '';
 
-        if (status === "upcoming") {
+        if (status === 'upcoming') {
             timeHtml = `
                     <div class="vote-list-card__time">
 
@@ -630,11 +417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <span>
                                 Bắt đầu bình chọn:
                                 <strong>
-                                    ${escapeHtml(
-                                        formatDateTime(
-                                            record.batDauBinhChon
-                                        )
-                                    )}
+                                    ${escapeHtml(formatDateTime(record.batDauBinhChon))}
                                 </strong>
                             </span>
                         </div>
@@ -644,11 +427,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <span>
                                 Hạn bình chọn:
                                 <strong>
-                                    ${escapeHtml(
-                                        formatDateTime(
-                                            record.hanBinhChon
-                                        )
-                                    )}
+                                    ${escapeHtml(formatDateTime(record.hanBinhChon))}
                                 </strong>
                             </span>
                         </div>
@@ -661,27 +440,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             timeHtml = `
                     <div class="
                         vote-list-card__selection
-                        ${yes ? "is-yes" : "is-no"}
+                        ${yes ? 'is-yes' : 'is-no'}
                     ">
                         <i class="
                             fa-regular
-                            ${yes
-                                ? "fa-circle-check"
-                                : "fa-circle-xmark"
-                            }
+                            ${yes ? 'fa-circle-check' : 'fa-circle-xmark'}
                         "></i>
 
                         <span>
-                            ${status === "ended"
-                                ? "Lựa chọn của bạn:"
-                                : "Bạn đã chọn:"
-                            }
+                            ${status === 'ended' ? 'Lựa chọn của bạn:' : 'Bạn đã chọn:'}
 
                             <strong>
-                                ${yes
-                                    ? "Có tham gia"
-                                    : "Không tham gia"
-                                }
+                                ${yes ? 'Có tham gia' : 'Không tham gia'}
                             </strong>
                         </span>
                     </div>
@@ -695,34 +465,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                             Hạn bình chọn:
 
                             <strong>
-                                ${escapeHtml(
-                                    formatDateTime(
-                                        record.hanBinhChon
-                                    )
-                                )}
+                                ${escapeHtml(formatDateTime(record.hanBinhChon))}
                             </strong>
                         </span>
                     </div>
                 `;
         }
 
-        const action = getAction(
-            record,
-            status
-        );
+        const action = getAction(record, status);
 
         return `
                 <article
                     class="
                         vote-list-card
-                        ${status === "active"
-                            ? "is-current"
-                            : ""
-                        }
+                        ${status === 'active' ? 'is-current' : ''}
                     "
-                    data-vote-list-id="${escapeHtml(
-                        record.id
-                    )}">
+                    data-vote-list-id="${escapeHtml(record.id)}">
 
                     <div class="vote-list-card__date">
 
@@ -734,22 +492,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                             </i>
 
                             <span>
-                                ${escapeHtml(
-                                    getWeekday(
-                                        record.ngay
-                                    )
-                                )}
+                                ${escapeHtml(getWeekday(record.ngay))}
                             </span>
 
                         </div>
 
 
                         <strong class="vote-list-card__date-value">
-                            ${escapeHtml(
-                                formatDate(
-                                    record.ngay
-                                )
-                            )}
+                            ${escapeHtml(formatDate(record.ngay))}
                         </strong>
 
 
@@ -761,10 +511,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             </i>
 
                             <span>
-                                ${escapeHtml(
-                                    record.tenCaAn ||
-                                    "Ca ăn"
-                                )}
+                                ${escapeHtml(record.tenCaAn || 'Ca ăn')}
                             </span>
 
                         </div>
@@ -775,10 +522,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="vote-list-card__body">
 
                         <h2>
-                            ${escapeHtml(
-                                record.tenThucDon ||
-                                "Bình chọn tham gia ăn"
-                            )}
+                            ${escapeHtml(record.tenThucDon || 'Bình chọn tham gia ăn')}
                         </h2>
 
 
@@ -789,25 +533,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         ${timeHtml}
 
-                        ${createStatisticsHtml(
-                            record,
-                            status
-                        )}
+                        ${createStatisticsHtml(record, status)}
 
                     </div>
 
 
                     <div class="vote-list-card__actions">
 
-                        ${createStatusHtml(
-                            status,
-                            participated
-                        )}
+                        ${createStatusHtml(status, participated)}
 
 
                         ${
-                            status === "active" &&
-                            !participated
+                            status === 'active' && !participated
                                 ? `
                                     <div class="vote-list-card__notice">
 
@@ -821,26 +558,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                                     </div>
                                 `
-                                : ""
+                                : ''
                         }
 
 
                         <a
-                            href="${escapeHtml(
-                                action.href
-                            )}"
+                            href="${escapeHtml(action.href)}"
                             class="
                                 vote-list-card__action
-                                ${action.primary
-                                    ? "is-primary"
-                                    : ""
-                                }
+                                ${action.primary ? 'is-primary' : ''}
                             ">
 
                             <span>
-                                ${escapeHtml(
-                                    action.label
-                                )}
+                                ${escapeHtml(action.label)}
                             </span>
 
                             <i
@@ -856,18 +586,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
     }
 
-    function createStatisticsHtml(
-        record,
-        status
-    ) {
-        if (status !== "active") {
-            return "";
+    function createStatisticsHtml(record, status) {
+        if (status !== 'active') {
+            return '';
         }
 
         const stats = record.thongKe;
 
         if (!stats) {
-            return "";
+            return '';
         }
 
         return `
@@ -882,10 +609,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         Có tham gia:
 
                         <strong>
-                            ${Number(
-                                stats.coThamGia ||
-                                0
-                            )}
+                            ${Number(stats.coThamGia || 0)}
                         </strong>
                     </span>
 
@@ -899,10 +623,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         Không tham gia:
 
                         <strong>
-                            ${Number(
-                                stats.khongThamGia ||
-                                0
-                            )}
+                            ${Number(stats.khongThamGia || 0)}
                         </strong>
                     </span>
 
@@ -910,11 +631,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
     }
 
-    function createStatusHtml(
-        status,
-        participated
-    ) {
-        if (status === "ended") {
+    function createStatusHtml(status, participated) {
+        if (status === 'ended') {
             return `
                     <span class="
                         vote-list-status
@@ -925,7 +643,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
         }
 
-        if (status === "upcoming") {
+        if (status === 'upcoming') {
             return `
                     <span class="
                         vote-list-status
@@ -957,75 +675,52 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
     }
 
-    function getAction(
-        record,
-        status
-    ) {
+    function getAction(record, status) {
         const thucDonId = record.thucDonId;
         const dotBinhChonId = record.id;
 
-        const href = buildVoteDetailUrl(
-            thucDonId,
-            dotBinhChonId
-        );
+        const href = buildVoteDetailUrl(thucDonId, dotBinhChonId);
 
-        if (status === "active") {
+        if (status === 'active') {
             return {
-                label: "Vào bình chọn",
+                label: 'Vào bình chọn',
                 href,
                 primary: true
             };
         }
 
-        if (status === "ended") {
+        if (status === 'ended') {
             return {
-                label: "Xem kết quả",
+                label: 'Xem kết quả',
                 href,
                 primary: false
             };
         }
 
         return {
-            label: "Xem chi tiết",
+            label: 'Xem chi tiết',
             href,
             primary: false
         };
     }
 
-    function buildVoteDetailUrl(
-        thucDonId,
-        dotBinhChonId
-    ) {
-        if (
-            !thucDonId ||
-            !dotBinhChonId
-        ) {
-            return "#";
+    function buildVoteDetailUrl(thucDonId, dotBinhChonId) {
+        if (!thucDonId || !dotBinhChonId) {
+            return '#';
         }
 
         return (
-            "/binh-chon/chi-tiet-binh-chon/" +
-            encodeURIComponent(thucDonId) +
-            "/" +
-            encodeURIComponent(dotBinhChonId)
+            '/binh-chon/chi-tiet-binh-chon/' + encodeURIComponent(thucDonId) + '/' + encodeURIComponent(dotBinhChonId)
         );
     }
 
     function getFoodNames(record) {
         const result = [];
 
-        (
-            record.dsNhomMonAn ||
-            []
-        ).forEach(group => {
-            (
-                group.dsMonAn ||
-                []
-            ).forEach(item => {
+        (record.dsNhomMonAn || []).forEach((group) => {
+            (group.dsMonAn || []).forEach((item) => {
                 if (item?.tenMonAn) {
-                    result.push(
-                        item.tenMonAn
-                    );
+                    result.push(item.tenMonAn);
                 }
             });
         });
@@ -1036,29 +731,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     function openFilter() {
         elements.filterDropdown.hidden = false;
 
-        elements.filterToggle
-            ?.classList
-            .add("is-active");
+        elements.filterToggle?.classList.add('is-active');
 
-        elements.filterToggle
-            ?.setAttribute(
-                "aria-expanded",
-                "true"
-            );
+        elements.filterToggle?.setAttribute('aria-expanded', 'true');
     }
 
     function closeFilter() {
         elements.filterDropdown.hidden = true;
 
-        elements.filterToggle
-            ?.classList
-            .remove("is-active");
+        elements.filterToggle?.classList.remove('is-active');
 
-        elements.filterToggle
-            ?.setAttribute(
-                "aria-expanded",
-                "false"
-            );
+        elements.filterToggle?.setAttribute('aria-expanded', 'false');
     }
 
     function toggleFilter() {
@@ -1070,10 +753,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function applyFilterForm() {
-        state.filters.tuNgay = getDateValue("tuNgay");
-        state.filters.denNgay = getDateValue("denNgay");
-        state.filters.nhaAnIds = getSelectValues("nhaAnIds");
-        state.filters.caAnIds = getSelectValues("caAnIds");
+        state.filters.tuNgay = getDateValue('tuNgay');
+        state.filters.denNgay = getDateValue('denNgay');
+        state.filters.nhaAnIds = getSelectValues('nhaAnIds');
+        state.filters.caAnIds = getSelectValues('caAnIds');
         state.page = 1;
 
         closeFilter();
@@ -1081,10 +764,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function resetFilterForm() {
-        clearDate("tuNgay");
-        clearDate("denNgay");
-        clearSelect("nhaAnIds");
-        clearSelect("caAnIds");
+        clearDate('tuNgay');
+        clearDate('denNgay');
+        clearSelect('nhaAnIds');
+        clearSelect('caAnIds');
 
         state.filters = {
             tuNgay: null,
@@ -1109,11 +792,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const display = root.querySelector(`#${id}Display`);
 
         if (value) {
-            value.value = "";
+            value.value = '';
         }
 
         if (display) {
-            display.value = "";
+            display.value = '';
         }
     }
 
@@ -1124,17 +807,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return [];
         }
 
-        return Array
-            .from(
-                select.selectedOptions ||
-                []
-            )
-            .map(option => option.value)
-            .filter(
-                value =>
-                    value &&
-                    value !== "__ALL__"
-            );
+        return Array.from(select.selectedOptions || [])
+            .map((option) => option.value)
+            .filter((value) => value && value !== '__ALL__');
     }
 
     function clearSelect(id) {
@@ -1144,65 +819,48 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        if (select.tagName === "SELECT") {
-            Array
-                .from(select.options)
-                .forEach(option => {
-                    option.selected = false;
-                });
+        if (select.tagName === 'SELECT') {
+            Array.from(select.options).forEach((option) => {
+                option.selected = false;
+            });
 
             select.dispatchEvent(
-                new Event(
-                    "change",
-                    {
-                        bubbles: true
-                    }
-                )
+                new Event('change', {
+                    bubbles: true
+                })
             );
 
             return;
         }
 
-        select.value = "";
+        select.value = '';
 
         select.dispatchEvent(
-            new Event(
-                "change",
-                {
-                    bubbles: true
-                }
-            )
+            new Event('change', {
+                bubbles: true
+            })
         );
     }
 
-    function buildFilterOptions(
-        nhaAn,
-        caAn
-    ) {
+    function buildFilterOptions(nhaAn, caAn) {
         setSelectOptions(
-            "nhaAnIds",
-            nhaAn.map(item => ({
+            'nhaAnIds',
+            nhaAn.map((item) => ({
                 value: item.id,
-                label:
-                    item.tenNhaAn ||
-                    item.ten ||
-                    "-"
+                label: item.tenNhaAn || item.ten || '-'
             }))
         );
 
         setSelectOptions(
-            "caAnIds",
-            caAn.map(item => ({
+            'caAnIds',
+            caAn.map((item) => ({
                 value: item.id,
-                label:
-                    item.tenCaAn ||
-                    item.ten ||
-                    "-"
+                label: item.tenCaAn || item.ten || '-'
             }))
         );
 
-        bindAllOption("nhaAnIds");
-        bindAllOption("caAnIds");
+        bindAllOption('nhaAnIds');
+        bindAllOption('caAnIds');
     }
 
     function getMultiValues(id) {
@@ -1212,17 +870,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return [];
         }
 
-        return Array
-            .from(
-                select.selectedOptions ||
-                []
-            )
-            .map(option => option.value)
-            .filter(
-                value =>
-                    value &&
-                    value !== "__ALL__"
-            );
+        return Array.from(select.selectedOptions || [])
+            .map((option) => option.value)
+            .filter((value) => value && value !== '__ALL__');
     }
 
     function resetMultiSelectToAll(id) {
@@ -1232,239 +882,155 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        Array
-            .from(select.options)
-            .forEach(option => {
-                option.selected =
-                    option.value === "__ALL__";
-            });
+        Array.from(select.options).forEach((option) => {
+            option.selected = option.value === '__ALL__';
+        });
 
-        const wrapper = select.closest("[data-smart-select]");
+        const wrapper = select.closest('[data-smart-select]');
 
-        wrapper
-            ?.smartSelect
-            ?.refresh?.();
+        wrapper?.smartSelect?.refresh?.();
 
         select.dispatchEvent(
-            new Event(
-                "change",
-                {
-                    bubbles: true
-                }
-            )
+            new Event('change', {
+                bubbles: true
+            })
         );
     }
 
-    function uniqueOptions(
-        records,
-        valueKey,
-        labelKey
-    ) {
+    function uniqueOptions(records, valueKey, labelKey) {
         const map = new Map();
 
-        records.forEach(record => {
+        records.forEach((record) => {
             const value = record[valueKey];
             const label = record[labelKey];
 
-            if (
-                value === undefined ||
-                value === null ||
-                !label
-            ) {
+            if (value === undefined || value === null || !label) {
                 return;
             }
 
-            map.set(
-                String(value),
-                label
-            );
+            map.set(String(value), label);
         });
 
-        return Array
-            .from(map.entries())
-            .map(
-                (
-                    [
-                        value,
-                        label
-                    ]
-                ) => ({
-                    value,
-                    label
-                })
-            );
+        return Array.from(map.entries()).map(([value, label]) => ({
+            value,
+            label
+        }));
     }
 
-    function setSelectOptions(
-        id,
-        options
-    ) {
+    function setSelectOptions(id, options) {
         const select = root.querySelector(`#${id}`);
 
         if (!select) {
             return;
         }
 
-        select.innerHTML = "";
+        select.innerHTML = '';
 
-        const allOption = document.createElement("option");
+        const allOption = document.createElement('option');
 
-        allOption.value = "__ALL__";
-        allOption.textContent = "Tất cả";
+        allOption.value = '__ALL__';
+        allOption.textContent = 'Tất cả';
 
         select.appendChild(allOption);
 
-        options.forEach(item => {
-            if (
-                item.value === undefined ||
-                item.value === null
-            ) {
+        options.forEach((item) => {
+            if (item.value === undefined || item.value === null) {
                 return;
             }
 
-            const option = document.createElement("option");
+            const option = document.createElement('option');
 
             option.value = String(item.value);
-            option.textContent = item.label || "-";
+            option.textContent = item.label || '-';
 
             select.appendChild(option);
         });
 
-        const wrapper = select.closest("[data-smart-select]");
+        const wrapper = select.closest('[data-smart-select]');
 
-        const smartSelect =
-            wrapper?.smartSelect ||
-            (
-                wrapper &&
-                window.MCS
-                    ?.smartSelect
-                    ?.initialize?.(
-                        wrapper
-                    )
-            );
+        const smartSelect = wrapper?.smartSelect || (wrapper && window.MCS?.smartSelect?.initialize?.(wrapper));
 
-        smartSelect
-            ?.refresh?.();
+        smartSelect?.refresh?.();
 
-        select.value = "__ALL__";
+        select.value = '__ALL__';
 
-        Array
-            .from(select.options)
-            .forEach(option => {
-                option.selected =
-                    option.value === "__ALL__";
-            });
+        Array.from(select.options).forEach((option) => {
+            option.selected = option.value === '__ALL__';
+        });
 
-        smartSelect
-            ?.refresh?.();
+        smartSelect?.refresh?.();
 
         select.dispatchEvent(
-            new Event(
-                "change",
-                {
-                    bubbles: true
-                }
-            )
+            new Event('change', {
+                bubbles: true
+            })
         );
     }
 
     function bindAllOption(id) {
         const select = root.querySelector(`#${id}`);
 
-        if (
-            !select ||
-            select.dataset.allOptionBound === "true"
-        ) {
+        if (!select || select.dataset.allOptionBound === 'true') {
             return;
         }
 
-        select.dataset.allOptionBound = "true";
+        select.dataset.allOptionBound = 'true';
 
-        select.addEventListener(
-            "change",
-            () => {
-                const options = Array.from(select.options);
+        select.addEventListener('change', () => {
+            const options = Array.from(select.options);
 
-                const allOption = options.find(
-                    option => option.value === "__ALL__"
-                );
+            const allOption = options.find((option) => option.value === '__ALL__');
 
-                if (!allOption) {
-                    return;
-                }
-
-                const selected = options.filter(
-                    option => option.selected
-                );
-
-                if (
-                    allOption.selected &&
-                    selected.length > 1
-                ) {
-                    options.forEach(option => {
-                        option.selected =
-                            option.value === "__ALL__";
-                    });
-                }
-
-                const selectedSpecific = options.filter(
-                    option =>
-                        option.value !== "__ALL__" &&
-                        option.selected
-                );
-
-                if (selectedSpecific.length > 0) {
-                    allOption.selected = false;
-                }
-
-                const hasSelected = options.some(
-                    option => option.selected
-                );
-
-                if (!hasSelected) {
-                    allOption.selected = true;
-                }
-
-                const wrapper = select.closest("[data-smart-select]");
-
-                wrapper
-                    ?.smartSelect
-                    ?.refresh?.();
+            if (!allOption) {
+                return;
             }
-        );
+
+            const selected = options.filter((option) => option.selected);
+
+            if (allOption.selected && selected.length > 1) {
+                options.forEach((option) => {
+                    option.selected = option.value === '__ALL__';
+                });
+            }
+
+            const selectedSpecific = options.filter((option) => option.value !== '__ALL__' && option.selected);
+
+            if (selectedSpecific.length > 0) {
+                allOption.selected = false;
+            }
+
+            const hasSelected = options.some((option) => option.selected);
+
+            if (!hasSelected) {
+                allOption.selected = true;
+            }
+
+            const wrapper = select.closest('[data-smart-select]');
+
+            wrapper?.smartSelect?.refresh?.();
+        });
     }
 
     function initializePagination() {
-        const paginationRoot = root.querySelector(
-            "[data-catalog-pagination]"
-        );
+        const paginationRoot = root.querySelector('[data-catalog-pagination]');
 
-        if (
-            !paginationRoot ||
-            !window.MCS
-                ?.catalog
-                ?.Pagination
-        ) {
+        if (!paginationRoot || !window.MCS?.catalog?.Pagination) {
             return;
         }
 
-        pagination =
-            new window.MCS.catalog.Pagination(
-                paginationRoot,
-                {
-                    page: state.page,
-                    pageSize: state.pageSize,
-                    total: 0,
+        pagination = new window.MCS.catalog.Pagination(paginationRoot, {
+            page: state.page,
+            pageSize: state.pageSize,
+            total: 0,
 
-                    onChange: paginationState => {
-                        state.page = paginationState.page;
-                        state.pageSize = paginationState.pageSize;
+            onChange: (paginationState) => {
+                state.page = paginationState.page;
+                state.pageSize = paginationState.pageSize;
 
-                        renderList();
-                        syncPagination();
-                    }
-                }
-            );
+                renderList();
+                syncPagination();
+            }
+        });
     }
 
     function syncPagination() {
@@ -1480,96 +1046,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function bindEvents() {
-        elements.tabs.forEach(tab => {
-            tab.addEventListener(
-                "click",
-                () => {
-                    elements.tabs.forEach(
-                        item =>
-                            item.classList.remove(
-                                "is-active"
-                            )
-                    );
+        elements.tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                elements.tabs.forEach((item) => item.classList.remove('is-active'));
 
-                    tab.classList.add("is-active");
+                tab.classList.add('is-active');
 
-                    state.activeTab =
-                        tab.dataset.voteTab ||
-                        "all";
+                state.activeTab = tab.dataset.voteTab || 'all';
 
-                    state.page = 1;
+                state.page = 1;
 
-                    applyFilters();
-                }
-            );
+                applyFilters();
+            });
         });
 
-        elements.search
-            ?.addEventListener(
-                "input",
-                debounce(
-                    event => {
-                        state.search =
-                            event.target.value ||
-                            "";
+        elements.search?.addEventListener(
+            'input',
+            debounce((event) => {
+                state.search = event.target.value || '';
 
-                        state.page = 1;
+                state.page = 1;
 
-                        applyFilters();
-                    },
-                    250
-                )
-            );
-
-        elements.filterToggle
-            ?.addEventListener(
-                "click",
-                event => {
-                    event.stopPropagation();
-                    toggleFilter();
-                }
-            );
-
-        elements.filterClose
-            ?.addEventListener(
-                "click",
-                closeFilter
-            );
-
-        elements.filterApply
-            ?.addEventListener(
-                "click",
-                applyFilterForm
-            );
-
-        elements.filterReset
-            ?.addEventListener(
-                "click",
-                resetFilterForm
-            );
-
-        document.addEventListener(
-            "click",
-            event => {
-                if (
-                    elements.filter &&
-                    !elements.filter.contains(
-                        event.target
-                    )
-                ) {
-                    closeFilter();
-                }
-            }
+                applyFilters();
+            }, 250)
         );
 
-        document.addEventListener(
-            "keydown",
-            event => {
-                if (event.key === "Escape") {
-                    closeFilter();
-                }
+        elements.filterToggle?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleFilter();
+        });
+
+        elements.filterClose?.addEventListener('click', closeFilter);
+
+        elements.filterApply?.addEventListener('click', applyFilterForm);
+
+        elements.filterReset?.addEventListener('click', resetFilterForm);
+
+        document.addEventListener('click', (event) => {
+            if (elements.filter && !elements.filter.contains(event.target)) {
+                closeFilter();
             }
-        );
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeFilter();
+            }
+        });
     }
 
     function setLoading(loading) {
@@ -1581,10 +1104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function setText(
-        element,
-        value
-    ) {
+    function setText(element, value) {
         if (element) {
             element.textContent = value;
         }
@@ -1604,131 +1124,77 @@ document.addEventListener("DOMContentLoaded", async () => {
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return "-";
+            return '-';
         }
 
-        return new Intl.DateTimeFormat(
-            "vi-VN",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        ).format(date);
+        return new Intl.DateTimeFormat('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(date);
     }
 
     function formatDateTime(value) {
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return "-";
+            return '-';
         }
 
-        const dateText = new Intl.DateTimeFormat(
-            "vi-VN",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        ).format(date);
+        const dateText = new Intl.DateTimeFormat('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(date);
 
-        const timeText = new Intl.DateTimeFormat(
-            "vi-VN",
-            {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false
-            }
-        ).format(date);
+        const timeText = new Intl.DateTimeFormat('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).format(date);
 
-        return (
-            timeText +
-            " - " +
-            dateText
-        );
+        return timeText + ' - ' + dateText;
     }
 
     function getWeekday(value) {
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return "-";
+            return '-';
         }
 
-        const weekdays = [
-            "Chủ nhật",
-            "Thứ hai",
-            "Thứ ba",
-            "Thứ tư",
-            "Thứ năm",
-            "Thứ sáu",
-            "Thứ bảy"
-        ];
+        const weekdays = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
 
         return weekdays[date.getDay()];
     }
 
     function normalizeText(value) {
-        return String(value ?? "")
-            .normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .replace(
-                /đ/g,
-                "d"
-            )
-            .replace(
-                /Đ/g,
-                "D"
-            )
+        return String(value ?? '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
             .toLowerCase()
             .trim();
     }
 
     function escapeHtml(value) {
-        return String(value ?? "")
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
-    function debounce(
-        callback,
-        delay
-    ) {
+    function debounce(callback, delay) {
         let timer;
 
         return (...args) => {
             clearTimeout(timer);
 
-            timer = setTimeout(
-                () =>
-                    callback(
-                        ...args
-                    ),
-                delay
-            );
+            timer = setTimeout(() => callback(...args), delay);
         };
     }
 });

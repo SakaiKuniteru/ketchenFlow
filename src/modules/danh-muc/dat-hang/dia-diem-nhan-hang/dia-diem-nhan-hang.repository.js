@@ -1,89 +1,59 @@
-const pool =
-    require("../../../../config/database");
-
+const pool = require('../../../../config/database');
 
 class DiaDiemNhanHangRepository {
-
-    mapDiaDiemNhanHang(
-        row
-    ) {
-
+    mapDiaDiemNhanHang(row) {
         if (!row) {
             return null;
         }
 
         return {
-            id:
-                row.id,
+            id: row.id,
 
-            nhanVienId:
-                row.nhan_vien_id,
+            nhanVienId: row.nhan_vien_id,
 
-            nhanVienApDungId:
-                row.nhan_vien_ap_dung_id,
+            nhanVienApDungId: row.nhan_vien_ap_dung_id,
 
-            maNhanVienApDung:
-                row.ma_nhan_vien_ap_dung,
+            maNhanVienApDung: row.ma_nhan_vien_ap_dung,
 
-            tenNhanVienApDung:
-                row.ten_nhan_vien_ap_dung,
+            tenNhanVienApDung: row.ten_nhan_vien_ap_dung,
 
-            maNhanVien:
-                row.ma_nhan_vien,
+            maNhanVien: row.ma_nhan_vien,
 
-            tenNhanVien:
-                row.ten_nhan_vien,
+            tenNhanVien: row.ten_nhan_vien,
 
-            soDienThoaiNhanVien:
-                row.so_dien_thoai_nhan_vien,
+            soDienThoaiNhanVien: row.so_dien_thoai_nhan_vien,
 
-            coSoId:
-                row.co_so_id,
+            coSoId: row.co_so_id,
 
-            tenCoSo:
-                row.ten_co_so,
+            tenCoSo: row.ten_co_so,
 
-            phongBanId:
-                row.phong_ban_id,
+            phongBanId: row.phong_ban_id,
 
-            tenPhongBan:
-                row.ten_phong_ban,
+            tenPhongBan: row.ten_phong_ban,
 
-            maDiaDiem:
-                row.ma_dia_diem,
+            maDiaDiem: row.ma_dia_diem,
 
-            tenDiaDiem:
-                row.ten_dia_diem,
+            tenDiaDiem: row.ten_dia_diem,
 
-            diaChiChiTiet:
-                row.dia_chi_chi_tiet,
+            diaChiChiTiet: row.dia_chi_chi_tiet,
 
-            loaiDiaDiem:
-                row.loai_dia_diem,
+            loaiDiaDiem: row.loai_dia_diem,
 
-            laMacDinh:
-                row.la_mac_dinh,
+            laMacDinh: row.la_mac_dinh,
 
-            ghiChu:
-                row.ghi_chu,
+            ghiChu: row.ghi_chu,
 
-            thuTuHienThi:
-                row.thu_tu_hien_thi,
+            thuTuHienThi: row.thu_tu_hien_thi,
 
-            active:
-                row.active,
+            active: row.active,
 
-            createdAt:
-                row.created_at,
+            createdAt: row.created_at,
 
-            updatedAt:
-                row.updated_at
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -130,38 +100,21 @@ class DiaDiemNhanHangRepository {
                 ON pb.id = nv.phong_ban_id
 
         `;
-
     }
 
-    async getTongHop(
-        nhanVienId,
-        query = {}
-    ) {
-
+    async getTongHop(nhanVienId, query = {}) {
         const values = [];
 
-        const conditions = [
-            "1 = 1"
-        ];
+        const conditions = ['1 = 1'];
 
-        if (
-            nhanVienId !== null &&
-            nhanVienId !== undefined
-        ) {
-            values.push(
-                nhanVienId
-            );
+        if (nhanVienId !== null && nhanVienId !== undefined) {
+            values.push(nhanVienId);
 
-            conditions.push(
-                `dd.nhan_vien_id = $${values.length}`
-            );
+            conditions.push(`dd.nhan_vien_id = $${values.length}`);
         }
 
         if (query.keyword) {
-
-            values.push(
-                `%${query.keyword}%`
-            );
+            values.push(`%${query.keyword}%`);
 
             conditions.push(`
                 (
@@ -170,55 +123,30 @@ class DiaDiemNhanHangRepository {
                     OR dd.dia_chi_chi_tiet ILIKE $${values.length}
                 )
             `);
-
         }
 
-        if (
-            query.loaiDiaDiem !== undefined
-        ) {
+        if (query.loaiDiaDiem !== undefined) {
+            values.push(query.loaiDiaDiem);
 
-            values.push(
-                query.loaiDiaDiem
-            );
-
-            conditions.push(
-                `dd.loai_dia_diem = $${values.length}`
-            );
-
+            conditions.push(`dd.loai_dia_diem = $${values.length}`);
         }
 
-        if (
-            query.laMacDinh !== undefined
-        ) {
+        if (query.laMacDinh !== undefined) {
+            values.push(query.laMacDinh);
 
-            values.push(
-                query.laMacDinh
-            );
-
-            conditions.push(
-                `dd.la_mac_dinh = $${values.length}`
-            );
-
+            conditions.push(`dd.la_mac_dinh = $${values.length}`);
         }
 
-        if (
-            query.active !== undefined
-        ) {
+        if (query.active !== undefined) {
+            values.push(query.active);
 
-            values.push(
-                query.active
-            );
-
-            conditions.push(
-                `dd.active = $${values.length}`
-            );
-
+            conditions.push(`dd.active = $${values.length}`);
         }
 
         const sql = `
             ${this.getBaseQuery()}
 
-            WHERE ${conditions.join(" AND ")}
+            WHERE ${conditions.join(' AND ')}
 
             ORDER BY
                 dd.la_mac_dinh DESC,
@@ -226,80 +154,40 @@ class DiaDiemNhanHangRepository {
                 dd.ten_dia_diem ASC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row =>
-                this.mapDiaDiemNhanHang(
-                    row
-                )
-        );
-
+        return result.rows.map((row) => this.mapDiaDiemNhanHang(row));
     }
 
-    async getChiTiet(
-        id,
-        nhanVienId = null,
-        client = pool
-    ) {
+    async getChiTiet(id, nhanVienId = null, client = pool) {
+        const values = [id];
 
-        const values = [
-            id
-        ];
+        const conditions = ['dd.id = $1'];
 
-        const conditions = [
-            "dd.id = $1"
-        ];
+        if (nhanVienId !== null && nhanVienId !== undefined) {
+            values.push(nhanVienId);
 
-        if (
-            nhanVienId !== null &&
-            nhanVienId !== undefined
-        ) {
-            values.push(
-                nhanVienId
-            );
-
-            conditions.push(
-                `dd.nhan_vien_id = $${values.length}`
-            );
+            conditions.push(`dd.nhan_vien_id = $${values.length}`);
         }
 
         const sql = `
             ${this.getBaseQuery()}
 
-            WHERE ${conditions.join(" AND ")}
+            WHERE ${conditions.join(' AND ')}
 
             LIMIT 1
         `;
 
-        const result =
-            await client.query(
-                    sql,
-                    values
-            );
+        const result = await client.query(sql, values);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapDiaDiemNhanHang(
-            result.rows[0]
-        );
-
+        return this.mapDiaDiemNhanHang(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        nhanVienId,
-        maDiaDiem
-    ) {
-
+    async getChiTietByMa(nhanVienId, maDiaDiem) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -313,32 +201,16 @@ class DiaDiemNhanHangRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    nhanVienId,
-                    maDiaDiem
-                ]
-            );
+        const result = await pool.query(sql, [nhanVienId, maDiaDiem]);
 
-        if (
-            result.rows.length ===
-            0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapDiaDiemNhanHang(
-            result.rows[0]
-        );
-
+        return this.mapDiaDiemNhanHang(result.rows[0]);
     }
 
-    async existsNhanVien(
-        nhanVienId
-    ) {
-
+    async existsNhanVien(nhanVienId) {
         const sql = `
             SELECT EXISTS (
 
@@ -350,28 +222,13 @@ class DiaDiemNhanHangRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    nhanVienId
-                ]
-            );
+        const result = await pool.query(sql, [nhanVienId]);
 
         return result.rows[0].exists;
-
     }
 
-    async existsMaDiaDiem(
-        nhanVienId,
-        maDiaDiem,
-        excludeId = null
-    ) {
-
-        const values = [
-            nhanVienId,
-            maDiaDiem
-        ];
+    async existsMaDiaDiem(nhanVienId, maDiaDiem, excludeId = null) {
+        const values = [nhanVienId, maDiaDiem];
 
         let sql = `
             SELECT EXISTS (
@@ -387,41 +244,24 @@ class DiaDiemNhanHangRepository {
         `;
 
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenDiaDiem(
-        nhanVienId,
-        tenDiaDiem,
-        excludeId = null
-    ) {
-
-        const values = [
-            nhanVienId,
-            tenDiaDiem
-        ];
+    async existsTenDiaDiem(nhanVienId, tenDiaDiem, excludeId = null) {
+        const values = [nhanVienId, tenDiaDiem];
 
         let sql = `
             SELECT EXISTS (
@@ -437,35 +277,23 @@ class DiaDiemNhanHangRepository {
         `;
 
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
+            values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async khoaNhanVien(
-        nhanVienId,
-        client = pool
-    ) {
+    async khoaNhanVien(nhanVienId, client = pool) {
         await client.query(
             `
                 SELECT id
@@ -477,13 +305,9 @@ class DiaDiemNhanHangRepository {
         );
     }
 
-    async coMacDinhDangHoatDong(
-        nhanVienId,
-        client = pool
-    ) {
-        const result =
-            await client.query(
-                `
+    async coMacDinhDangHoatDong(nhanVienId, client = pool) {
+        const result = await client.query(
+            `
                     SELECT EXISTS (
                         SELECT 1
                         FROM dm_dia_diem_nhan_hang
@@ -492,20 +316,15 @@ class DiaDiemNhanHangRepository {
                             AND active = TRUE
                     ) AS "exists"
                 `,
-                [nhanVienId]
-            );
+            [nhanVienId]
+        );
 
         return result.rows[0].exists;
     }
 
-    async coMacDinhKhac(
-        nhanVienId,
-        excludeId,
-        client = pool
-    ) {
-        const result =
-            await client.query(
-                `
+    async coMacDinhKhac(nhanVienId, excludeId, client = pool) {
+        const result = await client.query(
+            `
                     SELECT EXISTS (
                         SELECT 1
                         FROM dm_dia_diem_nhan_hang
@@ -515,50 +334,36 @@ class DiaDiemNhanHangRepository {
                             AND active = TRUE
                     ) AS "exists"
                 `,
-                [
-                    nhanVienId,
-                    excludeId
-                ]
-            );
+            [nhanVienId, excludeId]
+        );
 
         return result.rows[0].exists;
     }
 
-    async sinhMaDiaDiem(
-        nhanVienId,
-        client = pool
-    ) {
-        const employeeResult =
-            await client.query(
-                `
+    async sinhMaDiaDiem(nhanVienId, client = pool) {
+        const employeeResult = await client.query(
+            `
                     SELECT ma_nhan_vien
                     FROM dm_nhan_vien
                     WHERE id = $1
                         AND active = TRUE
                     FOR UPDATE
                 `,
-                [nhanVienId]
-            );
+            [nhanVienId]
+        );
 
-        if (
-            employeeResult.rows.length === 0
-        ) {
+        if (employeeResult.rows.length === 0) {
             return null;
         }
 
-        const maNhanVien =
-            String(
-                employeeResult.rows[0].ma_nhan_vien || ""
-            )
-                .trim()
-                .toUpperCase();
+        const maNhanVien = String(employeeResult.rows[0].ma_nhan_vien || '')
+            .trim()
+            .toUpperCase();
 
-        const prefix =
-            `${maNhanVien}_`;
+        const prefix = `${maNhanVien}_`;
 
-        const result =
-            await client.query(
-                `
+        const result = await client.query(
+            `
                     SELECT COALESCE(
                         MAX(
                             CASE
@@ -577,52 +382,27 @@ class DiaDiemNhanHangRepository {
                             LENGTH($2)
                         ) = $2
                 `,
-                [
-                    nhanVienId,
-                    prefix
-                ]
-            );
+            [nhanVienId, prefix]
+        );
 
-        const soThuTu =
-            Number(
-                result.rows[0].next_number
-            );
+        const soThuTu = Number(result.rows[0].next_number);
 
-        if (
-            !Number.isInteger(soThuTu) ||
-            soThuTu > 99999
-        ) {
+        if (!Number.isInteger(soThuTu) || soThuTu > 99999) {
             return null;
         }
 
-        return (
-            prefix +
-            String(soThuTu).padStart(5, "0")
-        );
+        return prefix + String(soThuTu).padStart(5, '0');
     }
 
-    async boMacDinhCu(
-        nhanVienId,
-        excludeId = null,
-        client = pool
-    ) {
+    async boMacDinhCu(nhanVienId, excludeId = null, client = pool) {
+        const values = [nhanVienId];
 
-        const values = [
-            nhanVienId
-        ];
-
-        let dieuKienLoaiTru =
-            "";
+        let dieuKienLoaiTru = '';
 
         if (excludeId) {
+            values.push(excludeId);
 
-            values.push(
-                excludeId
-            );
-
-            dieuKienLoaiTru =
-                "AND id <> $2";
-
+            dieuKienLoaiTru = 'AND id <> $2';
         }
 
         const sql = `
@@ -635,61 +415,29 @@ class DiaDiemNhanHangRepository {
                 ${dieuKienLoaiTru}
         `;
 
-        await client.query(
-            sql,
-            values
-        );
-
+        await client.query(sql, values);
     }
 
-    async create(
-        nhanVienId,
-        data
-    ) {
-
-        const client =
-            await pool.connect();
+    async create(nhanVienId, data) {
+        const client = await pool.connect();
 
         try {
+            await client.query('BEGIN');
 
-            await client.query(
-                "BEGIN"
-            );
+            await this.khoaNhanVien(nhanVienId, client);
 
-            await this.khoaNhanVien(
-                nhanVienId,
-                client
-            );
-
-            const maDiaDiem =
-                data.maDiaDiem ||
-                await this.sinhMaDiaDiem(
-                    nhanVienId,
-                    client
-                );
+            const maDiaDiem = data.maDiaDiem || (await this.sinhMaDiaDiem(nhanVienId, client));
 
             if (!maDiaDiem) {
-                throw new Error(
-                    "Không thể tự sinh mã địa điểm."
-                );
+                throw new Error('Không thể tự sinh mã địa điểm.');
             }
 
-            const daCoMacDinh =
-                await this.coMacDinhDangHoatDong(
-                    nhanVienId,
-                    client
-                );
+            const daCoMacDinh = await this.coMacDinhDangHoatDong(nhanVienId, client);
 
-            const laMacDinh =
-                data.laMacDinh === true ||
-                !daCoMacDinh;
+            const laMacDinh = data.laMacDinh === true || !daCoMacDinh;
 
             if (laMacDinh) {
-                await this.boMacDinhCu(
-                    nhanVienId,
-                    null,
-                    client
-                );
+                await this.boMacDinhCu(nhanVienId, null, client);
             }
 
             const sql = `
@@ -728,63 +476,28 @@ class DiaDiemNhanHangRepository {
                 data.active
             ];
 
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                result.rows[0].id,
-                nhanVienId
-            );
-
+            return await this.getChiTiet(result.rows[0].id, nhanVienId);
         } catch (error) {
-
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
 
-    async update(
-        id,
-        nhanVienId,
-        data
-    ) {
-
-        const client =
-            await pool.connect();
+    async update(id, nhanVienId, data) {
+        const client = await pool.connect();
 
         try {
+            await client.query('BEGIN');
 
-            await client.query(
-                "BEGIN"
-            );
-
-            if (
-                data.laMacDinh === true &&
-                data.active === true
-            ) {
-
-                await this.boMacDinhCu(
-                    nhanVienId,
-                    id,
-                    client
-                );
-
+            if (data.laMacDinh === true && data.active === true) {
+                await this.boMacDinhCu(nhanVienId, id, client);
             }
 
             const sql = `
@@ -821,48 +534,24 @@ class DiaDiemNhanHangRepository {
                 nhanVienId
             ];
 
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
-            if (
-                result.rows.length ===
-                0
-            ) {
-
-                await client.query(
-                    "ROLLBACK"
-                );
+            if (result.rows.length === 0) {
+                await client.query('ROLLBACK');
 
                 return null;
-
             }
 
-            await client.query(
-                "COMMIT"
-            );
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                result.rows[0].id,
-                nhanVienId
-            );
-
+            return await this.getChiTiet(result.rows[0].id, nhanVienId);
         } catch (error) {
-
-            await client.query(
-                "ROLLBACK"
-            );
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
 }
 

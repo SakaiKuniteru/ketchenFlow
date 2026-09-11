@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const taiKhoanExport =
-    require("./tai-khoan.export");
+const taiKhoanExport = require('./tai-khoan.export');
 
-const taiKhoanImport =
-    require("./tai-khoan.import");
-
+const taiKhoanImport = require('./tai-khoan.import');
 
 module.exports = {
     exportData: taiKhoanExport.exportData,

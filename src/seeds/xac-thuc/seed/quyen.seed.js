@@ -2,12 +2,9 @@
 
 // const data = require("../data/quyen.data");
 
-
 // async function seedQuyen() {
 
-
 //     console.log("Seeding dm_quyen...");
-
 
 //     await seedHelper({
 
@@ -17,9 +14,7 @@
 
 //         data,
 
-
 //         transform: async (client, item)=>{
-
 
 //             const result = await client.query(
 
@@ -35,7 +30,6 @@
 
 //             );
 
-
 //             if(result.rows.length === 0){
 
 //                 throw new Error(
@@ -44,9 +38,7 @@
 
 //             }
 
-
 //             delete item.nhom_tinh_nang;
-
 
 //             return {
 
@@ -57,40 +49,32 @@
 
 //             };
 
-
 //         }
 
 //     });
 
-
 //     console.log("✓ dm_quyen completed");
-
 
 // }
 
-
 // module.exports = seedQuyen;
 
-const seedHelper = require("../../helpers/seed.helper");
+const seedHelper = require('../../helpers/seed.helper');
 
-const data = require("../data/quyen.data");
+const data = require('../data/quyen.data');
 
 async function seedQuyen() {
-
-    console.log("Seeding dm_quyen...");
+    console.log('Seeding dm_quyen...');
 
     await seedHelper({
+        table: 'dm_quyen',
 
-        table: "dm_quyen",
-
-        unique: "ma_quyen",
+        unique: 'ma_quyen',
 
         data
-
     });
 
-    console.log("✓ dm_quyen completed");
-
+    console.log('✓ dm_quyen completed');
 }
 
 module.exports = seedQuyen;

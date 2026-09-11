@@ -1,276 +1,110 @@
-"use strict";
+'use strict';
 
-const vaiTroRepository = require("./vai-tro.repository");
+const vaiTroRepository = require('./vai-tro.repository');
 
-const {
-    createExportFile
-} = require("../../../../helpers/excel/excel-export");
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const {
-    sendExcel
-} = require("../../../../helpers/excel/excel-response");
+const { sendExcel } = require('../../../../helpers/excel/excel-response');
 
-const MA_BAO_CAO = "dm_vai_tro";
+const MA_BAO_CAO = 'dm_vai_tro';
 
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
 
-
-function chuanHoaDanhSach(
-    value
-) {
-
-    if (
-        value ===
-            undefined ||
-        value ===
-            null ||
-        value ===
-            ""
-    ) {
-
+function chuanHoaDanhSach(value) {
+    if (value === undefined || value === null || value === '') {
         return [];
-
     }
 
-
-    if (
-        Array.isArray(
-            value
-        )
-    ) {
-
+    if (Array.isArray(value)) {
         return value;
-
     }
 
-
-    if (
-        typeof value ===
-        "string"
-    ) {
-
-        const text =
-            value.trim();
-
+    if (typeof value === 'string') {
+        const text = value.trim();
 
         if (!text) {
-
             return [];
-
         }
 
-
-        if (
-            text.startsWith(
-                "["
-            ) &&
-            text.endsWith(
-                "]"
-            )
-        ) {
-
+        if (text.startsWith('[') && text.endsWith(']')) {
             try {
+                const parsed = JSON.parse(text);
 
-                const parsed =
-                    JSON.parse(
-                        text
-                    );
-
-
-                return Array.isArray(
-                    parsed
-                )
-                    ? parsed
-                    : [];
-
+                return Array.isArray(parsed) ? parsed : [];
             } catch {
-
                 return [];
-
             }
-
         }
-
 
         return text
-            .split(",")
-            .map(
-                item =>
-                    item.trim()
-            )
-            .filter(
-                Boolean
-            );
-
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean);
     }
 
-
     return [];
-
 }
 
-
-function noiDanhSach(
-    value
-) {
-
-    return chuanHoaDanhSach(
-        value
-    )
-        .filter(
-            item =>
-                item !==
-                    undefined &&
-                item !==
-                    null &&
-                String(
-                    item
-                ).trim() !==
-                    ""
-        )
-        .map(
-            item =>
-                String(
-                    item
-                ).trim()
-        )
-        .join(", ");
-
+function noiDanhSach(value) {
+    return chuanHoaDanhSach(value)
+        .filter((item) => item !== undefined && item !== null && String(item).trim() !== '')
+        .map((item) => String(item).trim())
+        .join(', ');
 }
 
-
-function taoDongExport(
-    item
-) {
-
+function taoDongExport(item) {
     return {
+        id: item.id,
 
-        id:
-            item.id,
+        maVaiTro: item.maVaiTro,
 
-        maVaiTro:
-            item.maVaiTro,
+        tenVaiTro: item.tenVaiTro,
 
-        tenVaiTro:
-            item.tenVaiTro,
+        moTa: item.moTa,
 
-        moTa:
-            item.moTa,
+        dsQuyenId: noiDanhSach(item.dsQuyenId),
 
+        dsMaQuyen: noiDanhSach(item.dsMaQuyen),
 
-        dsQuyenId:
-            noiDanhSach(
-                item.dsQuyenId
-            ),
+        dsTenQuyen: noiDanhSach(item.dsTenQuyen),
 
+        dsNhomTinhNangId: noiDanhSach(item.dsNhomTinhNangId),
 
-        dsMaQuyen:
-            noiDanhSach(
-                item.dsMaQuyen
-            ),
+        dsMaNhomTinhNang: noiDanhSach(item.dsMaNhomTinhNang),
 
+        dsTenNhomTinhNang: noiDanhSach(item.dsTenNhomTinhNang),
 
-        dsTenQuyen:
-            noiDanhSach(
-                item.dsTenQuyen
-            ),
-
-
-        dsNhomTinhNangId:
-            noiDanhSach(
-                item.dsNhomTinhNangId
-            ),
-
-
-        dsMaNhomTinhNang:
-            noiDanhSach(
-                item.dsMaNhomTinhNang
-            ),
-
-
-        dsTenNhomTinhNang:
-            noiDanhSach(
-                item.dsTenNhomTinhNang
-            ),
-
-
-        active:
-            item.active
-
+        active: item.active
     };
-
 }
 
+async function xuLyExport(query = {}) {
+    const danhSach = await vaiTroRepository.getTongHop(query);
 
-async function xuLyExport(
-    query = {}
-) {
-
-    const danhSach =
-        await vaiTroRepository
-            .getTongHop(
-                query
-            );
-
-
-    const data =
-        danhSach.map(
-            item =>
-                taoDongExport(
-                    item
-                )
-        );
-
+    const data = danhSach.map((item) => taoDongExport(item));
 
     return await createExportFile({
+        maBaoCao: MA_BAO_CAO,
 
-        maBaoCao:
-            MA_BAO_CAO,
+        headerRowNumber: HEADER_ROW,
 
-        headerRowNumber:
-            HEADER_ROW,
+        templateRowNumber: TEMPLATE_ROW,
 
-        templateRowNumber:
-            TEMPLATE_ROW,
-
-        dataStartRowNumber:
-            DATA_START_ROW,
+        dataStartRowNumber: DATA_START_ROW,
 
         data
-
     });
-
 }
 
-
-async function exportData(
-    req,
-    res,
-    next
-) {
-
+async function exportData(req, res, next) {
     try {
+        const result = await xuLyExport(req.query);
 
-        const result =
-            await xuLyExport(
-                req.query
-            );
-
-
-        return sendExcel(
-            res,
-            result
-        );
-
-    } catch (
-        error
-    ) {
-
-        next(
-            error
-        );
+        return sendExcel(res, result);
+    } catch (error) {
+        next(error);
     }
 }
 

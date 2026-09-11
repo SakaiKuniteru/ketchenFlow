@@ -1,37 +1,20 @@
-const seedHelper =
-    require("../../helpers/seed.helper");
+const seedHelper = require('../../helpers/seed.helper');
 
-const data =
-    require("../data/quyen-nhom-tinh-nang.data");
+const data = require('../data/quyen-nhom-tinh-nang.data');
 
-const seedQuyenNhomTinhNang =
-    async () => {
+const seedQuyenNhomTinhNang = async () => {
+    console.log('Seeding dm_quyen_nhom_tinh_nang...');
 
-        console.log(
-            "Seeding dm_quyen_nhom_tinh_nang..."
-        );
+    await seedHelper({
+        table: 'dm_quyen_nhom_tinh_nang',
 
-        await seedHelper({
+        unique: ['quyen_id', 'nhom_tinh_nang_id'],
 
-            table:
-                "dm_quyen_nhom_tinh_nang",
+        data,
 
-            unique: [
-                "quyen_id",
-                "nhom_tinh_nang_id"
-            ],
-
-            data,
-
-            transform:
-                async (
-                    client,
-                    item
-                ) => {
-
-                    const quyenResult =
-                        await client.query(
-                            `
+        transform: async (client, item) => {
+            const quyenResult = await client.query(
+                `
                                 SELECT
                                     id
                                 FROM dm_quyen
@@ -42,24 +25,15 @@ const seedQuyenNhomTinhNang =
                                 )
                                 LIMIT 1
                             `,
-                            [
-                                item.ma_quyen
-                            ]
-                        );
+                [item.ma_quyen]
+            );
 
-                    if (
-                        quyenResult.rows.length === 0
-                    ) {
+            if (quyenResult.rows.length === 0) {
+                throw new Error(`Không tìm thấy quyền có mã: ${item.ma_quyen}`);
+            }
 
-                        throw new Error(
-                            `Không tìm thấy quyền có mã: ${item.ma_quyen}`
-                        );
-
-                    }
-
-                    const nhomTinhNangResult =
-                        await client.query(
-                            `
+            const nhomTinhNangResult = await client.query(
+                `
                                 SELECT
                                     id
                                 FROM dm_nhom_tinh_nang
@@ -70,43 +44,24 @@ const seedQuyenNhomTinhNang =
                                 )
                                 LIMIT 1
                             `,
-                            [
-                                item.ma_nhom_tinh_nang
-                            ]
-                        );
+                [item.ma_nhom_tinh_nang]
+            );
 
-                    if (
-                        nhomTinhNangResult.rows.length === 0
-                    ) {
+            if (nhomTinhNangResult.rows.length === 0) {
+                throw new Error(`Không tìm thấy nhóm tính năng có mã: ${item.ma_nhom_tinh_nang}`);
+            }
 
-                        throw new Error(
-                            `Không tìm thấy nhóm tính năng có mã: ${item.ma_nhom_tinh_nang}`
-                        );
+            return {
+                quyen_id: quyenResult.rows[0].id,
 
-                    }
+                nhom_tinh_nang_id: nhomTinhNangResult.rows[0].id,
 
-                    return {
+                active: item.active ?? true
+            };
+        }
+    });
 
-                        quyen_id:
-                            quyenResult.rows[0].id,
+    console.log('✓ dm_quyen_nhom_tinh_nang completed');
+};
 
-                        nhom_tinh_nang_id:
-                            nhomTinhNangResult.rows[0].id,
-
-                        active:
-                            item.active ?? true
-
-                    };
-
-                }
-
-        });
-
-        console.log(
-            "✓ dm_quyen_nhom_tinh_nang completed"
-        );
-
-    };
-
-module.exports =
-    seedQuyenNhomTinhNang;
+module.exports = seedQuyenNhomTinhNang;

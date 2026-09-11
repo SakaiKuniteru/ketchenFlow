@@ -1,11 +1,8 @@
-"use strict";
+'use strict';
 
-const tinhThanhExport =
-    require("./tinh-thanh.export");
+const tinhThanhExport = require('./tinh-thanh.export');
 
-const tinhThanhImport =
-    require("./tinh-thanh.import");
-
+const tinhThanhImport = require('./tinh-thanh.import');
 
 module.exports = {
     exportData: tinhThanhExport.exportData,

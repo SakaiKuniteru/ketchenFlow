@@ -1,75 +1,53 @@
-const pool = require("../../../../config/database");
-const { loaiBaoQuan: dsLoaiBaoQuan } = require("../../../../constants/enums");
+const pool = require('../../../../config/database');
+const { loaiBaoQuan: dsLoaiBaoQuan } = require('../../../../constants/enums');
 
 class ThucPhamRepository {
-
     mapThucPham(row) {
         if (!row) {
             return null;
         }
 
-        const heSoQuyDoi =
-            row.he_so_quy_doi !== null
-                ? Number(row.he_so_quy_doi)
-                : null;
+        const heSoQuyDoi = row.he_so_quy_doi !== null ? Number(row.he_so_quy_doi) : null;
 
-        const loaiBaoQuan =
-            dsLoaiBaoQuan.find(
-                item => Number(item.value) === Number(row.dieu_kien_bao_quan)
-            ) || null;
+        const loaiBaoQuan = dsLoaiBaoQuan.find((item) => Number(item.value) === Number(row.dieu_kien_bao_quan)) || null;
 
         return {
             id: row.id,
             maThucPham: row.ma_thuc_pham,
             tenThucPham: row.ten_thuc_pham,
             donViSoCapId: row.don_vi_so_cap_id,
-            donViSoCap:
-                row.don_vi_so_cap_id
-                    ? {
-                        id: row.don_vi_so_cap_id,
-                        ma: row.ma_don_vi_so_cap,
-                        ten: row.ten_don_vi_so_cap,
-                        kyHieu: row.ky_hieu_don_vi_so_cap,
-                        loaiDonVi: row.loai_don_vi_so_cap
-                    }
-                    : null,
+            donViSoCap: row.don_vi_so_cap_id
+                ? {
+                      id: row.don_vi_so_cap_id,
+                      ma: row.ma_don_vi_so_cap,
+                      ten: row.ten_don_vi_so_cap,
+                      kyHieu: row.ky_hieu_don_vi_so_cap,
+                      loaiDonVi: row.loai_don_vi_so_cap
+                  }
+                : null,
             donViSuDungId: row.don_vi_su_dung_id,
-            donViSuDung:
-                row.don_vi_su_dung_id
-                    ? {
-                        id: row.don_vi_su_dung_id,
-                        ma: row.ma_don_vi_su_dung,
-                        ten: row.ten_don_vi_su_dung,
-                        kyHieu: row.ky_hieu_don_vi_su_dung,
-                        loaiDonVi: row.loai_don_vi_su_dung
-                    }
-                    : null,
-            heSoQuyDoi:
-                row.he_so_quy_doi !== null
-                    ? Number(row.he_so_quy_doi)
-                    : null,
+            donViSuDung: row.don_vi_su_dung_id
+                ? {
+                      id: row.don_vi_su_dung_id,
+                      ma: row.ma_don_vi_su_dung,
+                      ten: row.ten_don_vi_su_dung,
+                      kyHieu: row.ky_hieu_don_vi_su_dung,
+                      loaiDonVi: row.loai_don_vi_su_dung
+                  }
+                : null,
+            heSoQuyDoi: row.he_so_quy_doi !== null ? Number(row.he_so_quy_doi) : null,
             quyCach: row.quy_cach,
-            giaNhap:
-                row.gia_nhap !== null
-                    ? Number(row.gia_nhap)
-                    : null,
-            tyLeHaoHutDuKien:
-                row.ty_le_hao_hut_du_kien !== null
-                    ? Number(row.ty_le_hao_hut_du_kien)
-                    : 0,
+            giaNhap: row.gia_nhap !== null ? Number(row.gia_nhap) : null,
+            tyLeHaoHutDuKien: row.ty_le_hao_hut_du_kien !== null ? Number(row.ty_le_hao_hut_du_kien) : 0,
             xuatXuId: row.xuat_xu_id,
-            xuatXu:
-                row.xuat_xu_id
-                    ? {
-                        id: row.xuat_xu_id,
-                        ma: row.ma_xuat_xu,
-                        ten: row.ten_xuat_xu
-                    }
-                    : null,
-            dieuKienBaoQuan:
-                row.dieu_kien_bao_quan !== null
-                    ? Number(row.dieu_kien_bao_quan)
-                    : null,
+            xuatXu: row.xuat_xu_id
+                ? {
+                      id: row.xuat_xu_id,
+                      ma: row.ma_xuat_xu,
+                      ten: row.ten_xuat_xu
+                  }
+                : null,
+            dieuKienBaoQuan: row.dieu_kien_bao_quan !== null ? Number(row.dieu_kien_bao_quan) : null,
             tenDieuKienBaoQuan: loaiBaoQuan?.name || null,
             moTa: row.mo_ta,
             hinhAnh: row.hinh_anh,
@@ -125,9 +103,7 @@ class ThucPhamRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapThucPham(row)
-        );
+        return result.rows.map((row) => this.mapThucPham(row));
     }
 
     async getChiTiet(id) {
@@ -137,10 +113,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
@@ -163,10 +136,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
@@ -198,10 +168,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maDonViTinh]
-        );
+        const result = await pool.query(sql, [maDonViTinh]);
 
         if (result.rows.length === 0) {
             return null;
@@ -231,10 +198,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
@@ -262,10 +226,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maQuocGia]
-        );
+        const result = await pool.query(sql, [maQuocGia]);
 
         if (result.rows.length === 0) {
             return null;
@@ -282,9 +243,7 @@ class ThucPhamRepository {
     }
 
     async existsMaThucPham(maThucPham, excludeId = null) {
-        const values = [
-            maThucPham
-        ];
+        const values = [maThucPham];
 
         let sql = `
             SELECT EXISTS (
@@ -305,18 +264,13 @@ class ThucPhamRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
     async existsTenThucPham(tenThucPham, excludeId = null) {
-        const values = [
-            tenThucPham
-        ];
+        const values = [tenThucPham];
 
         let sql = `
             SELECT EXISTS (
@@ -337,10 +291,7 @@ class ThucPhamRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
@@ -352,10 +303,7 @@ class ThucPhamRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maThucPham]
-        );
+        const result = await pool.query(sql, [maThucPham]);
 
         if (result.rows.length === 0) {
             return null;
@@ -410,34 +358,19 @@ class ThucPhamRepository {
             data.tenThucPham,
             data.donViSoCapId,
             data.donViSuDungId,
-            data.heSoQuyDoi !== undefined
-                ? data.heSoQuyDoi
-                : 1,
+            data.heSoQuyDoi !== undefined ? data.heSoQuyDoi : 1,
             data.quyCach || null,
-            data.giaNhap !== undefined
-                ? data.giaNhap
-                : null,
-            data.tyLeHaoHutDuKien !== undefined
-                ? data.tyLeHaoHutDuKien
-                : 0,
-            data.xuatXuId !== undefined
-                ? data.xuatXuId
-                : null,
-            data.dieuKienBaoQuan !== undefined
-                ? data.dieuKienBaoQuan
-                : null,
+            data.giaNhap !== undefined ? data.giaNhap : null,
+            data.tyLeHaoHutDuKien !== undefined ? data.tyLeHaoHutDuKien : 0,
+            data.xuatXuId !== undefined ? data.xuatXuId : null,
+            data.dieuKienBaoQuan !== undefined ? data.dieuKienBaoQuan : null,
             data.moTa || null,
             data.hinhAnh || null,
             data.ghiChu || null,
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return await this.getChiTiet(result.rows[0].id);
     }
@@ -474,12 +407,8 @@ class ThucPhamRepository {
             data.quyCach || null,
             data.giaNhap,
             data.tyLeHaoHutDuKien,
-            data.xuatXuId !== undefined
-                ? data.xuatXuId
-                : null,
-            data.dieuKienBaoQuan !== undefined
-                ? data.dieuKienBaoQuan
-                : null,
+            data.xuatXuId !== undefined ? data.xuatXuId : null,
+            data.dieuKienBaoQuan !== undefined ? data.dieuKienBaoQuan : null,
             data.moTa || null,
             data.hinhAnh || null,
             data.ghiChu || null,
@@ -487,10 +416,7 @@ class ThucPhamRepository {
             id
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;

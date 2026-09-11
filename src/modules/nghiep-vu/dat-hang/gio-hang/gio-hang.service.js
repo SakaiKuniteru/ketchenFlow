@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const ApiError = require("../../../../utils/api-error");
-const pool = require("../../../../config/database");
-const catalogRepository = require("../catalog/catalog.repository");
-const voucherService = require("../voucher/voucher-ap-dung.service");
-const { tinhTongTien } = require("./tinh-tien.helper");
+const ApiError = require('../../../../utils/api-error');
+const pool = require('../../../../config/database');
+const catalogRepository = require('../catalog/catalog.repository');
+const voucherService = require('../voucher/voucher-ap-dung.service');
+const { tinhTongTien } = require('./tinh-tien.helper');
 
 class GioHangService {
     async getNhanVien(nhanVienId, client = pool) {
@@ -32,7 +32,7 @@ class GioHangService {
         );
 
         if (!result.rows[0]) {
-            throw new ApiError(400, "Nhân viên đặt hàng không tồn tại hoặc đã ngừng hoạt động.");
+            throw new ApiError(400, 'Nhân viên đặt hàng không tồn tại hoặc đã ngừng hoạt động.');
         }
 
         return result.rows[0];
@@ -41,15 +41,15 @@ class GioHangService {
     async tinhGioHang(data, user, client = pool, lockVoucher = false) {
         const profile = await this.getNhanVien(user.nhanVienId, client);
         const coSoId = Number(data.coSoId || profile.coSoId);
-        const ids = [...new Set(data.items.map(item => Number(item.sanPhamId)))];
+        const ids = [...new Set(data.items.map((item) => Number(item.sanPhamId)))];
         const products = await catalogRepository.getSanPhamDatHang(coSoId, ids, client);
 
         if (products.length !== ids.length) {
-            throw new ApiError(400, "Giỏ hàng có sản phẩm không tồn tại hoặc không được phép đặt tại cơ sở.");
+            throw new ApiError(400, 'Giỏ hàng có sản phẩm không tồn tại hoặc không được phép đặt tại cơ sở.');
         }
 
-        const productMap = new Map(products.map(item => [Number(item.id), item]));
-        const items = data.items.map(input => {
+        const productMap = new Map(products.map((item) => [Number(item.id), item]));
+        const items = data.items.map((input) => {
             const product = productMap.get(Number(input.sanPhamId));
             const quantity = Number(input.soLuong);
             const minimum = Number(product.soLuongToiThieu);
@@ -57,7 +57,10 @@ class GioHangService {
             const step = Number(product.buocSoLuong);
 
             if (quantity < minimum || (maximum !== null && quantity > maximum)) {
-                throw new ApiError(400, `Số lượng ${product.tenSanPham} phải từ ${minimum}${maximum === null ? " trở lên" : ` đến ${maximum}`}.`);
+                throw new ApiError(
+                    400,
+                    `Số lượng ${product.tenSanPham} phải từ ${minimum}${maximum === null ? ' trở lên' : ` đến ${maximum}`}.`
+                );
             }
 
             if (Math.abs((quantity - minimum) / step - Math.round((quantity - minimum) / step)) > 1e-8) {
@@ -81,14 +84,20 @@ class GioHangService {
         });
 
         const tamTinh = items.reduce((sum, item) => sum + item.thanhTien, 0);
-        const voucher = await voucherService.apply(data.maVoucher, {
-            nhanVienId: profile.id,
-            coSoId,
-            phongBanId: profile.phongBanId,
-            chucVuId: profile.chucVuId,
-            nhaAnIds: profile.nhaAnIds,
-            tamTinh
-        }, items, client, lockVoucher);
+        const voucher = await voucherService.apply(
+            data.maVoucher,
+            {
+                nhanVienId: profile.id,
+                coSoId,
+                phongBanId: profile.phongBanId,
+                chucVuId: profile.chucVuId,
+                nhaAnIds: profile.nhaAnIds,
+                tamTinh
+            },
+            items,
+            client,
+            lockVoucher
+        );
         const totals = tinhTongTien(items, voucher, Number(data.phiDichVu || 0));
 
         return { coSoId, items, voucher, ...totals };

@@ -1,45 +1,31 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class DonViTinhRepository {
-
     mapDonViTinh(row) {
-
         if (!row) {
             return null;
         }
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maDonViTinh: row.ma_don_vi_tinh,
 
-            maDonViTinh:
-                row.ma_don_vi_tinh,
+            tenDonViTinh: row.ten_don_vi_tinh,
 
-            tenDonViTinh:
-                row.ten_don_vi_tinh,
+            kyHieu: row.ky_hieu,
 
-            kyHieu:
-                row.ky_hieu,
+            loaiDonVi: row.loai_don_vi,
 
-            loaiDonVi:
-                row.loai_don_vi,
+            active: row.active,
 
-            active:
-                row.active,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -57,28 +43,21 @@ class DonViTinhRepository {
             FROM dm_don_vi_tinh dvt
 
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
             ORDER BY dvt.ma_don_vi_tinh ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapDonViTinh(row)
-        );
-
+        return result.rows.map((row) => this.mapDonViTinh(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -87,26 +66,16 @@ class DonViTinhRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapDonViTinh(
-            result.rows[0]
-        );
-
+        return this.mapDonViTinh(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maDonViTinh
-    ) {
-
+    async getChiTietByMa(maDonViTinh) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -119,39 +88,16 @@ class DonViTinhRepository {
             LIMIT 1
         `;
 
+        const result = await pool.query(sql, [maDonViTinh]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maDonViTinh
-                ]
-            );
-
-
-        if (
-            result.rows.length ===
-            0
-        ) {
-
+        if (result.rows.length === 0) {
             return null;
-
         }
 
-
-        return this.mapDonViTinh(
-            result.rows[0]
-        );
-
+        return this.mapDonViTinh(result.rows[0]);
     }
-    async existsMaDonViTinh(
-        maDonViTinh,
-        excludeId = null
-    ) {
-
-        const values = [
-            maDonViTinh
-        ];
+    async existsMaDonViTinh(maDonViTinh, excludeId = null) {
+        const values = [maDonViTinh];
 
         let sql = `
             SELECT EXISTS (
@@ -162,37 +108,24 @@ class DonViTinhRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenDonViTinh(
-        tenDonViTinh,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenDonViTinh
-        ];
+    async existsTenDonViTinh(tenDonViTinh, excludeId = null) {
+        const values = [tenDonViTinh];
 
         let sql = `
             SELECT EXISTS (
@@ -203,31 +136,23 @@ class DonViTinhRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
         const sql = `
             INSERT INTO dm_don_vi_tinh (
 
@@ -255,7 +180,6 @@ class DonViTinhRepository {
         `;
 
         const values = [
-
             data.maDonViTinh,
 
             data.tenDonViTinh,
@@ -264,29 +188,15 @@ class DonViTinhRepository {
 
             data.loaiDonVi || null,
 
-            data.active !== undefined
-                ? data.active
-                : true
-
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-    async update(
-        id,
-        data
-    ) {
-
+    async update(id, data) {
         const sql = `
             UPDATE dm_don_vi_tinh
             SET
@@ -303,38 +213,16 @@ class DonViTinhRepository {
             RETURNING id
         `;
 
-        const values = [
+        const values = [data.maDonViTinh, data.tenDonViTinh, data.kyHieu, data.loaiDonVi, data.active, id];
 
-            data.maDonViTinh,
-
-            data.tenDonViTinh,
-
-            data.kyHieu,
-
-            data.loaiDonVi,
-
-            data.active,
-
-            id
-
-        ];
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
-
 }
 
 module.exports = new DonViTinhRepository();

@@ -15,7 +15,7 @@
     text-decoration: underline;
 }
 
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] {
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
@@ -23,8 +23,8 @@
     align-self: start;
 }
 
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] [data-image-picker],
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] .image-picker {
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] [data-image-picker],
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] .image-picker {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -34,8 +34,8 @@
     flex: 0 0 100px;
 }
 
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] [data-image-picker-control],
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] .image-picker__control {
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] [data-image-picker-control],
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] .image-picker__control {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -46,7 +46,7 @@
     overflow: hidden;
 }
 
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] .image-picker__preview {
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] .image-picker__preview {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -56,8 +56,8 @@
     overflow: hidden;
 }
 
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] .image-picker__preview img,
-#nhanVienDetailPanel [data-form-field="anhDaiDien"] img {
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] .image-picker__preview img,
+#nhanVienDetailPanel [data-form-field='anhDaiDien'] img {
     display: block;
     width: 100px !important;
     min-width: 100px !important;

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-const enums = require("../../../../constants/enums");
+const enums = require('../../../../constants/enums');
 
-const enumName = (items, value) => items.find(item => Number(item.value) === Number(value))?.name || null;
+const enumName = (items, value) => items.find((item) => Number(item.value) === Number(value))?.name || null;
 
 function mapOrder(row) {
     return {
@@ -12,9 +12,22 @@ function mapOrder(row) {
         phongBan: { id: row.phong_ban_id, tenPhongBan: row.ten_phong_ban },
         coSo: { id: row.co_so_id, tenCoSo: row.ten_co_so },
         datHo: row.dat_ho,
-        nguoiNhan: { id: row.nguoi_nhan_id, hoTen: row.ten_nguoi_nhan, soDienThoai: row.so_dien_thoai_nguoi_nhan },
-        diaDiemNhan: { id: row.dia_diem_nhan_id, tenDiaDiem: row.ten_dia_diem, diaChi: row.dia_chi_nhan_snapshot },
-        khungGioNhan: { id: row.khung_gio_nhan_id, tenKhungGio: row.ten_khung_gio, tu: row.thoi_gian_nhan_tu, den: row.thoi_gian_nhan_den },
+        nguoiNhan: {
+            id: row.nguoi_nhan_id,
+            hoTen: row.ten_nguoi_nhan,
+            soDienThoai: row.so_dien_thoai_nguoi_nhan
+        },
+        diaDiemNhan: {
+            id: row.dia_diem_nhan_id,
+            tenDiaDiem: row.ten_dia_diem,
+            diaChi: row.dia_chi_nhan_snapshot
+        },
+        khungGioNhan: {
+            id: row.khung_gio_nhan_id,
+            tenKhungGio: row.ten_khung_gio,
+            tu: row.thoi_gian_nhan_tu,
+            den: row.thoi_gian_nhan_den
+        },
         ghiChu: row.ghi_chu,
         tien: {
             tamTinh: Number(row.tam_tinh),

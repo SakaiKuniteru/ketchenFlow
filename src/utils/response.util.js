@@ -1,62 +1,27 @@
-const {
-    chuyenDoiNgayGioVietNam
-} = require(
-    "./date-time.util"
-);
+const { chuyenDoiNgayGioVietNam } = require('./date-time.util');
 
-function successResponse(
-    res,
-    message,
-    data = null,
-    statusCode = 200
-) {
+function successResponse(res, message, data = null, statusCode = 200) {
+    return res.status(statusCode).json({
+        success: true,
 
-    return res
-        .status(statusCode)
-        .json({
+        message,
 
-            success: true,
-
-            message,
-
-            data:
-                chuyenDoiNgayGioVietNam(
-                    data
-                )
-
-        });
-
+        data: chuyenDoiNgayGioVietNam(data)
+    });
 }
 
-function errorResponse(
-    res,
-    message,
-    data = null,
-    statusCode = 400
-) {
+function errorResponse(res, message, data = null, statusCode = 400) {
+    return res.status(statusCode).json({
+        success: false,
 
-    return res
-        .status(statusCode)
-        .json({
+        message,
 
-            success: false,
-
-            message,
-
-            data:
-                chuyenDoiNgayGioVietNam(
-                    data
-                )
-
-        });
-
+        data: chuyenDoiNgayGioVietNam(data)
+    });
 }
-
 
 module.exports = {
-
     successResponse,
 
     errorResponse
-
 };

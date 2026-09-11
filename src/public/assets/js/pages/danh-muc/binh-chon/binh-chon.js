@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const API_BASE = "/api/mcs/v1/binh-chon";
-    const API_TRANG_THAI = "/api/mcs/v1/enums?name=trangThaiTaoBinhChon";
+document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = '/api/mcs/v1/binh-chon';
+    const API_TRANG_THAI = '/api/mcs/v1/enums?name=trangThaiTaoBinhChon';
     const API_THUC_DON_NGAY_HOP_LE = `${API_BASE}/thuc-don-ngay-hop-le`;
 
     let catalog = null;
@@ -19,189 +19,149 @@ document.addEventListener("DOMContentLoaded", () => {
 
             permissionSet = getCurrentPermissionSet();
 
-            catalog
-                ?.table
-                ?.render();
+            catalog?.table?.render();
 
             applyRecordUpdatePermission();
             bindEvents();
         } catch (error) {
-            console.error(
-                "Không thể khởi tạo quản lý bình chọn.",
-                error
-            );
+            console.error('Không thể khởi tạo quản lý bình chọn.', error);
 
-            window.MCS
-                ?.toast
-                ?.error(
-                    error?.message ||
-                    "Không thể tải quản lý bình chọn."
-                );
+            window.MCS?.toast?.error(error?.message || 'Không thể tải quản lý bình chọn.');
         }
     }
 
     async function loadDanhMucPhu() {
         const result = await window.MCS.api.request(API_TRANG_THAI);
 
-        dsTrangThai = Array.isArray(result?.data)
-            ? result.data
-            : [];
+        dsTrangThai = Array.isArray(result?.data) ? result.data : [];
     }
 
     async function initializeCatalog() {
         catalog = await window.MCS.pages.createCatalogPage({
-            moduleName: "binh-chon",
+            moduleName: 'binh-chon',
 
             permissionCodes: {
-                view: [
-                    "Q001018",
-                    "Q001019",
-                    "Q001020"
-                ],
-                create: [
-                    "Q001019"
-                ],
-                update: [
-                    "Q001020"
-                ]
+                view: ['Q001018', 'Q001019', 'Q001020'],
+                create: ['Q001019'],
+                update: ['Q001020']
             },
 
-            detailTitle: "Thông tin đợt bình chọn",
-            createTitle: "Thêm đợt bình chọn",
-            updateTitle: "Cập nhật đợt bình chọn",
+            detailTitle: 'Thông tin đợt bình chọn',
+            createTitle: 'Thêm đợt bình chọn',
+            updateTitle: 'Cập nhật đợt bình chọn',
 
             columns: [
                 {
-                    key: "ngayHienThi",
-                    label: "Ngày",
-                    width: "120px",
+                    key: 'ngayHienThi',
+                    label: 'Ngày',
+                    width: '120px',
                     sortable: true,
                     filterable: true,
-                    className: "catalog-table__cell--center"
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "tenThucDon",
-                    label: "Thực đơn",
-                    width: "240px",
+                    key: 'tenThucDon',
+                    label: 'Thực đơn',
+                    width: '240px',
                     sortable: true,
                     filterable: true
                 },
                 {
-                    key: "tenNhaAn",
-                    label: "Nhà ăn",
-                    width: "180px",
+                    key: 'tenNhaAn',
+                    label: 'Nhà ăn',
+                    width: '180px',
                     sortable: true,
                     filterable: true
                 },
                 {
-                    key: "tenCaAn",
-                    label: "Ca ăn",
-                    width: "140px",
+                    key: 'tenCaAn',
+                    label: 'Ca ăn',
+                    width: '140px',
                     sortable: true,
                     filterable: true,
-                    className: "catalog-table__cell--center"
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "batDauHienThi",
-                    label: "Bắt đầu",
-                    width: "170px",
+                    key: 'batDauHienThi',
+                    label: 'Bắt đầu',
+                    width: '170px',
                     sortable: true,
-                    className: "catalog-table__cell--center"
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "hanHienThi",
-                    label: "Hạn bình chọn",
-                    width: "170px",
+                    key: 'hanHienThi',
+                    label: 'Hạn bình chọn',
+                    width: '170px',
                     sortable: true,
-                    className: "catalog-table__cell--center"
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "trangThaiHienThi",
-                    label: "Trạng thái",
-                    width: "130px",
+                    key: 'trangThaiHienThi',
+                    label: 'Trạng thái',
+                    width: '130px',
                     sortable: true,
                     filterable: true,
-                    className: "catalog-table__cell--center"
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "tongBinhChon",
-                    label: "Đã bình chọn",
-                    width: "120px",
+                    key: 'tongBinhChon',
+                    label: 'Đã bình chọn',
+                    width: '120px',
                     sortable: true,
-                    type: "number",
-                    className: "catalog-table__cell--center"
+                    type: 'number',
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "coThamGia",
-                    label: "Tham gia",
-                    width: "100px",
+                    key: 'coThamGia',
+                    label: 'Tham gia',
+                    width: '100px',
                     sortable: true,
-                    type: "number",
-                    className: "catalog-table__cell--center"
+                    type: 'number',
+                    className: 'catalog-table__cell--center'
                 },
                 {
-                    key: "xoa",
-                    label: "Xóa",
-                    width: "70px",
+                    key: 'xoa',
+                    label: 'Xóa',
+                    width: '70px',
                     sortable: false,
                     filterable: false,
                     title: false,
-                    className: "catalog-table__cell--center catalog-table__cell--actions",
+                    className: 'catalog-table__cell--center catalog-table__cell--actions',
 
-                    render(
-                        value,
-                        record
-                    ) {
+                    render(value, record) {
                         const coQuyenXoa = hasDeletePermission();
 
-                        const button = document.createElement("button");
+                        const button = document.createElement('button');
 
-                        button.type = "button";
-                        button.className = [
-                            "binh-chon-delete-button",
-                            coQuyenXoa
-                                ? "is-enabled"
-                                : "is-disabled"
-                        ].join(" ");
-
-                        button.title = coQuyenXoa
-                            ? "Xóa đợt bình chọn"
-                            : "Bạn không có quyền xóa đợt bình chọn";
-
-                        button.setAttribute(
-                            "aria-label",
-                            button.title
+                        button.type = 'button';
+                        button.className = ['binh-chon-delete-button', coQuyenXoa ? 'is-enabled' : 'is-disabled'].join(
+                            ' '
                         );
+
+                        button.title = coQuyenXoa ? 'Xóa đợt bình chọn' : 'Bạn không có quyền xóa đợt bình chọn';
+
+                        button.setAttribute('aria-label', button.title);
 
                         button.disabled = !coQuyenXoa;
 
-                        const icon = document.createElement("i");
+                        const icon = document.createElement('i');
 
-                        icon.className = "fa-solid fa-trash-can";
+                        icon.className = 'fa-solid fa-trash-can';
 
-                        icon.setAttribute(
-                            "aria-hidden",
-                            "true"
-                        );
+                        icon.setAttribute('aria-hidden', 'true');
 
                         button.appendChild(icon);
 
-                        button.addEventListener(
-                            "click",
-                            async event => {
-                                event.preventDefault();
-                                event.stopPropagation();
+                        button.addEventListener('click', async (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
 
-                                if (!coQuyenXoa) {
-                                    return;
-                                }
-
-                                await handleXoa(
-                                    record,
-                                    catalog
-                                );
+                            if (!coQuyenXoa) {
+                                return;
                             }
-                        );
+
+                            await handleXoa(record, catalog);
+                        });
 
                         return button;
                     }
@@ -209,164 +169,113 @@ document.addEventListener("DOMContentLoaded", () => {
             ],
 
             defaultValues: {
-                thucDonNgayId: "",
-                batDauBinhChon: "",
-                hanBinhChon: "",
+                thucDonNgayId: '',
+                batDauBinhChon: '',
+                hanBinhChon: '',
                 choPhepThayDoi: true,
-                trangThai: "",
-                trangThaiThoiGian: "",
-                nguoiTao: "",
-                nguoiGui: "",
-                thoiGianGui: "",
-                nguoiHuy: "",
-                thoiGianHuy: "",
-                lyDoHuy: ""
+                trangThai: '',
+                trangThaiThoiGian: '',
+                nguoiTao: '',
+                nguoiGui: '',
+                thoiGianGui: '',
+                nguoiHuy: '',
+                thoiGianHuy: '',
+                lyDoHuy: ''
             },
 
             validation: {
                 thucDonNgayId: {
-                    label: "Ngày thực đơn",
+                    label: 'Ngày thực đơn',
                     required: true,
-                    requiredMessage: "Vui lòng chọn ngày thực đơn."
+                    requiredMessage: 'Vui lòng chọn ngày thực đơn.'
                 },
 
                 batDauBinhChon: {
-                    label: "Bắt đầu bình chọn",
+                    label: 'Bắt đầu bình chọn',
                     required: true,
-                    requiredMessage: "Vui lòng chọn thời gian bắt đầu bình chọn."
+                    requiredMessage: 'Vui lòng chọn thời gian bắt đầu bình chọn.'
                 },
 
                 hanBinhChon: {
-                    label: "Hạn bình chọn",
+                    label: 'Hạn bình chọn',
                     required: true,
-                    requiredMessage: "Vui lòng chọn hạn bình chọn."
+                    requiredMessage: 'Vui lòng chọn hạn bình chọn.'
                 }
             },
 
             validate(formData) {
                 const errors = {};
 
-                const batDau = parseDate(
-                    formData.batDauBinhChon
-                );
+                const batDau = parseDate(formData.batDauBinhChon);
 
-                const han = parseDate(
-                    formData.hanBinhChon
-                );
+                const han = parseDate(formData.hanBinhChon);
 
-                if (
-                    batDau &&
-                    han &&
-                    batDau >= han
-                ) {
-                    errors.hanBinhChon =
-                        "Hạn bình chọn phải lớn hơn thời gian bắt đầu.";
+                if (batDau && han && batDau >= han) {
+                    errors.hanBinhChon = 'Hạn bình chọn phải lớn hơn thời gian bắt đầu.';
                 }
 
-                const thucDonNgay = dsThucDonNgay.find(
-                    item =>
-                        String(item?.id) ===
-                        String(formData.thucDonNgayId)
-                );
+                const thucDonNgay = dsThucDonNgay.find((item) => String(item?.id) === String(formData.thucDonNgayId));
 
-                const hanToiDa = parseDate(
-                    thucDonNgay?.hanBinhChonToiDa
-                );
+                const hanToiDa = parseDate(thucDonNgay?.hanBinhChonToiDa);
 
-                if (
-                    han &&
-                    hanToiDa &&
-                    han > hanToiDa
-                ) {
+                if (han && hanToiDa && han > hanToiDa) {
                     errors.hanBinhChon =
-                        (
-                            "Hạn bình chọn phải trước thời gian bắt đầu ca ăn ít nhất 3 giờ. " +
-                            `Hạn tối đa là ${formatDateTime(hanToiDa)}.`
-                        );
+                        'Hạn bình chọn phải trước thời gian bắt đầu ca ăn ít nhất 3 giờ. ' +
+                        `Hạn tối đa là ${formatDateTime(hanToiDa)}.`;
                 }
 
                 return errors;
             },
 
             mapListResponse(result) {
-                const records = Array.isArray(result?.data)
-                    ? result.data
-                    : [];
+                const records = Array.isArray(result?.data) ? result.data : [];
 
-                return records.map(
-                    mapBinhChonHienThi
-                );
+                return records.map(mapBinhChonHienThi);
             },
 
             mapDetailResponse(result) {
-                return mapBinhChonHienThi(
-                    result?.data ||
-                    null
-                );
+                return mapBinhChonHienThi(result?.data || null);
             },
 
             mapRecordToForm(record) {
                 return {
-                    id: record?.id ?? "",
-                    thucDonNgayId: record?.thucDonNgayId ?? "",
+                    id: record?.id ?? '',
+                    thucDonNgayId: record?.thucDonNgayId ?? '',
                     batDauBinhChon: toDatePickerValue(record?.batDauBinhChon),
                     hanBinhChon: toDatePickerValue(record?.hanBinhChon),
                     choPhepThayDoi: record?.choPhepThayDoi !== false,
                     trangThai: getTrangThaiLabel(record),
-                    trangThaiThoiGian: record?.trangThaiThoiGian?.name || "",
+                    trangThaiThoiGian: record?.trangThaiThoiGian?.name || '',
                     nguoiTao: getNguoiLabel(record?.nguoiTao),
                     nguoiGui: getNguoiLabel(record?.nguoiGui),
                     thoiGianGui: toDatePickerValue(record?.thoiGianGui),
                     nguoiHuy: getNguoiLabel(record?.nguoiHuy),
                     thoiGianHuy: toDatePickerValue(record?.thoiGianHuy),
-                    lyDoHuy: record?.lyDoHuy || ""
+                    lyDoHuy: record?.lyDoHuy || ''
                 };
             },
 
-            async onRecordLoaded(
-                record,
-                mode
-            ) {
+            async onRecordLoaded(record, mode) {
                 const dotBinhChonId = record?.id || null;
 
                 await loadThucDonNgayHopLe(dotBinhChonId);
 
-                renderThucDonNgayOptions(
-                    record?.thucDonNgayId ??
-                    ""
-                );
+                renderThucDonNgayOptions(record?.thucDonNgayId ?? '');
 
-                renderThongTinThucDon(
-                    record?.thucDonNgayId
-                );
+                renderThongTinThucDon(record?.thucDonNgayId);
 
-                setDatePickerValue(
-                    "batDauBinhChon",
-                    toDatePickerValue(record?.batDauBinhChon)
-                );
+                setDatePickerValue('batDauBinhChon', toDatePickerValue(record?.batDauBinhChon));
 
-                setDatePickerValue(
-                    "hanBinhChon",
-                    toDatePickerValue(record?.hanBinhChon)
-                );
+                setDatePickerValue('hanBinhChon', toDatePickerValue(record?.hanBinhChon));
 
-                setDatePickerValue(
-                    "thoiGianGui",
-                    toDatePickerValue(record?.thoiGianGui)
-                );
+                setDatePickerValue('thoiGianGui', toDatePickerValue(record?.thoiGianGui));
 
-                setDatePickerValue(
-                    "thoiGianHuy",
-                    toDatePickerValue(record?.thoiGianHuy)
-                );
+                setDatePickerValue('thoiGianHuy', toDatePickerValue(record?.thoiGianHuy));
 
                 renderThongKe(record);
                 syncLyDoHuyField(record);
 
-                syncHanBinhChonMoLaiField(
-                    record,
-                    mode
-                );
+                syncHanBinhChonMoLaiField(record, mode);
             },
 
             transformPayload(formData) {
@@ -379,102 +288,61 @@ document.addEventListener("DOMContentLoaded", () => {
             },
 
             getRecordSubtitle(record) {
-                return [
-                    record?.ngayHienThi,
-                    record?.tenCaAn
-                ]
-                    .filter(Boolean)
-                    .join(" - ");
+                return [record?.ngayHienThi, record?.tenCaAn].filter(Boolean).join(' - ');
             },
 
             headerActions: [
                 {
-                    action: "gui-binh-chon",
-                    label: "Gửi",
-                    icon: "fa-solid fa-paper-plane",
-                    variant: "primary",
-                    modes: [
-                        "view",
-                        "update"
-                    ],
-                    permission: "Q001021",
+                    action: 'gui-binh-chon',
+                    label: 'Gửi',
+                    icon: 'fa-solid fa-paper-plane',
+                    variant: 'primary',
+                    modes: ['view', 'update'],
+                    permission: 'Q001021',
 
-                    when({
-                        record
-                    }) {
-                        return [
-                            10,
-                            30
-                        ].includes(
-                            getTrangThaiValue(record)
-                        );
+                    when({ record }) {
+                        return [10, 30].includes(getTrangThaiValue(record));
                     }
                 },
                 {
-                    action: "huy-binh-chon",
-                    label: "Hủy",
-                    icon: "fa-solid fa-ban",
-                    variant: "danger",
-                    modes: [
-                        "view"
-                    ],
-                    permission: "Q001022",
+                    action: 'huy-binh-chon',
+                    label: 'Hủy',
+                    icon: 'fa-solid fa-ban',
+                    variant: 'danger',
+                    modes: ['view'],
+                    permission: 'Q001022',
 
-                    when({
-                        record
-                    }) {
-                        return (
-                            getTrangThaiValue(record) === 20 &&
-                            !isBinhChonHetHan(record)
-                        );
+                    when({ record }) {
+                        return getTrangThaiValue(record) === 20 && !isBinhChonHetHan(record);
                     }
                 },
                 {
-                    action: "mo-lai-binh-chon",
-                    label: "Mở lại",
-                    icon: "fa-solid fa-rotate-right",
-                    variant: "primary",
-                    modes: [
-                        "view"
-                    ],
-                    permission: "Q001031",
+                    action: 'mo-lai-binh-chon',
+                    label: 'Mở lại',
+                    icon: 'fa-solid fa-rotate-right',
+                    variant: 'primary',
+                    modes: ['view'],
+                    permission: 'Q001031',
 
-                    when({
-                        record
-                    }) {
+                    when({ record }) {
                         return isBinhChonHetHan(record);
                     }
                 }
             ],
 
-            onHeaderAction(
-                {
-                    action,
-                    record
-                },
-                catalogInstance
-            ) {
-                if (action === "gui-binh-chon") {
-                    handleGui(
-                        record,
-                        catalogInstance
-                    );
+            onHeaderAction({ action, record }, catalogInstance) {
+                if (action === 'gui-binh-chon') {
+                    handleGui(record, catalogInstance);
 
                     return;
                 }
 
-                if (action === "huy-binh-chon") {
-                    handleHuy(
-                        record,
-                        catalogInstance
-                    );
+                if (action === 'huy-binh-chon') {
+                    handleHuy(record, catalogInstance);
                 }
 
-                if (action === "mo-lai-binh-chon") {
-                    handleMoLai(
-                        record,
-                        catalogInstance
-                    );
+                if (action === 'mo-lai-binh-chon') {
+                    handleMoLai(record, catalogInstance);
 
                     return;
                 }
@@ -482,9 +350,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             toolbarActions: [
                 {
-                    action: "filter",
-                    label: "Tìm kiếm chi tiết",
-                    icon: "search"
+                    action: 'filter',
+                    label: 'Tìm kiếm chi tiết',
+                    icon: 'search'
                 }
             ]
         });
@@ -501,55 +369,35 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         }
 
-        return (
-            Date.now() >
-            han.getTime()
-        );
+        return Date.now() > han.getTime();
     }
 
     function syncLyDoHuyField(record) {
-        const field = document.getElementById("lyDoHuy");
+        const field = document.getElementById('lyDoHuy');
 
-        const container = document.querySelector(
-            '[data-form-field="lyDoHuy"]'
-        );
+        const container = document.querySelector('[data-form-field="lyDoHuy"]');
 
-        if (
-            !field ||
-            !container
-        ) {
+        if (!field || !container) {
             return;
         }
 
         const trangThai = getTrangThaiValue(record);
 
-        const requiredMark = container.querySelector(
-            ".form-field__required"
-        );
+        const requiredMark = container.querySelector('.form-field__required');
 
-        if (
-            trangThai === 20 &&
-            !isBinhChonHetHan(record)
-        ) {
+        if (trangThai === 20 && !isBinhChonHetHan(record)) {
             field.disabled = false;
             field.readOnly = false;
             field.required = true;
             field.tabIndex = 0;
 
-            field.setAttribute(
-                "aria-required",
-                "true"
-            );
+            field.setAttribute('aria-required', 'true');
 
             if (requiredMark) {
                 requiredMark.hidden = false;
             }
 
-            catalog
-                ?.form
-                ?.clearFieldError(
-                    "lyDoHuy"
-                );
+            catalog?.form?.clearFieldError('lyDoHuy');
 
             return;
         }
@@ -559,65 +407,39 @@ document.addEventListener("DOMContentLoaded", () => {
         field.required = false;
         field.tabIndex = -1;
 
-        field.removeAttribute(
-            "aria-required"
-        );
+        field.removeAttribute('aria-required');
 
         if (requiredMark) {
             requiredMark.hidden = true;
         }
 
-        catalog
-            ?.form
-            ?.clearFieldError(
-                "lyDoHuy"
-            );
+        catalog?.form?.clearFieldError('lyDoHuy');
     }
 
-    function syncHanBinhChonMoLaiField(
-        record,
-        mode
-    ) {
-        const container = document.querySelector(
-            '[data-binh-chon-mo-lai-field]'
-        );
+    function syncHanBinhChonMoLaiField(record, mode) {
+        const container = document.querySelector('[data-binh-chon-mo-lai-field]');
 
-        const fieldContainer = document.querySelector(
-            '[data-form-field="hanBinhChon"]'
-        );
+        const fieldContainer = document.querySelector('[data-form-field="hanBinhChon"]');
 
-        if (
-            !container ||
-            !fieldContainer
-        ) {
+        if (!container || !fieldContainer) {
             return;
         }
 
-        const datePicker = fieldContainer.matches("[data-date-picker]")
+        const datePicker = fieldContainer.matches('[data-date-picker]')
             ? fieldContainer
-            : fieldContainer.querySelector("[data-date-picker]");
+            : fieldContainer.querySelector('[data-date-picker]');
 
-        const hiddenInput =
-            fieldContainer.querySelector("[data-date-value]") ||
-            document.getElementById("hanBinhChon");
+        const hiddenInput = fieldContainer.querySelector('[data-date-value]') || document.getElementById('hanBinhChon');
 
-        const input = fieldContainer.querySelector("[data-date-input]");
-        const toggle = fieldContainer.querySelector("[data-date-toggle]");
-        const dropdown = fieldContainer.querySelector("[data-date-dropdown]");
+        const input = fieldContainer.querySelector('[data-date-input]');
+        const toggle = fieldContainer.querySelector('[data-date-toggle]');
+        const dropdown = fieldContainer.querySelector('[data-date-dropdown]');
 
-        const coTheMoLai =
-            mode === "view" &&
-            isBinhChonHetHan(record) &&
-            permissionSet.has("Q001031");
+        const coTheMoLai = mode === 'view' && isBinhChonHetHan(record) && permissionSet.has('Q001031');
 
-        const choPhepNhap =
-            mode !== "view" ||
-            coTheMoLai;
+        const choPhepNhap = mode !== 'view' || coTheMoLai;
 
-        container.classList.toggle(
-            "is-editable",
-            coTheMoLai
-        );
+        container.classList.toggle('is-editable', coTheMoLai);
 
         if (hiddenInput) {
             hiddenInput.disabled = false;
@@ -627,102 +449,55 @@ document.addEventListener("DOMContentLoaded", () => {
         if (input) {
             input.disabled = !choPhepNhap;
             input.readOnly = !choPhepNhap;
-            input.tabIndex = choPhepNhap
-                ? 0
-                : -1;
+            input.tabIndex = choPhepNhap ? 0 : -1;
 
             if (choPhepNhap) {
-                input.removeAttribute(
-                    "aria-disabled"
-                );
+                input.removeAttribute('aria-disabled');
             } else {
-                input.setAttribute(
-                    "aria-disabled",
-                    "true"
-                );
+                input.setAttribute('aria-disabled', 'true');
             }
         }
 
         if (toggle) {
             toggle.disabled = !choPhepNhap;
-            toggle.tabIndex = choPhepNhap
-                ? 0
-                : -1;
+            toggle.tabIndex = choPhepNhap ? 0 : -1;
         }
 
         if (datePicker) {
-            datePicker.classList.toggle(
-                "is-editable-in-view",
-                coTheMoLai
-            );
+            datePicker.classList.toggle('is-editable-in-view', coTheMoLai);
 
-            datePicker.setAttribute(
-                "aria-disabled",
-                String(!choPhepNhap)
-            );
+            datePicker.setAttribute('aria-disabled', String(!choPhepNhap));
         }
 
-        if (
-            !choPhepNhap &&
-            dropdown
-        ) {
+        if (!choPhepNhap && dropdown) {
             dropdown.hidden = true;
 
-            datePicker
-                ?.classList
-                ?.remove(
-                    "is-open"
-                );
+            datePicker?.classList?.remove('is-open');
         }
 
-        catalog
-            ?.form
-            ?.clearFieldError(
-                "hanBinhChon"
-            );
+        catalog?.form?.clearFieldError('hanBinhChon');
     }
 
     function getCurrentPermissionSet() {
         return new Set(
-            String(
-                catalog
-                    ?.root
-                    ?.dataset
-                    ?.permissions ||
-                ""
-            )
-                .split(",")
-                .map(
-                    item =>
-                        item
-                            .trim()
-                            .toUpperCase()
-                )
+            String(catalog?.root?.dataset?.permissions || '')
+                .split(',')
+                .map((item) => item.trim().toUpperCase())
                 .filter(Boolean)
         );
     }
 
     function applyRecordUpdatePermission() {
-        if (
-            !catalog ||
-            catalog._binhChonUpdateWrapped === true
-        ) {
+        if (!catalog || catalog._binhChonUpdateWrapped === true) {
             return;
         }
 
         const openUpdate = catalog.openUpdate.bind(catalog);
 
-        catalog.openUpdate = async id => {
-            const record = catalog.state.allData.find(
-                item =>
-                    String(item?.id) ===
-                    String(id)
-            );
+        catalog.openUpdate = async (id) => {
+            const record = catalog.state.allData.find((item) => String(item?.id) === String(id));
 
-            if (
-                !record ||
-                !canUpdateRecord(record)
-            ) {
+            if (!record || !canUpdateRecord(record)) {
                 return catalog.openDetail(id);
             }
 
@@ -739,20 +514,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const trangThai = getTrangThaiValue(record);
 
-        if (
-            ![
-                10,
-                30
-            ].includes(trangThai)
-        ) {
+        if (![10, 30].includes(trangThai)) {
             return false;
         }
 
-        return permissionSet.has("Q001020");
+        return permissionSet.has('Q001020');
     }
 
     function hasDeletePermission() {
-        return permissionSet.has("Q001030");
+        return permissionSet.has('Q001030');
     }
 
     function canDeleteByStatus(record) {
@@ -760,130 +530,69 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         }
 
-        return [
-            10,
-            30
-        ].includes(
-            getTrangThaiValue(record)
-        );
+        return [10, 30].includes(getTrangThaiValue(record));
     }
 
     function bindEvents() {
-        const select = document.getElementById("thucDonNgayId");
+        const select = document.getElementById('thucDonNgayId');
 
-        if (
-            select &&
-            select.dataset.binhChonBound !== "true"
-        ) {
-            select.dataset.binhChonBound = "true";
+        if (select && select.dataset.binhChonBound !== 'true') {
+            select.dataset.binhChonBound = 'true';
 
-            select.addEventListener(
-                "change",
-                event => {
-                    renderThongTinThucDon(
-                        event.target.value
-                    );
+            select.addEventListener('change', (event) => {
+                renderThongTinThucDon(event.target.value);
 
-                    catalog
-                        ?.form
-                        ?.clearFieldError(
-                            "hanBinhChon"
-                        );
-                }
-            );
+                catalog?.form?.clearFieldError('hanBinhChon');
+            });
         }
 
-        catalog
-            ?.elements
-            ?.create
-            ?.addEventListener(
-                "click",
-                () => {
-                    window.setTimeout(
-                        async () => {
-                            await loadThucDonNgayHopLe();
+        catalog?.elements?.create?.addEventListener('click', () => {
+            window.setTimeout(async () => {
+                await loadThucDonNgayHopLe();
 
-                            renderThucDonNgayOptions("");
-                            renderThongTinThucDon(null);
-                            renderThongKe(null);
+                renderThucDonNgayOptions('');
+                renderThongTinThucDon(null);
+                renderThongKe(null);
 
-                            syncHanBinhChonMoLaiField(
-                                null,
-                                "create"
-                            );
-                        },
-                        0
-                    );
-                }
-            );
+                syncHanBinhChonMoLaiField(null, 'create');
+            }, 0);
+        });
     }
 
     function toDatePickerValue(value) {
         if (!value) {
-            return "";
+            return '';
         }
 
         const date = new Date(value);
 
         if (Number.isNaN(date.getTime())) {
-            return "";
+            return '';
         }
 
         const year = date.getFullYear();
 
-        const month = String(
-            date.getMonth() +
-            1
-        ).padStart(
-            2,
-            "0"
-        );
+        const month = String(date.getMonth() + 1).padStart(2, '0');
 
-        const day = String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
+        const day = String(date.getDate()).padStart(2, '0');
 
-        const hour = String(
-            date.getHours()
-        ).padStart(
-            2,
-            "0"
-        );
+        const hour = String(date.getHours()).padStart(2, '0');
 
-        const minute = String(
-            date.getMinutes()
-        ).padStart(
-            2,
-            "0"
-        );
+        const minute = String(date.getMinutes()).padStart(2, '0');
 
-        const second = String(
-            date.getSeconds()
-        ).padStart(
-            2,
-            "0"
-        );
+        const second = String(date.getSeconds()).padStart(2, '0');
 
-        return (
-            `${year}-${month}-${day} ` +
-            `${hour}:${minute}:${second}`
-        );
+        return `${year}-${month}-${day} ` + `${hour}:${minute}:${second}`;
     }
 
-    function setDatePickerValue(
-        id,
-        value
-    ) {
+    function setDatePickerValue(id, value) {
         const hiddenInput = document.getElementById(id);
 
         if (!hiddenInput) {
             return;
         }
 
-        const root = hiddenInput.closest("[data-date-picker]");
+        const root = hiddenInput.closest('[data-date-picker]');
 
         if (!root) {
             return;
@@ -891,77 +600,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const datePicker = root.datePicker;
 
-        if (
-            datePicker &&
-            typeof datePicker.setValue === "function"
-        ) {
-            datePicker.setValue(
-                value || "",
-                false
-            );
+        if (datePicker && typeof datePicker.setValue === 'function') {
+            datePicker.setValue(value || '', false);
 
             return;
         }
 
-        hiddenInput.value =
-            value ||
-            "";
+        hiddenInput.value = value || '';
 
         hiddenInput.dispatchEvent(
-            new Event(
-                "change",
-                {
-                    bubbles: true
-                }
-            )
+            new Event('change', {
+                bubbles: true
+            })
         );
     }
 
-    async function loadThucDonNgayHopLe(
-        dotBinhChonId = null
-    ) {
+    async function loadThucDonNgayHopLe(dotBinhChonId = null) {
         let url = API_THUC_DON_NGAY_HOP_LE;
 
         if (dotBinhChonId) {
-            url +=
-                `?dotBinhChonId=${encodeURIComponent(
-                    dotBinhChonId
-                )}`;
+            url += `?dotBinhChonId=${encodeURIComponent(dotBinhChonId)}`;
         }
 
         const result = await window.MCS.api.request(url);
 
-        dsThucDonNgay = Array.isArray(result?.data)
-            ? result.data
-            : [];
+        dsThucDonNgay = Array.isArray(result?.data) ? result.data : [];
     }
 
-    function renderThucDonNgayOptions(
-        selectedValue = ""
-    ) {
-        const select = document.getElementById("thucDonNgayId");
+    function renderThucDonNgayOptions(selectedValue = '') {
+        const select = document.getElementById('thucDonNgayId');
 
         if (!select) {
             return;
         }
 
-        const selected =
-            selectedValue === null ||
-            selectedValue === undefined
-                ? ""
-                : String(selectedValue);
+        const selected = selectedValue === null || selectedValue === undefined ? '' : String(selectedValue);
 
-        select.innerHTML = "";
+        select.innerHTML = '';
 
-        const emptyOption = document.createElement("option");
+        const emptyOption = document.createElement('option');
 
-        emptyOption.value = "";
-        emptyOption.textContent = "";
+        emptyOption.value = '';
+        emptyOption.textContent = '';
 
         select.appendChild(emptyOption);
 
-        dsThucDonNgay.forEach(item => {
-            const option = document.createElement("option");
+        dsThucDonNgay.forEach((item) => {
+            const option = document.createElement('option');
 
             option.value = String(item.id);
             option.textContent = buildThucDonNgayLabel(item);
@@ -974,88 +659,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const smartSelect = getSmartSelect(select);
 
-        smartSelect
-            ?.refresh
-            ?.();
+        smartSelect?.refresh?.();
 
-        smartSelect
-            ?.setValue
-            ?.(
-                selected,
-                false
-            );
+        smartSelect?.setValue?.(selected, false);
     }
 
     function buildThucDonNgayLabel(item) {
-        return [
-            formatDate(item?.ngay),
-            item?.tenThucDon,
-            item?.tenNhaAn,
-            item?.tenCaAn
-        ]
-            .filter(Boolean)
-            .join(" - ");
+        return [formatDate(item?.ngay), item?.tenThucDon, item?.tenNhaAn, item?.tenCaAn].filter(Boolean).join(' - ');
     }
 
     function renderThongTinThucDon(thucDonNgayId) {
-        const root = document.querySelector(
-            "[data-binh-chon-thuc-don-info]"
-        );
+        const root = document.querySelector('[data-binh-chon-thuc-don-info]');
 
         if (!root) {
             return;
         }
 
-        const record = dsThucDonNgay.find(
-            item =>
-                String(item?.id) ===
-                String(thucDonNgayId)
-        );
+        const record = dsThucDonNgay.find((item) => String(item?.id) === String(thucDonNgayId));
 
         root.hidden = !record;
 
-        setText(
-            "[data-binh-chon-ten-thuc-don]",
-            record
-                ? buildCodeName(
-                    record.maThucDon,
-                    record.tenThucDon
-                )
-                : "-"
-        );
+        setText('[data-binh-chon-ten-thuc-don]', record ? buildCodeName(record.maThucDon, record.tenThucDon) : '-');
 
-        setText(
-            "[data-binh-chon-nha-an]",
-            record
-                ? buildCodeName(
-                    record.maNhaAn,
-                    record.tenNhaAn
-                )
-                : "-"
-        );
+        setText('[data-binh-chon-nha-an]', record ? buildCodeName(record.maNhaAn, record.tenNhaAn) : '-');
 
-        setText(
-            "[data-binh-chon-ca-an]",
-            record
-                ? buildCodeName(
-                    record.maCaAn,
-                    record.tenCaAn
-                )
-                : "-"
-        );
+        setText('[data-binh-chon-ca-an]', record ? buildCodeName(record.maCaAn, record.tenCaAn) : '-');
 
-        setText(
-            "[data-binh-chon-ngay]",
-            record
-                ? formatDate(record.ngay)
-                : "-"
-        );
+        setText('[data-binh-chon-ngay]', record ? formatDate(record.ngay) : '-');
     }
 
     function renderThongKe(record) {
-        const root = document.querySelector(
-            "[data-binh-chon-thong-ke]"
-        );
+        const root = document.querySelector('[data-binh-chon-thong-ke]');
 
         if (!root) {
             return;
@@ -1063,32 +697,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         root.hidden = !record?.id;
 
-        setText(
-            "[data-binh-chon-tong]",
-            Number(
-                record?.thongKe?.tongBinhChon ??
-                record?.tongBinhChon ??
-                0
-            )
-        );
+        setText('[data-binh-chon-tong]', Number(record?.thongKe?.tongBinhChon ?? record?.tongBinhChon ?? 0));
 
-        setText(
-            "[data-binh-chon-co]",
-            Number(
-                record?.thongKe?.coThamGia ??
-                record?.coThamGia ??
-                0
-            )
-        );
+        setText('[data-binh-chon-co]', Number(record?.thongKe?.coThamGia ?? record?.coThamGia ?? 0));
 
-        setText(
-            "[data-binh-chon-khong]",
-            Number(
-                record?.thongKe?.khongThamGia ??
-                record?.khongThamGia ??
-                0
-            )
-        );
+        setText('[data-binh-chon-khong]', Number(record?.thongKe?.khongThamGia ?? record?.khongThamGia ?? 0));
     }
 
     function mapBinhChonHienThi(record) {
@@ -1106,15 +719,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getTrangThaiValue(record) {
-        const value =
-            record?.trangThai?.value ??
-            record?.trangThai;
+        const value = record?.trangThai?.value ?? record?.trangThai;
 
         const number = Number(value);
 
-        return Number.isFinite(number)
-            ? number
-            : null;
+        return Number.isFinite(number) ? number : null;
     }
 
     function getTrangThaiLabel(record) {
@@ -1124,22 +733,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const value = getTrangThaiValue(record);
 
-        const item = dsTrangThai.find(
-            current =>
-                Number(current?.value) ===
-                value
-        );
+        const item = dsTrangThai.find((current) => Number(current?.value) === value);
 
-        return (
-            item?.name ||
-            "-"
-        );
+        return item?.name || '-';
     }
 
-    async function handleXoa(
-        record,
-        catalogInstance
-    ) {
+    async function handleXoa(record, catalogInstance) {
         if (!record?.id) {
             return;
         }
@@ -1153,186 +752,113 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!canDeleteByStatus(record)) {
             const message =
                 trangThai === 20
-                    ? "Không thể xóa đợt bình chọn ở trạng thái Đã gửi. Vui lòng hủy gửi trước."
-                    : "Chỉ được xóa đợt bình chọn ở trạng thái Tạo mới hoặc Đã hủy.";
+                    ? 'Không thể xóa đợt bình chọn ở trạng thái Đã gửi. Vui lòng hủy gửi trước.'
+                    : 'Chỉ được xóa đợt bình chọn ở trạng thái Tạo mới hoặc Đã hủy.';
 
-            window.MCS
-                ?.toast
-                ?.error(message);
+            window.MCS?.toast?.error(message);
 
             return;
         }
 
         const executeDelete = async () => {
             try {
-                const result = await window.MCS.api.request(
-                    `${API_BASE}/xoa/${record.id}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
+                const result = await window.MCS.api.request(`${API_BASE}/xoa/${record.id}`, {
+                    method: 'DELETE'
+                });
 
-                window.MCS
-                    ?.toast
-                    ?.success(
-                        result?.message ||
-                        "Xóa đợt bình chọn thành công."
-                    );
+                window.MCS?.toast?.success(result?.message || 'Xóa đợt bình chọn thành công.');
 
-                catalogInstance
-                    ?.table
-                    ?.clearSelection();
+                catalogInstance?.table?.clearSelection();
 
-                await catalogInstance
-                    ?.load();
+                await catalogInstance?.load();
             } catch (error) {
-                console.error(
-                    "Không thể xóa đợt bình chọn:",
-                    error
-                );
+                console.error('Không thể xóa đợt bình chọn:', error);
 
-                window.MCS
-                    ?.toast
-                    ?.error(
-                        error?.message ||
-                        "Không thể xóa đợt bình chọn."
-                    );
+                window.MCS?.toast?.error(error?.message || 'Không thể xóa đợt bình chọn.');
             }
         };
 
-        if (
-            window.MCS
-                ?.confirm
-                ?.show
-        ) {
+        if (window.MCS?.confirm?.show) {
             window.MCS.confirm.show({
-                title: "Xóa đợt bình chọn",
-                message: "Bạn có chắc chắn muốn xóa đợt bình chọn này không?",
-                confirmLabel: "Xóa",
-                type: "danger",
+                title: 'Xóa đợt bình chọn',
+                message: 'Bạn có chắc chắn muốn xóa đợt bình chọn này không?',
+                confirmLabel: 'Xóa',
+                type: 'danger',
                 onConfirm: executeDelete
             });
 
             return;
         }
 
-        const confirmed = window.confirm(
-            "Bạn có chắc chắn muốn xóa đợt bình chọn này không?"
-        );
+        const confirmed = window.confirm('Bạn có chắc chắn muốn xóa đợt bình chọn này không?');
 
         if (confirmed) {
             await executeDelete();
         }
     }
 
-    async function handleGui(
-        record,
-        catalogInstance
-    ) {
+    async function handleGui(record, catalogInstance) {
         if (!record?.id) {
             return;
         }
 
         const trangThai = getTrangThaiValue(record);
 
-        if (
-            ![
-                10,
-                30
-            ].includes(trangThai)
-        ) {
-            window.MCS
-                ?.toast
-                ?.error(
-                    "Chỉ được gửi đợt bình chọn ở trạng thái Tạo mới hoặc Đã hủy."
-                );
+        if (![10, 30].includes(trangThai)) {
+            window.MCS?.toast?.error('Chỉ được gửi đợt bình chọn ở trạng thái Tạo mới hoặc Đã hủy.');
 
             return;
         }
 
-        window.MCS.confirm
-            ?.show({
-                title: "Gửi đợt bình chọn",
-                message: "Bạn có chắc chắn muốn gửi đợt bình chọn này không?",
-                confirmLabel: "Gửi",
-                type: "primary",
+        window.MCS.confirm?.show({
+            title: 'Gửi đợt bình chọn',
+            message: 'Bạn có chắc chắn muốn gửi đợt bình chọn này không?',
+            confirmLabel: 'Gửi',
+            type: 'primary',
 
-                onConfirm: async () => {
-                    try {
-                        const result = await window.MCS.api.request(
-                            `${API_BASE}/gui/${record.id}`,
-                            {
-                                method: "PATCH"
-                            }
-                        );
+            onConfirm: async () => {
+                try {
+                    const result = await window.MCS.api.request(`${API_BASE}/gui/${record.id}`, {
+                        method: 'PATCH'
+                    });
 
-                        window.MCS
-                            ?.toast
-                            ?.success(
-                                result?.message ||
-                                "Gửi đợt bình chọn thành công."
-                            );
+                    window.MCS?.toast?.success(result?.message || 'Gửi đợt bình chọn thành công.');
 
-                        await catalogInstance.load();
+                    await catalogInstance.load();
 
-                        await catalogInstance.openDetail(
-                            record.id
-                        );
-                    } catch (error) {
-                        console.error(
-                            "Không thể gửi đợt bình chọn:",
-                            error
-                        );
+                    await catalogInstance.openDetail(record.id);
+                } catch (error) {
+                    console.error('Không thể gửi đợt bình chọn:', error);
 
-                        window.MCS
-                            ?.toast
-                            ?.error(
-                                error?.message ||
-                                "Không thể gửi đợt bình chọn."
-                            );
-                    }
+                    window.MCS?.toast?.error(error?.message || 'Không thể gửi đợt bình chọn.');
                 }
-            });
+            }
+        });
     }
 
-    async function handleMoLai(
-        record,
-        catalogInstance
-    ) {
+    async function handleMoLai(record, catalogInstance) {
         if (!record?.id) {
             return;
         }
 
-        if (!permissionSet.has("Q001031")) {
+        if (!permissionSet.has('Q001031')) {
             return;
         }
 
         if (!isBinhChonHetHan(record)) {
-            window.MCS
-                ?.toast
-                ?.error(
-                    "Chỉ được mở lại đợt bình chọn đã hết hạn."
-                );
+            window.MCS?.toast?.error('Chỉ được mở lại đợt bình chọn đã hết hạn.');
 
             return;
         }
 
-        const field = document.getElementById("hanBinhChon");
+        const field = document.getElementById('hanBinhChon');
 
-        const hanMoi = String(
-            field?.value ||
-            ""
-        ).trim();
+        const hanMoi = String(field?.value || '').trim();
 
         const hanMoiDate = parseDate(hanMoi);
 
         if (!hanMoiDate) {
-            catalogInstance
-                ?.form
-                ?.setFieldError(
-                    "hanBinhChon",
-                    "Vui lòng chọn hạn bình chọn mới."
-                );
+            catalogInstance?.form?.setFieldError('hanBinhChon', 'Vui lòng chọn hạn bình chọn mới.');
 
             return;
         }
@@ -1340,130 +866,73 @@ document.addEventListener("DOMContentLoaded", () => {
         const now = new Date();
 
         if (hanMoiDate <= now) {
-            catalogInstance
-                ?.form
-                ?.setFieldError(
-                    "hanBinhChon",
-                    "Hạn bình chọn mới phải lớn hơn thời gian hiện tại."
-                );
+            catalogInstance?.form?.setFieldError('hanBinhChon', 'Hạn bình chọn mới phải lớn hơn thời gian hiện tại.');
 
             return;
         }
 
-        const hanToiDa = parseDate(
-            record?.hanBinhChonToiDa
-        );
+        const hanToiDa = parseDate(record?.hanBinhChonToiDa);
 
-        if (
-            hanToiDa &&
-            hanMoiDate > hanToiDa
-        ) {
-            catalogInstance
-                ?.form
-                ?.setFieldError(
-                    "hanBinhChon",
-                    (
-                        "Hạn bình chọn phải trước thời gian bắt đầu ca ăn ít nhất 3 giờ. " +
-                        `Hạn tối đa là ${formatDateTime(hanToiDa)}.`
-                    )
-                );
-
-            return;
-        }
-
-        catalogInstance
-            ?.form
-            ?.clearFieldError(
-                "hanBinhChon"
+        if (hanToiDa && hanMoiDate > hanToiDa) {
+            catalogInstance?.form?.setFieldError(
+                'hanBinhChon',
+                'Hạn bình chọn phải trước thời gian bắt đầu ca ăn ít nhất 3 giờ. ' +
+                    `Hạn tối đa là ${formatDateTime(hanToiDa)}.`
             );
 
-        window.MCS
-            .confirm
-            ?.show({
-                title: "Mở lại đợt bình chọn",
+            return;
+        }
 
-                message:
-                    (
-                        "Bạn có chắc chắn muốn mở lại đợt bình chọn đến " +
-                        `${formatDateTime(hanMoiDate)} không?`
-                    ),
+        catalogInstance?.form?.clearFieldError('hanBinhChon');
 
-                confirmLabel: "Mở lại",
-                type: "primary",
+        window.MCS.confirm?.show({
+            title: 'Mở lại đợt bình chọn',
 
-                onConfirm: async () => {
-                    try {
-                        const result = await window.MCS.api.request(
-                            `${API_BASE}/mo-lai/${record.id}`,
-                            {
-                                method: "PATCH",
-                                body: JSON.stringify({
-                                    hanBinhChon: hanMoi
-                                })
-                            }
-                        );
+            message: 'Bạn có chắc chắn muốn mở lại đợt bình chọn đến ' + `${formatDateTime(hanMoiDate)} không?`,
 
-                        window.MCS
-                            ?.toast
-                            ?.success(
-                                result?.message ||
-                                "Mở lại đợt bình chọn thành công."
-                            );
+            confirmLabel: 'Mở lại',
+            type: 'primary',
 
-                        await catalogInstance.load();
+            onConfirm: async () => {
+                try {
+                    const result = await window.MCS.api.request(`${API_BASE}/mo-lai/${record.id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({
+                            hanBinhChon: hanMoi
+                        })
+                    });
 
-                        await catalogInstance.openDetail(
-                            record.id
-                        );
-                    } catch (error) {
-                        console.error(
-                            "Không thể mở lại đợt bình chọn:",
-                            error
-                        );
+                    window.MCS?.toast?.success(result?.message || 'Mở lại đợt bình chọn thành công.');
 
-                        window.MCS
-                            ?.toast
-                            ?.error(
-                                error?.message ||
-                                "Không thể mở lại đợt bình chọn."
-                            );
-                    }
+                    await catalogInstance.load();
+
+                    await catalogInstance.openDetail(record.id);
+                } catch (error) {
+                    console.error('Không thể mở lại đợt bình chọn:', error);
+
+                    window.MCS?.toast?.error(error?.message || 'Không thể mở lại đợt bình chọn.');
                 }
-            });
+            }
+        });
     }
 
-    async function handleHuy(
-        record,
-        catalogInstance
-    ) {
+    async function handleHuy(record, catalogInstance) {
         if (!record?.id) {
             return;
         }
 
         if (getTrangThaiValue(record) !== 20) {
-            window.MCS
-                ?.toast
-                ?.error(
-                    "Chỉ được hủy đợt bình chọn đã gửi."
-                );
+            window.MCS?.toast?.error('Chỉ được hủy đợt bình chọn đã gửi.');
 
             return;
         }
 
-        const field = document.getElementById("lyDoHuy");
+        const field = document.getElementById('lyDoHuy');
 
-        const lyDo = String(
-            field?.value ||
-            ""
-        ).trim();
+        const lyDo = String(field?.value || '').trim();
 
         if (!lyDo) {
-            catalogInstance
-                ?.form
-                ?.setFieldError(
-                    "lyDoHuy",
-                    "Vui lòng nhập lý do trước khi hủy."
-                );
+            catalogInstance?.form?.setFieldError('lyDoHuy', 'Vui lòng nhập lý do trước khi hủy.');
 
             field?.focus();
 
@@ -1471,93 +940,56 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (lyDo.length > 500) {
-            catalogInstance
-                ?.form
-                ?.setFieldError(
-                    "lyDoHuy",
-                    "Lý do hủy không được vượt quá 500 ký tự."
-                );
+            catalogInstance?.form?.setFieldError('lyDoHuy', 'Lý do hủy không được vượt quá 500 ký tự.');
 
             field?.focus();
 
             return;
         }
 
-        catalogInstance
-            ?.form
-            ?.clearFieldError(
-                "lyDoHuy"
-            );
+        catalogInstance?.form?.clearFieldError('lyDoHuy');
 
-        window.MCS.confirm
-            ?.show({
-                title: "Hủy gửi đợt bình chọn",
-                message: "Bạn có chắc chắn muốn hủy gửi đợt bình chọn này không?",
-                confirmLabel: "Hủy",
-                type: "danger",
+        window.MCS.confirm?.show({
+            title: 'Hủy gửi đợt bình chọn',
+            message: 'Bạn có chắc chắn muốn hủy gửi đợt bình chọn này không?',
+            confirmLabel: 'Hủy',
+            type: 'danger',
 
-                onConfirm: async () => {
-                    try {
-                        const result = await window.MCS.api.request(
-                            `${API_BASE}/huy/${record.id}`,
-                            {
-                                method: "PATCH",
-                                body: JSON.stringify({
-                                    lyDoHuy: lyDo
-                                })
-                            }
-                        );
+            onConfirm: async () => {
+                try {
+                    const result = await window.MCS.api.request(`${API_BASE}/huy/${record.id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({
+                            lyDoHuy: lyDo
+                        })
+                    });
 
-                        window.MCS
-                            ?.toast
-                            ?.success(
-                                result?.message ||
-                                "Hủy gửi đợt bình chọn thành công."
-                            );
+                    window.MCS?.toast?.success(result?.message || 'Hủy gửi đợt bình chọn thành công.');
 
-                        await catalogInstance.load();
+                    await catalogInstance.load();
 
-                        await catalogInstance.openUpdate(
-                            record.id
-                        );
-                    } catch (error) {
-                        console.error(
-                            "Không thể hủy gửi đợt bình chọn:",
-                            error
-                        );
+                    await catalogInstance.openUpdate(record.id);
+                } catch (error) {
+                    console.error('Không thể hủy gửi đợt bình chọn:', error);
 
-                        if (error?.data?.errors) {
-                            catalogInstance
-                                ?.form
-                                ?.setErrors(
-                                    error.data.errors
-                                );
+                    if (error?.data?.errors) {
+                        catalogInstance?.form?.setErrors(error.data.errors);
 
-                            return;
-                        }
-
-                        window.MCS
-                            ?.toast
-                            ?.error(
-                                error?.message ||
-                                "Không thể hủy gửi đợt bình chọn."
-                            );
+                        return;
                     }
+
+                    window.MCS?.toast?.error(error?.message || 'Không thể hủy gửi đợt bình chọn.');
                 }
-            });
+            }
+        });
     }
 
     function getNguoiLabel(value) {
         if (!value) {
-            return "";
+            return '';
         }
 
-        return (
-            value?.hoTen ||
-            value?.nhanVien?.hoTen ||
-            value?.tenDangNhap ||
-            ""
-        );
+        return value?.hoTen || value?.nhanVien?.hoTen || value?.tenDangNhap || '';
     }
 
     function getSmartSelect(select) {
@@ -1565,52 +997,27 @@ document.addEventListener("DOMContentLoaded", () => {
             return null;
         }
 
-        const root = select.closest("[data-smart-select]");
+        const root = select.closest('[data-smart-select]');
 
         if (!root) {
             return null;
         }
 
-        return (
-            root.smartSelect ||
-            window.MCS
-                ?.smartSelect
-                ?.initialize?.(
-                    root
-                ) ||
-            null
-        );
+        return root.smartSelect || window.MCS?.smartSelect?.initialize?.(root) || null;
     }
 
-    function buildCodeName(
-        code,
-        name
-    ) {
-        return [
-            code,
-            name
-        ]
-            .filter(Boolean)
-            .join(" - ") ||
-            "-";
+    function buildCodeName(code, name) {
+        return [code, name].filter(Boolean).join(' - ') || '-';
     }
 
-    function setText(
-        selector,
-        value
-    ) {
+    function setText(selector, value) {
         const element = document.querySelector(selector);
 
         if (!element) {
             return;
         }
 
-        element.textContent =
-            value === null ||
-            value === undefined ||
-            value === ""
-                ? "-"
-                : String(value);
+        element.textContent = value === null || value === undefined || value === '' ? '-' : String(value);
     }
 
     function parseDate(value) {
@@ -1620,78 +1027,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const date = new Date(value);
 
-        return Number.isNaN(date.getTime())
-            ? null
-            : date;
+        return Number.isNaN(date.getTime()) ? null : date;
     }
 
     function formatDate(value) {
         const date = parseDate(value);
 
         if (!date) {
-            return "";
+            return '';
         }
 
-        return new Intl.DateTimeFormat(
-            "vi-VN",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        ).format(date);
+        return new Intl.DateTimeFormat('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(date);
     }
 
     function formatDateTime(value) {
         const date = parseDate(value);
 
         if (!date) {
-            return "";
+            return '';
         }
 
-        return new Intl.DateTimeFormat(
-            "vi-VN",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false
-            }
-        ).format(date);
+        return new Intl.DateTimeFormat('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).format(date);
     }
 
     function toDateTimeLocal(value) {
         const date = parseDate(value);
 
         if (!date) {
-            return "";
+            return '';
         }
 
-        const pad = number =>
-            String(number)
-                .padStart(
-                    2,
-                    "0"
-                );
+        const pad = (number) => String(number).padStart(2, '0');
 
         return (
             `${date.getFullYear()}-` +
-            `${pad(
-                date.getMonth() +
-                1
-            )}-` +
-            `${pad(
-                date.getDate()
-            )}T` +
-            `${pad(
-                date.getHours()
-            )}:` +
-            `${pad(
-                date.getMinutes()
-            )}`
+            `${pad(date.getMonth() + 1)}-` +
+            `${pad(date.getDate())}T` +
+            `${pad(date.getHours())}:` +
+            `${pad(date.getMinutes())}`
         );
     }
 

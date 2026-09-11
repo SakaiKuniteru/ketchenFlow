@@ -1,27 +1,15 @@
-<section
-    id="{{#if mobilePanelId}}{{mobilePanelId}}{{else}}catalogMobilePanel{{/if}}"
-    class="catalog-mobile-panel"
-    data-mobile-panel
-    aria-hidden="true"
-    hidden>
+<section id="{{#if mobilePanelId}}{{mobilePanelId}}{{else}}catalogMobilePanel{{/if}}" class="catalog-mobile-panel"
+    data-mobile-panel aria-hidden="true" hidden>
 
-    <div
-        class="catalog-mobile-panel__overlay"
-        data-mobile-panel-overlay>
+    <div class="catalog-mobile-panel__overlay" data-mobile-panel-overlay>
     </div>
 
-    <div
-        class="catalog-mobile-panel__container"
-        role="dialog"
-        aria-modal="true"
+    <div class="catalog-mobile-panel__container" role="dialog" aria-modal="true"
         aria-labelledby="catalogMobilePanelTitle">
 
         <header class="catalog-mobile-panel__header">
 
-            <button
-                type="button"
-                class="catalog-mobile-panel__back"
-                data-mobile-panel-close
+            <button type="button" class="catalog-mobile-panel__back" data-mobile-panel-close
                 aria-label="Quay lại danh sách">
 
                 <span aria-hidden="true">
@@ -32,55 +20,35 @@
 
             <div class="catalog-mobile-panel__heading">
 
-                <h2
-                    id="catalogMobilePanelTitle"
-                    class="catalog-mobile-panel__title"
-                    data-mobile-panel-title>
+                <h2 id="catalogMobilePanelTitle" class="catalog-mobile-panel__title" data-mobile-panel-title>
 
                     Thông tin chi tiết
 
                 </h2>
 
-                <p
-                    class="catalog-mobile-panel__subtitle"
-                    data-mobile-panel-subtitle
-                    hidden>
+                <p class="catalog-mobile-panel__subtitle" data-mobile-panel-subtitle hidden>
                 </p>
 
             </div>
 
-            <button
-                type="button"
-                class="catalog-mobile-panel__close"
-                data-mobile-panel-close
-                aria-label="Đóng">
+            <button type="button" class="catalog-mobile-panel__close" data-mobile-panel-close aria-label="Đóng">
                 ×
             </button>
 
         </header>
 
-        <div
-            class="catalog-mobile-panel__body"
-            data-mobile-panel-body>
+        <div class="catalog-mobile-panel__body" data-mobile-panel-body>
 
 
         </div>
 
-        <footer
-            class="catalog-mobile-panel__footer"
-            data-mobile-panel-footer>
+        <footer class="catalog-mobile-panel__footer" data-mobile-panel-footer>
 
-            <button
-                type="button"
-                class="form-action-button form-action-button--secondary"
-                data-mobile-cancel>
+            <button type="button" class="form-action-button form-action-button--secondary" data-mobile-cancel>
                 Hủy
             </button>
 
-            <button
-                type="button"
-                class="form-action-button form-action-button--primary"
-                data-mobile-submit>
+            <button type="button" class="form-action-button form-action-button--primary" data-mobile-submit>
                 Lưu dữ liệu
             </button>
 

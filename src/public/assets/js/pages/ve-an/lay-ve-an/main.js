@@ -1,18 +1,13 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const app = window.KitchenFlowLayVeAn;
 
     if (!app) {
         return;
     }
 
-    const {
-        root,
-        permission,
-        state,
-        el
-    } = app;
+    const { root, permission, state, el } = app;
 
     const bindDiscountSearch = (...args) => app.bindDiscountSearch(...args);
     const bindDoiTuongLayVeEvents = (...args) => app.bindDoiTuongLayVeEvents(...args);
@@ -25,22 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const recreateQr = (...args) => app.recreateQr(...args);
 
     const enhanceQuantityField = (...args) => {
-        if (
-            typeof app
-                .enhanceQuantityField !==
-            "function"
-        ) {
-            console.warn(
-                "enhanceQuantityField chưa được khởi tạo."
-            );
+        if (typeof app.enhanceQuantityField !== 'function') {
+            console.warn('enhanceQuantityField chưa được khởi tạo.');
 
             return;
         }
 
-        return app
-            .enhanceQuantityField(
-                ...args
-            );
+        return app.enhanceQuantityField(...args);
     };
 
     const handlePay = (...args) => app.handlePay(...args);
@@ -99,9 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         state.permissions = await permission.load();
 
-        if (
-            !permission.canAccessTakePage(state.permissions)
-        ) {
+        if (!permission.canAccessTakePage(state.permissions)) {
             showNoPermission();
             return;
         }
@@ -110,30 +94,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         await Promise.all([
             loadThucDonNgay(),
-            loadEnum("doiTuongLayVe", value => {
+            loadEnum('doiTuongLayVe', (value) => {
                 state.doiTuong = value;
             }),
-            loadEnum("gioiTinh", value => {
+            loadEnum('gioiTinh', (value) => {
                 state.gioiTinh = value;
             }),
-            loadEnum("phuongThucThanhToan", value => {
+            loadEnum('phuongThucThanhToan', (value) => {
                 state.paymentMethods = value;
             }),
-            loadEnum("loaiMienGiam", value => {
+            loadEnum('loaiMienGiam', (value) => {
                 state.discountTypes = value;
             }),
-            loadEnum("trangThaiPhieuThu", value => {
+            loadEnum('trangThaiPhieuThu', (value) => {
                 state.phieuStatuses = value;
             }),
-            loadEnum("trangThaiThanhToan", value => {
+            loadEnum('trangThaiThanhToan', (value) => {
                 state.paymentStatuses = value;
             }),
-            loadEnum(
-                "loaiGiaoDich",
-                value => {
-                    state.transactionTypes = value;
-                }
-            ),
+            loadEnum('loaiGiaoDich', (value) => {
+                state.transactionTypes = value;
+            }),
             loadEmployees(),
             loadDoiTuongOrderSetting(),
             loadPaymentVisibleSetting()
@@ -143,56 +124,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         enhanceQuantityField();
 
         if (isExistingPage()) {
-            if (
-                !permission.canViewPhieu(state.permissions)
-            ) {
+            if (!permission.canViewPhieu(state.permissions)) {
                 showNoPermission();
                 return;
             }
             await loadExistingPhieu(app.pageContext.recordId);
-            const tasks = [
-                reloadDiscounts()
-            ];
+            const tasks = [reloadDiscounts()];
 
             if (
-                permission.canViewPayment(
-                    state.permissions
-                ) ||
-                permission.canViewPaymentDocuments(
-                    state.permissions
-                ) ||
-                permission.canViewPaymentDetail(
-                    state.permissions
-                )
+                permission.canViewPayment(state.permissions) ||
+                permission.canViewPaymentDocuments(state.permissions) ||
+                permission.canViewPaymentDetail(state.permissions)
             ) {
-                tasks.push(
-                    reloadPaymentState()
-                );
+                tasks.push(reloadPaymentState());
             }
 
-            await Promise.all(
-                tasks
-            );
+            await Promise.all(tasks);
 
-            const existingPaymentMethod =
-                state.payment?.phuongThuc ??
-                state.phieu?.phuongThucThanhToan;
+            const existingPaymentMethod = state.payment?.phuongThuc ?? state.phieu?.phuongThucThanhToan;
 
-            if (
-                existingPaymentMethod !==
-                    null &&
-                existingPaymentMethod !==
-                    undefined
-            ) {
-                setSelectedPaymentMethod(
-                    existingPaymentMethod
-                );
+            if (existingPaymentMethod !== null && existingPaymentMethod !== undefined) {
+                setSelectedPaymentMethod(existingPaymentMethod);
             }
 
             renderMeal();
-            renderPersonMode(
-                state.phieu?.doiTuongLayVe
-            );
+            renderPersonMode(state.phieu?.doiTuongLayVe);
             renderEmployee();
             renderQrPanel();
             renderSummary();
@@ -212,18 +168,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             renderSummary();
             renderPermissionActions();
         } else {
-            throw new Error("Đường dẫn phiếu lấy vé không hợp lệ.");
+            throw new Error('Đường dẫn phiếu lấy vé không hợp lệ.');
         }
 
         bindEvents();
     } catch (error) {
-        showError(error, "Không thể khởi tạo trang lấy vé ăn.");
+        showError(error, 'Không thể khởi tạo trang lấy vé ăn.');
     } finally {
         setLoading(false);
     }
 
     function bindEvents() {
-        el.thucDonNgayId?.addEventListener("change", async () => {
+        el.thucDonNgayId?.addEventListener('change', async () => {
             if (!canChangeFinancialFields()) {
                 restoreSelectedMeal();
                 return;
@@ -236,23 +192,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             markDraftDirty();
         });
 
-        el.newTicket?.addEventListener(
-            "click",
-            handleNewTicket
-        );
+        el.newTicket?.addEventListener('click', handleNewTicket);
 
         bindDoiTuongLayVeEvents();
 
-        el.nhanVienId
-            ?.addEventListener(
-                "change",
-                () => {
-                    renderEmployee();
-                    markDraftDirty();
-                }
-            );
+        el.nhanVienId?.addEventListener('change', () => {
+            renderEmployee();
+            markDraftDirty();
+        });
 
-        el.soLuong?.addEventListener("input", () => {
+        el.soLuong?.addEventListener('input', () => {
             if (!canChangeFinancialFields()) {
                 el.soLuong.value = String(state.phieu?.soLuong || 1);
                 return;
@@ -263,168 +212,97 @@ document.addEventListener("DOMContentLoaded", async () => {
             markDraftDirty();
         });
 
-        root.querySelector("[data-qty-minus]")?.addEventListener("click", () => {
+        root.querySelector('[data-qty-minus]')?.addEventListener('click', () => {
             if (!canChangeFinancialFields()) {
                 return;
             }
 
-            el.soLuong.value = String(
-                Math.max(1, Number(el.soLuong.value || 1) - 1)
-            );
+            el.soLuong.value = String(Math.max(1, Number(el.soLuong.value || 1) - 1));
 
             renderSummary();
             markDraftDirty();
         });
 
-        root.querySelector("[data-qty-plus]")?.addEventListener("click", () => {
+        root.querySelector('[data-qty-plus]')?.addEventListener('click', () => {
             if (!canChangeFinancialFields()) {
                 return;
             }
 
-            el.soLuong.value = String(
-                Math.max(1, Number(el.soLuong.value || 1) + 1)
-            );
+            el.soLuong.value = String(Math.max(1, Number(el.soLuong.value || 1) + 1));
 
             renderSummary();
             markDraftDirty();
         });
 
-        el.viewQr
-            ?.addEventListener(
-                "click",
-                async () => {
-                    await loadCurrentQr();
-                }
-            );
+        el.viewQr?.addEventListener('click', async () => {
+            await loadCurrentQr();
+        });
 
-        el.recreateQr
-            ?.addEventListener(
-                "click",
-                recreateQr
-            );
+        el.recreateQr?.addEventListener('click', recreateQr);
 
-        el.cancelQr
-            ?.addEventListener(
-                "click",
-                cancelQr
-            );
+        el.cancelQr?.addEventListener('click', cancelQr);
 
-        el.mainPaymentAction?.addEventListener(
-            "click",
-            async () => {
-                const action =
-                    el.mainPaymentAction
-                        .dataset
-                        .action;
+        el.mainPaymentAction?.addEventListener('click', async () => {
+            const action = el.mainPaymentAction.dataset.action;
 
-                if (action === "pay") {
-                    await handlePay();
-                    return;
-                }
-
-                if (action === "confirm") {
-                    await confirmCurrentPayment();
-                    return;
-                }
-
-                if (action === "refund") {
-                    openRefundModal();
-                }
+            if (action === 'pay') {
+                await handlePay();
+                return;
             }
-        );
 
-        root.querySelectorAll("[data-refund-close]").forEach(button => {
-            button.addEventListener("click", closeRefundModal);
+            if (action === 'confirm') {
+                await confirmCurrentPayment();
+                return;
+            }
+
+            if (action === 'refund') {
+                openRefundModal();
+            }
         });
 
-        el.refundSubmit?.addEventListener("click", submitRefundModal);
-        el.discountOpen?.addEventListener("click", openDiscountModal);
-        el.print?.addEventListener("click", printTicket);
-
-        el.cancelPhieu?.addEventListener(
-            "click",
-            openCancelPhieuModal
-        );
-
-        root
-            .querySelectorAll(
-                "[data-cancel-phieu-close]"
-            )
-            .forEach(
-                button => {
-                    button.addEventListener(
-                        "click",
-                        closeCancelPhieuModal
-                    );
-                }
-            );
-
-        el.cancelPhieuSubmit
-            ?.addEventListener(
-                "click",
-                submitCancelPhieu
-            );
-
-        root.querySelectorAll("[data-discount-close]").forEach(button => {
-            button.addEventListener("click", closeDiscountModal);
+        root.querySelectorAll('[data-refund-close]').forEach((button) => {
+            button.addEventListener('click', closeRefundModal);
         });
 
-        root.querySelectorAll("[data-discount-tab]").forEach(button => {
-            button.addEventListener("click", () =>
-                changeDiscountTab(button.dataset.discountTab)
-            );
+        el.refundSubmit?.addEventListener('click', submitRefundModal);
+        el.discountOpen?.addEventListener('click', openDiscountModal);
+        el.print?.addEventListener('click', printTicket);
+
+        el.cancelPhieu?.addEventListener('click', openCancelPhieuModal);
+
+        root.querySelectorAll('[data-cancel-phieu-close]').forEach((button) => {
+            button.addEventListener('click', closeCancelPhieuModal);
         });
 
-        el.discountCreate?.addEventListener(
-            "click",
-            createManualDiscount
-        );
+        el.cancelPhieuSubmit?.addEventListener('click', submitCancelPhieu);
 
-        root
-            .querySelectorAll(
-                "[data-qr-modal-close]"
-            )
-            .forEach(
-                button => {
-                    button.addEventListener(
-                        "click",
-                        closeQrModal
-                    );
-                }
-            );
+        root.querySelectorAll('[data-discount-close]').forEach((button) => {
+            button.addEventListener('click', closeDiscountModal);
+        });
 
-        el.qrModalCancel
-            ?.addEventListener(
-                "click",
-                cancelQr
-            );
+        root.querySelectorAll('[data-discount-tab]').forEach((button) => {
+            button.addEventListener('click', () => changeDiscountTab(button.dataset.discountTab));
+        });
 
-        el.qrModalRecreate
-            ?.addEventListener(
-                "click",
-                recreateQr
-            );
+        el.discountCreate?.addEventListener('click', createManualDiscount);
 
-        el.qrModalConfirm
-            ?.addEventListener(
-                "click",
-                confirmCurrentPayment
-            );
+        root.querySelectorAll('[data-qr-modal-close]').forEach((button) => {
+            button.addEventListener('click', closeQrModal);
+        });
 
-        el.cancelPayment
-            ?.addEventListener(
-                "click",
-                cancelPayment
-            );
+        el.qrModalCancel?.addEventListener('click', cancelQr);
+
+        el.qrModalRecreate?.addEventListener('click', recreateQr);
+
+        el.qrModalConfirm?.addEventListener('click', confirmCurrentPayment);
+
+        el.cancelPayment?.addEventListener('click', cancelPayment);
 
         bindDiscountSearch();
         bindGiaTriMienGiamInput();
 
         if (isCreatePage()) {
-            window.addEventListener(
-                "storage",
-                handleLayVeStorageChange
-            );
+            window.addEventListener('storage', handleLayVeStorageChange);
         }
     }
 });

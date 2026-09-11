@@ -1,147 +1,51 @@
-const nhomSanPhamService =
-    require(
-        "./nhom-san-pham.service"
-    );
+const nhomSanPhamService = require('./nhom-san-pham.service');
 
-const {
-    successResponse
-} = require(
-    "../../../../utils/response.util"
-);
-
+const { successResponse } = require('../../../../utils/response.util');
 
 class NhomSanPhamController {
-
-    async getTongHop(
-        req,
-        res,
-        next
-    ) {
-
+    async getTongHop(req, res, next) {
         try {
+            const data = await nhomSanPhamService.getTongHop(req.query);
 
-            const data =
-                await nhomSanPhamService
-                    .getTongHop(
-                        req.query
-                    );
-
-            return successResponse(
-                res,
-                "Lấy danh sách nhóm sản phẩm thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Lấy danh sách nhóm sản phẩm thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async getChiTiet(
-        req,
-        res,
-        next
-    ) {
-
+    async getChiTiet(req, res, next) {
         try {
+            const { id } = req.params;
 
-            const {
-                id
-            } = req.params;
+            const data = await nhomSanPhamService.getChiTiet(id);
 
-            const data =
-                await nhomSanPhamService
-                    .getChiTiet(
-                        id
-                    );
-
-            return successResponse(
-                res,
-                "Lấy chi tiết nhóm sản phẩm thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Lấy chi tiết nhóm sản phẩm thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async create(
-        req,
-        res,
-        next
-    ) {
-
+    async create(req, res, next) {
         try {
+            const data = await nhomSanPhamService.create(req.body);
 
-            const data =
-                await nhomSanPhamService
-                    .create(
-                        req.body
-                    );
-
-            return successResponse(
-                res,
-                "Thêm nhóm sản phẩm thành công.",
-                data,
-                201
-            );
-
+            return successResponse(res, 'Thêm nhóm sản phẩm thành công.', data, 201);
         } catch (error) {
-
             next(error);
-
         }
-
     }
 
-
-    async update(
-        req,
-        res,
-        next
-    ) {
-
+    async update(req, res, next) {
         try {
+            const { id } = req.params;
 
-            const {
-                id
-            } = req.params;
+            const data = await nhomSanPhamService.update(id, req.body);
 
-            const data =
-                await nhomSanPhamService
-                    .update(
-                        id,
-                        req.body
-                    );
-
-            return successResponse(
-                res,
-                "Cập nhật nhóm sản phẩm thành công.",
-                data,
-                200
-            );
-
+            return successResponse(res, 'Cập nhật nhóm sản phẩm thành công.', data, 200);
         } catch (error) {
-
             next(error);
-
         }
-
     }
-
 }
 
-
-module.exports =
-    new NhomSanPhamController();
+module.exports = new NhomSanPhamController();

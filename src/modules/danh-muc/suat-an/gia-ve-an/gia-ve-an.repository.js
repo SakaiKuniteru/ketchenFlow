@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class GiaVeAnRepository {
     mapGiaVeAn(row) {
@@ -92,46 +92,33 @@ class GiaVeAnRepository {
         const values = [];
 
         if (query.active !== undefined) {
-            values.push(
-                query.active === true ||
-                query.active === "true"
-            );
+            values.push(query.active === true || query.active === 'true');
 
-            conditions.push(
-                `gva.active = $${values.length}`
-            );
+            conditions.push(`gva.active = $${values.length}`);
         }
 
         if (query.doiTuongLayVe) {
             values.push(Number(query.doiTuongLayVe));
 
-            conditions.push(
-                `gva.doi_tuong_lay_ve = $${values.length}`
-            );
+            conditions.push(`gva.doi_tuong_lay_ve = $${values.length}`);
         }
 
         if (query.coSoId) {
             values.push(Number(query.coSoId));
 
-            conditions.push(
-                `gva.co_so_id = $${values.length}`
-            );
+            conditions.push(`gva.co_so_id = $${values.length}`);
         }
 
         if (query.nhaAnId) {
             values.push(Number(query.nhaAnId));
 
-            conditions.push(
-                `gva.nha_an_id = $${values.length}`
-            );
+            conditions.push(`gva.nha_an_id = $${values.length}`);
         }
 
         if (query.caAnId) {
             values.push(Number(query.caAnId));
 
-            conditions.push(
-                `gva.ca_an_id = $${values.length}`
-            );
+            conditions.push(`gva.ca_an_id = $${values.length}`);
         }
 
         let sql = `
@@ -141,9 +128,7 @@ class GiaVeAnRepository {
         if (conditions.length > 0) {
             sql += `
                 WHERE
-                    ${conditions.join(
-                        "\nAND "
-                    )}
+                    ${conditions.join('\nAND ')}
             `;
         }
 
@@ -159,14 +144,9 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row => this.mapGiaVeAn(row)
-        );
+        return result.rows.map((row) => this.mapGiaVeAn(row));
     }
 
     async getChiTiet(id) {
@@ -178,26 +158,16 @@ class GiaVeAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapGiaVeAn(
-            result.rows[0]
-        );
+        return this.mapGiaVeAn(result.rows[0]);
     }
 
-    async getTimGia(
-        thucDonNgayId,
-        doiTuongLayVe
-    ) {
+    async getTimGia(thucDonNgayId, doiTuongLayVe) {
         const sql = `
 
             SELECT
@@ -325,35 +295,17 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                thucDonNgayId,
-                doiTuongLayVe
-            ]
-        );
+        const result = await pool.query(sql, [thucDonNgayId, doiTuongLayVe]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapGiaVeAn(
-            result.rows[0]
-        );
+        return this.mapGiaVeAn(result.rows[0]);
     }
 
-    async existsCauHinhTrung(
-        data,
-        excludeId = null
-    ) {
-        const values = [
-            data.doiTuongLayVe,
-            data.coSoId,
-            data.nhaAnId,
-            data.caAnId,
-            data.tuNgay,
-            data.denNgay
-        ];
+    async existsCauHinhTrung(data, excludeId = null) {
+        const values = [data.doiTuongLayVe, data.coSoId, data.nhaAnId, data.caAnId, data.tuNgay, data.denNgay];
 
         let sql = `
 
@@ -420,14 +372,9 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return result
-            .rows[0]
-            .exists;
+        return result.rows[0].exists;
     }
 
     async existsCoSo(id) {
@@ -445,16 +392,9 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await pool.query(sql, [id]);
 
-        return result
-            .rows[0]
-            .exists;
+        return result.rows[0].exists;
     }
 
     async getNhaAnById(id) {
@@ -473,15 +413,9 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await pool.query(sql, [id]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
     async existsCaAn(id) {
@@ -499,16 +433,9 @@ class GiaVeAnRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                id
-            ]
-        );
+        const result = await pool.query(sql, [id]);
 
-        return result
-            .rows[0]
-            .exists;
+        return result.rows[0].exists;
     }
 
     async create(data) {
@@ -578,20 +505,12 @@ class GiaVeAnRepository {
             data.active
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
-    async update(
-        id,
-        data
-    ) {
+    async update(id, data) {
         const sql = `
 
             UPDATE dm_gia_ve_an
@@ -637,18 +556,13 @@ class GiaVeAnRepository {
             id
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 }
 

@@ -14,14 +14,8 @@
 .menu-detail-hero {
     display: grid;
     grid-template-columns:
-        minmax(
-            360px,
-            40%
-        )
-        minmax(
-            0,
-            60%
-        );
+        minmax(360px, 40%)
+        minmax(0, 60%);
     gap: 28px;
     width: 100%;
     padding: 18px;
@@ -89,12 +83,7 @@
 .menu-detail-hero__title {
     margin: 12px 0 18px;
     color: var(--color-text-primary);
-    font-size:
-        clamp(
-            24px,
-            2vw,
-            30px
-        );
+    font-size: clamp(24px, 2vw, 30px);
     font-weight: 800;
     line-height: 1.2;
 }
@@ -262,14 +251,7 @@
 
 .menu-detail-food-track {
     display: grid;
-    grid-auto-columns:
-        calc(
-            (
-                100% -
-                56px
-            ) /
-            5
-        );
+    grid-auto-columns: calc((100% - 56px) / 5);
     grid-auto-flow: column;
     gap: 14px;
     width: 100%;
@@ -305,9 +287,7 @@
     border-radius: 11px;
     color: inherit;
     background: var(--color-surface);
-    box-shadow:
-        0 3px 10px
-        rgba(15, 23, 42, 0.05);
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
     text-align: left;
     cursor: pointer;
     scroll-snap-align: start;
@@ -319,16 +299,12 @@
 
 .menu-detail-food-card:hover {
     transform: translateY(-2px);
-    box-shadow:
-        0 8px 20px
-        rgba(15, 23, 42, 0.08);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .menu-detail-food-card.is-active {
     border-color: var(--color-primary);
-    box-shadow:
-        0 0 0 1px
-        var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .menu-detail-food-card__image {
@@ -399,11 +375,7 @@
 
 .menu-detail-day-grid {
     display: grid;
-    grid-template-columns:
-        repeat(
-            4,
-            minmax(0, 1fr)
-        );
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
 }
 
@@ -424,16 +396,12 @@
 
 .menu-detail-day-card:hover {
     transform: translateY(-2px);
-    box-shadow:
-        0 8px 22px
-        rgba(15, 23, 42, 0.07);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.07);
 }
 
 .menu-detail-day-card.is-active {
     border-color: var(--color-primary);
-    box-shadow:
-        0 0 0 1px
-        var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .menu-detail-day-card__header {
@@ -519,10 +487,7 @@
 }
 
 .menu-detail-day-group strong {
-    flex:
-        0
-        0
-        auto;
+    flex: 0 0 auto;
     color: var(--color-text-secondary);
     font-size: 11px;
 }
@@ -606,11 +571,7 @@
     border: 3px solid var(--color-border-light);
     border-top-color: var(--color-primary);
     border-radius: 50%;
-    animation:
-        menu-detail-spin
-        700ms
-        linear
-        infinite;
+    animation: menu-detail-spin 700ms linear infinite;
 }
 
 @keyframes menu-detail-spin {
@@ -654,25 +615,14 @@
 
 .menu-detail-day-grid {
     display: grid;
-    grid-template-columns:
-        repeat(
-            4,
-            minmax(
-                0,
-                1fr
-            )
-        );
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
     width: 100%;
 }
 
 @media (max-width: 1100px) {
     .menu-detail-day-grid {
-        grid-template-columns:
-            repeat(
-                3,
-                minmax(0, 1fr)
-            );
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -688,11 +638,7 @@
     }
 
     .menu-detail-day-grid {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(0, 1fr)
-            );
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 

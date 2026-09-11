@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-const { sendExcel } = require("../../../../helpers/excel/excel-result");
-const { exportMonAn } = require("./export/mon-an.export");
-const { importMonAn } = require("./import/mon-an.import");
-const { exportCongThucMonAn } = require("./export/mon-an-cong-thuc.export");
-const { importCongThucMonAn } = require("./import/mon-an-cong-thuc.import");
+const { sendExcel } = require('../../../../helpers/excel/excel-result');
+const { exportMonAn } = require('./export/mon-an.export');
+const { importMonAn } = require('./import/mon-an.import');
+const { exportCongThucMonAn } = require('./export/mon-an-cong-thuc.export');
+const { importCongThucMonAn } = require('./import/mon-an-cong-thuc.import');
 
 class MonAnExcel {
     exportData = async (req, res, next) => {

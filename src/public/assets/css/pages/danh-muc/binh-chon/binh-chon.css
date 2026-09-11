@@ -1,13 +1,6 @@
 .binh-chon-form__thuc-don-info {
     display: grid;
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 18px;
     margin-top: 14px;
     padding: 16px;
@@ -44,14 +37,7 @@
 
 .binh-chon-statistics {
     display: grid;
-    grid-template-columns:
-        repeat(
-            3,
-            minmax(
-                0,
-                1fr
-            )
-        );
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
 }
 
@@ -104,46 +90,29 @@
     background: #fee2e2;
 }
 
-@media (
-    max-width: 720px
-) {
+@media (max-width: 720px) {
     .binh-chon-form__thuc-don-info {
-        grid-template-columns:
-            minmax(
-                0,
-                1fr
-            );
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .binh-chon-statistics {
-        grid-template-columns:
-            minmax(
-                0,
-                1fr
-            );
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field] {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-field {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-field {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-field__control {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-field__control {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-textarea:not(:disabled) {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-textarea:not(:disabled) {
     pointer-events: auto !important;
     color: var(--color-text-primary) !important;
     background: var(--color-surface) !important;
@@ -152,63 +121,43 @@
     cursor: text !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-textarea:not(:disabled)::placeholder {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-textarea:not(:disabled)::placeholder {
     color: var(--color-text-muted) !important;
     opacity: 1 !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-textarea:not(:disabled):hover {
-    border-color:
-        var(--color-border-strong, var(--color-border)) !important;
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-textarea:not(:disabled):hover {
+    border-color: var(--color-border-strong, var(--color-border)) !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-editable-in-view-field]
-.form-textarea:not(:disabled):focus {
+[data-detail-panel][data-mode='view'] [data-editable-in-view-field] .form-textarea:not(:disabled):focus {
     border-color: var(--color-primary) !important;
     background: var(--color-surface) !important;
     outline: none;
-    box-shadow:
-        0 0 0 3px
-        var(--color-primary-soft) !important;
+    box-shadow: 0 0 0 3px var(--color-primary-soft) !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.form-field {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .form-field {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.form-field__control {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .form-field__control {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .date-picker {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__control {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .date-picker__control {
     pointer-events: auto !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__input:not(:disabled) {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .date-picker__input:not(:disabled) {
     pointer-events: auto !important;
     color: var(--color-text-primary) !important;
     background: var(--color-surface) !important;
@@ -217,40 +166,28 @@
     cursor: text !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__input:not(:disabled):hover {
-    border-color:
-        var(
-            --color-border-strong,
-            var(--color-border)
-        ) !important;
+[data-detail-panel][data-mode='view']
+    [data-binh-chon-mo-lai-field].is-editable
+    .date-picker__input:not(:disabled):hover {
+    border-color: var(--color-border-strong, var(--color-border)) !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__input:not(:disabled):focus {
-    border-color:
-        var(--color-primary) !important;
-    background:
-        var(--color-surface) !important;
+[data-detail-panel][data-mode='view']
+    [data-binh-chon-mo-lai-field].is-editable
+    .date-picker__input:not(:disabled):focus {
+    border-color: var(--color-primary) !important;
+    background: var(--color-surface) !important;
     outline: none;
-    box-shadow:
-        0 0 0 3px
-        var(--color-primary-soft) !important;
+    box-shadow: 0 0 0 3px var(--color-primary-soft) !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__toggle:not(:disabled) {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .date-picker__toggle:not(:disabled) {
     pointer-events: auto !important;
     opacity: 1 !important;
     cursor: pointer !important;
 }
 
-[data-detail-panel][data-mode="view"]
-[data-binh-chon-mo-lai-field].is-editable
-.date-picker__dropdown {
+[data-detail-panel][data-mode='view'] [data-binh-chon-mo-lai-field].is-editable .date-picker__dropdown {
     pointer-events: auto !important;
 }
 

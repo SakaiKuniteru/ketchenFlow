@@ -1,13 +1,7 @@
-
-<link
-    rel="stylesheet"
-    href="/assets/css/pages/ve-an/xac-nhan-su-dung-ve.css">
+<link rel="stylesheet" href="/assets/css/pages/ve-an/xac-nhan-su-dung-ve.css">
 
 
-<main
-    class="data-list-page"
-    data-data-list-page
-    data-module="{{listPage.moduleName}}"
+<main class="data-list-page" data-data-list-page data-module="{{listPage.moduleName}}"
     data-list-endpoint="{{listPage.listEndpoint}}">
 
     {{> common/data-list/header
@@ -32,37 +26,23 @@
 {{> catalog/no-permission}}
 
 
-<div
-    class="modal"
-    id="veBulkCancelModal"
-    hidden>
+<div class="modal" id="veBulkCancelModal" hidden>
 
-    <div
-        class="modal__backdrop"
-        data-ticket-cancel-close>
+    <div class="modal__backdrop" data-ticket-cancel-close>
     </div>
 
-    <section
-        class="modal__dialog modal__dialog--small"
-        role="dialog"
-        aria-modal="true"
+    <section class="modal__dialog modal__dialog--small" role="dialog" aria-modal="true"
         aria-labelledby="veBulkCancelTitle">
 
         <header class="modal__header">
 
-            <h2
-                class="modal__title"
-                id="veBulkCancelTitle">
+            <h2 class="modal__title" id="veBulkCancelTitle">
 
                 Hủy vé đã chọn
 
             </h2>
 
-            <button
-                type="button"
-                class="modal__close"
-                data-ticket-cancel-close
-                aria-label="Đóng">
+            <button type="button" class="modal__close" data-ticket-cancel-close aria-label="Đóng">
 
                 <i class="fa-solid fa-xmark"></i>
 
@@ -86,19 +66,13 @@
 
         <footer class="modal__footer">
 
-            <button
-                type="button"
-                class="btn btn-secondary"
-                data-ticket-cancel-close>
+            <button type="button" class="btn btn-secondary" data-ticket-cancel-close>
 
                 Đóng
 
             </button>
 
-            <button
-                type="button"
-                class="btn btn-danger"
-                data-ticket-cancel-submit>
+            <button type="button" class="btn btn-danger" data-ticket-cancel-submit>
 
                 Hủy vé đã chọn
 
@@ -111,37 +85,22 @@
 </div>
 
 
-<div
-    class="modal"
-    id="veDetailModal"
-    hidden>
+<div class="modal" id="veDetailModal" hidden>
 
-    <div
-        class="modal__backdrop"
-        data-ticket-detail-close>
+    <div class="modal__backdrop" data-ticket-detail-close>
     </div>
 
-    <section
-        class="modal__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="veDetailTitle">
+    <section class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="veDetailTitle">
 
         <header class="modal__header">
 
-            <h2
-                class="modal__title"
-                id="veDetailTitle">
+            <h2 class="modal__title" id="veDetailTitle">
 
                 Chi tiết vé ăn
 
             </h2>
 
-            <button
-                type="button"
-                class="modal__close"
-                data-ticket-detail-close
-                aria-label="Đóng">
+            <button type="button" class="modal__close" data-ticket-detail-close aria-label="Đóng">
 
                 <i class="fa-solid fa-xmark"></i>
 
@@ -219,10 +178,7 @@
 
         <footer class="modal__footer">
 
-            <button
-                type="button"
-                class="btn btn-secondary"
-                data-ticket-detail-close>
+            <button type="button" class="btn btn-secondary" data-ticket-detail-close>
 
                 Đóng
 

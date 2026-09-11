@@ -1,7 +1,6 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class NhaAnRepository {
-
     mapNhaAn(row) {
         if (!row) {
             return null;
@@ -148,9 +147,7 @@ class NhaAnRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapNhaAn(row)
-        );
+        return result.rows.map((row) => this.mapNhaAn(row));
     }
 
     async getChiTiet(id) {
@@ -160,27 +157,17 @@ class NhaAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapNhaAn(
-            result.rows[0]
-        );
+        return this.mapNhaAn(result.rows[0]);
     }
 
-    async existsMaNhaAn(
-        maNhaAn,
-        excludeId = null
-    ) {
-        const values = [
-            maNhaAn
-        ];
+    async existsMaNhaAn(maNhaAn, excludeId = null) {
+        const values = [maNhaAn];
 
         let sql = `
             SELECT EXISTS (
@@ -201,21 +188,13 @@ class NhaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenNhaAn(
-        tenNhaAn,
-        excludeId = null
-    ) {
-        const values = [
-            tenNhaAn
-        ];
+    async existsTenNhaAn(tenNhaAn, excludeId = null) {
+        const values = [tenNhaAn];
 
         let sql = `
             SELECT EXISTS (
@@ -236,10 +215,7 @@ class NhaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
@@ -253,19 +229,13 @@ class NhaAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            [coSoId]
-        );
+        const result = await pool.query(sql, [coSoId]);
 
         return result.rows[0].exists;
     }
 
     async getDsNhanVienTonTai(dsNvQuanLyId) {
-        if (
-            !Array.isArray(dsNvQuanLyId) ||
-            dsNvQuanLyId.length === 0
-        ) {
+        if (!Array.isArray(dsNvQuanLyId) || dsNvQuanLyId.length === 0) {
             return [];
         }
 
@@ -276,14 +246,9 @@ class NhaAnRepository {
             ORDER BY id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [dsNvQuanLyId]
-        );
+        const result = await pool.query(sql, [dsNvQuanLyId]);
 
-        return result.rows.map(
-            row => row.id
-        );
+        return result.rows.map((row) => row.id);
     }
 
     async getCoSoByMa(maCoSo) {
@@ -299,10 +264,7 @@ class NhaAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maCoSo]
-        );
+        const result = await pool.query(sql, [maCoSo]);
 
         if (result.rows.length === 0) {
             return null;
@@ -317,16 +279,11 @@ class NhaAnRepository {
     }
 
     async getDsNhanVienByMa(dsMaNhanVien) {
-        if (
-            !Array.isArray(dsMaNhanVien) ||
-            dsMaNhanVien.length === 0
-        ) {
+        if (!Array.isArray(dsMaNhanVien) || dsMaNhanVien.length === 0) {
             return [];
         }
 
-        const dsMaDaChuanHoa = dsMaNhanVien.map(
-            ma => ma.trim().toUpperCase()
-        );
+        const dsMaDaChuanHoa = dsMaNhanVien.map((ma) => ma.trim().toUpperCase());
 
         const sql = `
             SELECT
@@ -338,22 +295,16 @@ class NhaAnRepository {
             ORDER BY id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [dsMaDaChuanHoa]
-        );
+        const result = await pool.query(sql, [dsMaDaChuanHoa]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: row.id,
             maNhanVien: row.ma_nhan_vien
         }));
     }
 
     async getDsNhanVienByIds(dsId) {
-        if (
-            !Array.isArray(dsId) ||
-            dsId.length === 0
-        ) {
+        if (!Array.isArray(dsId) || dsId.length === 0) {
             return [];
         }
 
@@ -369,12 +320,9 @@ class NhaAnRepository {
             WHERE id = ANY($1::integer[])
         `;
 
-        const result = await pool.query(
-            sql,
-            [dsId]
-        );
+        const result = await pool.query(sql, [dsId]);
 
-        return result.rows.map(row => ({
+        return result.rows.map((row) => ({
             id: row.id,
             maNhanVien: row.ma_nhan_vien,
             hoTen: row.ho_ten,
@@ -389,25 +337,20 @@ class NhaAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maNhaAn]
-        );
+        const result = await pool.query(sql, [maNhaAn]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapNhaAn(
-            result.rows[0]
-        );
+        return this.mapNhaAn(result.rows[0]);
     }
 
     async create(data) {
         const client = await pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sqlNhaAn = `
                 INSERT INTO dm_nha_an (
@@ -433,31 +376,20 @@ class NhaAnRepository {
                 data.maNhaAn,
                 data.tenNhaAn,
                 data.coSoId || null,
-                data.active !== undefined
-                    ? data.active
-                    : true
+                data.active !== undefined ? data.active : true
             ];
 
-            const resultNhaAn = await client.query(
-                sqlNhaAn,
-                valuesNhaAn
-            );
+            const resultNhaAn = await client.query(sqlNhaAn, valuesNhaAn);
 
             const nhaAnId = resultNhaAn.rows[0].id;
 
-            await this.insertDsNvQuanLy(
-                client,
-                nhaAnId,
-                data.dsNvQuanLyId
-            );
+            await this.insertDsNvQuanLy(client, nhaAnId, data.dsNvQuanLyId);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                nhaAnId
-            );
+            return await this.getChiTiet(nhaAnId);
         } catch (error) {
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -469,7 +401,7 @@ class NhaAnRepository {
         const client = await pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sqlNhaAn = `
                 UPDATE dm_nha_an
@@ -483,38 +415,25 @@ class NhaAnRepository {
                 RETURNING id
             `;
 
-            const valuesNhaAn = [
-                data.maNhaAn,
-                data.tenNhaAn,
-                data.coSoId || null,
-                data.active,
-                id
-            ];
+            const valuesNhaAn = [data.maNhaAn, data.tenNhaAn, data.coSoId || null, data.active, id];
 
-            const resultNhaAn = await client.query(
-                sqlNhaAn,
-                valuesNhaAn
-            );
+            const resultNhaAn = await client.query(sqlNhaAn, valuesNhaAn);
 
             if (resultNhaAn.rows.length === 0) {
-                await client.query("ROLLBACK");
+                await client.query('ROLLBACK');
 
                 return null;
             }
 
             if (data.dsNvQuanLyId !== undefined) {
-                await this.replaceDsNvQuanLy(
-                    client,
-                    id,
-                    data.dsNvQuanLyId
-                );
+                await this.replaceDsNvQuanLy(client, id, data.dsNvQuanLyId);
             }
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
             return await this.getChiTiet(id);
         } catch (error) {
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -522,21 +441,12 @@ class NhaAnRepository {
         }
     }
 
-    async insertDsNvQuanLy(
-        client,
-        nhaAnId,
-        dsNvQuanLyId
-    ) {
-        if (
-            !Array.isArray(dsNvQuanLyId) ||
-            dsNvQuanLyId.length === 0
-        ) {
+    async insertDsNvQuanLy(client, nhaAnId, dsNvQuanLyId) {
+        if (!Array.isArray(dsNvQuanLyId) || dsNvQuanLyId.length === 0) {
             return;
         }
 
-        const dsIdKhongTrung = [
-            ...new Set(dsNvQuanLyId)
-        ];
+        const dsIdKhongTrung = [...new Set(dsNvQuanLyId)];
 
         const sql = `
             INSERT INTO ct_nha_an_nhan_vien (
@@ -565,20 +475,10 @@ class NhaAnRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                nhaAnId,
-                dsIdKhongTrung
-            ]
-        );
+        await client.query(sql, [nhaAnId, dsIdKhongTrung]);
     }
 
-    async replaceDsNvQuanLy(
-        client,
-        nhaAnId,
-        dsNvQuanLyId
-    ) {
+    async replaceDsNvQuanLy(client, nhaAnId, dsNvQuanLyId) {
         await client.query(
             `
                 DELETE FROM ct_nha_an_nhan_vien
@@ -587,13 +487,8 @@ class NhaAnRepository {
             [nhaAnId]
         );
 
-        await this.insertDsNvQuanLy(
-            client,
-            nhaAnId,
-            dsNvQuanLyId
-        );
+        await this.insertDsNvQuanLy(client, nhaAnId, dsNvQuanLyId);
     }
-
 }
 
 module.exports = new NhaAnRepository();

@@ -1,4 +1,4 @@
-#thucPhamDetailPanel [data-form-field="hinhAnh"] {
+#thucPhamDetailPanel [data-form-field='hinhAnh'] {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
@@ -6,8 +6,8 @@
     align-self: start;
 }
 
-#thucPhamDetailPanel [data-form-field="hinhAnh"] [data-image-picker],
-#thucPhamDetailPanel [data-form-field="hinhAnh"] .image-picker {
+#thucPhamDetailPanel [data-form-field='hinhAnh'] [data-image-picker],
+#thucPhamDetailPanel [data-form-field='hinhAnh'] .image-picker {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -17,8 +17,8 @@
     flex: 0 0 100px;
 }
 
-#thucPhamDetailPanel [data-form-field="hinhAnh"] [data-image-picker-control],
-#thucPhamDetailPanel [data-form-field="hinhAnh"] .image-picker__control {
+#thucPhamDetailPanel [data-form-field='hinhAnh'] [data-image-picker-control],
+#thucPhamDetailPanel [data-form-field='hinhAnh'] .image-picker__control {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -29,7 +29,7 @@
     overflow: hidden;
 }
 
-#thucPhamDetailPanel [data-form-field="hinhAnh"] .image-picker__preview {
+#thucPhamDetailPanel [data-form-field='hinhAnh'] .image-picker__preview {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -39,8 +39,8 @@
     overflow: hidden;
 }
 
-#thucPhamDetailPanel [data-form-field="hinhAnh"] .image-picker__preview img,
-#thucPhamDetailPanel [data-form-field="hinhAnh"] img {
+#thucPhamDetailPanel [data-form-field='hinhAnh'] .image-picker__preview img,
+#thucPhamDetailPanel [data-form-field='hinhAnh'] img {
     display: block;
     width: 100px !important;
     min-width: 100px !important;

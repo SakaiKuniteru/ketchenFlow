@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class MonAnRepository {
     mapMonAn(row) {
@@ -13,18 +13,14 @@ class MonAnRepository {
             nhomMonAnId: row.nhom_mon_an_id,
             nhomMonAn: row.nhom_mon_an_id
                 ? {
-                    id: row.nhom_mon_an_id,
-                    ma: row.ma_nhom_mon_an,
-                    ten: row.ten_nhom_mon_an,
-                    moTa: row.mo_ta_nhom_mon_an
-                }
+                      id: row.nhom_mon_an_id,
+                      ma: row.ma_nhom_mon_an,
+                      ten: row.ten_nhom_mon_an,
+                      moTa: row.mo_ta_nhom_mon_an
+                  }
                 : null,
-            giaTien: row.gia_tien !== null
-                ? Number(row.gia_tien)
-                : null,
-            giaDuKien: row.gia_du_kien !== null
-                ? Number(row.gia_du_kien)
-                : null,
+            giaTien: row.gia_tien !== null ? Number(row.gia_tien) : null,
+            giaDuKien: row.gia_du_kien !== null ? Number(row.gia_du_kien) : null,
             calories: row.calories,
             moTa: row.mo_ta,
             hinhAnh: row.hinh_anh,
@@ -94,39 +90,23 @@ class MonAnRepository {
             ORDER BY ct.id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            [monAnId]
-        );
+        const result = await pool.query(sql, [monAnId]);
 
         return result.rows;
     }
 
     async getDanhSachCongThucExport(query = {}) {
-        const conditions = [
-            "ct.active = TRUE"
-        ];
+        const conditions = ['ct.active = TRUE'];
 
         const values = [];
 
-        if (
-            query.monAnId !== undefined &&
-            query.monAnId !== null &&
-            query.monAnId !== ""
-        ) {
-            const monAnId = Number(
-                query.monAnId
-            );
+        if (query.monAnId !== undefined && query.monAnId !== null && query.monAnId !== '') {
+            const monAnId = Number(query.monAnId);
 
-            if (
-                Number.isInteger(monAnId) &&
-                monAnId > 0
-            ) {
+            if (Number.isInteger(monAnId) && monAnId > 0) {
                 values.push(monAnId);
 
-                conditions.push(
-                    `ct.mon_an_id = $${values.length}`
-                );
+                conditions.push(`ct.mon_an_id = $${values.length}`);
             }
         }
 
@@ -147,18 +127,13 @@ class MonAnRepository {
             INNER JOIN dm_thuc_pham tp
                 ON tp.id = ct.thuc_pham_id
             WHERE
-                ${conditions.join(
-                    "\nAND\n"
-                )}
+                ${conditions.join('\nAND\n')}
             ORDER BY
                 ma.ma_mon_an ASC,
                 ct.id ASC
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows;
     }
@@ -171,9 +146,7 @@ class MonAnRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapMonAn(row)
-        );
+        return result.rows.map((row) => this.mapMonAn(row));
     }
 
     async getChiTiet(id) {
@@ -183,29 +156,17 @@ class MonAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapMonAn(
-            result.rows[0]
-        );
+        return this.mapMonAn(result.rows[0]);
     }
 
-    async ganDsThucPham(
-        client,
-        monAnId,
-        dsThucPham
-    ) {
-        if (
-            !Array.isArray(dsThucPham) ||
-            dsThucPham.length === 0
-        ) {
+    async ganDsThucPham(client, monAnId, dsThucPham) {
+        if (!Array.isArray(dsThucPham) || dsThucPham.length === 0) {
             return;
         }
 
@@ -240,20 +201,12 @@ class MonAnRepository {
                     active = TRUE,
                     updated_at = NOW()
                 `,
-                [
-                    monAnId,
-                    item.thucPhamId,
-                    item.dinhLuong,
-                    item.ghiChu || null
-                ]
+                [monAnId, item.thucPhamId, item.dinhLuong, item.ghiChu || null]
             );
         }
     }
 
-    async khoaTatCaThucPham(
-        client,
-        monAnId
-    ) {
+    async khoaTatCaThucPham(client, monAnId) {
         await client.query(
             `
             UPDATE ct_mon_an_thuc_pham
@@ -277,20 +230,13 @@ class MonAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maMonAn]
-        );
+        const result = await pool.query(sql, [maMonAn]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapMonAn(
-            result.rows[0]
-        );
+        return this.mapMonAn(result.rows[0]);
     }
 
     async getNhomMonAnByMa(maNhomMonAn) {
@@ -306,10 +252,7 @@ class MonAnRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maNhomMonAn]
-        );
+        const result = await pool.query(sql, [maNhomMonAn]);
 
         if (result.rows.length === 0) {
             return null;
@@ -317,10 +260,8 @@ class MonAnRepository {
 
         return {
             id: result.rows[0].id,
-            maNhomMonAn:
-                result.rows[0].ma_nhom_mon_an,
-            tenNhomMonAn:
-                result.rows[0].ten_nhom_mon_an,
+            maNhomMonAn: result.rows[0].ma_nhom_mon_an,
+            tenNhomMonAn: result.rows[0].ten_nhom_mon_an,
             active: result.rows[0].active
         };
     }
@@ -335,21 +276,13 @@ class MonAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            [nhomMonAnId]
-        );
+        const result = await pool.query(sql, [nhomMonAnId]);
 
         return result.rows[0].exists;
     }
 
-    async existsMaMonAn(
-        maMonAn,
-        excludeId = null
-    ) {
-        const values = [
-            maMonAn
-        ];
+    async existsMaMonAn(maMonAn, excludeId = null) {
+        const values = [maMonAn];
 
         let sql = `
             SELECT EXISTS (
@@ -371,23 +304,13 @@ class MonAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenMonAn(
-        tenMonAn,
-        nhomMonAnId,
-        excludeId = null
-    ) {
-        const values = [
-            tenMonAn,
-            nhomMonAnId
-        ];
+    async existsTenMonAn(tenMonAn, nhomMonAnId, excludeId = null) {
+        const values = [tenMonAn, nhomMonAnId];
 
         let sql = `
             SELECT EXISTS (
@@ -410,10 +333,7 @@ class MonAnRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
@@ -422,7 +342,7 @@ class MonAnRepository {
         const client = await pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 INSERT INTO dm_mon_an (
@@ -458,43 +378,25 @@ class MonAnRepository {
                 data.maMonAn,
                 data.tenMonAn,
                 data.nhomMonAnId,
-                data.giaTien !== undefined
-                    ? data.giaTien
-                    : null,
-                data.giaDuKien !== undefined
-                    ? data.giaDuKien
-                    : 0,
-                data.calories !== undefined
-                    ? data.calories
-                    : null,
+                data.giaTien !== undefined ? data.giaTien : null,
+                data.giaDuKien !== undefined ? data.giaDuKien : 0,
+                data.calories !== undefined ? data.calories : null,
                 data.moTa || null,
                 data.hinhAnh || null,
-                data.active !== undefined
-                    ? data.active
-                    : true
+                data.active !== undefined ? data.active : true
             ];
 
-            const result = await client.query(
-                sql,
-                values
-            );
+            const result = await client.query(sql, values);
 
-            const monAnId =
-                result.rows[0].id;
+            const monAnId = result.rows[0].id;
 
-            await this.ganDsThucPham(
-                client,
-                monAnId,
-                data.dsThucPham
-            );
+            await this.ganDsThucPham(client, monAnId, data.dsThucPham);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                monAnId
-            );
+            return await this.getChiTiet(monAnId);
         } catch (error) {
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -502,14 +404,11 @@ class MonAnRepository {
         }
     }
 
-    async update(
-        id,
-        data
-    ) {
+    async update(id, data) {
         const client = await pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 UPDATE dm_mon_an
@@ -532,60 +431,34 @@ class MonAnRepository {
                 data.maMonAn,
                 data.tenMonAn,
                 data.nhomMonAnId,
-                data.giaTien !== undefined
-                    ? data.giaTien
-                    : null,
-                data.giaDuKien !== undefined
-                    ? data.giaDuKien
-                    : 0,
-                data.calories !== undefined
-                    ? data.calories
-                    : null,
+                data.giaTien !== undefined ? data.giaTien : null,
+                data.giaDuKien !== undefined ? data.giaDuKien : 0,
+                data.calories !== undefined ? data.calories : null,
                 data.moTa || null,
                 data.hinhAnh || null,
                 data.active,
                 id
             ];
 
-            const result = await client.query(
-                sql,
-                values
-            );
+            const result = await client.query(sql, values);
 
-            if (
-                result.rows.length === 0
-            ) {
-                await client.query(
-                    "ROLLBACK"
-                );
+            if (result.rows.length === 0) {
+                await client.query('ROLLBACK');
 
                 return null;
             }
 
-            if (
-                Array.isArray(
-                    data.dsThucPham
-                )
-            ) {
-                await this.khoaTatCaThucPham(
-                    client,
-                    id
-                );
+            if (Array.isArray(data.dsThucPham)) {
+                await this.khoaTatCaThucPham(client, id);
 
-                await this.ganDsThucPham(
-                    client,
-                    id,
-                    data.dsThucPham
-                );
+                await this.ganDsThucPham(client, id, data.dsThucPham);
             }
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                id
-            );
+            return await this.getChiTiet(id);
         } catch (error) {
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -593,10 +466,7 @@ class MonAnRepository {
         }
     }
 
-    async updateGiaDuKien(
-        id,
-        giaDuKien
-    ) {
+    async updateGiaDuKien(id, giaDuKien) {
         const sql = `
             UPDATE dm_mon_an
             SET
@@ -606,24 +476,12 @@ class MonAnRepository {
             RETURNING id
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                giaDuKien,
-                id
-            ]
-        );
+        const result = await pool.query(sql, [giaDuKien, id]);
 
-        return (
-            result.rows.length > 0
-        );
+        return result.rows.length > 0;
     }
 
-    async updateGia(
-        id,
-        giaTien,
-        giaDuKien
-    ) {
+    async updateGia(id, giaTien, giaDuKien) {
         const sql = `
             UPDATE dm_mon_an
             SET
@@ -637,42 +495,18 @@ class MonAnRepository {
                 gia_du_kien
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                giaTien,
-                giaDuKien,
-                id
-            ]
-        );
+        const result = await pool.query(sql, [giaTien, giaDuKien, id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
         return {
-            id:
-                result.rows[0].id,
+            id: result.rows[0].id,
 
-            giaTien:
-                result.rows[0]
-                    .gia_tien !== null
-                        ? Number(
-                            result.rows[0]
-                                .gia_tien
-                        )
-                        : null,
+            giaTien: result.rows[0].gia_tien !== null ? Number(result.rows[0].gia_tien) : null,
 
-            giaDuKien:
-                result.rows[0]
-                    .gia_du_kien !== null
-                        ? Number(
-                            result.rows[0]
-                                .gia_du_kien
-                        )
-                        : null
+            giaDuKien: result.rows[0].gia_du_kien !== null ? Number(result.rows[0].gia_du_kien) : null
         };
     }
 }

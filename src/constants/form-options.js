@@ -1,36 +1,25 @@
-"use strict";
+'use strict';
 
 const GIOI_TINH_OPTIONS = [
-
     {
-        value:
-            "0",
+        value: '0',
 
-        label:
-            "Nam"
+        label: 'Nam'
     },
 
     {
-        value:
-            "1",
+        value: '1',
 
-        label:
-            "Nữ"
+        label: 'Nữ'
     },
 
     {
-        value:
-            "2",
+        value: '2',
 
-        label:
-            "Khác"
+        label: 'Khác'
     }
-
 ];
 
-
 module.exports = {
-
     GIOI_TINH_OPTIONS
-
 };

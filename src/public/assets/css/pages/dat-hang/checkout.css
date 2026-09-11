@@ -1,0 +1,4 @@
+.order-page[data-order-page='delivery'] .order-checkout-main,
+.order-page[data-order-page='confirmation'] .order-checkout-main {
+    min-width: 0;
+}

@@ -1,97 +1,45 @@
-const path =
-    require("path");
+const path = require('path');
 
-const multer =
-    require("multer");
+const multer = require('multer');
 
-const ApiError =
-    require("../utils/api-error");
+const ApiError = require('../utils/api-error');
 
-
-const DS_DUOI_FILE = [
-    ".xls",
-    ".xlsx",
-    ".xlsm"
-];
+const DS_DUOI_FILE = ['.xls', '.xlsx', '.xlsm'];
 
 const DS_MIME_TYPE = [
+    'application/vnd.ms-excel',
 
-    "application/vnd.ms-excel",
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-
-    "application/vnd.ms-excel.sheet.macroenabled.12"
-
+    'application/vnd.ms-excel.sheet.macroenabled.12'
 ];
 
+const storage = multer.memoryStorage();
 
-const storage =
-    multer.memoryStorage();
+function fileFilter(req, file, callback) {
+    const duoiFile = path.extname(file.originalname).toLowerCase();
 
+    const hopLeDuoiFile = DS_DUOI_FILE.includes(duoiFile);
 
-function fileFilter(
-    req,
-    file,
-    callback
-) {
+    const hopLeMimeType = DS_MIME_TYPE.includes(file.mimetype);
 
-    const duoiFile =
-        path.extname(
-            file.originalname
-        )
-            .toLowerCase();
-
-    const hopLeDuoiFile =
-        DS_DUOI_FILE.includes(
-            duoiFile
-        );
-
-    const hopLeMimeType =
-        DS_MIME_TYPE.includes(
-            file.mimetype
-        );
-
-    if (
-        !hopLeDuoiFile ||
-        !hopLeMimeType
-    ) {
-
-        return callback(
-            new ApiError(
-                400,
-                "File import không hợp lệ. Chỉ chấp nhận file Excel."
-            )
-        );
-
+    if (!hopLeDuoiFile || !hopLeMimeType) {
+        return callback(new ApiError(400, 'File import không hợp lệ. Chỉ chấp nhận file Excel.'));
     }
 
-    return callback(
-        null,
-        true
-    );
-
+    return callback(null, true);
 }
 
+const uploadImportExcel = multer({
+    storage,
 
-const uploadImportExcel =
-    multer({
+    fileFilter,
 
-        storage,
+    limits: {
+        fileSize: 20 * 1024 * 1024,
 
-        fileFilter,
+        files: 1
+    }
+});
 
-        limits: {
-
-            fileSize:
-                20 * 1024 * 1024,
-
-            files:
-                1
-
-        }
-
-    });
-
-
-module.exports =
-    uploadImportExcel;
+module.exports = uploadImportExcel;

@@ -1,8 +1,5 @@
-<section
-    id="{{#if panelId}}{{panelId}}{{else}}detailPanelContent{{/if}}"
-    class="detail-panel {{#if panelClass}}{{panelClass}}{{/if}}"
-    data-detail-panel
-    data-mode="closed">
+<section id="{{#if panelId}}{{panelId}}{{else}}detailPanelContent{{/if}}"
+    class="detail-panel {{#if panelClass}}{{panelClass}}{{/if}}" data-detail-panel data-mode="closed">
 
     {{> catalog/detail-header
         title=title
@@ -11,19 +8,10 @@
 
     <div class="detail-panel__body">
 
-        <form
-            id="{{#if formId}}{{formId}}{{else}}catalogForm{{/if}}"
-            class="detail-panel__form"
-            data-catalog-form
-            autocomplete="off"
-            novalidate>
+        <form id="{{#if formId}}{{formId}}{{else}}catalogForm{{/if}}" class="detail-panel__form" data-catalog-form
+            autocomplete="off" novalidate>
 
-            <input
-                type="hidden"
-                id="{{formId}}Id"
-                name="id"
-                data-record-id
-            >
+            <input type="hidden" id="{{formId}}Id" name="id" data-record-id>
 
             <div class="detail-panel__form-content">
 

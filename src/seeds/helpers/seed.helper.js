@@ -1,5 +1,4 @@
-const pool = require("../../config/database");
-
+const pool = require('../../config/database');
 
 /**
  * Seed Helper dùng chung cho toàn bộ bảng
@@ -13,7 +12,6 @@ const pool = require("../../config/database");
  */
 
 async function seedHelper({
-
     table,
 
     unique,
@@ -21,61 +19,42 @@ async function seedHelper({
     data,
 
     transform = null
-
 }) {
-
-
     if (!Array.isArray(data) || data.length === 0) {
-
         console.log(`⚠ ${table}: No data`);
 
         return;
-
     }
 
-    const conflictColumns = Array.isArray(unique)
-        ? unique.join(", ")
-        : unique;
+    const conflictColumns = Array.isArray(unique) ? unique.join(', ') : unique;
 
     const client = await pool.connect();
 
-
     try {
-
-
-        await client.query("BEGIN");
-
+        await client.query('BEGIN');
 
         for (let item of data) {
-
             if (transform) {
-
-                item = await transform(
-                    client,
-                    {
-                        ...item
-                    }
-                );
-
+                item = await transform(client, {
+                    ...item
+                });
             }
 
             const columns = Object.keys(item);
 
             const values = Object.values(item);
 
-            const placeholders = values.map(
-                (_, index)=>`$${index + 1}`
-            );
+            const placeholders = values.map((_, index) => `$${index + 1}`);
 
             const sql = `
 
                 INSERT INTO ${table}
 
-                (${columns.join(",")})
+                (${columns.join(',')})
 
                 VALUES
 
-                (${placeholders.join(",")})
+                (${placeholders.join(',')})
 
 
                 ON CONFLICT (${conflictColumns})
@@ -84,33 +63,17 @@ async function seedHelper({
 
             `;
 
-            await client.query(
-                sql,
-                values
-            );
-
+            await client.query(sql, values);
         }
 
-        await client.query(
-            "COMMIT"
-        );
-
-    }
-    catch(error){
-
-        await client.query(
-            "ROLLBACK"
-        );
+        await client.query('COMMIT');
+    } catch (error) {
+        await client.query('ROLLBACK');
 
         throw error;
-
-    }
-    finally{
-
+    } finally {
         client.release();
-
     }
-
 }
 
 module.exports = seedHelper;

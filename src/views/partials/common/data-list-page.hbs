@@ -1,4 +1,5 @@
-<main class="data-list-page" data-data-list-page data-module="{{listPage.moduleName}}" data-list-endpoint="{{listPage.listEndpoint}}">
+<main class="data-list-page" data-data-list-page data-module="{{listPage.moduleName}}"
+    data-list-endpoint="{{listPage.listEndpoint}}">
     <header class="data-list-page__header">
         <div>
             <h1>{{listPage.title}}</h1>
@@ -9,7 +10,8 @@
 
         <div class="data-list-page__actions">
             {{#each listPage.actions}}
-                <button type="button" class="data-list-btn {{className}}" data-list-action="{{action}}" {{#if hidden}}hidden{{/if}}>
+                <button type="button" class="data-list-btn {{className}}" data-list-action="{{action}}"
+                    {{#if hidden}}hidden{{/if}}>
                     {{#if icon}}
                         <i class="{{icon}}"></i>
                     {{/if}}
@@ -59,13 +61,18 @@
                 <thead class="catalog-table__head">
                     <tr>
                         {{#if listPage.showIndex}}
-                            <th class="catalog-table__cell catalog-table__cell--index catalog-table__cell--center data-list-table__index">STT</th>
+                            <th
+                                class="catalog-table__cell catalog-table__cell--index catalog-table__cell--center data-list-table__index">
+                                STT</th>
                         {{/if}}
 
                         {{#each listPage.columns}}
-                            <th class="catalog-table__cell catalog-table__cell--center" data-list-column data-column-key="{{key}}" data-column-type="{{type}}" {{#if width}}style="width: {{width}};"{{/if}}>
+                            <th class="catalog-table__cell catalog-table__cell--center" data-list-column
+                                data-column-key="{{key}}" data-column-type="{{type}}"
+                                {{#if width}}style="width: {{width}};" {{/if}}>
                                 {{#if sortable}}
-                                    <button type="button" class="data-list-sort-button" data-list-sort="{{key}}" aria-label="Sắp xếp theo {{label}}">
+                                    <button type="button" class="data-list-sort-button" data-list-sort="{{key}}"
+                                        aria-label="Sắp xếp theo {{label}}">
                                         <span class="data-list-sort-button__label">{{label}}</span>
 
                                         {{> table/sort-icon
@@ -82,7 +89,8 @@
 
                 <tbody class="catalog-table__body" data-list-body>
                     <tr>
-                        <td class="catalog-table__cell data-list-table__empty" colspan="{{listPage.colspan}}">Đang tải dữ liệu...</td>
+                        <td class="catalog-table__cell data-list-table__empty" colspan="{{listPage.colspan}}">Đang tải
+                            dữ liệu...</td>
                     </tr>
                 </tbody>
             </table>
@@ -130,7 +138,9 @@
                     {{/if}}
 
                     {{#if isSelect}}
-                        <div class="data-list-filter__field" data-list-filter-field data-filter-name="{{name}}" data-filter-type="select" data-filter-source="{{source}}" data-filter-value-key="{{valueKey}}" data-filter-label-key="{{labelKey}}">
+                        <div class="data-list-filter__field" data-list-filter-field data-filter-name="{{name}}"
+                            data-filter-type="select" data-filter-source="{{source}}"
+                            data-filter-value-key="{{valueKey}}" data-filter-label-key="{{labelKey}}">
                             {{> forms/select
                                 id=id
                                 name=name
@@ -147,8 +157,10 @@
             </div>
 
             <div class="data-list-filter__footer">
-                <button type="button" class="data-list-btn data-list-btn--outline" data-list-filter-reset>Đặt lại</button>
-                <button type="button" class="data-list-btn data-list-btn--primary" data-list-filter-apply>Áp dụng</button>
+                <button type="button" class="data-list-btn data-list-btn--outline" data-list-filter-reset>Đặt
+                    lại</button>
+                <button type="button" class="data-list-btn data-list-btn--primary" data-list-filter-apply>Áp
+                    dụng</button>
             </div>
         </div>
     {{/if}}

@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class XacThucRepository {
     mapTaiKhoanDangNhap(row) {
@@ -251,18 +251,13 @@ class XacThucRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoan]
-        );
+        const result = await pool.query(sql, [taiKhoan]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapTaiKhoanDangNhap(
-            result.rows[0]
-        );
+        return this.mapTaiKhoanDangNhap(result.rows[0]);
     }
 
     async increaseFailedLogin(taiKhoanId) {
@@ -280,18 +275,13 @@ class XacThucRepository {
                 so_lan_dang_nhap_sai
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         if (result.rows.length === 0) {
             return 0;
         }
 
-        return Number(
-            result.rows[0].so_lan_dang_nhap_sai
-        );
+        return Number(result.rows[0].so_lan_dang_nhap_sai);
     }
 
     async getFailedLoginCount(taiKhoanId) {
@@ -302,10 +292,7 @@ class XacThucRepository {
             WHERE id = $1
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         if (result.rows.length === 0) {
             return 0;
@@ -325,16 +312,10 @@ class XacThucRepository {
             WHERE id = $1
         `;
 
-        await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        await pool.query(sql, [taiKhoanId]);
     }
 
-    async lockAccount(
-        taiKhoanId,
-        lockUntil = null
-    ) {
+    async lockAccount(taiKhoanId, lockUntil = null) {
         const sql = `
             UPDATE dm_tai_khoan
             SET
@@ -344,13 +325,7 @@ class XacThucRepository {
             WHERE id = $2
         `;
 
-        await pool.query(
-            sql,
-            [
-                lockUntil,
-                taiKhoanId
-            ]
-        );
+        await pool.query(sql, [lockUntil, taiKhoanId]);
     }
 
     async unlockAccount(taiKhoanId) {
@@ -364,10 +339,7 @@ class XacThucRepository {
             WHERE id = $1
         `;
 
-        await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        await pool.query(sql, [taiKhoanId]);
     }
 
     async updateLastLogin(taiKhoanId) {
@@ -387,19 +359,12 @@ class XacThucRepository {
                 lan_dang_nhap_cuoi
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         return result.rows[0] || null;
     }
 
-    async saveRefreshToken(
-        taiKhoanId,
-        refreshToken,
-        expiresAt
-    ) {
+    async saveRefreshToken(taiKhoanId, refreshToken, expiresAt) {
         const sql = `
             INSERT INTO nv_refresh_token
             (
@@ -417,14 +382,7 @@ class XacThucRepository {
             )
         `;
 
-        await pool.query(
-            sql,
-            [
-                taiKhoanId,
-                refreshToken,
-                expiresAt
-            ]
-        );
+        await pool.query(sql, [taiKhoanId, refreshToken, expiresAt]);
     }
 
     async findRefreshToken(refreshToken) {
@@ -436,10 +394,7 @@ class XacThucRepository {
                 AND revoked = FALSE
         `;
 
-        const result = await pool.query(
-            sql,
-            [refreshToken]
-        );
+        const result = await pool.query(sql, [refreshToken]);
 
         return result.rows[0];
     }
@@ -453,16 +408,10 @@ class XacThucRepository {
             WHERE token = $1
         `;
 
-        await pool.query(
-            sql,
-            [refreshToken]
-        );
+        await pool.query(sql, [refreshToken]);
     }
 
-    async changeMatKhau(
-        taiKhoanId,
-        matKhauHash
-    ) {
+    async changeMatKhau(taiKhoanId, matKhauHash) {
         const sql = `
             UPDATE dm_tai_khoan
             SET
@@ -473,13 +422,7 @@ class XacThucRepository {
             WHERE id = $2
         `;
 
-        await pool.query(
-            sql,
-            [
-                matKhauHash,
-                taiKhoanId
-            ]
-        );
+        await pool.query(sql, [matKhauHash, taiKhoanId]);
     }
 
     async updateMatKhauChangedAt(taiKhoanId) {
@@ -491,10 +434,7 @@ class XacThucRepository {
             WHERE id = $1
         `;
 
-        await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        await pool.query(sql, [taiKhoanId]);
     }
 
     async revokeRefreshToken(token) {
@@ -506,10 +446,7 @@ class XacThucRepository {
             WHERE token = $1
         `;
 
-        await pool.query(
-            sql,
-            [token]
-        );
+        await pool.query(sql, [token]);
     }
 
     async revokeAllRefreshToken(taiKhoanId) {
@@ -523,10 +460,7 @@ class XacThucRepository {
                 AND revoked = FALSE
         `;
 
-        await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        await pool.query(sql, [taiKhoanId]);
     }
 
     async findById(taiKhoanId) {
@@ -730,18 +664,13 @@ class XacThucRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapTaiKhoanDangNhap(
-            result.rows[0]
-        );
+        return this.mapTaiKhoanDangNhap(result.rows[0]);
     }
 
     async getMatKhauHash(taiKhoanId) {
@@ -752,10 +681,7 @@ class XacThucRepository {
             WHERE id = $1
         `;
 
-        const result = await pool.query(
-            sql,
-            [taiKhoanId]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         return result.rows[0];
     }
@@ -967,10 +893,7 @@ class XacThucRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [nhanVienId]
-        );
+        const result = await pool.query(sql, [nhanVienId]);
 
         if (result.rows.length === 0) {
             return null;
@@ -1020,25 +943,12 @@ class XacThucRepository {
         };
     }
 
-    async getMaQuyenHienTai(
-        taiKhoanId
-    ) {
+    async getMaQuyenHienTai(taiKhoanId) {
+        const id = Number(taiKhoanId);
 
-        const id =
-            Number(
-                taiKhoanId
-            );
-
-
-        if (
-            !Number.isInteger(id) ||
-            id <= 0
-        ) {
-
+        if (!Number.isInteger(id) || id <= 0) {
             return [];
-
         }
-
 
         const sql = `
             SELECT DISTINCT
@@ -1073,33 +983,20 @@ class XacThucRepository {
                 q.ma_quyen ASC
         `;
 
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
+        const result = await pool.query(sql, [id]);
 
         return [
             ...new Set(
                 result.rows
-                    .map(
-                        row =>
-                            String(
-                                row.ma_quyen || ""
-                            )
-                                .trim()
-                                .toUpperCase()
+                    .map((row) =>
+                        String(row.ma_quyen || '')
+                            .trim()
+                            .toUpperCase()
                     )
                     .filter(Boolean)
             )
         ];
-
     }
-
 }
 
 module.exports = new XacThucRepository();

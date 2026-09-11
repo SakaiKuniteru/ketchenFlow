@@ -1,38 +1,37 @@
-"use strict";
+'use strict';
 
 (function () {
-
     function formatIntegerPart(value) {
         if (!value) {
-            return "";
+            return '';
         }
 
-        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
     function formatInputValue(value, integer = false, allowSign = false) {
-        let raw = String(value ?? "").trim().replace(/\s/g, "");
+        let raw = String(value ?? '')
+            .trim()
+            .replace(/\s/g, '');
 
         if (!raw) {
-            return "";
+            return '';
         }
 
-        if (allowSign && (raw === "-" || raw === "+")) {
+        if (allowSign && (raw === '-' || raw === '+')) {
             return raw;
         }
 
-        let sign = "";
+        let sign = '';
 
-        if (allowSign && (raw.startsWith("-") || raw.startsWith("+"))) {
+        if (allowSign && (raw.startsWith('-') || raw.startsWith('+'))) {
             sign = raw.charAt(0);
         }
 
-        raw = raw.replace(/[+-]/g, "");
+        raw = raw.replace(/[+-]/g, '');
 
         if (integer) {
-            const digits = raw
-                .replace(/\D/g, "")
-                .replace(/^0+(?=\d)/, "");
+            const digits = raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
 
             if (!digits) {
                 return sign;
@@ -41,15 +40,15 @@
             return sign + formatIntegerPart(digits);
         }
 
-        const commaIndex = raw.indexOf(",");
-        let integerPart = "";
+        const commaIndex = raw.indexOf(',');
+        let integerPart = '';
         let decimalPart = null;
 
         if (commaIndex >= 0) {
-            integerPart = raw.slice(0, commaIndex).replace(/\D/g, "");
-            decimalPart = raw.slice(commaIndex + 1).replace(/\D/g, "");
+            integerPart = raw.slice(0, commaIndex).replace(/\D/g, '');
+            decimalPart = raw.slice(commaIndex + 1).replace(/\D/g, '');
         } else {
-            integerPart = raw.replace(/\D/g, "");
+            integerPart = raw.replace(/\D/g, '');
         }
 
         if (!integerPart && decimalPart === null) {
@@ -60,40 +59,40 @@
 
         if (decimalPart !== null) {
             if (!result) {
-                result = "0";
+                result = '0';
             }
 
-            result += "," + decimalPart;
+            result += ',' + decimalPart;
         }
 
         return sign + result;
     }
 
     function formatExternalValue(value, integer = false, allowSign = false) {
-        if (value === null || value === undefined || value === "") {
-            return "";
+        if (value === null || value === undefined || value === '') {
+            return '';
         }
 
-        let raw = String(value).trim().replace(/\s/g, "");
+        let raw = String(value).trim().replace(/\s/g, '');
 
         if (!raw) {
-            return "";
+            return '';
         }
 
-        if (allowSign && (raw === "-" || raw === "+")) {
+        if (allowSign && (raw === '-' || raw === '+')) {
             return raw;
         }
 
-        let sign = "";
+        let sign = '';
 
-        if (allowSign && (raw.startsWith("-") || raw.startsWith("+"))) {
+        if (allowSign && (raw.startsWith('-') || raw.startsWith('+'))) {
             sign = raw.charAt(0);
         }
 
-        raw = raw.replace(/[+-]/g, "");
+        raw = raw.replace(/[+-]/g, '');
 
         if (integer) {
-            const digits = raw.replace(/\D/g, "");
+            const digits = raw.replace(/\D/g, '');
 
             if (!digits) {
                 return sign;
@@ -102,27 +101,28 @@
             return sign + formatIntegerPart(digits);
         }
 
-        let integerPart = "";
+        let integerPart = '';
         let decimalPart = null;
 
-        if (raw.includes(",")) {
-            const commaIndex = raw.indexOf(",");
-            integerPart = raw.slice(0, commaIndex).replace(/\D/g, "");
-            decimalPart = raw.slice(commaIndex + 1).replace(/\D/g, "");
-        } else if (raw.includes(".")) {
-            const lastDotIndex = raw.lastIndexOf(".");
+        if (raw.includes(',')) {
+            const commaIndex = raw.indexOf(',');
+            integerPart = raw.slice(0, commaIndex).replace(/\D/g, '');
+            decimalPart = raw.slice(commaIndex + 1).replace(/\D/g, '');
+        } else if (raw.includes('.')) {
+            const lastDotIndex = raw.lastIndexOf('.');
             const beforeDot = raw.slice(0, lastDotIndex);
             const afterDot = raw.slice(lastDotIndex + 1);
-            const looksLikeBackendDecimal = /^\d+$/.test(beforeDot) && /^\d+$/.test(afterDot) && raw.split(".").length === 2;
+            const looksLikeBackendDecimal =
+                /^\d+$/.test(beforeDot) && /^\d+$/.test(afterDot) && raw.split('.').length === 2;
 
             if (looksLikeBackendDecimal) {
                 integerPart = beforeDot;
                 decimalPart = afterDot;
             } else {
-                integerPart = raw.replace(/\D/g, "");
+                integerPart = raw.replace(/\D/g, '');
             }
         } else {
-            integerPart = raw.replace(/\D/g, "");
+            integerPart = raw.replace(/\D/g, '');
         }
 
         if (!integerPart) {
@@ -131,25 +131,27 @@
 
         let result = formatIntegerPart(integerPart);
 
-        if (decimalPart !== null && decimalPart !== "") {
-            result += "," + decimalPart;
+        if (decimalPart !== null && decimalPart !== '') {
+            result += ',' + decimalPart;
         }
 
         return sign + result;
     }
 
     function normalizeValue(value) {
-        const raw = String(value ?? "").trim().replace(/\s/g, "");
+        const raw = String(value ?? '')
+            .trim()
+            .replace(/\s/g, '');
 
-        if (!raw || raw === "," || raw === "-" || raw === "+" || raw === "-," || raw === "+,") {
-            return "";
+        if (!raw || raw === ',' || raw === '-' || raw === '+' || raw === '-,' || raw === '+,') {
+            return '';
         }
 
-        if (raw.includes(",")) {
-            return raw.replace(/\./g, "").replace(",", ".");
+        if (raw.includes(',')) {
+            return raw.replace(/\./g, '').replace(',', '.');
         }
 
-        return raw.replace(/\./g, "");
+        return raw.replace(/\./g, '');
     }
 
     function getValue(input) {
@@ -165,9 +167,7 @@
 
         const number = Number(value);
 
-        return Number.isFinite(number)
-            ? number
-            : null;
+        return Number.isFinite(number) ? number : null;
     }
 
     function initialize(input) {
@@ -179,27 +179,31 @@
             return input.numberInput;
         }
 
-        const integer = input.dataset.numberInteger === "true";
-        const allowSign = input.dataset.numberAllowSign === "true";
+        const integer = input.dataset.numberInteger === 'true';
+        const allowSign = input.dataset.numberAllowSign === 'true';
 
         function setValue(value, { silent = true } = {}) {
             input.value = formatExternalValue(value, integer, allowSign);
 
             if (!silent) {
-                input.dispatchEvent(new Event("input", {
-                    bubbles: true
-                }));
+                input.dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
 
-                input.dispatchEvent(new Event("change", {
-                    bubbles: true
-                }));
+                input.dispatchEvent(
+                    new Event('change', {
+                        bubbles: true
+                    })
+                );
             }
         }
 
         function formatCurrentValue() {
             const oldValue = input.value;
             const oldCursor = input.selectionStart ?? oldValue.length;
-            const charactersBeforeCursor = oldValue.slice(0, oldCursor).replace(/\./g, "").length;
+            const charactersBeforeCursor = oldValue.slice(0, oldCursor).replace(/\./g, '').length;
             const formatted = formatInputValue(oldValue, integer, allowSign);
 
             input.value = formatted;
@@ -218,7 +222,7 @@
             let characters = 0;
 
             while (cursor < formatted.length) {
-                if (formatted[cursor] !== ".") {
+                if (formatted[cursor] !== '.') {
                     characters++;
                 }
 
@@ -236,9 +240,9 @@
             }
         }
 
-        input.addEventListener("input", formatCurrentValue);
+        input.addEventListener('input', formatCurrentValue);
 
-        input.addEventListener("blur", () => {
+        input.addEventListener('blur', () => {
             input.value = formatInputValue(input.value, integer, allowSign);
         });
 
@@ -262,7 +266,7 @@
     }
 
     function initializeAll(root = document) {
-        root.querySelectorAll("[data-number-input]").forEach(input => {
+        root.querySelectorAll('[data-number-input]').forEach((input) => {
             initialize(input);
         });
     }
@@ -272,7 +276,7 @@
             return;
         }
 
-        root.querySelectorAll("[data-number-input]").forEach(input => {
+        root.querySelectorAll('[data-number-input]').forEach((input) => {
             const instance = initialize(input);
 
             instance?.format();
@@ -295,8 +299,7 @@
         getValue
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener('DOMContentLoaded', () => {
         initializeAll();
     });
-
 })();

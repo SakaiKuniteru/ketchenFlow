@@ -1,16 +1,12 @@
 {{#if breadcrumbs}}
 
-    <nav
-        class="breadcrumb"
-        aria-label="Đường dẫn điều hướng">
+    <nav class='breadcrumb' aria-label='Đường dẫn điều hướng'>
 
-        <ol class="breadcrumb__list">
+        <ol class='breadcrumb__list'>
 
-            <li class="breadcrumb__item">
+            <li class='breadcrumb__item'>
 
-                <a
-                    href="/"
-                    class="breadcrumb__link">
+                <a href='/' class='breadcrumb__link'>
                     Trang chủ
                 </a>
 
@@ -18,27 +14,21 @@
 
             {{#each breadcrumbs}}
 
-                <li
-                    class="breadcrumb__separator"
-                    aria-hidden="true">
+                <li class='breadcrumb__separator' aria-hidden='true'>
                     /
                 </li>
 
-                <li class="breadcrumb__item">
+                <li class='breadcrumb__item'>
 
                     {{#if path}}
 
-                        <a
-                            href="{{path}}"
-                            class="breadcrumb__link">
+                        <a href='{{path}}' class='breadcrumb__link'>
                             {{label}}
                         </a>
 
                     {{else}}
 
-                        <span
-                            class="breadcrumb__current"
-                            aria-current="page">
+                        <span class='breadcrumb__current' aria-current='page'>
                             {{label}}
                         </span>
 

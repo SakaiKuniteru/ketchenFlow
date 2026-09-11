@@ -1,24 +1,18 @@
-"use strict";
+'use strict';
 
-const diaChiRepository = require("./dia-chi.repository");
+const diaChiRepository = require('./dia-chi.repository');
 
-const {
-    createExportFile
-} = require("../../../../helpers/excel/excel-export");
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const {
-    sendExcel
-} = require("../../../../helpers/excel/excel-response");
+const { sendExcel } = require('../../../../helpers/excel/excel-response');
 
-const MA_BAO_CAO = "dm_dia_chi";
+const MA_BAO_CAO = 'dm_dia_chi';
 
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
 
-
 function taoDongExport(item) {
-
     return {
         id: item.id,
         maDiaChi: item.maDiaChi,
@@ -48,14 +42,12 @@ function taoDongExport(item) {
 
         active: item.active
     };
-
 }
 
 async function xuLyExport(query = {}) {
-
     const danhSach = await diaChiRepository.getTongHop(query);
 
-    const data = danhSach.map(item => taoDongExport(item));
+    const data = danhSach.map((item) => taoDongExport(item));
 
     return await createExportFile({
         maBaoCao: MA_BAO_CAO,
@@ -64,33 +56,16 @@ async function xuLyExport(query = {}) {
         dataStartRowNumber: DATA_START_ROW,
         data
     });
-
 }
 
-async function exportData(
-    req,
-    res,
-    next
-) {
-
+async function exportData(req, res, next) {
     try {
+        const result = await xuLyExport(req.query);
 
-        const result =
-            await xuLyExport(
-                req.query
-            );
-
-        return sendExcel(
-            res,
-            result
-        );
-
+        return sendExcel(res, result);
     } catch (error) {
-
         next(error);
-
     }
-
 }
 
 module.exports = {

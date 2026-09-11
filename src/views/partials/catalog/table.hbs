@@ -1,15 +1,8 @@
-<div
-    class="catalog-table-wrapper {{#if wrapperClass}}{{wrapperClass}}{{/if}}"
-    data-catalog-table-wrapper>
+<div class="catalog-table-wrapper {{#if wrapperClass}}{{wrapperClass}}{{/if}}" data-catalog-table-wrapper>
 
-    <div
-        class="catalog-table__loading"
-        data-table-loading
-        hidden>
+    <div class="catalog-table__loading" data-table-loading hidden>
 
-        <span
-            class="catalog-table__spinner"
-            aria-hidden="true">
+        <span class="catalog-table__spinner" aria-hidden="true">
         </span>
 
         <span>
@@ -20,43 +13,33 @@
 
     <div class="catalog-table__scroll">
 
-        <table
-            id="{{#if tableId}}{{tableId}}{{else}}catalogTable{{/if}}"
-            class="catalog-table {{#if tableClass}}{{tableClass}}{{/if}}"
-            data-catalog-table>
+        <table id="{{#if tableId}}{{tableId}}{{else}}catalogTable{{/if}}"
+            class="catalog-table {{#if tableClass}}{{tableClass}}{{/if}}" data-catalog-table>
 
             <colgroup>
 
                 {{#if selectable}}
 
-                    <col
-                        class="catalog-table__col catalog-table__col--checkbox"
-                        style="width: 46px;">
+                    <col class="catalog-table__col catalog-table__col--checkbox" style="width: 46px;">
 
                 {{/if}}
 
                 {{#if showIndex}}
 
-                    <col
-                        class="catalog-table__col catalog-table__col--index"
-                        style="width: 66px;">
+                    <col class="catalog-table__col catalog-table__col--index" style="width: 66px;">
 
                 {{/if}}
 
                 {{#each columns}}
 
-                    <col
-                        class="catalog-table__col"
-                        data-column-key="{{key}}"
-                        style="
+                    <col class="catalog-table__col" data-column-key="{{key}}" style="
                             width:
                                 {{#if width}}
                                     {{width}}
                                 {{else}}
                                     180px
                                 {{/if}};
-                        "
-                    >
+                        ">
 
                 {{/each}}
 
@@ -68,15 +51,9 @@
 
                     {{#if selectable}}
 
-                        <th
-                            class="catalog-table__cell catalog-table__cell--checkbox"
-                            scope="col">
+                        <th class="catalog-table__cell catalog-table__cell--checkbox" scope="col">
 
-                            <input
-                                type="checkbox"
-                                data-table-select-all
-                                aria-label="Chọn tất cả dữ liệu"
-                            >
+                            <input type="checkbox" data-table-select-all aria-label="Chọn tất cả dữ liệu">
 
                         </th>
 
@@ -84,9 +61,7 @@
 
                     {{#if showIndex}}
 
-                        <th
-                            class="catalog-table__cell catalog-table__cell--index"
-                            scope="col">
+                        <th class="catalog-table__cell catalog-table__cell--index" scope="col">
                             STT
                         </th>
 
@@ -94,17 +69,12 @@
 
                     {{#each columns}}
 
-                        <th
-                            class="catalog-table__cell {{#if className}}{{className}}{{/if}}"
-                            scope="col"
+                        <th class="catalog-table__cell {{#if className}}{{className}}{{/if}}" scope="col"
                             data-column-key="{{key}}">
 
                             {{#if sortable}}
 
-                                <button
-                                    type="button"
-                                    class="catalog-table__sort-button"
-                                    data-sort-key="{{key}}"
+                                <button type="button" class="catalog-table__sort-button" data-sort-key="{{key}}"
                                     aria-label="Sắp xếp theo {{label}}">
 
                                     <span>
@@ -139,9 +109,7 @@
 
             </thead>
 
-            <tbody
-                id="{{#if tableBodyId}}{{tableBodyId}}{{else}}catalogTableBody{{/if}}"
-                class="catalog-table__body"
+            <tbody id="{{#if tableBodyId}}{{tableBodyId}}{{else}}catalogTableBody{{/if}}" class="catalog-table__body"
                 data-catalog-table-body>
             </tbody>
 

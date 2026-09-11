@@ -1,5 +1,4 @@
 module.exports = (
-
     error,
 
     req,
@@ -7,38 +6,24 @@ module.exports = (
     res,
 
     next
-
 ) => {
-
-    if (process.env.NODE_ENV === "development") {
-
+    if (process.env.NODE_ENV === 'development') {
         console.error(error);
-
     }
 
-    const statusCode =
-        error.statusCode || 500;
+    const statusCode = error.statusCode || 500;
 
     const response = {
-
         success: false,
 
-        message:
-            error.message ||
-            "Đã xảy ra lỗi trong quá trình xử lý.",
+        message: error.message || 'Đã xảy ra lỗi trong quá trình xử lý.',
 
         data: null
-
     };
 
-    if (process.env.NODE_ENV === "development") {
-
+    if (process.env.NODE_ENV === 'development') {
         response.stack = error.stack;
-
     }
 
-    return res
-        .status(statusCode)
-        .json(response);
-
+    return res.status(statusCode).json(response);
 };

@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const pool = require("../../config/database");
+const pool = require('../../config/database');
 
 class InBaoCaoRepository {
     async getByMa(maBaoCao) {
@@ -38,15 +38,9 @@ class InBaoCaoRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maBaoCao
-            ]
-        );
+        const result = await pool.query(sql, [maBaoCao]);
 
-        return result.rows[0] ||
-            null;
+        return result.rows[0] || null;
     }
 
     async getNguoiIn(taiKhoanId) {
@@ -79,12 +73,7 @@ class InBaoCaoRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                taiKhoanId
-            ]
-        );
+        const result = await pool.query(sql, [taiKhoanId]);
 
         if (result.rows.length === 0) {
             return null;
@@ -95,39 +84,24 @@ class InBaoCaoRepository {
         return {
             taiKhoanId: Number(row.tai_khoan_id),
 
-            nhanVienId:
-                row.nhan_vien_id !== null
-                    ? Number(row.nhan_vien_id)
-                    : null,
+            nhanVienId: row.nhan_vien_id !== null ? Number(row.nhan_vien_id) : null,
 
-            maNhanVien:
-                row.ma_nhan_vien ||
-                null,
+            maNhanVien: row.ma_nhan_vien || null,
 
-            tenDangNhap:
-                row.ten_dang_nhap ||
-                null,
+            tenDangNhap: row.ten_dang_nhap || null,
 
-            hoTen:
-                row.ho_ten ||
-                null
+            hoTen: row.ho_ten || null
         };
     }
 
-    async getThietLapTheoMa(
-        danhSachMa = []
-    ) {
+    async getThietLapTheoMa(danhSachMa = []) {
         const danhSach = [
             ...new Set(
                 danhSachMa
-                    .map(
-                        item =>
-                            String(
-                                item ||
-                                ""
-                            )
-                                .trim()
-                                .toUpperCase()
+                    .map((item) =>
+                        String(item || '')
+                            .trim()
+                            .toUpperCase()
                     )
                     .filter(Boolean)
             )
@@ -182,29 +156,15 @@ class InBaoCaoRepository {
 
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                danhSach
-            ]
-        );
+        const result = await pool.query(sql, [danhSach]);
 
-        return result.rows.map(
-            row => ({
-                maThietLap: row.ma_thiet_lap,
+        return result.rows.map((row) => ({
+            maThietLap: row.ma_thiet_lap,
 
-                giaTri:
-                    row.active === true &&
-                    row.gia_tri !== null &&
-                    row.gia_tri !== undefined
-                        ? String(row.gia_tri)
-                        : "",
+            giaTri: row.active === true && row.gia_tri !== null && row.gia_tri !== undefined ? String(row.gia_tri) : '',
 
-                active:
-                    row.active ===
-                    true
-            })
-        );
+            active: row.active === true
+        }));
     }
 }
 

@@ -1,15 +1,13 @@
-"use strict";
+'use strict';
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const permission = window.LayVeAn?.permission;
 
     if (!permission || !window.MCS?.pages?.createDataListPage) {
         return;
     }
 
-    const root = document.querySelector(
-        '[data-data-list-page][data-module="danh-sach-lay-ve"]'
-    );
+    const root = document.querySelector('[data-data-list-page][data-module="danh-sach-lay-ve"]');
 
     const permissions = await permission.load();
 
@@ -21,66 +19,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     permission.hideNoPermission(root);
 
     const DOI_TUONG = {
-        10: "Nhân viên",
-        20: "Đối tác",
-        30: "Khách"
+        10: 'Nhân viên',
+        20: 'Đối tác',
+        30: 'Khách'
     };
 
     const PAYMENT_METHOD = {
-        10: "Tiền mặt",
-        20: "Chuyển khoản",
-        30: "QR Code"
+        10: 'Tiền mặt',
+        20: 'Chuyển khoản',
+        30: 'QR Code'
     };
 
     await window.MCS.pages.createDataListPage({
-        moduleName: "danh-sach-lay-ve",
+        moduleName: 'danh-sach-lay-ve',
         permission,
         canView: () => true,
-        canCreate: currentPermissions => permission.canAccessTakePage(currentPermissions),
+        canCreate: (currentPermissions) => permission.canAccessTakePage(currentPermissions),
         pageSize: 20,
-        searchId: "layVeListSearch",
+        searchId: 'layVeListSearch',
         searchKeys: [
-            "soPhieu",
-            "maNhanVien",
-            "tenNhanVien",
-            "hoTenNguoiLayVe",
-            "tenCoSo",
-            "tenNhaAn",
-            "tenCaAn",
-            "tenThucDon"
+            'soPhieu',
+            'maNhanVien',
+            'tenNhanVien',
+            'hoTenNguoiLayVe',
+            'tenCoSo',
+            'tenNhaAn',
+            'tenCaAn',
+            'tenThucDon'
         ],
 
         onCreate() {
-            window.location.href = "/ve-an/lay-ve-an";
+            window.location.href = '/ve-an/lay-ve-an';
         },
 
         getRowUrl(record) {
-            if (
-                !permission.canViewPhieu(permissions)
-            ) {
-                return "";
+            if (!permission.canViewPhieu(permissions)) {
+                return '';
             }
 
-            return record?.id
-                ? `/ve-an/lay-ve-an/${record.id}`
-                : "";
+            return record?.id ? `/ve-an/lay-ve-an/${record.id}` : '';
         },
 
         formatCell(column, value, record) {
             switch (column.key) {
-                case "nguoiLayVe":
-                    return record.tenNhanVien || record.hoTenNguoiLayVe || "-";
+                case 'nguoiLayVe':
+                    return record.tenNhanVien || record.hoTenNguoiLayVe || '-';
 
-                case "doiTuongLayVe":
-                    return DOI_TUONG[Number(value)] || "-";
+                case 'doiTuongLayVe':
+                    return DOI_TUONG[Number(value)] || '-';
 
-                case "phuongThucThanhToan":
-                    return PAYMENT_METHOD[Number(value)] || "-";
+                case 'phuongThucThanhToan':
+                    return PAYMENT_METHOD[Number(value)] || '-';
 
-                case "trangThai":
+                case 'trangThai':
                     return renderPaymentStatus(record);
 
-                case "trangThaiSuDung":
+                case 'trangThaiSuDung':
                     return renderUsageStatus(record);
 
                 default:
@@ -89,17 +83,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
 
         getSummary(records) {
-            const total = records.reduce(
-                (sum, item) => sum + Number(item.soLuong || 0),
-                0
-            );
+            const total = records.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
 
             const paid = records.reduce(
-                (sum, item) => (
-                    Number(item.trangThai) === 40
-                        ? sum + Number(item.soLuong || 0)
-                        : sum
-                ),
+                (sum, item) => (Number(item.trangThai) === 40 ? sum + Number(item.soLuong || 0) : sum),
                 0
             );
 
@@ -119,40 +106,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         const status = Number(record?.trangThai);
 
         if (status === 40) {
-            return badge("Đã thanh toán", "success", "fa-regular fa-circle-check");
+            return badge('Đã thanh toán', 'success', 'fa-regular fa-circle-check');
         }
 
         if (status === 50) {
-            return badge("Đã hủy", "muted", "fa-solid fa-ban");
+            return badge('Đã hủy', 'muted', 'fa-solid fa-ban');
         }
 
         if (status === 60) {
-            return badge("Đã hoàn", "warning", "fa-solid fa-arrow-rotate-left");
+            return badge('Đã hoàn', 'warning', 'fa-solid fa-arrow-rotate-left');
         }
 
-        return badge("Chưa thanh toán", "danger", "fa-regular fa-circle-xmark");
+        return badge('Chưa thanh toán', 'danger', 'fa-regular fa-circle-xmark');
     }
 
     function renderUsageStatus(record) {
         if (
             record?.trangThaiSuDung === null ||
             record?.trangThaiSuDung === undefined ||
-            record?.trangThaiSuDung === ""
+            record?.trangThaiSuDung === ''
         ) {
-            return "-";
+            return '-';
         }
 
         const status = Number(record.trangThaiSuDung);
 
         if (status === 20) {
-            return badge("Đã sử dụng", "success", "fa-regular fa-circle-check");
+            return badge('Đã sử dụng', 'success', 'fa-regular fa-circle-check');
         }
 
         if (status === 30) {
-            return badge("Đã hủy", "muted", "fa-solid fa-ban");
+            return badge('Đã hủy', 'muted', 'fa-solid fa-ban');
         }
 
-        return badge("Chưa sử dụng", "warning", "fa-regular fa-clock");
+        return badge('Chưa sử dụng', 'warning', 'fa-regular fa-clock');
     }
 
     function badge(label, type, iconClass) {
@@ -171,33 +158,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function formatCommon(type, value) {
-        if (value === null || value === undefined || value === "") {
-            return "-";
+        if (value === null || value === undefined || value === '') {
+            return '-';
         }
 
-        if (type === "money") {
+        if (type === 'money') {
             const number = Number(value);
 
-            return Number.isFinite(number)
-                ? `${number.toLocaleString("vi-VN", { maximumFractionDigits: 5 })} đ`
-                : "-";
+            return Number.isFinite(number) ? `${number.toLocaleString('vi-VN', { maximumFractionDigits: 5 })} đ` : '-';
         }
 
-        if (type === "date") {
+        if (type === 'date') {
             const text = String(value).slice(0, 10);
             const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
             return match ? `${match[3]}/${match[2]}/${match[1]}` : text;
         }
 
-        if (type === "datetime") {
+        if (type === 'datetime') {
             const date = new Date(value);
 
             if (Number.isNaN(date.getTime())) {
-                return "-";
+                return '-';
             }
 
-            const pad = number => String(number).padStart(2, "0");
+            const pad = (number) => String(number).padStart(2, '0');
 
             return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())} ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
         }
@@ -208,26 +193,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     function exportCsv(records) {
         const rows = [
             [
-                "Mã phiếu",
-                "Người lấy vé",
-                "Đối tượng",
-                "Cơ sở",
-                "Nhà ăn",
-                "Ca ăn",
-                "Ngày sử dụng",
-                "Số lượng",
-                "Tiền gốc",
-                "Tiền miễn giảm",
-                "Thành tiền"
+                'Mã phiếu',
+                'Người lấy vé',
+                'Đối tượng',
+                'Cơ sở',
+                'Nhà ăn',
+                'Ca ăn',
+                'Ngày sử dụng',
+                'Số lượng',
+                'Tiền gốc',
+                'Tiền miễn giảm',
+                'Thành tiền'
             ],
-            ...records.map(item => [
-                item.soPhieu || "",
-                item.tenNhanVien || item.hoTenNguoiLayVe || "",
-                DOI_TUONG[Number(item.doiTuongLayVe)] || "",
-                item.tenCoSo || "",
-                item.tenNhaAn || "",
-                item.tenCaAn || "",
-                formatCommon("date", item.ngay),
+            ...records.map((item) => [
+                item.soPhieu || '',
+                item.tenNhanVien || item.hoTenNguoiLayVe || '',
+                DOI_TUONG[Number(item.doiTuongLayVe)] || '',
+                item.tenCoSo || '',
+                item.tenNhaAn || '',
+                item.tenCaAn || '',
+                formatCommon('date', item.ngay),
                 item.soLuong || 0,
                 item.tienGoc || 0,
                 item.tongMienGiam || 0,
@@ -235,36 +220,34 @@ document.addEventListener("DOMContentLoaded", async () => {
             ])
         ];
 
-        const csv = rows
-            .map(row => row.map(csvCell).join(","))
-            .join("\n");
+        const csv = rows.map((row) => row.map(csvCell).join(',')).join('\n');
 
-        const blob = new Blob(["\ufeff", csv], {
-            type: "text/csv;charset=utf-8"
+        const blob = new Blob(['\ufeff', csv], {
+            type: 'text/csv;charset=utf-8'
         });
 
         const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
+        const link = document.createElement('a');
 
         link.href = url;
-        link.download = "danh-sach-lay-ve.csv";
+        link.download = 'danh-sach-lay-ve.csv';
         link.click();
 
         URL.revokeObjectURL(url);
     }
 
     function csvCell(value) {
-        const text = String(value ?? "").replaceAll('"', '""');
+        const text = String(value ?? '').replaceAll('"', '""');
 
         return `"${text}"`;
     }
 
     function escapeHtml(value) {
-        return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 });

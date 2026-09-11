@@ -26,15 +26,11 @@
     width: min(100%, 560px);
     max-height: calc(100vh - 40px);
     overflow-y: auto;
-    border: 1px solid
-        rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--radius-xl);
     background: var(--color-surface);
     box-shadow: var(--shadow-lg);
-    animation:
-        modal-enter
-        180ms
-        ease-out;
+    animation: modal-enter 180ms ease-out;
 }
 
 .modal__dialog--small {
@@ -51,8 +47,7 @@
 .modal__header {
     justify-content: space-between;
     gap: 16px;
-    border-bottom: 1px solid
-        var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
 }
 
 .modal__title {
@@ -99,8 +94,7 @@
 .modal__footer {
     justify-content: flex-end;
     gap: 10px;
-    border-top: 1px solid
-        var(--color-border-light);
+    border-top: 1px solid var(--color-border-light);
 }
 
 .btn {
@@ -146,23 +140,18 @@
 }
 
 @keyframes modal-enter {
-
     from {
         opacity: 0;
-        transform: translateY(10px)
-            scale(0.98);
+        transform: translateY(10px) scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0)
-            scale(1);
+        transform: translateY(0) scale(1);
     }
-
 }
 
 @media (max-width: 520px) {
-
     .modal {
         align-items: flex-end;
         padding: 0;
@@ -172,13 +161,8 @@
     .modal__dialog--small {
         width: 100%;
         max-height: 92vh;
-        border-radius:
-            var(--radius-xl)
-            var(--radius-xl)
-            0
-            0;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     }
-
 }
 
 /* =========================================================
@@ -271,7 +255,6 @@
     background: #fef2f2;
 }
 
-
 /* =========================================================
    Form đổi mật khẩu
    ========================================================= */
@@ -311,7 +294,6 @@
 .change-password-form .form-field__required {
     color: #dc2626;
 }
-
 
 /* =========================================================
    Input mật khẩu
@@ -354,11 +336,8 @@
 
 .change-password-form .form-input:focus {
     border-color: #2563eb;
-    box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
-
 
 /* =========================================================
    Nút hiện / ẩn mật khẩu
@@ -399,9 +378,7 @@
 .change-password-form .password-field__toggle:focus-visible {
     color: #2563eb;
     background: #eff6ff;
-    box-shadow:
-        0 0 0 2px
-        rgba(37, 99, 235, 0.2);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .change-password-form .password-field__icon {
@@ -411,23 +388,17 @@
     pointer-events: none;
 }
 
-.change-password-form
-.password-field__icon--hide {
+.change-password-form .password-field__icon--hide {
     display: none;
 }
 
-.change-password-form
-.password-field__toggle.is-visible
-.password-field__icon--show {
+.change-password-form .password-field__toggle.is-visible .password-field__icon--show {
     display: none;
 }
 
-.change-password-form
-.password-field__toggle.is-visible
-.password-field__icon--hide {
+.change-password-form .password-field__toggle.is-visible .password-field__icon--hide {
     display: block;
 }
-
 
 /* =========================================================
    Danh sách yêu cầu mật khẩu
@@ -450,11 +421,7 @@
 
 .password-requirements__list {
     display: grid;
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(0, 1fr)
-        );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 5px 12px;
     margin: 0;
     padding: 0;
@@ -478,7 +445,7 @@
     justify-content: center;
     width: 13px;
     height: 13px;
-    content: "•";
+    content: '•';
     border: 1px solid #cbd5e1;
     border-radius: 50%;
     color: #94a3b8;
@@ -491,12 +458,11 @@
 }
 
 .password-requirements__list li.is-valid::before {
-    content: "✓";
+    content: '✓';
     border-color: #22c55e;
     color: #ffffff;
     background: #22c55e;
 }
-
 
 /* =========================================================
    Validation
@@ -512,8 +478,7 @@
     line-height: 1.45;
 }
 
-.change-password-form
-.form-field__error:not([hidden])::before {
+.change-password-form .form-field__error:not([hidden])::before {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
@@ -521,7 +486,7 @@
     width: 16px;
     height: 16px;
     margin-top: 1px;
-    content: "!";
+    content: '!';
     border-radius: 50%;
     color: #ffffff;
     background: #dc2626;
@@ -529,24 +494,16 @@
     font-weight: 800;
 }
 
-.change-password-form
-.form-field.is-invalid
-.form-input,
-.change-password-form
-.form-input[aria-invalid="true"] {
+.change-password-form .form-field.is-invalid .form-input,
+.change-password-form .form-input[aria-invalid='true'] {
     border-color: #dc2626;
     background: #fffafa;
-    box-shadow:
-        0 0 0 3px
-        rgba(220, 38, 38, 0.08);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
-.change-password-form
-.form-field.is-invalid
-.password-field__toggle {
+.change-password-form .form-field.is-invalid .password-field__toggle {
     color: #dc2626;
 }
-
 
 /* =========================================================
    Footer và nút
@@ -600,17 +557,13 @@
     border-color: #2563eb;
     color: #ffffff;
     background: #2563eb;
-    box-shadow:
-        0 5px 14px
-        rgba(37, 99, 235, 0.2);
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.2);
 }
 
 .change-password-form .modal-button--primary:hover {
     border-color: #1d4ed8;
     background: #1d4ed8;
-    box-shadow:
-        0 7px 18px
-        rgba(37, 99, 235, 0.26);
+    box-shadow: 0 7px 18px rgba(37, 99, 235, 0.26);
     transform: translateY(-1px);
 }
 
@@ -623,32 +576,23 @@
 .change-password-form .modal-button__spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid
-        rgba(255, 255, 255, 0.38);
+    border: 2px solid rgba(255, 255, 255, 0.38);
     border-top-color: #ffffff;
     border-radius: 50%;
-    animation:
-        change-password-spin
-        700ms
-        linear
-        infinite;
+    animation: change-password-spin 700ms linear infinite;
 }
 
 @keyframes change-password-spin {
-
     to {
         transform: rotate(360deg);
     }
-
 }
-
 
 /* =========================================================
    Mobile
    ========================================================= */
 
 @media (max-width: 520px) {
-
     .modal__dialog--change-password {
         width: calc(100vw - 20px);
         max-height: calc(100vh - 20px);
@@ -671,8 +615,7 @@
     }
 
     .password-requirements__list {
-        grid-template-columns:
-            minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .change-password-form .modal__footer {
@@ -684,7 +627,6 @@
     .change-password-form .modal-button {
         width: 100%;
     }
-
 }
 
 /* =========================================================
@@ -727,11 +669,9 @@
     height: 42px;
     border-radius: 12px;
 
-    color:
-        var(--color-primary);
+    color: var(--color-primary);
 
-    background:
-        var(--color-primary-soft);
+    background: var(--color-primary-soft);
 }
 
 .confirm-modal__icon svg {
@@ -826,30 +766,22 @@
 }
 
 .confirm-modal__button--primary {
-    border-color:
-        var(--color-primary);
+    border-color: var(--color-primary);
 
-    color:
-        #ffffff;
+    color: #ffffff;
 
-    background:
-        var(--color-primary);
+    background: var(--color-primary);
 
-    box-shadow:
-        0 5px 14px
-        rgba(37, 99, 235, 0.18);
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
 }
 
 .confirm-modal__button--primary:hover {
     border-color: #1d4ed8;
     background: #1d4ed8;
 
-    box-shadow:
-        0 7px 18px
-        rgba(37, 99, 235, 0.24);
+    box-shadow: 0 7px 18px rgba(37, 99, 235, 0.24);
 
-    transform:
-        translateY(-1px);
+    transform: translateY(-1px);
 }
 
 .confirm-modal__button--secondary:hover {
@@ -862,17 +794,13 @@
     border-color: #dc2626;
     color: #ffffff;
     background: #dc2626;
-    box-shadow:
-        0 5px 14px
-        rgba(220, 38, 38, 0.18);
+    box-shadow: 0 5px 14px rgba(220, 38, 38, 0.18);
 }
 
 .confirm-modal__button--danger:hover {
     border-color: #b91c1c;
     background: #b91c1c;
-    box-shadow:
-        0 7px 18px
-        rgba(220, 38, 38, 0.24);
+    box-shadow: 0 7px 18px rgba(220, 38, 38, 0.24);
     transform: translateY(-1px);
 }
 
@@ -883,7 +811,6 @@
 }
 
 @media (max-width: 520px) {
-
     .modal__dialog--confirm {
         width: calc(100vw - 20px);
         border-radius: 16px;
@@ -906,7 +833,6 @@
     .confirm-modal__button {
         width: 100%;
     }
-
 }
 
 .employee-profile-modal {
@@ -920,8 +846,6 @@
     overflow-y: auto;
     padding: 22px;
 }
-
-
 
 .employee-profile__avatar {
     display: flex;
@@ -955,8 +879,7 @@
 
 .employee-profile__grid {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
 }
 
@@ -979,7 +902,6 @@
 }
 
 @media (max-width: 640px) {
-
     .employee-profile__grid {
         grid-template-columns: 1fr;
     }
@@ -987,7 +909,6 @@
     .employee-profile__full-width {
         grid-column: auto;
     }
-
 }
 
 /* =========================================================
@@ -1058,7 +979,6 @@
     background: #fef2f2;
 }
 
-
 /* =========================================================
    Form thông tin nhân viên
    ========================================================= */
@@ -1081,8 +1001,7 @@
 
 .employee-profile__grid {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px 20px;
 }
 
@@ -1103,7 +1022,6 @@
     font-weight: 700;
     line-height: 1.4;
 }
-
 
 /* =========================================================
    Input, select và textarea
@@ -1133,16 +1051,7 @@
 .employee-profile-form select.form-input {
     padding-right: 38px;
     background-image:
-        linear-gradient(
-            45deg,
-            transparent 50%,
-            #64748b 50%
-        ),
-        linear-gradient(
-            135deg,
-            #64748b 50%,
-            transparent 50%
-        );
+        linear-gradient(45deg, transparent 50%, #64748b 50%), linear-gradient(135deg, #64748b 50%, transparent 50%);
     background-position:
         calc(100% - 17px) 18px,
         calc(100% - 12px) 18px;
@@ -1157,9 +1066,7 @@
 
 .employee-profile-form .form-input:focus {
     border-color: #2563eb;
-    box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .employee-profile-form .form-input:disabled {
@@ -1181,7 +1088,6 @@
     line-height: 1.55;
     resize: vertical;
 }
-
 
 /* =========================================================
    Avatar
@@ -1242,8 +1148,7 @@
     border-radius: 50%;
     color: #ffffff;
     background: #2563eb;
-    box-shadow:
-        0 5px 12px rgba(37, 99, 235, 0.28);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.28);
     transition:
         background-color 160ms ease,
         transform 160ms ease;
@@ -1254,14 +1159,12 @@
     height: 17px;
 }
 
-.employee-profile__avatar-picker:hover
-.employee-profile__avatar-overlay {
+.employee-profile__avatar-picker:hover .employee-profile__avatar-overlay {
     background: #1d4ed8;
     transform: scale(1.07);
 }
 
-.employee-profile__avatar-picker:hover
-.employee-profile__avatar {
+.employee-profile__avatar-picker:hover .employee-profile__avatar {
     box-shadow:
         0 0 0 3px rgba(37, 99, 235, 0.12),
         0 10px 26px rgba(37, 99, 235, 0.16);
@@ -1316,7 +1219,6 @@
     background: #f0fdf4;
 }
 
-
 /* =========================================================
    Footer và nút
    ========================================================= */
@@ -1369,17 +1271,13 @@
     border-color: #2563eb;
     color: #ffffff;
     background: #2563eb;
-    box-shadow:
-        0 5px 14px
-        rgba(37, 99, 235, 0.2);
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.2);
 }
 
 .employee-profile-form .modal-button--primary:hover {
     border-color: #1d4ed8;
     background: #1d4ed8;
-    box-shadow:
-        0 7px 18px
-        rgba(37, 99, 235, 0.26);
+    box-shadow: 0 7px 18px rgba(37, 99, 235, 0.26);
     transform: translateY(-1px);
 }
 
@@ -1389,13 +1287,11 @@
     transform: none;
 }
 
-
 /* =========================================================
    Responsive
    ========================================================= */
 
 @media (max-width: 640px) {
-
     .employee-profile-modal {
         width: calc(100vw - 20px);
         max-height: calc(100vh - 20px);
@@ -1411,8 +1307,7 @@
     }
 
     .employee-profile__grid {
-        grid-template-columns:
-            minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .employee-profile__full-width {
@@ -1428,7 +1323,6 @@
     .employee-profile-form .modal-button {
         width: 100%;
     }
-
 }
 
 .employee-profile__search-select {
@@ -1436,12 +1330,10 @@
     gap: 7px;
 }
 
-.employee-profile-form
-.employee-profile__search-input {
+.employee-profile-form .employee-profile__search-input {
     height: 38px;
     padding-left: 36px;
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
     background-position: 11px center;
     background-repeat: no-repeat;
     background-size: 16px;
@@ -1495,9 +1387,7 @@
 
 .searchable-select__input:focus {
     border-color: #2563eb;
-    box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .searchable-select__toggle {
@@ -1529,8 +1419,7 @@
     transition: transform 160ms ease;
 }
 
-.searchable-select.is-open
-.searchable-select__toggle svg {
+.searchable-select.is-open .searchable-select__toggle svg {
     transform: rotate(180deg);
 }
 
@@ -1593,34 +1482,25 @@
     text-align: center;
 }
 
-.searchable-select.is-disabled
-.searchable-select__input {
+.searchable-select.is-disabled .searchable-select__input {
     color: #94a3b8;
     background: #f1f5f9;
     cursor: not-allowed;
 }
 
-.searchable-select.is-disabled
-.searchable-select__toggle {
+.searchable-select.is-disabled .searchable-select__toggle {
     cursor: not-allowed;
     opacity: 0.55;
 }
 
-#confirmModal[data-confirm-type="primary"]
-.confirm-modal__icon {
-    color:
-        var(--color-primary);
+#confirmModal[data-confirm-type='primary'] .confirm-modal__icon {
+    color: var(--color-primary);
 
-    background:
-        var(--color-primary-soft);
+    background: var(--color-primary-soft);
 }
 
+#confirmModal[data-confirm-type='danger'] .confirm-modal__icon {
+    color: var(--color-danger);
 
-#confirmModal[data-confirm-type="danger"]
-.confirm-modal__icon {
-    color:
-        var(--color-danger);
-
-    background:
-        var(--color-danger-soft);
+    background: var(--color-danger-soft);
 }

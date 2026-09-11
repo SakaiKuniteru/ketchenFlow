@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const pool = require("../../config/database");
+const pool = require('../../config/database');
 
 class CauHinhRepository {
     async getThietLapByMa(ma) {
@@ -24,17 +24,9 @@ class CauHinhRepository {
             LIMIT 1
         `;
 
-        const { rows } = await pool.query(
-            query,
-            [
-                ma
-            ]
-        );
+        const { rows } = await pool.query(query, [ma]);
 
-        return (
-            rows[0] ||
-            null
-        );
+        return rows[0] || null;
     }
 
     async getCoSoByMa(maCoSo) {
@@ -58,17 +50,9 @@ class CauHinhRepository {
             LIMIT 1
         `;
 
-        const { rows } = await pool.query(
-            query,
-            [
-                maCoSo
-            ]
-        );
+        const { rows } = await pool.query(query, [maCoSo]);
 
-        return (
-            rows[0] ||
-            null
-        );
+        return rows[0] || null;
     }
 }
 

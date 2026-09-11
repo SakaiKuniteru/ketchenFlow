@@ -1,4 +1,4 @@
-const db = require("../../config/database");
+const db = require('../../config/database');
 
 /**
  * Generic Seed Helper
@@ -10,23 +10,21 @@ const db = require("../../config/database");
  */
 
 async function seedHelper({ table, unique, data }) {
-
     if (!table) {
-        throw new Error("table is required");
+        throw new Error('table is required');
     }
 
     if (!unique) {
-        throw new Error("unique is required");
+        throw new Error('unique is required');
     }
 
     if (!Array.isArray(data)) {
-        throw new Error("data must be array");
+        throw new Error('data must be array');
     }
 
     console.log(`Seeding ${table}...`);
 
     for (const item of data) {
-
         const columns = Object.keys(item);
 
         const values = Object.values(item);
@@ -35,10 +33,10 @@ async function seedHelper({ table, unique, data }) {
 
         const sql = `
             INSERT INTO ${table}
-            (${columns.join(",")})
+            (${columns.join(',')})
 
             VALUES
-            (${placeholders.join(",")})
+            (${placeholders.join(',')})
 
             ON CONFLICT (${unique})
 
@@ -46,11 +44,9 @@ async function seedHelper({ table, unique, data }) {
         `;
 
         await db.query(sql, values);
-
     }
 
     console.log(`✓ ${table} completed`);
-
 }
 
 module.exports = seedHelper;

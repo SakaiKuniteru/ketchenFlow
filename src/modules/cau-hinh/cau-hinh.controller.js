@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const cauHinhService = require("./cau-hinh.service");
-const { successResponse } = require("../../utils/response.util");
+const cauHinhService = require('./cau-hinh.service');
+const { successResponse } = require('../../utils/response.util');
 
 class CauHinhController {
     async getGiaTriPublic(req, res, next) {
@@ -10,12 +10,7 @@ class CauHinhController {
 
             const data = await cauHinhService.getGiaTriPublic(ma);
 
-            return successResponse(
-                res,
-                "Lấy giá trị thiết lập thành công.",
-                data,
-                200
-            );
+            return successResponse(res, 'Lấy giá trị thiết lập thành công.', data, 200);
         } catch (error) {
             next(error);
         }
@@ -27,12 +22,7 @@ class CauHinhController {
 
             const data = await cauHinhService.getGiaTri(ma);
 
-            return successResponse(
-                res,
-                "Lấy giá trị thiết lập thành công.",
-                data,
-                200
-            );
+            return successResponse(res, 'Lấy giá trị thiết lập thành công.', data, 200);
         } catch (error) {
             next(error);
         }

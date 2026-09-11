@@ -1,20 +1,11 @@
-const express = require("express");
+const express = require('express');
 
-const routes = require(
-    "./config"
-);
+const routes = require('./config');
 
 const router = express.Router();
 
-routes.forEach(
-    ([path, route]) => {
-
-        router.use(
-            path,
-            route
-        );
-
-    }
-);
+routes.forEach(([path, route]) => {
+    router.use(path, route);
+});
 
 module.exports = router;

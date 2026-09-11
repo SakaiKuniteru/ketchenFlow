@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    {{> common/head}}
+    <link rel="stylesheet" href="/assets/css/common/reset.css">
+    <link rel="stylesheet" href="/assets/css/common/variables.css">
+    <link rel="stylesheet" href="/assets/css/common/layout.css">
+    <link rel="stylesheet" href="/assets/css/common/header.css">
+    <link rel="stylesheet" href="/assets/css/common/footer.css">
+    <link rel="stylesheet" href="/assets/css/common/modal.css">
+    <link rel="stylesheet" href="/assets/css/common/toast.css">
+    <link rel="stylesheet" href="/assets/css/common/loading.css">
+    <link rel="stylesheet" href="/assets/css/components/search-picker.css">
+    <link rel="stylesheet" href="/assets/css/pages/dat-hang/order-flow.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body class="order-layout">
+    {{> common/loading}}
+    <div id="app">
+        {{> common/header}}
+        <main class="order-app-content">
+            {{> common/breadcrumb}}
+            <section class="order-page-content">
+                {{{body}}}
+            </section>
+            {{> common/footer}}
+        </main>
+    </div>
+    {{> common/toast}}
+    {{> modals/alert}}
+    {{> modals/confirm}}
+    {{> modals/change-password}}
+    {{> modals/employee-profile formOptions=formOptions}}
+    <script defer src="/assets/js/common/app.js"></script>
+    <script defer src="/assets/js/common/session-timeout.js"></script>
+    <script defer src="/assets/js/components/smart-select.js"></script>
+    <script defer src="/assets/js/components/search-picker.js"></script>
+    <script defer src="/assets/js/common/header.js"></script>
+    <script defer src="/assets/js/config/navigation.js"></script>
+    <script defer src="/assets/js/common/modal.js"></script>
+    <script defer src="/assets/js/common/toast.js"></script>
+    <script defer src="/assets/js/common/loading.js"></script>
+    <script defer src="/assets/js/common/change-password.js"></script>
+    {{#if orderScript}}
+        <script defer src="{{orderScript}}"></script>
+    {{/if}}
+</body>
+</html>

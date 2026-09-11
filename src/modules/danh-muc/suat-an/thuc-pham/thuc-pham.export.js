@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const { createExportFile } = require("../../../../helpers/excel/excel-export");
-const thucPhamRepository = require("./thuc-pham.repository");
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
+const thucPhamRepository = require('./thuc-pham.repository');
 
-const MA_BAO_CAO = "dm_thuc_pham";
+const MA_BAO_CAO = 'dm_thuc_pham';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;

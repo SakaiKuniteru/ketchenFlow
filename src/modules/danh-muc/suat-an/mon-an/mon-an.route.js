@@ -1,37 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { createSchema, updateSchema } = require("./mon-an.validation");
-const validate = require("../../../../middlewares/validate.middleware");
-const authenticate = require("../../../../middlewares/authenticate.middleware");
-const authorize = require("../../../../middlewares/authorize.middleware");
-const controller = require("./mon-an.controller");
-const uploadMonAn = require("./upload-mon-an.middleware");
+const { createSchema, updateSchema } = require('./mon-an.validation');
+const validate = require('../../../../middlewares/validate.middleware');
+const authenticate = require('../../../../middlewares/authenticate.middleware');
+const authorize = require('../../../../middlewares/authorize.middleware');
+const controller = require('./mon-an.controller');
+const uploadMonAn = require('./upload-mon-an.middleware');
 const validateUpdateMonAn = validate(updateSchema);
-const multer = require("multer");
-const excelController = require("./mon-an.excel");
+const multer = require('multer');
+const excelController = require('./mon-an.excel');
 
-function parseDsThucPham(
-    req,
-    res,
-    next
-) {
+function parseDsThucPham(req, res, next) {
     try {
-        if (
-            typeof req.body?.dsThucPham ===
-            "string"
-        ) {
-            req.body.dsThucPham = JSON.parse(
-                req.body.dsThucPham
-            );
+        if (typeof req.body?.dsThucPham === 'string') {
+            req.body.dsThucPham = JSON.parse(req.body.dsThucPham);
         }
 
         return next();
     } catch (error) {
-        return next(
-            new Error(
-                "Danh sách thực phẩm không hợp lệ."
-            )
-        );
+        return next(new Error('Danh sách thực phẩm không hợp lệ.'));
     }
 }
 
@@ -42,99 +29,53 @@ const upload = multer({
     }
 });
 
-function validateMonAnUpdate(
-    req,
-    res,
-    next
-) {
-    const hasBody = Object.keys(
-        req.body || {}
-    ).length > 0;
+function validateMonAnUpdate(req, res, next) {
+    const hasBody = Object.keys(req.body || {}).length > 0;
 
-    const hasFile = Boolean(
-        req.file
-    );
+    const hasFile = Boolean(req.file);
 
-    if (
-        !hasBody &&
-        hasFile
-    ) {
+    if (!hasBody && hasFile) {
         return next();
     }
 
-    return validateUpdateMonAn(
-        req,
-        res,
-        next
-    );
+    return validateUpdateMonAn(req, res, next);
 }
 
-router.get(
-    "/tong-hop",
-    authenticate,
-    authorize("Q000020"),
-    controller.getTongHop
-);
+router.get('/tong-hop', authenticate, authorize('Q000020'), controller.getTongHop);
 
-router.get(
-    "/xuat-du-lieu",
-    authenticate,
-    authorize("Q100001"),
-    excelController.exportData
-);
+router.get('/xuat-du-lieu', authenticate, authorize('Q100001'), excelController.exportData);
+
+router.post('/import-du-lieu', authenticate, authorize('Q100002'), upload.single('file'), excelController.importData);
+
+router.get('/xuat-cong-thuc', authenticate, authorize('Q100001'), excelController.exportCongThuc);
 
 router.post(
-    "/import-du-lieu",
+    '/import-cong-thuc',
     authenticate,
-    authorize("Q100002"),
-    upload.single("file"),
-    excelController.importData
-);
-
-router.get(
-    "/xuat-cong-thuc",
-    authenticate,
-    authorize("Q100001"),
-    excelController.exportCongThuc
-);
-
-router.post(
-    "/import-cong-thuc",
-    authenticate,
-    authorize("Q100002"),
-    upload.single("file"),
+    authorize('Q100002'),
+    upload.single('file'),
     excelController.importCongThuc
 );
 
-router.post(
-    "/cap-nhat-gia",
-    authenticate,
-    authorize("Q000554", "Q000555"),
-    controller.capNhatGia
-);
+router.post('/cap-nhat-gia', authenticate, authorize('Q000554', 'Q000555'), controller.capNhatGia);
 
-router.get(
-    "/:id",
-    authenticate,
-    authorize("Q000553", "Q000554", "Q000555"),
-    controller.getChiTiet
-);
+router.get('/:id', authenticate, authorize('Q000553', 'Q000554', 'Q000555'), controller.getChiTiet);
 
 router.post(
-    "/them-moi",
+    '/them-moi',
     authenticate,
-    authorize("Q000554", "Q000555"),
-    uploadMonAn.single("hinhAnh"),
+    authorize('Q000554', 'Q000555'),
+    uploadMonAn.single('hinhAnh'),
     parseDsThucPham,
     validate(createSchema),
     controller.create
 );
 
 router.patch(
-    "/cap-nhat/:id",
+    '/cap-nhat/:id',
     authenticate,
-    authorize("Q000555"),
-    uploadMonAn.single("hinhAnh"),
+    authorize('Q000555'),
+    uploadMonAn.single('hinhAnh'),
     parseDsThucPham,
     validateMonAnUpdate,
     controller.update

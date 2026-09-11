@@ -1,121 +1,79 @@
-const pool =
-    require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class DiaChiRepository {
-
     mapDiaChi(row) {
-
         if (!row) {
             return null;
         }
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maDiaChi: row.ma_dia_chi,
 
-            maDiaChi:
-                row.ma_dia_chi,
+            tenDiaChi: row.ten_dia_chi,
 
-            tenDiaChi:
-                row.ten_dia_chi,
+            quocGiaId: row.quoc_gia_id,
 
-            quocGiaId:
-                row.quoc_gia_id,
+            quocGia: row.quoc_gia_id
+                ? {
+                      id: row.quoc_gia_id,
 
-            quocGia:
-                row.quoc_gia_id
-                    ? {
+                      ma: row.ma_quoc_gia,
 
-                        id:
-                            row.quoc_gia_id,
+                      ten: row.ten_quoc_gia,
 
-                        ma:
-                            row.ma_quoc_gia,
+                      tenTiengAnh: row.ten_tieng_anh,
 
-                        ten:
-                            row.ten_quoc_gia,
+                      tenVietTat: row.quoc_gia_ten_viet_tat,
 
-                        tenTiengAnh:
-                            row.ten_tieng_anh,
+                      maDienThoai: row.ma_dien_thoai,
 
-                        tenVietTat:
-                            row.quoc_gia_ten_viet_tat,
+                      maIso2: row.ma_iso2,
 
-                        maDienThoai:
-                            row.ma_dien_thoai,
+                      maIso3: row.ma_iso3,
 
-                        maIso2:
-                            row.ma_iso2,
+                      active: row.quoc_gia_active
+                  }
+                : null,
 
-                        maIso3:
-                            row.ma_iso3,
+            tinhThanhId: row.tinh_thanh_id,
 
-                        active:
-                            row.quoc_gia_active
+            tinhThanh: row.tinh_thanh_id
+                ? {
+                      id: row.tinh_thanh_id,
 
-                    }
-                    : null,
+                      ma: row.ma_tinh_thanh,
 
-            tinhThanhId:
-                row.tinh_thanh_id,
+                      ten: row.ten_tinh_thanh,
 
-            tinhThanh:
-                row.tinh_thanh_id
-                    ? {
+                      tenVietTat: row.tinh_thanh_ten_viet_tat,
 
-                        id:
-                            row.tinh_thanh_id,
+                      active: row.tinh_thanh_active
+                  }
+                : null,
 
-                        ma:
-                            row.ma_tinh_thanh,
+            xaPhuongId: row.xa_phuong_id,
 
-                        ten:
-                            row.ten_tinh_thanh,
+            xaPhuong: row.xa_phuong_id
+                ? {
+                      id: row.xa_phuong_id,
 
-                        tenVietTat:
-                            row.tinh_thanh_ten_viet_tat,
+                      ma: row.ma_xa_phuong,
 
-                        active:
-                            row.tinh_thanh_active
+                      ten: row.ten_xa_phuong,
 
-                    }
-                    : null,
+                      tenVietTat: row.xa_phuong_ten_viet_tat,
 
-            xaPhuongId:
-                row.xa_phuong_id,
+                      active: row.xa_phuong_active
+                  }
+                : null,
 
-            xaPhuong:
-                row.xa_phuong_id
-                    ? {
-
-                        id:
-                            row.xa_phuong_id,
-
-                        ma:
-                            row.ma_xa_phuong,
-
-                        ten:
-                            row.ten_xa_phuong,
-
-                        tenVietTat:
-                            row.xa_phuong_ten_viet_tat,
-
-                        active:
-                            row.xa_phuong_active
-
-                    }
-                    : null,
-
-            active:
-                row.active
-
+            active: row.active
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -151,11 +109,9 @@ class DiaChiRepository {
             FROM dm_dia_chi dc
 
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -165,17 +121,12 @@ class DiaChiRepository {
                 dc.ten_xa_phuong ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapDiaChi(row)
-        );
-
+        return result.rows.map((row) => this.mapDiaChi(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -184,25 +135,14 @@ class DiaChiRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
-        if (
-            result.rows.length === 0
-        ) {
+        if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapDiaChi(
-            result.rows[0]
-        );
-
+        return this.mapDiaChi(result.rows[0]);
     }
-
 }
 
-module.exports =
-    new DiaChiRepository();
+module.exports = new DiaChiRepository();

@@ -18,10 +18,7 @@
                 <div class="data-list-bulk-actions">
 
                     {{#each listPage.bulkActions}}
-                        <button
-                            type="button"
-                            class="data-list-btn {{className}}"
-                            data-list-bulk-action="{{action}}"
+                        <button type="button" class="data-list-btn {{className}}" data-list-bulk-action="{{action}}"
                             disabled>
 
                             {{#if icon}}
@@ -49,12 +46,9 @@
                 <tr>
 
                     {{#if listPage.selectable}}
-                        <th
-                            class="catalog-table__cell catalog-table__cell--center data-list-table__selection">
+                        <th class="catalog-table__cell catalog-table__cell--center data-list-table__selection">
 
-                            <div
-                                class="data-list-selection-control"
-                                data-list-select-all>
+                            <div class="data-list-selection-control" data-list-select-all>
 
                                 {{> forms/checkbox
                                     id="dataListSelectAllCheckbox"
@@ -78,19 +72,13 @@
                     {{/if}}
 
                     {{#each listPage.columns}}
-                        <th
-                            class="catalog-table__cell catalog-table__cell--center"
-                            data-list-column
-                            data-column-key="{{key}}"
-                            data-column-type="{{type}}"
-                            {{#if width}}style="width: {{width}}; min-width: {{width}};"{{/if}}>
+                        <th class="catalog-table__cell catalog-table__cell--center" data-list-column
+                            data-column-key="{{key}}" data-column-type="{{type}}"
+                            {{#if width}}style="width: {{width}}; min-width: {{width}};" {{/if}}>
 
                             {{#if sortable}}
 
-                                <button
-                                    type="button"
-                                    class="data-list-sort-button"
-                                    data-list-sort="{{key}}"
+                                <button type="button" class="data-list-sort-button" data-list-sort="{{key}}"
                                     aria-label="Sắp xếp theo {{label}}">
 
                                     <span class="data-list-sort-button__label">
@@ -113,8 +101,7 @@
                     {{/each}}
 
                     {{#if listPage.showRowActions}}
-                        <th
-                            class="catalog-table__cell catalog-table__cell--center data-list-table__actions-sticky"
+                        <th class="catalog-table__cell catalog-table__cell--center data-list-table__actions-sticky"
                             data-list-row-actions-column>
 
                             Thao tác
@@ -125,14 +112,10 @@
                 </tr>
             </thead>
 
-            <tbody
-                class="catalog-table__body"
-                data-list-body>
+            <tbody class="catalog-table__body" data-list-body>
 
                 <tr>
-                    <td
-                        class="catalog-table__cell data-list-table__empty"
-                        colspan="{{listPage.colspan}}">
+                    <td class="catalog-table__cell data-list-table__empty" colspan="{{listPage.colspan}}">
 
                         Đang tải dữ liệu...
 

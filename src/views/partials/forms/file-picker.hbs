@@ -1,12 +1,8 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
     {{#if label}}
 
-        <label
-            class="form-field__label"
-            for="{{id}}">
+        <label class="form-field__label" for="{{id}}">
 
             <span>
                 {{label}}
@@ -14,9 +10,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -26,25 +20,17 @@
 
     {{/if}}
 
-    <div
-        class="file-picker"
-        data-file-picker>
+    <div class="file-picker" data-file-picker>
 
         <div class="file-picker__control">
 
-            <span
-                class="file-picker__icon"
-                aria-hidden="true">
+            <span class="file-picker__icon" aria-hidden="true">
 
                 <i class="fa-solid fa-paperclip"></i>
 
             </span>
 
-            <button
-                type="button"
-                class="file-picker__name"
-                data-file-picker-name
-                data-file-picker-download
+            <button type="button" class="file-picker__name" data-file-picker-name data-file-picker-download
                 title="Tải file xuống">
 
                 {{#if value}}
@@ -59,49 +45,22 @@
 
             </button>
 
-            <label
-                class="file-picker__action"
-                for="{{id}}"
-                data-file-picker-upload
-                title="Tải file lên">
+            <label class="file-picker__action" for="{{id}}" data-file-picker-upload title="Tải file lên">
 
-                <i
-                    class="fa-solid fa-cloud-arrow-up"
-                    aria-hidden="true">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true">
                 </i>
 
             </label>
 
         </div>
 
-        <input
-            id="{{id}}"
-            name="{{name}}"
-            class="file-picker__input"
-            type="file"
-            data-file-picker-input
-
-            {{#if accept}}
-                accept="{{accept}}"
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-        >
+        <input id="{{id}}" name="{{name}}" class="file-picker__input" type="file" data-file-picker-input {{#if accept}}
+            accept="{{accept}}" {{/if}} {{#if required}} required aria-required="true" {{/if}} {{#if disabled}} disabled
+            {{/if}}>
 
     </div>
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

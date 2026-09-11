@@ -1,96 +1,50 @@
-"use strict";
+'use strict';
 
-const {
-    createExportFile
-} = require(
-    "../../../../helpers/excel/excel-export"
-);
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const donViTinhRepository =
-    require(
-        "./don-vi-tinh.repository"
-    );
+const donViTinhRepository = require('./don-vi-tinh.repository');
 
+const MA_BAO_CAO = 'dm_don_vi_tinh';
 
-const MA_BAO_CAO =
-    "dm_don_vi_tinh";
+const HEADER_ROW = 3;
 
-const HEADER_ROW =
-    3;
+const TEMPLATE_ROW = 5;
 
-const TEMPLATE_ROW =
-    5;
+const DATA_START_ROW = 5;
 
-const DATA_START_ROW =
-    5;
-
-
-function mapExportItem(
-    item
-) {
-
+function mapExportItem(item) {
     return {
+        id: item.id,
 
-        id:
-            item.id,
+        maDonViTinh: item.maDonViTinh,
 
-        maDonViTinh:
-            item.maDonViTinh,
+        tenDonViTinh: item.tenDonViTinh,
 
-        tenDonViTinh:
-            item.tenDonViTinh,
+        kyHieu: item.kyHieu,
 
-        kyHieu:
-            item.kyHieu,
+        loaiDonVi: item.loaiDonVi,
 
-        loaiDonVi:
-            item.loaiDonVi,
-
-        active:
-            item.active
-
+        active: item.active
     };
-
 }
 
-
-async function exportDonViTinh(
-    query = {}
-) {
-
-    const danhSach =
-        await donViTinhRepository
-            .getTongHop(
-                query
-            );
-
+async function exportDonViTinh(query = {}) {
+    const danhSach = await donViTinhRepository.getTongHop(query);
 
     return createExportFile({
+        maBaoCao: MA_BAO_CAO,
 
-        maBaoCao:
-            MA_BAO_CAO,
+        headerRowNumber: HEADER_ROW,
 
-        headerRowNumber:
-            HEADER_ROW,
+        templateRowNumber: TEMPLATE_ROW,
 
-        templateRowNumber:
-            TEMPLATE_ROW,
+        dataStartRowNumber: DATA_START_ROW,
 
-        dataStartRowNumber:
-            DATA_START_ROW,
-
-        data:
-            danhSach.map(
-                mapExportItem
-            )
-
+        data: danhSach.map(mapExportItem)
     });
-
 }
 
-
 module.exports = {
-
     MA_BAO_CAO,
 
     HEADER_ROW,
@@ -100,5 +54,4 @@ module.exports = {
     DATA_START_ROW,
 
     exportDonViTinh
-
 };

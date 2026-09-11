@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 
@@ -13,15 +13,15 @@ window.MCS.smartSelect = {
         }
 
         const elements = {
-            native: root.querySelector("[data-smart-select-native]"),
-            control: root.querySelector("[data-smart-select-control]"),
-            selection: root.querySelector("[data-smart-select-selection]"),
-            search: root.querySelector("[data-smart-select-search]"),
-            toggle: root.querySelector("[data-smart-select-toggle]"),
-            clear: root.querySelector("[data-smart-select-clear]"),
-            dropdown: root.querySelector("[data-smart-select-dropdown]"),
-            options: root.querySelector("[data-smart-select-options]"),
-            empty: root.querySelector("[data-smart-select-empty]")
+            native: root.querySelector('[data-smart-select-native]'),
+            control: root.querySelector('[data-smart-select-control]'),
+            selection: root.querySelector('[data-smart-select-selection]'),
+            search: root.querySelector('[data-smart-select-search]'),
+            toggle: root.querySelector('[data-smart-select-toggle]'),
+            clear: root.querySelector('[data-smart-select-clear]'),
+            dropdown: root.querySelector('[data-smart-select-dropdown]'),
+            options: root.querySelector('[data-smart-select-options]'),
+            empty: root.querySelector('[data-smart-select-empty]')
         };
 
         if (
@@ -32,23 +32,20 @@ window.MCS.smartSelect = {
             !elements.dropdown ||
             !elements.options
         ) {
-            console.error(
-                "Smart Select thiếu phần tử bắt buộc:",
-                root
-            );
+            console.error('Smart Select thiếu phần tử bắt buộc:', root);
 
             return null;
         }
 
-        const mode = root.dataset.selectMode || "single";
-        const compactMultiple = root.dataset.selectCompactMultiple === "true";
-        const checkboxOptions = root.dataset.selectCheckboxOptions === "true";
+        const mode = root.dataset.selectMode || 'single';
+        const compactMultiple = root.dataset.selectCompactMultiple === 'true';
+        const checkboxOptions = root.dataset.selectCheckboxOptions === 'true';
 
         function getPlaceholder() {
-            return root.dataset.selectPlaceholder || "Chọn dữ liệu...";
+            return root.dataset.selectPlaceholder || 'Chọn dữ liệu...';
         }
 
-        const allLabel = root.dataset.selectAllLabel || "Tất cả";
+        const allLabel = root.dataset.selectAllLabel || 'Tất cả';
 
         const state = {
             opened: false,
@@ -66,42 +63,26 @@ window.MCS.smartSelect = {
 
         function getNormalOptions() {
             return getOptions().filter(
-                option =>
-                    option.value !== "" &&
-                    option.value !== "__ALL__" &&
-                    !option.disabled
+                (option) => option.value !== '' && option.value !== '__ALL__' && !option.disabled
             );
         }
 
         function getSelectedOptions() {
             return getOptions().filter(
-                option =>
-                    option.selected &&
-                    option.value !== "" &&
-                    option.value !== "__ALL__"
+                (option) => option.selected && option.value !== '' && option.value !== '__ALL__'
             );
         }
 
         function getAllOption() {
-            return getOptions().find(
-                option => option.value === "__ALL__"
-            ) || null;
+            return getOptions().find((option) => option.value === '__ALL__') || null;
         }
 
         function getRenderedOptionButtons() {
-            return Array
-                .from(
-                    elements.options.querySelectorAll(
-                        ".smart-select__option:not(:disabled)"
-                    )
-                );
+            return Array.from(elements.options.querySelectorAll('.smart-select__option:not(:disabled)'));
         }
 
-        function setActiveIndex(
-            index
-        ) {
-            const buttons =
-                getRenderedOptionButtons();
+        function setActiveIndex(index) {
+            const buttons = getRenderedOptionButtons();
 
             if (!buttons.length) {
                 state.activeIndex = -1;
@@ -109,60 +90,33 @@ window.MCS.smartSelect = {
                 return;
             }
 
-            let nextIndex =
-                Number(index);
+            let nextIndex = Number(index);
 
-            if (
-                !Number.isInteger(
-                    nextIndex
-                )
-            ) {
+            if (!Number.isInteger(nextIndex)) {
                 nextIndex = 0;
             }
 
             if (nextIndex < 0) {
-                nextIndex =
-                    buttons.length - 1;
+                nextIndex = buttons.length - 1;
             }
 
-            if (
-                nextIndex >=
-                buttons.length
-            ) {
+            if (nextIndex >= buttons.length) {
                 nextIndex = 0;
             }
 
-            state.activeIndex =
-                nextIndex;
+            state.activeIndex = nextIndex;
 
-            buttons.forEach(
-                (
-                    button,
-                    buttonIndex
-                ) => {
+            buttons.forEach((button, buttonIndex) => {
+                button.classList.toggle('is-highlighted', buttonIndex === nextIndex);
+            });
 
-                    button.classList.toggle(
-                        "is-highlighted",
-                        buttonIndex ===
-                            nextIndex
-                    );
-
-                }
-            );
-
-            buttons[
-                nextIndex
-            ]?.scrollIntoView({
-                block:
-                    "nearest"
+            buttons[nextIndex]?.scrollIntoView({
+                block: 'nearest'
             });
         }
 
-        function setActiveValue(
-            value
-        ) {
-            const buttons =
-                getRenderedOptionButtons();
+        function setActiveValue(value) {
+            const buttons = getRenderedOptionButtons();
 
             if (!buttons.length) {
                 state.activeIndex = -1;
@@ -170,50 +124,21 @@ window.MCS.smartSelect = {
                 return;
             }
 
-            const index =
-                buttons.findIndex(
-                    button =>
-                        String(
-                            button.dataset
-                                .optionValue
-                        ) ===
-                        String(
-                            value
-                        )
-                );
+            const index = buttons.findIndex((button) => String(button.dataset.optionValue) === String(value));
 
-            setActiveIndex(
-                index >= 0
-                    ? index
-                    : 0
-            );
+            setActiveIndex(index >= 0 ? index : 0);
         }
 
         function getActiveOption() {
-            const buttons =
-                getRenderedOptionButtons();
+            const buttons = getRenderedOptionButtons();
 
-            const button =
-                buttons[
-                    state.activeIndex
-                ];
+            const button = buttons[state.activeIndex];
 
             if (!button) {
                 return null;
             }
 
-            return getOptions()
-                .find(
-                    option =>
-                        String(
-                            option.value
-                        ) ===
-                        String(
-                            button.dataset
-                                .optionValue
-                        )
-                ) ||
-                null;
+            return getOptions().find((option) => String(option.value) === String(button.dataset.optionValue)) || null;
         }
 
         function isAllSelected() {
@@ -229,11 +154,11 @@ window.MCS.smartSelect = {
         }
 
         function bindEvents() {
-            elements.control.addEventListener("click", event => {
+            elements.control.addEventListener('click', (event) => {
                 if (
-                    event.target.closest("[data-smart-select-remove]") ||
-                    event.target.closest("[data-smart-select-toggle]") ||
-                    event.target.closest("[data-smart-select-clear]")
+                    event.target.closest('[data-smart-select-remove]') ||
+                    event.target.closest('[data-smart-select-toggle]') ||
+                    event.target.closest('[data-smart-select-clear]')
                 ) {
                     return;
                 }
@@ -245,14 +170,14 @@ window.MCS.smartSelect = {
                 open(true);
             });
 
-            elements.toggle?.addEventListener("click", event => {
+            elements.toggle?.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
 
                 toggle();
             });
 
-            elements.clear?.addEventListener("click", event => {
+            elements.clear?.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -265,24 +190,24 @@ window.MCS.smartSelect = {
                 syncControlState();
             });
 
-            elements.search.addEventListener("focus", () => {
+            elements.search.addEventListener('focus', () => {
                 if (elements.native.disabled) {
                     return;
                 }
 
                 state.searching = true;
 
-                root.classList.add("is-searching");
+                root.classList.add('is-searching');
 
                 if (!state.opened) {
                     open(false);
                 }
             });
 
-            elements.search.addEventListener("input", () => {
+            elements.search.addEventListener('input', () => {
                 state.searching = true;
 
-                root.classList.add("is-searching");
+                root.classList.add('is-searching');
 
                 renderOptions(elements.search.value);
 
@@ -291,136 +216,77 @@ window.MCS.smartSelect = {
                 }
             });
 
-            elements.search.addEventListener(
-                "keydown",
-                event => {
+            elements.search.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
 
-                    if (
-                        event.key ===
-                        "ArrowDown"
-                    ) {
-
-                        event.preventDefault();
-
-                        if (!state.opened) {
-
-                            open(
-                                false
-                            );
-
-                            return;
-
-                        }
-
-                        setActiveIndex(
-                            state.activeIndex + 1
-                        );
+                    if (!state.opened) {
+                        open(false);
 
                         return;
-
                     }
 
+                    setActiveIndex(state.activeIndex + 1);
 
-                    if (
-                        event.key ===
-                        "ArrowUp"
-                    ) {
-
-                        event.preventDefault();
-
-                        if (!state.opened) {
-
-                            open(
-                                false
-                            );
-
-                            return;
-
-                        }
-
-                        setActiveIndex(
-                            state.activeIndex - 1
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        if (!state.opened) {
-
-                            event.preventDefault();
-
-                            open(
-                                false
-                            );
-
-                            return;
-
-                        }
-
-
-                        const option =
-                            getActiveOption();
-
-
-                        if (!option) {
-                            return;
-                        }
-
-
-                        event.preventDefault();
-
-                        selectOption(
-                            option
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        event.key ===
-                        "Escape"
-                    ) {
-
-                        event.preventDefault();
-
-                        close();
-
-                        elements.search.blur();
-
-                        return;
-
-                    }
-
-
-                    if (
-                        event.key ===
-                            "Backspace" &&
-                        !elements.search.value &&
-                        mode ===
-                            "multiple"
-                    ) {
-
-                        removeLastValue();
-
-                    }
-
+                    return;
                 }
-            );
 
-            root.addEventListener("click", event => {
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+
+                    if (!state.opened) {
+                        open(false);
+
+                        return;
+                    }
+
+                    setActiveIndex(state.activeIndex - 1);
+
+                    return;
+                }
+
+                if (event.key === 'Enter') {
+                    if (!state.opened) {
+                        event.preventDefault();
+
+                        open(false);
+
+                        return;
+                    }
+
+                    const option = getActiveOption();
+
+                    if (!option) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    selectOption(option);
+
+                    return;
+                }
+
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+
+                    close();
+
+                    elements.search.blur();
+
+                    return;
+                }
+
+                if (event.key === 'Backspace' && !elements.search.value && mode === 'multiple') {
+                    removeLastValue();
+                }
+            });
+
+            root.addEventListener('click', (event) => {
                 event.stopPropagation();
             });
 
-            document.addEventListener("click", event => {
+            document.addEventListener('click', (event) => {
                 if (!root.contains(event.target)) {
                     close();
                 }
@@ -439,21 +305,13 @@ window.MCS.smartSelect = {
 
             elements.dropdown.hidden = false;
 
-            root.classList.add(
-                "is-open",
-                "is-searching"
-            );
+            root.classList.add('is-open', 'is-searching');
 
-            elements.toggle?.setAttribute(
-                "aria-expanded",
-                "true"
-            );
+            elements.toggle?.setAttribute('aria-expanded', 'true');
 
             elements.search.hidden = false;
 
-            elements.search.placeholder = hasValue()
-                ? ""
-                : getPlaceholder();
+            elements.search.placeholder = hasValue() ? '' : getPlaceholder();
 
             renderOptions(elements.search.value);
             syncControlState();
@@ -472,18 +330,12 @@ window.MCS.smartSelect = {
 
             elements.dropdown.hidden = true;
 
-            root.classList.remove(
-                "is-open",
-                "is-searching"
-            );
+            root.classList.remove('is-open', 'is-searching');
 
-            elements.toggle?.setAttribute(
-                "aria-expanded",
-                "false"
-            );
+            elements.toggle?.setAttribute('aria-expanded', 'false');
 
-            elements.search.value = "";
-            elements.search.placeholder = "";
+            elements.search.value = '';
+            elements.search.placeholder = '';
 
             renderOptions();
             renderSelection();
@@ -491,40 +343,30 @@ window.MCS.smartSelect = {
         }
 
         function closeOtherPopups() {
-            document
-                .querySelectorAll("[data-smart-select]")
-                .forEach(item => {
-                    if (item === root) {
-                        return;
-                    }
+            document.querySelectorAll('[data-smart-select]').forEach((item) => {
+                if (item === root) {
+                    return;
+                }
 
-                    const api = item.smartSelect;
+                const api = item.smartSelect;
 
-                    if (
-                        api &&
-                        typeof api.close === "function"
-                    ) {
-                        api.close();
-                    }
-                });
+                if (api && typeof api.close === 'function') {
+                    api.close();
+                }
+            });
 
-            document
-                .querySelectorAll("[data-date-picker]")
-                .forEach(item => {
-                    const dropdown = item.querySelector("[data-date-dropdown]");
-                    const toggle = item.querySelector("[data-date-toggle]");
+            document.querySelectorAll('[data-date-picker]').forEach((item) => {
+                const dropdown = item.querySelector('[data-date-dropdown]');
+                const toggle = item.querySelector('[data-date-toggle]');
 
-                    if (dropdown) {
-                        dropdown.hidden = true;
-                    }
+                if (dropdown) {
+                    dropdown.hidden = true;
+                }
 
-                    toggle?.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
+                toggle?.setAttribute('aria-expanded', 'false');
 
-                    item.classList.remove("is-open");
-                });
+                item.classList.remove('is-open');
+            });
         }
 
         function toggle() {
@@ -536,85 +378,73 @@ window.MCS.smartSelect = {
             open(true);
         }
 
-        function renderOptions(keyword = "", preferredValue = null) {
+        function renderOptions(keyword = '', preferredValue = null) {
             const normalizedKeyword = normalizeSearchText(keyword);
 
-            elements.options.innerHTML = "";
+            elements.options.innerHTML = '';
 
-            const visibleOptions = getOptions().filter(option => {
-                if (option.value === "") {
+            const visibleOptions = getOptions().filter((option) => {
+                if (option.value === '') {
                     return false;
                 }
 
                 const optionLabel = normalizeSearchText(option.textContent);
 
-                return (
-                    !normalizedKeyword ||
-                    optionLabel.includes(normalizedKeyword)
-                );
+                return !normalizedKeyword || optionLabel.includes(normalizedKeyword);
             });
 
-            visibleOptions.forEach(option => {
-                const button = document.createElement("button");
+            visibleOptions.forEach((option) => {
+                const button = document.createElement('button');
 
-                button.type = "button";
-                button.className = "smart-select__option";
+                button.type = 'button';
+                button.className = 'smart-select__option';
                 button.dataset.optionValue = option.value;
 
-                button.addEventListener(
-                    "mouseenter",
-                    () => {
-
-                        if (button.disabled) {
-                            return;
-                        }
-
-                        const buttons = getRenderedOptionButtons();
-
-                        const index = buttons.indexOf(
-                                button
-                            );
-
-                        if (index < 0) {
-                            return;
-                        }
-
-                        setActiveIndex(
-                            index
-                        );
-
+                button.addEventListener('mouseenter', () => {
+                    if (button.disabled) {
+                        return;
                     }
-                );
 
-                if (option.value === "__ALL__") {
-                    button.dataset.optionAll = "true";
+                    const buttons = getRenderedOptionButtons();
+
+                    const index = buttons.indexOf(button);
+
+                    if (index < 0) {
+                        return;
+                    }
+
+                    setActiveIndex(index);
+                });
+
+                if (option.value === '__ALL__') {
+                    button.dataset.optionAll = 'true';
                 }
 
                 if (option.selected) {
-                    button.classList.add("is-selected");
+                    button.classList.add('is-selected');
                 }
 
                 if (option.disabled) {
                     button.disabled = true;
-                    button.classList.add("is-disabled");
+                    button.classList.add('is-disabled');
                 }
 
-                const label = document.createElement("span");
+                const label = document.createElement('span');
 
-                label.className = "smart-select__option-label";
+                label.className = 'smart-select__option-label';
                 label.textContent = option.textContent.trim();
 
                 if (checkboxOptions) {
-                    const check = document.createElement("span");
+                    const check = document.createElement('span');
 
-                    check.className = "smart-select__check";
+                    check.className = 'smart-select__check';
 
-                    const checkBox = document.createElement("span");
+                    const checkBox = document.createElement('span');
 
-                    checkBox.className = "smart-select__checkbox";
+                    checkBox.className = 'smart-select__checkbox';
 
                     if (option.selected) {
-                        checkBox.classList.add("is-checked");
+                        checkBox.classList.add('is-checked');
                     }
 
                     checkBox.innerHTML = `
@@ -629,24 +459,20 @@ window.MCS.smartSelect = {
                     button.appendChild(check);
                     button.appendChild(label);
                 } else {
-                    
                     button.appendChild(label);
 
-                    const check = document.createElement("span");
+                    const check = document.createElement('span');
 
-                    check.className = "smart-select__default-check";
+                    check.className = 'smart-select__default-check';
 
-                    check.setAttribute(
-                        "aria-hidden",
-                        "true"
-                    );
+                    check.setAttribute('aria-hidden', 'true');
 
-                    check.textContent = "✓";
+                    check.textContent = '✓';
 
                     button.appendChild(check);
                 }
 
-                button.addEventListener("click", event => {
+                button.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -657,10 +483,7 @@ window.MCS.smartSelect = {
             });
 
             if (elements.empty) {
-                elements.empty.hidden =
-                    visibleOptions.length === 0
-                        ? false
-                        : true;
+                elements.empty.hidden = visibleOptions.length === 0 ? false : true;
             }
 
             if (!state.opened) {
@@ -676,18 +499,18 @@ window.MCS.smartSelect = {
         }
 
         function selectOption(option) {
-            if (mode === "multiple") {
+            if (mode === 'multiple') {
                 const activeValue = option.value;
                 selectMultiple(option);
                 emitChange();
-                elements.search.value = "";
-                renderOptions("", activeValue);
+                elements.search.value = '';
+                renderOptions('', activeValue);
                 renderSelection();
                 elements.search.focus();
                 return;
             }
 
-            getOptions().forEach(item => {
+            getOptions().forEach((item) => {
                 item.selected = false;
             });
 
@@ -703,12 +526,10 @@ window.MCS.smartSelect = {
             const allOption = getAllOption();
             const normalOptions = getNormalOptions();
 
-            if (option.value === "__ALL__") {
-                const shouldSelectAll = !normalOptions.every(
-                    item => item.selected
-                );
+            if (option.value === '__ALL__') {
+                const shouldSelectAll = !normalOptions.every((item) => item.selected);
 
-                normalOptions.forEach(item => {
+                normalOptions.forEach((item) => {
                     item.selected = shouldSelectAll;
                 });
 
@@ -721,14 +542,10 @@ window.MCS.smartSelect = {
 
             option.selected = !option.selected;
 
-            const selectedNormalOptions = normalOptions.filter(
-                item => item.selected
-            );
+            const selectedNormalOptions = normalOptions.filter((item) => item.selected);
 
             if (allOption) {
-                allOption.selected =
-                    normalOptions.length > 0 &&
-                    selectedNormalOptions.length === normalOptions.length;
+                allOption.selected = normalOptions.length > 0 && selectedNormalOptions.length === normalOptions.length;
             }
         }
 
@@ -736,9 +553,7 @@ window.MCS.smartSelect = {
             const hasSelectedValue = hasValue();
             const opened = state.opened;
 
-            const placeholderElement = elements.selection.querySelector(
-                ".smart-select__placeholder"
-            );
+            const placeholderElement = elements.selection.querySelector('.smart-select__placeholder');
 
             if (elements.clear) {
                 if (compactMultiple) {
@@ -764,12 +579,10 @@ window.MCS.smartSelect = {
                 if (opened) {
                     elements.search.hidden = false;
 
-                    elements.search.placeholder = hasSelectedValue
-                        ? ""
-                        : getPlaceholder();
+                    elements.search.placeholder = hasSelectedValue ? '' : getPlaceholder();
                 } else {
                     elements.search.hidden = true;
-                    elements.search.placeholder = "";
+                    elements.search.placeholder = '';
                 }
             }
 
@@ -777,29 +590,20 @@ window.MCS.smartSelect = {
                 placeholderElement.hidden = opened;
             }
 
-            root.classList.toggle(
-                "has-value",
-                hasSelectedValue
-            );
+            root.classList.toggle('has-value', hasSelectedValue);
 
-            root.classList.toggle(
-                "has-clear",
-                hasSelectedValue
-            );
+            root.classList.toggle('has-clear', hasSelectedValue);
         }
 
         function renderSelection() {
-            elements.selection.innerHTML = "";
+            elements.selection.innerHTML = '';
 
-            if (!root.classList.contains("is-searching")) {
-                elements.search.value = "";
-                elements.search.placeholder = "";
+            if (!root.classList.contains('is-searching')) {
+                elements.search.value = '';
+                elements.search.placeholder = '';
             }
 
-            if (
-                mode === "multiple" &&
-                isAllSelected()
-            ) {
+            if (mode === 'multiple' && isAllSelected()) {
                 if (compactMultiple) {
                     appendCompactMultipleAll();
                 } else {
@@ -816,18 +620,15 @@ window.MCS.smartSelect = {
 
             const selectedOptions = getSelectedOptions();
 
-            if (
-                mode === "multiple" &&
-                compactMultiple
-            ) {
+            if (mode === 'multiple' && compactMultiple) {
                 appendCompactMultiple(selectedOptions);
                 return;
             }
 
             if (selectedOptions.length === 0) {
-                const placeholderElement = document.createElement("span");
+                const placeholderElement = document.createElement('span');
 
-                placeholderElement.className = "smart-select__placeholder";
+                placeholderElement.className = 'smart-select__placeholder';
                 placeholderElement.textContent = getPlaceholder();
 
                 elements.selection.appendChild(placeholderElement);
@@ -837,17 +638,15 @@ window.MCS.smartSelect = {
                 return;
             }
 
-            if (mode !== "multiple") {
-                appendSingleValue(
-                    selectedOptions[0].textContent.trim()
-                );
+            if (mode !== 'multiple') {
+                appendSingleValue(selectedOptions[0].textContent.trim());
 
                 syncControlState();
 
                 return;
             }
 
-            selectedOptions.forEach(option => {
+            selectedOptions.forEach((option) => {
                 appendTag(option);
             });
 
@@ -855,13 +654,13 @@ window.MCS.smartSelect = {
         }
 
         function appendSingleValue(label) {
-            const wrapper = document.createElement("div");
+            const wrapper = document.createElement('div');
 
-            wrapper.className = "smart-select__single";
+            wrapper.className = 'smart-select__single';
 
-            const value = document.createElement("span");
+            const value = document.createElement('span');
 
-            value.className = "smart-select__single-value";
+            value.className = 'smart-select__single-value';
             value.textContent = label;
 
             wrapper.appendChild(value);
@@ -870,30 +669,27 @@ window.MCS.smartSelect = {
         }
 
         function appendCompactMultiple(selectedOptions) {
-            const wrapper = document.createElement("div");
+            const wrapper = document.createElement('div');
 
-            wrapper.className = "smart-select__multiple-compact";
+            wrapper.className = 'smart-select__multiple-compact';
 
-            const label = document.createElement("span");
+            const label = document.createElement('span');
 
-            label.className = "smart-select__multiple-compact-label";
+            label.className = 'smart-select__multiple-compact-label';
             label.textContent = getPlaceholder();
 
-            const count = document.createElement("span");
+            const count = document.createElement('span');
 
-            count.className = "smart-select__multiple-compact-count";
+            count.className = 'smart-select__multiple-compact-count';
             count.textContent = String(selectedOptions.length);
 
-            const remove = document.createElement("button");
+            const remove = document.createElement('button');
 
-            remove.type = "button";
-            remove.className = "smart-select__multiple-compact-remove";
-            remove.dataset.smartSelectRemove = "multiple-all";
+            remove.type = 'button';
+            remove.className = 'smart-select__multiple-compact-remove';
+            remove.dataset.smartSelectRemove = 'multiple-all';
 
-            remove.setAttribute(
-                "aria-label",
-                "Xóa tất cả lựa chọn"
-            );
+            remove.setAttribute('aria-label', 'Xóa tất cả lựa chọn');
 
             remove.innerHTML = `
                 <i
@@ -902,7 +698,7 @@ window.MCS.smartSelect = {
                 </i>
             `;
 
-            remove.addEventListener("click", event => {
+            remove.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -920,32 +716,27 @@ window.MCS.smartSelect = {
         }
 
         function appendCompactMultipleAll() {
-            const wrapper = document.createElement("div");
+            const wrapper = document.createElement('div');
 
-            wrapper.className = "smart-select__multiple-compact";
+            wrapper.className = 'smart-select__multiple-compact';
 
-            const label = document.createElement("span");
+            const label = document.createElement('span');
 
-            label.className = "smart-select__multiple-compact-label";
+            label.className = 'smart-select__multiple-compact-label';
             label.textContent = getPlaceholder();
 
-            const count = document.createElement("span");
+            const count = document.createElement('span');
 
-            count.className = "smart-select__multiple-compact-count";
-            count.textContent = String(
-                getNormalOptions().length
-            );
+            count.className = 'smart-select__multiple-compact-count';
+            count.textContent = String(getNormalOptions().length);
 
-            const remove = document.createElement("button");
+            const remove = document.createElement('button');
 
-            remove.type = "button";
-            remove.className = "smart-select__multiple-compact-remove";
-            remove.dataset.smartSelectRemove = "multiple-all";
+            remove.type = 'button';
+            remove.className = 'smart-select__multiple-compact-remove';
+            remove.dataset.smartSelectRemove = 'multiple-all';
 
-            remove.setAttribute(
-                "aria-label",
-                "Xóa lựa chọn"
-            );
+            remove.setAttribute('aria-label', 'Xóa lựa chọn');
 
             remove.innerHTML = `
                 <i
@@ -954,46 +745,39 @@ window.MCS.smartSelect = {
                 </i>
             `;
 
-            remove.addEventListener("click", event => {
+            remove.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
 
                 clear(true);
             });
 
-            wrapper.append(
-                label,
-                count,
-                remove
-            );
+            wrapper.append(label, count, remove);
 
             elements.selection.appendChild(wrapper);
         }
 
         function appendTag(option) {
-            const tag = document.createElement("span");
+            const tag = document.createElement('span');
 
-            tag.className = "smart-select__tag";
+            tag.className = 'smart-select__tag';
 
-            const label = document.createElement("span");
+            const label = document.createElement('span');
 
-            label.className = "smart-select__tag-label";
+            label.className = 'smart-select__tag-label';
             label.textContent = option.textContent.trim();
 
-            const remove = document.createElement("button");
+            const remove = document.createElement('button');
 
-            remove.type = "button";
-            remove.className = "smart-select__tag-remove";
+            remove.type = 'button';
+            remove.className = 'smart-select__tag-remove';
             remove.dataset.smartSelectRemove = option.value;
 
-            remove.setAttribute(
-                "aria-label",
-                `Bỏ chọn ${option.textContent.trim()}`
-            );
+            remove.setAttribute('aria-label', `Bỏ chọn ${option.textContent.trim()}`);
 
-            remove.textContent = "×";
+            remove.textContent = '×';
 
-            remove.addEventListener("click", event => {
+            remove.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -1027,49 +811,37 @@ window.MCS.smartSelect = {
 
         function emitChange() {
             elements.native.dispatchEvent(
-                new Event(
-                    "change",
-                    {
-                        bubbles: true
-                    }
-                )
+                new Event('change', {
+                    bubbles: true
+                })
             );
 
             root.dispatchEvent(
-                new CustomEvent(
-                    "smart-select:change",
-                    {
-                        bubbles: true,
+                new CustomEvent('smart-select:change', {
+                    bubbles: true,
 
-                        detail: {
-                            mode,
-                            all: isAllSelected(),
-                            value: getValue(),
-                            values: getValues()
-                        }
+                    detail: {
+                        mode,
+                        all: isAllSelected(),
+                        value: getValue(),
+                        values: getValues()
                     }
-                )
+                })
             );
         }
 
         function getValue() {
-            return getSelectedOptions()[0]?.value ?? "";
+            return getSelectedOptions()[0]?.value ?? '';
         }
 
         function getValues() {
-            return getSelectedOptions().map(
-                option => option.value
-            );
+            return getSelectedOptions().map((option) => option.value);
         }
 
         function setValue(value, emit = false) {
-            const normalizedValue =
-                value === null ||
-                value === undefined
-                    ? ""
-                    : String(value);
+            const normalizedValue = value === null || value === undefined ? '' : String(value);
 
-            getOptions().forEach(option => {
+            getOptions().forEach((option) => {
                 option.selected = option.value === normalizedValue;
             });
 
@@ -1082,29 +854,17 @@ window.MCS.smartSelect = {
         }
 
         function setValues(values, emit = false) {
-            const normalizedValues = new Set(
-                (
-                    Array.isArray(values)
-                        ? values
-                        : []
-                ).map(value => String(value))
-            );
+            const normalizedValues = new Set((Array.isArray(values) ? values : []).map((value) => String(value)));
 
-            getNormalOptions().forEach(option => {
-                option.selected = normalizedValues.has(
-                    option.value
-                );
+            getNormalOptions().forEach((option) => {
+                option.selected = normalizedValues.has(option.value);
             });
 
             const allOption = getAllOption();
             const normalOptions = getNormalOptions();
 
             if (allOption) {
-                allOption.selected =
-                    normalOptions.length > 0 &&
-                    normalOptions.every(
-                        option => option.selected
-                    );
+                allOption.selected = normalOptions.length > 0 && normalOptions.every((option) => option.selected);
             }
 
             renderOptions();
@@ -1119,14 +879,12 @@ window.MCS.smartSelect = {
             const allOption = getAllOption();
             const normalOptions = getNormalOptions();
 
-            normalOptions.forEach(option => {
+            normalOptions.forEach((option) => {
                 option.selected = Boolean(selected);
             });
 
             if (allOption) {
-                allOption.selected =
-                    Boolean(selected) &&
-                    normalOptions.length > 0;
+                allOption.selected = Boolean(selected) && normalOptions.length > 0;
             }
 
             renderOptions();
@@ -1138,7 +896,7 @@ window.MCS.smartSelect = {
         }
 
         function clear(emit = false) {
-            getOptions().forEach(option => {
+            getOptions().forEach((option) => {
                 option.selected = false;
             });
 
@@ -1164,10 +922,7 @@ window.MCS.smartSelect = {
                 elements.clear.disabled = isDisabled;
             }
 
-            root.classList.toggle(
-                "is-disabled",
-                isDisabled
-            );
+            root.classList.toggle('is-disabled', isDisabled);
 
             if (isDisabled) {
                 close();
@@ -1203,36 +958,26 @@ window.MCS.smartSelect = {
     },
 
     initializeAll(container = document) {
-        container
-            .querySelectorAll("[data-smart-select]")
-            .forEach(root => {
-                this.initialize(root);
-            });
+        container.querySelectorAll('[data-smart-select]').forEach((root) => {
+            this.initialize(root);
+        });
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     window.MCS.smartSelect.initializeAll();
 });
 
 function normalizeSearchText(value) {
-    if (
-        window.MCS?.searchPicker && typeof window.MCS
-            .searchPicker
-            .normalizeText === "function"
-    ) {
-
-        return window.MCS
-            .searchPicker
-            .normalizeText(value);
-
+    if (window.MCS?.searchPicker && typeof window.MCS.searchPicker.normalizeText === 'function') {
+        return window.MCS.searchPicker.normalizeText(value);
     }
 
-    return String(value || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/đ/g, "d")
-        .replace(/Đ/g, "D")
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
         .toLowerCase()
         .trim();
 }

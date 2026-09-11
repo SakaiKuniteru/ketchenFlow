@@ -1,12 +1,20 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class LichSuDonHangRepository {
     create(data, client = pool) {
         return client.query(
             `INSERT INTO nv_lich_su_don_hang (don_hang_id, trang_thai_cu, trang_thai_moi, hanh_dong, noi_dung, nguoi_thuc_hien_id, metadata) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [data.donHangId, data.trangThaiCu, data.trangThaiMoi, data.hanhDong, data.noiDung || null, data.nguoiThucHienId || null, data.metadata ? JSON.stringify(data.metadata) : null]
+            [
+                data.donHangId,
+                data.trangThaiCu,
+                data.trangThaiMoi,
+                data.hanhDong,
+                data.noiDung || null,
+                data.nguoiThucHienId || null,
+                data.metadata ? JSON.stringify(data.metadata) : null
+            ]
         );
     }
 

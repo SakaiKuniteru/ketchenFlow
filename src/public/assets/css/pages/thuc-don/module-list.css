@@ -39,11 +39,7 @@
     border: 0;
     border-radius: 12px;
 
-    background: linear-gradient(
-        180deg,
-        #3b82f6,
-        #2563eb
-    );
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
 
     color: #fff;
 
@@ -53,41 +49,29 @@
     text-decoration: none;
     white-space: nowrap;
 
-    box-shadow:
-        0 8px 20px
-        rgba(37,99,235,.22);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
 
     transition:
-        transform .15s,
-        box-shadow .2s,
-        background .2s;
+        transform 0.15s,
+        box-shadow 0.2s,
+        background 0.2s;
 
     cursor: pointer;
 }
 
 .module-list-page__create:hover {
-
     transform: translateY(-1px);
 
-    box-shadow:
-        0 12px 26px
-        rgba(37,99,235,.28);
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
 
-    background: linear-gradient(
-        180deg,
-        #4b8df8,
-        #2b6bf0
-    );
+    background: linear-gradient(180deg, #4b8df8, #2b6bf0);
 }
 
 .module-list-page__create:active {
-
     transform: translateY(0);
-
 }
 
 .module-list-page__create i {
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,7 +81,7 @@
 
     border-radius: 50%;
 
-    background: rgba(255,255,255,.15);
+    background: rgba(255, 255, 255, 0.15);
 
     font-size: 12px;
 }
@@ -170,18 +154,13 @@
     overflow-x: auto;
     overflow-y: hidden;
 
-    border:
-        1px solid
-        var(--color-border-light);
+    border: 1px solid var(--color-border-light);
 
-    border-radius:
-        var(--radius-lg);
+    border-radius: var(--radius-lg);
 
-    background:
-        var(--color-surface);
+    background: var(--color-surface);
 
-    -webkit-overflow-scrolling:
-        touch;
+    -webkit-overflow-scrolling: touch;
 }
 
 .module-list-table thead {
@@ -192,9 +171,7 @@
     height: 46px;
     padding: 0 14px;
 
-    border-bottom:
-        1px solid
-        var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
 
     color: var(--color-text-secondary);
 
@@ -209,9 +186,7 @@
     min-height: 52px;
     padding: 13px 14px;
 
-    border-bottom:
-        1px solid
-        var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
 
     color: var(--color-text-secondary);
 
@@ -252,7 +227,6 @@
     background: #eff6ff;
 }
 
-
 .module-list-table__action.is-print {
     color: #64748b;
 }
@@ -261,7 +235,6 @@
     color: #334155;
     background: #f1f5f9;
 }
-
 
 .module-list-table__action.is-delete {
     color: #ef4444;
@@ -309,7 +282,6 @@
 }
 
 .list-filter-button {
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -331,96 +303,54 @@
     cursor: pointer;
 
     transition:
-        background .2s,
-        border-color .2s,
-        color .2s,
-        box-shadow .2s,
-        transform .15s;
+        background 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
+        transform 0.15s;
 }
 
 .list-filter-button:hover {
-
     border-color: #b8c8e5;
 
     background: #f8fbff;
 
     color: var(--color-primary);
-
 }
 
 .list-filter-button:active {
-
-    transform: scale(.98);
-
+    transform: scale(0.98);
 }
 
 .list-filter-button:focus-visible {
-
     outline: none;
 
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            var(--color-primary-rgb),
-            .12
-        );
-
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
 }
 
 .list-filter-button.is-primary {
-
     border: none;
 
-    background: linear-gradient(
-        180deg,
-        #3b82f6,
-        #2563eb
-    );
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
 
     color: #fff;
 
-    box-shadow:
-        0 8px 20px
-        rgba(
-            37,
-            99,
-            235,
-            .22
-        );
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
 }
 
 .list-filter-button.is-primary:hover {
+    background: linear-gradient(180deg, #4b8df8, #2b6bf0);
 
-    background: linear-gradient(
-        180deg,
-        #4b8df8,
-        #2b6bf0
-    );
-
-    box-shadow:
-        0 10px 24px
-        rgba(
-            37,
-            99,
-            235,
-            .28
-        );
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
 }
 
 @media (max-width: 1200px) {
-
     .list-filter-grid {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(0, 1fr)
-            );
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
 }
 
 @media (max-width: 768px) {
-
     .module-list-page__header {
         flex-direction: column;
     }
@@ -445,5 +375,4 @@
     .module-list-table {
         min-width: 900px;
     }
-
 }

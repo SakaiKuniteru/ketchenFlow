@@ -1,168 +1,63 @@
-"use strict";
+'use strict';
 
-const path =
-    require("path");
+const path = require('path');
 
-const fs =
-    require("fs");
+const fs = require('fs');
 
-const multer =
-    require("multer");
+const multer = require('multer');
 
-const ApiError =
-    require("../../../../utils/api-error");
+const ApiError = require('../../../../utils/api-error');
 
+const uploadDirectory = path.join(process.cwd(), 'src/public/uploads/temp/nhan-vien');
 
-const uploadDirectory =
-    path.join(
-        process.cwd(),
-        "src/public/uploads/temp/nhan-vien"
-    );
-
-
-if (
-    !fs.existsSync(
-        uploadDirectory
-    )
-) {
-
-    fs.mkdirSync(
-        uploadDirectory,
-        {
-            recursive: true
-        }
-    );
-
+if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory, {
+        recursive: true
+    });
 }
 
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 
-const IMAGE_EXTENSIONS = [
-    ".jpg",
-    ".jpeg",
-    ".png",
-    ".webp"
-];
+const IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
+const storage = multer.diskStorage({
+    destination(req, file, callback) {
+        callback(null, uploadDirectory);
+    },
 
-const IMAGE_MIME_TYPES = [
-    "image/jpeg",
-    "image/png",
-    "image/webp"
-];
+    filename(req, file, callback) {
+        const extension = path.extname(file.originalname).toLowerCase();
 
+        const fileName = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 10)}${extension}`;
 
-const storage =
-    multer.diskStorage({
+        callback(null, fileName);
+    }
+});
 
-        destination(
-            req,
-            file,
-            callback
-        ) {
+function fileFilter(req, file, callback) {
+    const extension = path.extname(file.originalname).toLowerCase();
 
-            callback(
-                null,
-                uploadDirectory
-            );
+    const extensionHopLe = IMAGE_EXTENSIONS.includes(extension);
 
-        },
+    const mimeTypeHopLe = IMAGE_MIME_TYPES.includes(file.mimetype);
 
-        filename(
-            req,
-            file,
-            callback
-        ) {
-
-            const extension =
-                path.extname(
-                    file.originalname
-                )
-                    .toLowerCase();
-
-
-            const fileName =
-                `temp-${Date.now()}-${Math.random()
-                    .toString(36)
-                    .slice(2, 10)}${extension}`;
-
-
-            callback(
-                null,
-                fileName
-            );
-
-        }
-
-    });
-
-
-function fileFilter(
-    req,
-    file,
-    callback
-) {
-
-    const extension =
-        path.extname(
-            file.originalname
-        )
-            .toLowerCase();
-
-
-    const extensionHopLe =
-        IMAGE_EXTENSIONS.includes(
-            extension
-        );
-
-
-    const mimeTypeHopLe =
-        IMAGE_MIME_TYPES.includes(
-            file.mimetype
-        );
-
-
-    if (
-        !extensionHopLe ||
-        !mimeTypeHopLe
-    ) {
-
-        return callback(
-            new ApiError(
-                400,
-                "Ảnh đại diện chỉ hỗ trợ JPG, JPEG, PNG hoặc WEBP."
-            )
-        );
-
+    if (!extensionHopLe || !mimeTypeHopLe) {
+        return callback(new ApiError(400, 'Ảnh đại diện chỉ hỗ trợ JPG, JPEG, PNG hoặc WEBP.'));
     }
 
-
-    return callback(
-        null,
-        true
-    );
-
+    return callback(null, true);
 }
 
+const uploadNhanVien = multer({
+    storage,
 
-const uploadNhanVien =
-    multer({
+    fileFilter,
 
-        storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024,
 
-        fileFilter,
+        files: 1
+    }
+});
 
-        limits: {
-
-            fileSize:
-                5 * 1024 * 1024,
-
-            files:
-                1
-
-        }
-
-    });
-
-
-module.exports =
-    uploadNhanVien;
+module.exports = uploadNhanVien;

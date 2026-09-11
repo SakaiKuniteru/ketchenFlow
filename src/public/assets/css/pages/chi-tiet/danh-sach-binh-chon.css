@@ -1,11 +1,7 @@
 .vote-list-page {
     display: flex;
     width: 100%;
-    min-height:
-        calc(
-            100vh -
-            150px
-        );
+    min-height: calc(100vh - 150px);
     padding: 24px;
     box-sizing: border-box;
 }
@@ -139,9 +135,7 @@
     border: 1px solid var(--color-border-light);
     border-radius: 12px;
     background: var(--color-surface);
-    box-shadow:
-        0 18px 45px
-        rgba(15, 23, 42, 0.16);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
     overflow: visible;
 }
 
@@ -191,14 +185,7 @@
 
 .vote-list-filter__dates {
     display: grid;
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
 
@@ -236,14 +223,7 @@
 
 .vote-list-summary {
     display: grid;
-    grid-template-columns:
-        repeat(
-            4,
-            minmax(
-                0,
-                1fr
-            )
-        );
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
 }
 
@@ -323,10 +303,7 @@
     display: grid;
     grid-template-columns:
         190px
-        minmax(
-            0,
-            1fr
-        )
+        minmax(0, 1fr)
         230px;
     min-width: 0;
     border: 1px solid var(--color-border-light);
@@ -342,9 +319,7 @@
 
 .vote-list-card:hover {
     border-color: #bfdbfe;
-    box-shadow:
-        0 8px 24px
-        rgba(37, 99, 235, 0.08);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
     transform: translateY(-1px);
 }
 
@@ -358,12 +333,7 @@
     gap: 8px;
     min-height: 180px;
     padding: 20px;
-    background:
-        linear-gradient(
-            135deg,
-            #f8fbff,
-            #eff6ff
-        );
+    background: linear-gradient(135deg, #f8fbff, #eff6ff);
 }
 
 .vote-list-card__weekday {
@@ -431,7 +401,7 @@
 }
 
 .vote-list-card__food:not(:last-child)::after {
-    content: "•";
+    content: '•';
     color: var(--color-text-muted);
 }
 
@@ -524,7 +494,7 @@
 }
 
 .vote-list-status::before {
-    content: "";
+    content: '';
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -617,11 +587,7 @@
     border: 3px solid var(--color-border-light);
     border-top-color: var(--color-primary);
     border-radius: 50%;
-    animation:
-        vote-list-spin
-        700ms
-        linear
-        infinite;
+    animation: vote-list-spin 700ms linear infinite;
 }
 
 .vote-list-empty i {
@@ -659,23 +625,13 @@
 
 @media (max-width: 1150px) {
     .vote-list-summary {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .vote-list-card {
         grid-template-columns:
             170px
-            minmax(
-                0,
-                1fr
-            );
+            minmax(0, 1fr);
     }
 
     .vote-list-card__actions {
@@ -742,11 +698,7 @@
     .vote-list-filter__dropdown {
         right: auto;
         left: 0;
-        width:
-            calc(
-                100vw -
-                20px
-            );
+        width: calc(100vw - 20px);
     }
 
     .vote-list-filter__dates {

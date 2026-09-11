@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class PhongBanRepository {
     mapPhongBan(row) {
@@ -14,11 +14,11 @@ class PhongBanRepository {
             coSoId: row.co_so_id,
             coSo: row.co_so_id
                 ? {
-                    id: row.co_so_id,
-                    ma: row.ma_co_so,
-                    ten: row.ten_co_so,
-                    diaChi: row.dia_chi
-                }
+                      id: row.co_so_id,
+                      ma: row.ma_co_so,
+                      ten: row.ten_co_so,
+                      diaChi: row.dia_chi
+                  }
                 : null,
             active: row.active,
             createdAt: row.created_at,
@@ -54,9 +54,7 @@ class PhongBanRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapPhongBan(row)
-        );
+        return result.rows.map((row) => this.mapPhongBan(row));
     }
 
     async getChiTiet(id) {
@@ -66,18 +64,13 @@ class PhongBanRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapPhongBan(
-            result.rows[0]
-        );
+        return this.mapPhongBan(result.rows[0]);
     }
 
     async getCoSoByMa(maCoSo) {
@@ -92,10 +85,7 @@ class PhongBanRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maCoSo]
-        );
+        const result = await pool.query(sql, [maCoSo]);
 
         if (result.rows.length === 0) {
             return null;
@@ -119,21 +109,13 @@ class PhongBanRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            [coSoId]
-        );
+        const result = await pool.query(sql, [coSoId]);
 
         return result.rows[0].exists;
     }
 
-    async existsMaPhongBan(
-        maPhongBan,
-        excludeId = null
-    ) {
-        const values = [
-            maPhongBan
-        ];
+    async existsMaPhongBan(maPhongBan, excludeId = null) {
+        const values = [maPhongBan];
 
         let sql = `
             SELECT EXISTS (
@@ -154,23 +136,13 @@ class PhongBanRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
 
-    async existsTenPhongBan(
-        tenPhongBan,
-        coSoId,
-        excludeId = null
-    ) {
-        const values = [
-            tenPhongBan,
-            coSoId
-        ];
+    async existsTenPhongBan(tenPhongBan, coSoId, excludeId = null) {
+        const values = [tenPhongBan, coSoId];
 
         let sql = `
             SELECT EXISTS (
@@ -192,10 +164,7 @@ class PhongBanRepository {
             ) AS "exists"
         `;
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
     }
@@ -211,18 +180,13 @@ class PhongBanRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maPhongBan]
-        );
+        const result = await pool.query(sql, [maPhongBan]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapPhongBan(
-            result.rows[0]
-        );
+        return this.mapPhongBan(result.rows[0]);
     }
 
     async create(data) {
@@ -253,19 +217,12 @@ class PhongBanRepository {
             data.tenPhongBan,
             data.moTa || null,
             data.coSoId,
-            data.active !== undefined
-                ? data.active
-                : true
+            data.active !== undefined ? data.active : true
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
@@ -282,27 +239,15 @@ class PhongBanRepository {
             RETURNING id
         `;
 
-        const values = [
-            data.maPhongBan,
-            data.tenPhongBan,
-            data.moTa || null,
-            data.coSoId,
-            data.active,
-            id
-        ];
+        const values = [data.maPhongBan, data.tenPhongBan, data.moTa || null, data.coSoId, data.active, id];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 }
 

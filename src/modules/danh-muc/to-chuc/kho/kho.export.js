@@ -1,23 +1,36 @@
-"use strict";
+'use strict';
 
-const khoRepository = require("./kho.repository");
-const { createExportFile } = require("../../../../helpers/excel/excel-export");
-const { sendExcel } = require("../../../../helpers/excel/excel-response");
+const khoRepository = require('./kho.repository');
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
+const { sendExcel } = require('../../../../helpers/excel/excel-response');
 
-const MA_BAO_CAO = "dm_kho";
+const MA_BAO_CAO = 'dm_kho';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
 
-function taoDanhSachId(danhSach = []) {return danhSach.map(item => item.id).join(",");}
+function taoDanhSachId(danhSach = []) {
+    return danhSach.map((item) => item.id).join(',');
+}
 
-function taoDanhSachMa(danhSach = []) {return danhSach.map(item => item.maNhanVien).filter(Boolean).join(",");}
+function taoDanhSachMa(danhSach = []) {
+    return danhSach
+        .map((item) => item.maNhanVien)
+        .filter(Boolean)
+        .join(',');
+}
 
-function taoDanhSachTen(danhSach = []) {return danhSach.map(item => `"${item.hoTen || ""}"`).join("; ");}
+function taoDanhSachTen(danhSach = []) {
+    return danhSach.map((item) => `"${item.hoTen || ''}"`).join('; ');
+}
 
-function taoDanhSachChucVu(danhSach = []) {return danhSach.map(item => `"${item.chucVu?.ten || ""}"`).join("; ");}
+function taoDanhSachChucVu(danhSach = []) {
+    return danhSach.map((item) => `"${item.chucVu?.ten || ''}"`).join('; ');
+}
 
-function taoDanhSachPhongBan(danhSach = []) {return danhSach.map(item => `"${item.phongBan?.ten || ""}"`).join("; ");}
+function taoDanhSachPhongBan(danhSach = []) {
+    return danhSach.map((item) => `"${item.phongBan?.ten || ''}"`).join('; ');
+}
 
 function taoDongExport(item, danhSachNhanVien = []) {
     return {
@@ -46,12 +59,10 @@ function taoDongExport(item, danhSachNhanVien = []) {
 async function xuLyExport(query = {}) {
     const danhSach = await khoRepository.getTongHop(query);
     const data = await Promise.all(
-        danhSach.map(
-            async item => {
-                const danhSachNhanVien = await khoRepository.getDsNvQuanLy(item.id);
-                return taoDongExport(item, danhSachNhanVien);
-            }
-        )
+        danhSach.map(async (item) => {
+            const danhSachNhanVien = await khoRepository.getDsNvQuanLy(item.id);
+            return taoDongExport(item, danhSachNhanVien);
+        })
     );
 
     return await createExportFile({

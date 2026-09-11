@@ -1,41 +1,13 @@
-<div
-    class="form-field form-field--checkbox {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field form-field--checkbox {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
-    <label
-        for="{{id}}"
-        class="form-checkbox">
+    <label for="{{id}}" class="form-checkbox">
 
-        <input
-            type="checkbox"
-            id="{{id}}"
-            name="{{name}}"
-            class="form-checkbox__input"
-            value="{{#if value}}{{value}}{{else}}true{{/if}}"
+        <input type="checkbox" id="{{id}}" name="{{name}}" class="form-checkbox__input"
+            value="{{#if value}}{{value}}{{else}}true{{/if}}" {{#if checked}} checked {{/if}} {{#if required}} required
+            aria-required="true" {{/if}} {{#if disabled}} disabled {{/if}} {{#if error}} aria-invalid="true"
+            aria-describedby="{{id}}Error" {{else if description}} aria-describedby="{{id}}Description" {{/if}}>
 
-            {{#if checked}}
-                checked
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-
-            {{#if error}}
-                aria-invalid="true"
-                aria-describedby="{{id}}Error"
-            {{else if description}}
-                aria-describedby="{{id}}Description"
-            {{/if}}>
-
-        <span
-            class="form-checkbox__box"
-            aria-hidden="true">
+        <span class="form-checkbox__box" aria-hidden="true">
         </span>
 
         <span class="form-checkbox__content">
@@ -46,9 +18,7 @@
 
                 {{#if required}}
 
-                    <span
-                        class="form-field__required"
-                        aria-hidden="true">
+                    <span class="form-field__required" aria-hidden="true">
                         *
                     </span>
 
@@ -58,9 +28,7 @@
 
             {{#if description}}
 
-                <small
-                    id="{{id}}Description"
-                    class="form-checkbox__description">
+                <small id="{{id}}Description" class="form-checkbox__description">
                     {{description}}
                 </small>
 
@@ -70,11 +38,7 @@
 
     </label>
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

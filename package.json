@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "format": "prettier --write \"src/**/*.{js,hbs,json,css}\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -25,6 +26,9 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
-    "@types/morgan": "^1.9.10"
+    "@types/morgan": "^1.9.10",
+    "js-beautify": "^2.0.3",
+    "prettier": "^3.9.6",
+    "prettier-plugin-handlebars": "^0.0.1"
   }
 }

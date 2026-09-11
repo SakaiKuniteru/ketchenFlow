@@ -1,6 +1,4 @@
-<section
-    class="module-list-page"
-    data-module-list-page="{{moduleName}}">
+<section class="module-list-page" data-module-list-page="{{moduleName}}">
 
     <header class="module-list-page__header">
 
@@ -22,10 +20,7 @@
 
         {{#if createUrl}}
 
-            <a
-                href="{{createUrl}}"
-                class="module-list-page__create"
-                data-list-create>
+            <a href="{{createUrl}}" class="module-list-page__create" data-list-create>
 
                 <i class="fa-solid fa-plus"></i>
 
@@ -42,10 +37,7 @@
 
     <div class="module-list-page__toolbar">
 
-        <button
-            type="button"
-            class="module-list-page__filter-button"
-            data-list-filter-toggle>
+        <button type="button" class="module-list-page__filter-button" data-list-filter-toggle>
 
             <i class="fa-solid fa-filter"></i>
 
@@ -69,10 +61,7 @@
     </div>
 
 
-    <div
-        class="module-list-page__filters"
-        data-list-filter-panel
-        hidden>
+    <div class="module-list-page__filters" data-list-filter-panel hidden>
 
         {{> (lookup . "filterPartial")}}
 
@@ -108,10 +97,7 @@
 
         </table>
 
-        <div
-            class="module-list-page__empty"
-            data-list-empty
-            hidden>
+        <div class="module-list-page__empty" data-list-empty hidden>
 
             Không có dữ liệu.
 

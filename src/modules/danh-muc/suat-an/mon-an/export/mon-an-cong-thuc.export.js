@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const monAnRepository = require("../mon-an.repository");
-const { createExportFile } = require("../../../../../helpers/excel/excel-export");
+const monAnRepository = require('../mon-an.repository');
+const { createExportFile } = require('../../../../../helpers/excel/excel-export');
 
-const MA_BAO_CAO = "thanh_phan_mon_an";
+const MA_BAO_CAO = 'thanh_phan_mon_an';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
@@ -17,9 +17,7 @@ function mapExportItem(row) {
         thucPhamId: row.thuc_pham_id,
         maThucPham: row.ma_thuc_pham,
         tenThucPham: row.ten_thuc_pham,
-        dinhLuong: row.dinh_luong !== null
-            ? Number(row.dinh_luong)
-            : null,
+        dinhLuong: row.dinh_luong !== null ? Number(row.dinh_luong) : null,
         active: row.active
     };
 }

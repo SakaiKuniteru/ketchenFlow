@@ -38,7 +38,7 @@
 
 .lva-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.9fr) minmax(320px, .95fr);
+    grid-template-columns: minmax(0, 1.9fr) minmax(320px, 0.95fr);
     gap: 20px;
     align-items: start;
 }
@@ -53,7 +53,7 @@
     border: 1px solid #dfe5ef;
     border-radius: 12px;
     padding: 18px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 .lva-card--sticky {
@@ -269,7 +269,7 @@
 }
 
 .lva-payment-option:has(input:disabled) {
-    opacity: .58;
+    opacity: 0.58;
     cursor: not-allowed;
 }
 
@@ -325,7 +325,7 @@
 }
 
 .lva-btn:disabled {
-    opacity: .55;
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
@@ -388,7 +388,7 @@
 .lva-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, .42);
+    background: rgba(15, 23, 42, 0.42);
 }
 
 .lva-modal__dialog {
@@ -403,9 +403,7 @@
     overflow: hidden;
     background: #fff;
     border-radius: 12px;
-    box-shadow:
-        0 24px 60px
-        rgba(15, 23, 42, .24);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
 }
 
 .lva-modal__header {
@@ -468,20 +466,17 @@
     flex: 0 0 auto;
 }
 
-.lva-modal__body
-> [data-discount-panel] {
+.lva-modal__body > [data-discount-panel] {
     height: 100%;
     min-height: 0;
 }
 
-.lva-modal__body
-> [data-discount-panel="available"] {
+.lva-modal__body > [data-discount-panel='available'] {
     display: flex;
     flex-direction: column;
 }
 
-.lva-modal__body
-> [data-discount-panel="manual"] {
+.lva-modal__body > [data-discount-panel='manual'] {
     overflow-y: auto;
 }
 
@@ -525,7 +520,7 @@
 
 .lva-page.is-loading {
     pointer-events: none;
-    opacity: .72;
+    opacity: 0.72;
 }
 
 .lva-no-permission {
@@ -662,7 +657,7 @@
 }
 
 .lva-quantity-btn:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -706,27 +701,15 @@
     align-items: center;
 }
 
-.lva-payment-header
-[data-payment-main-action] {
+.lva-payment-header [data-payment-main-action] {
     flex: 0 0 auto;
     min-width: 140px;
 }
 
 .lva-action-grid {
     display: grid;
-    grid-template-columns:
-        repeat(
-            3,
-            minmax(0, 1fr)
-        );
-    grid-template-rows:
-        repeat(
-            2,
-            minmax(
-                42px,
-                auto
-            )
-        );
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(42px, auto));
     gap: 10px;
     margin-top: 14px;
 }
@@ -769,7 +752,7 @@ body.lva-qr-modal-open {
 .lva-qr-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, .58);
+    background: rgba(15, 23, 42, 0.58);
     backdrop-filter: blur(1px);
 }
 
@@ -782,9 +765,7 @@ body.lva-qr-modal-open {
     overflow: hidden;
     border-radius: 16px;
     background: #fff;
-    box-shadow:
-        0 28px 70px
-        rgba(15, 23, 42, .32);
+    box-shadow: 0 28px 70px rgba(15, 23, 42, 0.32);
 }
 
 .lva-qr-modal__header {
@@ -824,18 +805,15 @@ body.lva-qr-modal-open {
     font-size: 17px;
 }
 
-.lva-qr-modal.is-loading
-.lva-qr-modal__dialog {
+.lva-qr-modal.is-loading .lva-qr-modal__dialog {
     width: 400px;
 }
 
-.lva-qr-modal.is-loading
-.lva-qr-modal__header {
+.lva-qr-modal.is-loading .lva-qr-modal__header {
     display: none;
 }
 
-.lva-qr-modal.is-loading
-.lva-qr-modal__body {
+.lva-qr-modal.is-loading .lva-qr-modal__body {
     min-height: 220px;
     padding: 34px 28px;
 }
@@ -861,11 +839,7 @@ body.lva-qr-modal-open {
     position: relative;
     width: 52px;
     height: 52px;
-    animation:
-        lva-bank-spinner-rotate
-        1s
-        linear
-        infinite;
+    animation: lva-bank-spinner-rotate 1s linear infinite;
 }
 
 .lva-bank-spinner span {
@@ -874,83 +848,59 @@ body.lva-qr-modal-open {
     left: 50%;
     width: 9px;
     height: 9px;
-    margin:
-        -4.5px
-        0
-        0
-        -4.5px;
+    margin: -4.5px 0 0 -4.5px;
     border-radius: 50%;
     background: #4da3ff;
 }
 
 .lva-bank-spinner span:nth-child(1) {
-    transform:
-        rotate(0deg)
-        translateY(-20px);
+    transform: rotate(0deg) translateY(-20px);
     opacity: 1;
 }
 
 .lva-bank-spinner span:nth-child(2) {
-    transform:
-        rotate(45deg)
-        translateY(-20px);
-    opacity: .88;
+    transform: rotate(45deg) translateY(-20px);
+    opacity: 0.88;
 }
 
 .lva-bank-spinner span:nth-child(3) {
-    transform:
-        rotate(90deg)
-        translateY(-20px);
-    opacity: .76;
+    transform: rotate(90deg) translateY(-20px);
+    opacity: 0.76;
 }
 
 .lva-bank-spinner span:nth-child(4) {
-    transform:
-        rotate(135deg)
-        translateY(-20px);
-    opacity: .64;
+    transform: rotate(135deg) translateY(-20px);
+    opacity: 0.64;
 }
 
 .lva-bank-spinner span:nth-child(5) {
-    transform:
-        rotate(180deg)
-        translateY(-20px);
-    opacity: .52;
+    transform: rotate(180deg) translateY(-20px);
+    opacity: 0.52;
 }
 
 .lva-bank-spinner span:nth-child(6) {
-    transform:
-        rotate(225deg)
-        translateY(-20px);
-    opacity: .40;
+    transform: rotate(225deg) translateY(-20px);
+    opacity: 0.4;
 }
 
 .lva-bank-spinner span:nth-child(7) {
-    transform:
-        rotate(270deg)
-        translateY(-20px);
-    opacity: .28;
+    transform: rotate(270deg) translateY(-20px);
+    opacity: 0.28;
 }
 
 .lva-bank-spinner span:nth-child(8) {
-    transform:
-        rotate(315deg)
-        translateY(-20px);
-    opacity: .18;
+    transform: rotate(315deg) translateY(-20px);
+    opacity: 0.18;
 }
 
 @keyframes lva-bank-spinner-rotate {
-
     from {
-        transform:
-            rotate(0deg);
+        transform: rotate(0deg);
     }
 
     to {
-        transform:
-            rotate(360deg);
+        transform: rotate(360deg);
     }
-
 }
 
 .lva-qr-content {
@@ -1033,13 +983,11 @@ body.lva-qr-modal-open {
 
 .lva-payment-collapse__summary > i,
 .lva-payment-collapse__right > i {
-    transition: transform .2s ease;
+    transition: transform 0.2s ease;
 }
 
-.lva-payment-collapse[open]
-.lva-payment-collapse__summary > i,
-.lva-payment-collapse[open]
-.lva-payment-collapse__right > i {
+.lva-payment-collapse[open] .lva-payment-collapse__summary > i,
+.lva-payment-collapse[open] .lva-payment-collapse__right > i {
     transform: rotate(180deg);
 }
 
@@ -1060,8 +1008,7 @@ body.lva-qr-modal-open {
     border-top: 1px solid #edf1f6;
 }
 
-.lva-payment-collapse__content
-[data-payment-method-list] {
+.lva-payment-collapse__content [data-payment-method-list] {
     padding-top: 12px;
 }
 
@@ -1095,8 +1042,7 @@ body.lva-qr-modal-open {
     color: #1768ff;
 }
 
-.lva-payment-document.is-refund
-.lva-payment-document__icon {
+.lva-payment-document.is-refund .lva-payment-document__icon {
     background: #fff4f4;
     color: #c52b20;
 }
@@ -1139,8 +1085,7 @@ body.lva-qr-modal-open {
     font-size: 14px;
 }
 
-.lva-payment-document.is-refund
-.lva-payment-document__amount {
+.lva-payment-document.is-refund .lva-payment-document__amount {
     color: #c52b20;
 }
 
@@ -1152,9 +1097,9 @@ body.lva-qr-modal-open {
 a.lva-payment-document {
     cursor: pointer;
     transition:
-        border-color .18s ease,
-        background .18s ease,
-        transform .18s ease;
+        border-color 0.18s ease,
+        background 0.18s ease,
+        transform 0.18s ease;
 }
 
 a.lva-payment-document:hover {
@@ -1169,8 +1114,7 @@ a.lva-payment-document:hover {
     cursor: default;
 }
 
-.lva-payment-document.is-active
-.lva-payment-document__header > strong {
+.lva-payment-document.is-active .lva-payment-document__header > strong {
     color: #1768ff;
 }
 
@@ -1192,14 +1136,10 @@ a.lva-payment-document:hover {
 
     .lva-form-grid__full {
         grid-column: auto;
-    }    
-    
+    }
+
     .lva-action-row {
-        grid-template-columns:
-            repeat(
-                3,
-                minmax(0, 1fr)
-            );
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .lva-action-slot .lva-btn {

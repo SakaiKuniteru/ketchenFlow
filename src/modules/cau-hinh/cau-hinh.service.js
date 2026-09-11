@@ -1,54 +1,43 @@
-"use strict";
+'use strict';
 
-const ApiError = require("../../utils/api-error");
-const cauHinhRepository = require("./cau-hinh.repository");
+const ApiError = require('../../utils/api-error');
+const cauHinhRepository = require('./cau-hinh.repository');
 
 const MA_THIET_LAP = {
-    TEN_HE_THONG: "TEN_HE_THONG",
-    LOGO_CO_SO_MAC_DINH: "LOGO_CO_SO_MAC_DINH",
-    SO_LAN_DANG_NHAP_SAI_TOI_DA: "SO_LAN_DANG_NHAP_SAI_TOI_DA",
-    THOI_GIAN_KHOA_TAI_KHOAN: "THOI_GIAN_KHOA_TAI_KHOAN",
-    THOI_GIAN_ACCESS_TOKEN: "THOI_GIAN_ACCESS_TOKEN",
-    THOI_GIAN_REFRESH_TOKEN: "THOI_GIAN_REFRESH_TOKEN",
-    THOI_GIAN_TIMEOUT: "THOI_GIAN_TIMEOUT",
-    SIDEBAR_MAC_DINH_DONG: "SIDEBAR_MAC_DINH_DONG",
-    NGAY_BAT_DAU_TUAN_THUC_DON: "NGAY_BAT_DAU_TUAN_THUC_DON",
-    THUC_DON_BAT_BUOC_DU_SO_NGAY: "THUC_DON_BAT_BUOC_DU_SO_NGAY",
-    SO_TUAN_HIEN_THI_THUC_DON: "SO_TUAN_HIEN_THI_THUC_DON",
-    SO_NAM_HIEN_THI_THUC_DON_THANG: "SO_NAM_HIEN_THI_THUC_DON_THANG",
-    QUY_TAC_CHON_DON_VI_QUY_DOI: "QUY_TAC_CHON_DON_VI_QUY_DOI",
-    QUY_TAC_LAM_TRON: "QUY_TAC_LAM_TRON",
-    SO_CHU_SO_SAU_DAU_PHAY: "SO_CHU_SO_SAU_DAU_PHAY",
-    BAT_BUOC_CHON_NHOM_MON: "BAT_BUOC_CHON_NHOM_MON",
-    THU_TU_DOI_TUONG_LAY_VE: "THU_TU_DOI_TUONG_LAY_VE",
-    PHUONG_THUC_THANH_TOAN_HIEN_THI: "PHUONG_THUC_THANH_TOAN_HIEN_THI",
-    DINH_DANG_MA_VE_AN: "DINH_DANG_MA_VE_AN",
-    SO_PHUT_DAT_HANG_TRUOC: "SO_PHUT_DAT_HANG_TRUOC"
+    TEN_HE_THONG: 'TEN_HE_THONG',
+    LOGO_CO_SO_MAC_DINH: 'LOGO_CO_SO_MAC_DINH',
+    SO_LAN_DANG_NHAP_SAI_TOI_DA: 'SO_LAN_DANG_NHAP_SAI_TOI_DA',
+    THOI_GIAN_KHOA_TAI_KHOAN: 'THOI_GIAN_KHOA_TAI_KHOAN',
+    THOI_GIAN_ACCESS_TOKEN: 'THOI_GIAN_ACCESS_TOKEN',
+    THOI_GIAN_REFRESH_TOKEN: 'THOI_GIAN_REFRESH_TOKEN',
+    THOI_GIAN_TIMEOUT: 'THOI_GIAN_TIMEOUT',
+    SIDEBAR_MAC_DINH_DONG: 'SIDEBAR_MAC_DINH_DONG',
+    NGAY_BAT_DAU_TUAN_THUC_DON: 'NGAY_BAT_DAU_TUAN_THUC_DON',
+    THUC_DON_BAT_BUOC_DU_SO_NGAY: 'THUC_DON_BAT_BUOC_DU_SO_NGAY',
+    SO_TUAN_HIEN_THI_THUC_DON: 'SO_TUAN_HIEN_THI_THUC_DON',
+    SO_NAM_HIEN_THI_THUC_DON_THANG: 'SO_NAM_HIEN_THI_THUC_DON_THANG',
+    QUY_TAC_CHON_DON_VI_QUY_DOI: 'QUY_TAC_CHON_DON_VI_QUY_DOI',
+    QUY_TAC_LAM_TRON: 'QUY_TAC_LAM_TRON',
+    SO_CHU_SO_SAU_DAU_PHAY: 'SO_CHU_SO_SAU_DAU_PHAY',
+    BAT_BUOC_CHON_NHOM_MON: 'BAT_BUOC_CHON_NHOM_MON',
+    THU_TU_DOI_TUONG_LAY_VE: 'THU_TU_DOI_TUONG_LAY_VE',
+    PHUONG_THUC_THANH_TOAN_HIEN_THI: 'PHUONG_THUC_THANH_TOAN_HIEN_THI',
+    DINH_DANG_MA_VE_AN: 'DINH_DANG_MA_VE_AN',
+    SO_PHUT_DAT_HANG_TRUOC: 'SO_PHUT_DAT_HANG_TRUOC'
 };
 
 class CauHinhService {
     async getGiaTriPublic(ma) {
         if (!ma) {
-            throw new ApiError(
-                400,
-                "Mã thiết lập không được để trống."
-            );
+            throw new ApiError(400, 'Mã thiết lập không được để trống.');
         }
 
-        const maThietLap = String(ma)
-            .trim()
-            .toUpperCase();
+        const maThietLap = String(ma).trim().toUpperCase();
 
-        const PUBLIC_SETTINGS = new Set([
-            MA_THIET_LAP.TEN_HE_THONG,
-            MA_THIET_LAP.LOGO_CO_SO_MAC_DINH
-        ]);
+        const PUBLIC_SETTINGS = new Set([MA_THIET_LAP.TEN_HE_THONG, MA_THIET_LAP.LOGO_CO_SO_MAC_DINH]);
 
         if (!PUBLIC_SETTINGS.has(maThietLap)) {
-            throw new ApiError(
-                403,
-                "Thiết lập này không được phép truy cập công khai."
-            );
+            throw new ApiError(403, 'Thiết lập này không được phép truy cập công khai.');
         }
 
         return this.getGiaTri(maThietLap);
@@ -56,26 +45,15 @@ class CauHinhService {
 
     async getGiaTri(ma) {
         if (!ma) {
-            throw new ApiError(
-                400,
-                "Mã thiết lập không được để trống."
-            );
+            throw new ApiError(400, 'Mã thiết lập không được để trống.');
         }
 
-        const maThietLap = String(ma)
-            .trim()
-            .toUpperCase();
+        const maThietLap = String(ma).trim().toUpperCase();
 
         const thietLap = await cauHinhRepository.getThietLapByMa(maThietLap);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-            throw new ApiError(
-                404,
-                "Không tìm thấy thiết lập hoặc thiết lập đang tắt."
-            );
+        if (!thietLap || thietLap.active !== true) {
+            throw new ApiError(404, 'Không tìm thấy thiết lập hoặc thiết lập đang tắt.');
         }
 
         switch (maThietLap) {
@@ -111,7 +89,7 @@ class CauHinhService {
                     ma: maThietLap,
                     giaTri: await this.getSoNamHienThiThucDonThang()
                 };
-            
+
             case MA_THIET_LAP.QUY_TAC_CHON_DON_VI_QUY_DOI:
                 return {
                     ma: maThietLap,
@@ -160,27 +138,22 @@ class CauHinhService {
                     giaTri: await this.getSoPhutDatHangTruoc()
                 };
 
-                    default: return this.resolveMacDinh(thietLap);
-                }
-            }
+            default:
+                return this.resolveMacDinh(thietLap);
+        }
+    }
 
     async resolveLogoCoSoMacDinh(thietLap) {
         const maCoSo = thietLap.gia_tri?.trim();
 
         if (!maCoSo) {
-            throw new ApiError(
-                404,
-                "Chưa thiết lập cơ sở mặc định."
-            );
+            throw new ApiError(404, 'Chưa thiết lập cơ sở mặc định.');
         }
 
         const coSo = await cauHinhRepository.getCoSoByMa(maCoSo);
 
         if (!coSo) {
-            throw new ApiError(
-                404,
-                "Không tìm thấy cơ sở mặc định."
-            );
+            throw new ApiError(404, 'Không tìm thấy cơ sở mặc định.');
         }
 
         return {
@@ -197,21 +170,13 @@ class CauHinhService {
     }
 
     async getSoLanDangNhapSaiToiDa() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.SO_LAN_DANG_NHAP_SAI_TOI_DA
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SO_LAN_DANG_NHAP_SAI_TOI_DA);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return null;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return null;
@@ -219,10 +184,7 @@ class CauHinhService {
 
         const soLan = Number(giaTri);
 
-        if (
-            !Number.isInteger(soLan) ||
-            soLan <= 0
-        ) {
+        if (!Number.isInteger(soLan) || soLan <= 0) {
             return null;
         }
 
@@ -230,27 +192,17 @@ class CauHinhService {
     }
 
     async getThoiGianKhoaTaiKhoan() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.THOI_GIAN_KHOA_TAI_KHOAN
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THOI_GIAN_KHOA_TAI_KHOAN);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return null;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        )
+        const giaTri = String(thietLap.gia_tri ?? '')
             .trim()
             .toLowerCase();
 
-        const match = giaTri.match(
-            /^(\d+)\/(phut|gio|ngay|thang|nam)$/
-        );
+        const match = giaTri.match(/^(\d+)\/(phut|gio|ngay|thang|nam)$/);
 
         if (!match) {
             return null;
@@ -259,10 +211,7 @@ class CauHinhService {
         const soLuong = Number(match[1]);
         const donVi = match[2];
 
-        if (
-            !Number.isInteger(soLuong) ||
-            soLuong <= 0
-        ) {
+        if (!Number.isInteger(soLuong) || soLuong <= 0) {
             return null;
         }
 
@@ -275,21 +224,13 @@ class CauHinhService {
     async getSoPhutRefreshToken() {
         const MAC_DINH = 20;
 
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.THOI_GIAN_REFRESH_TOKEN
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THOI_GIAN_REFRESH_TOKEN);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return MAC_DINH;
@@ -297,10 +238,7 @@ class CauHinhService {
 
         const soPhut = Number(giaTri);
 
-        if (
-            !Number.isInteger(soPhut) ||
-            soPhut <= 0
-        ) {
+        if (!Number.isInteger(soPhut) || soPhut <= 0) {
             return MAC_DINH;
         }
 
@@ -308,21 +246,13 @@ class CauHinhService {
     }
 
     async getThoiGianTimeout() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.THOI_GIAN_TIMEOUT
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THOI_GIAN_TIMEOUT);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return null;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return null;
@@ -330,10 +260,7 @@ class CauHinhService {
 
         const soPhut = Number(giaTri);
 
-        if (
-            !Number.isInteger(soPhut) ||
-            soPhut <= 10
-        ) {
+        if (!Number.isInteger(soPhut) || soPhut <= 10) {
             return null;
         }
 
@@ -343,21 +270,13 @@ class CauHinhService {
     async getSoPhutAccessToken() {
         const MAC_DINH = 20;
 
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.THOI_GIAN_ACCESS_TOKEN
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THOI_GIAN_ACCESS_TOKEN);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return MAC_DINH;
@@ -365,10 +284,7 @@ class CauHinhService {
 
         const soPhut = Number(giaTri);
 
-        if (
-            !Number.isInteger(soPhut) ||
-            soPhut <= 0
-        ) {
+        if (!Number.isInteger(soPhut) || soPhut <= 0) {
             return MAC_DINH;
         }
 
@@ -376,89 +292,55 @@ class CauHinhService {
     }
 
     async getSidebarDongMacDinh() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.SIDEBAR_MAC_DINH_DONG
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SIDEBAR_MAC_DINH_DONG);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return false;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        )
+        const giaTri = String(thietLap.gia_tri ?? '')
             .trim()
             .toLowerCase();
 
-        return giaTri === "true";
+        return giaTri === 'true';
     }
 
     async getThucDonTuanBatDauThuBay() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.NGAY_BAT_DAU_TUAN_THUC_DON
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.NGAY_BAT_DAU_TUAN_THUC_DON);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return 0;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
-        return giaTri === "1"
-            ? 1
-            : 0;
+        return giaTri === '1' ? 1 : 0;
     }
 
     async getThucDonBatBuocDuSoNgay() {
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.THUC_DON_BAT_BUOC_DU_SO_NGAY
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THUC_DON_BAT_BUOC_DU_SO_NGAY);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return false;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        )
+        const giaTri = String(thietLap.gia_tri ?? '')
             .trim()
             .toLowerCase();
 
-        return giaTri === "true";
+        return giaTri === 'true';
     }
 
     async getSoTuanHienThiThucDon() {
         const MAC_DINH = 5;
 
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.SO_TUAN_HIEN_THI_THUC_DON
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SO_TUAN_HIEN_THI_THUC_DON);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return MAC_DINH;
@@ -466,10 +348,7 @@ class CauHinhService {
 
         const soTuan = Number(giaTri);
 
-        if (
-            !Number.isInteger(soTuan) ||
-            soTuan <= 0
-        ) {
+        if (!Number.isInteger(soTuan) || soTuan <= 0) {
             return MAC_DINH;
         }
 
@@ -479,21 +358,13 @@ class CauHinhService {
     async getSoNamHienThiThucDonThang() {
         const MAC_DINH = 5;
 
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.SO_NAM_HIEN_THI_THUC_DON_THANG
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SO_NAM_HIEN_THI_THUC_DON_THANG);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri = String(
-            thietLap.gia_tri ??
-            ""
-        ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
         if (!/^\d+$/.test(giaTri)) {
             return MAC_DINH;
@@ -501,10 +372,7 @@ class CauHinhService {
 
         const soNam = Number(giaTri);
 
-        if (
-            !Number.isInteger(soNam) ||
-            soNam <= 0
-        ) {
+        if (!Number.isInteger(soNam) || soNam <= 0) {
             return MAC_DINH;
         }
 
@@ -512,633 +380,288 @@ class CauHinhService {
     }
 
     async getQuyTacChonDonViQuyDoi() {
-
         const MAC_DINH = 4;
 
-        const thietLap = await cauHinhRepository.getThietLapByMa(
-            MA_THIET_LAP.QUY_TAC_CHON_DON_VI_QUY_DOI
-        );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.QUY_TAC_CHON_DON_VI_QUY_DOI);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri = Number(
-            String(
-                thietLap.gia_tri ??
-                ""
-            ).trim()
-        );
+        const giaTri = Number(String(thietLap.gia_tri ?? '').trim());
 
-        if (!Number.isInteger(giaTri) || ![1, 2, 3, 4].includes( giaTri)
-        ) {
+        if (!Number.isInteger(giaTri) || ![1, 2, 3, 4].includes(giaTri)) {
             return MAC_DINH;
         }
 
         return giaTri;
-
     }
 
     async getQuyTacLamTron() {
+        const MAC_DINH = 0;
 
-        const MAC_DINH =
-            0;
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.QUY_TAC_LAM_TRON);
 
-
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .QUY_TAC_LAM_TRON
-                );
-
-
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
-
         }
 
+        const giaTri = Number(String(thietLap.gia_tri ?? '').trim());
 
-        const giaTri =
-            Number(
-                String(
-                    thietLap.gia_tri ??
-                    ""
-                ).trim()
-            );
-
-
-        if (
-            !Number.isInteger(
-                giaTri
-            ) ||
-            ![
-                0,
-                1,
-                2
-            ].includes(
-                giaTri
-            )
-        ) {
-
+        if (!Number.isInteger(giaTri) || ![0, 1, 2].includes(giaTri)) {
             return MAC_DINH;
-
         }
-
 
         return giaTri;
-
     }
 
     async getSoChuSoSauDauPhay() {
+        const MAC_DINH = 2;
 
-        const MAC_DINH =
-            2;
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SO_CHU_SO_SAU_DAU_PHAY);
 
-
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .SO_CHU_SO_SAU_DAU_PHAY
-                );
-
-
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
-
         }
 
+        const giaTri = Number(String(thietLap.gia_tri ?? '').trim());
 
-        const giaTri =
-            Number(
-                String(
-                    thietLap.gia_tri ??
-                    ""
-                ).trim()
-            );
-
-
-        if (
-            !Number.isInteger(
-                giaTri
-            ) ||
-            giaTri < 0 ||
-            giaTri > 5
-        ) {
-
+        if (!Number.isInteger(giaTri) || giaTri < 0 || giaTri > 5) {
             return MAC_DINH;
-
         }
-
 
         return giaTri;
-
     }
 
     async getBatBuocChonNhomMon() {
         const MAC_DINH = true;
 
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP.BAT_BUOC_CHON_NHOM_MON
-                );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.BAT_BUOC_CHON_NHOM_MON);
 
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
         }
 
-        const giaTri =
-            String(
-                thietLap.gia_tri ??
-                ""
-            )
-                .trim()
-                .toLowerCase();
+        const giaTri = String(thietLap.gia_tri ?? '')
+            .trim()
+            .toLowerCase();
 
-        if (
-            giaTri !== "true" &&
-            giaTri !== "false"
-        ) {
+        if (giaTri !== 'true' && giaTri !== 'false') {
             return MAC_DINH;
         }
 
-        return (
-            giaTri ===
-            "true"
-        );
+        return giaTri === 'true';
     }
 
     async getThuTuDoiTuongLayVe() {
+        const MAC_DINH = 1;
 
-        const MAC_DINH =
-            1;
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.THU_TU_DOI_TUONG_LAY_VE);
 
-
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .THU_TU_DOI_TUONG_LAY_VE
-                );
-
-
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
-
         }
 
+        const giaTri = Number(String(thietLap.gia_tri ?? '').trim());
 
-        const giaTri =
-            Number(
-                String(
-                    thietLap.gia_tri ??
-                    ""
-                ).trim()
-            );
-
-
-        if (
-            !Number.isInteger(
-                giaTri
-            ) ||
-            ![
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
-            ].includes(
-                giaTri
-            )
-        ) {
-
+        if (!Number.isInteger(giaTri) || ![1, 2, 3, 4, 5, 6].includes(giaTri)) {
             return MAC_DINH;
-
         }
-
 
         return giaTri;
-
     }
 
     async getPhuongThucThanhToanHienThi() {
+        const MAC_DINH = [10, 20, 30];
 
-        const MAC_DINH =
-            [
-                10,
-                20,
-                30
-            ];
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.PHUONG_THUC_THANH_TOAN_HIEN_THI);
 
-
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .PHUONG_THUC_THANH_TOAN_HIEN_THI
-                );
-
-
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
-
         }
 
+        const giaTri = String(thietLap.gia_tri ?? '')
+            .split(',')
+            .map((item) => Number(item.trim()))
+            .filter((item) => [10, 20, 30].includes(item));
 
-        const giaTri =
-            String(
-                thietLap.gia_tri ??
-                ""
-            )
-                .split(
-                    ","
-                )
-                .map(
-                    item =>
-                        Number(
-                            item.trim()
-                        )
-                )
-                .filter(
-                    item =>
-                        [
-                            10,
-                            20,
-                            30
-                        ].includes(
-                            item
-                        )
-                );
+        const danhSach = [...new Set(giaTri)];
 
-
-        const danhSach =
-            [
-                ...new Set(
-                    giaTri
-                )
-            ];
-
-
-        if (
-            danhSach.length ===
-            0
-        ) {
-
+        if (danhSach.length === 0) {
             return MAC_DINH;
-
         }
-
 
         return danhSach;
-
     }
 
-    chuanHoaTienToMaVeAn(
-        value
-    ) {
-        return String(
-            value ??
-            ""
-        )
-            .normalize(
-                "NFD"
-            )
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .replace(
-                /đ/g,
-                "d"
-            )
-            .replace(
-                /Đ/g,
-                "D"
-            )
+    chuanHoaTienToMaVeAn(value) {
+        return String(value ?? '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
             .toUpperCase()
-            .replace(
-                /[^A-Z0-9]/g,
-                ""
-            );
+            .replace(/[^A-Z0-9]/g, '');
     }
 
-    parseDinhDangMaVeAn(
-        value
-    ) {
-        const text =
-            String(
-                value ??
-                ""
-            ).trim();
+    parseDinhDangMaVeAn(value) {
+        const text = String(value ?? '').trim();
 
-        if (
-            !text
-        ) {
+        if (!text) {
             return null;
         }
 
-        const tokens =
-            text.match(
-                /\[[^\[\]]+\]/g
-            );
+        const tokens = text.match(/\[[^\[\]]+\]/g);
 
-        if (
-            !tokens ||
-            tokens.join(
-                ""
-            ) !==
-                text
-        ) {
+        if (!tokens || tokens.join('') !== text) {
             return null;
         }
 
-        let index =
-            0;
+        let index = 0;
 
-        let tienTo =
-            "";
+        let tienTo = '';
 
         /*
-        * ============================
-        * [X] - KHÔNG BẮT BUỘC
-        * ============================
-        *
-        * Nếu token đầu tiên không phải
-        * [yy] thì hiểu là tiền tố [X].
-        *
-        * Nhưng không cho phép các token
-        * hệ thống mm/dd/dayso đứng ở đây.
-        */
-        const firstToken =
-            String(
-                tokens[
-                    index
-                ] ||
-                ""
-            ).toLowerCase();
+         * ============================
+         * [X] - KHÔNG BẮT BUỘC
+         * ============================
+         *
+         * Nếu token đầu tiên không phải
+         * [yy] thì hiểu là tiền tố [X].
+         *
+         * Nhưng không cho phép các token
+         * hệ thống mm/dd/dayso đứng ở đây.
+         */
+        const firstToken = String(tokens[index] || '').toLowerCase();
 
-        if (
-            firstToken !==
-            "[yy]"
-        ) {
-            if (
-                firstToken ===
-                    "[mm]" ||
-                firstToken ===
-                    "[dd]" ||
-                firstToken.startsWith(
-                    "[dayso:"
-                )
-            ) {
+        if (firstToken !== '[yy]') {
+            if (firstToken === '[mm]' || firstToken === '[dd]' || firstToken.startsWith('[dayso:')) {
                 return null;
             }
 
-            const rawPrefix =
-                String(
-                    tokens[
-                        index
-                    ] ||
-                    ""
-                ).slice(
-                    1,
-                    -1
-                );
+            const rawPrefix = String(tokens[index] || '').slice(1, -1);
 
-            tienTo =
-                this.chuanHoaTienToMaVeAn(
-                    rawPrefix
-                );
+            tienTo = this.chuanHoaTienToMaVeAn(rawPrefix);
 
-            if (
-                !tienTo
-            ) {
+            if (!tienTo) {
                 return null;
             }
 
-            index +=
-                1;
+            index += 1;
         }
 
         /*
-        * ============================
-        * [yy] - BẮT BUỘC
-        * ============================
-        */
-        if (
-            String(
-                tokens[
-                    index
-                ] ||
-                ""
-            ).toLowerCase() !==
-            "[yy]"
-        ) {
+         * ============================
+         * [yy] - BẮT BUỘC
+         * ============================
+         */
+        if (String(tokens[index] || '').toLowerCase() !== '[yy]') {
             return null;
         }
 
-        const coYY =
-            true;
+        const coYY = true;
 
-        index +=
-            1;
+        index += 1;
 
         /*
-        * ============================
-        * [mm] - KHÔNG BẮT BUỘC
-        * nhưng chỉ được sau [yy]
-        * ============================
-        */
-        let coMM =
-            false;
+         * ============================
+         * [mm] - KHÔNG BẮT BUỘC
+         * nhưng chỉ được sau [yy]
+         * ============================
+         */
+        let coMM = false;
 
-        if (
-            String(
-                tokens[
-                    index
-                ] ||
-                ""
-            ).toLowerCase() ===
-            "[mm]"
-        ) {
-            coMM =
-                true;
+        if (String(tokens[index] || '').toLowerCase() === '[mm]') {
+            coMM = true;
 
-            index +=
-                1;
+            index += 1;
         }
 
         /*
-        * ============================
-        * [dd] - KHÔNG BẮT BUỘC
-        * nhưng bắt buộc phải có [mm]
-        * ============================
-        */
-        let coDD =
-            false;
+         * ============================
+         * [dd] - KHÔNG BẮT BUỘC
+         * nhưng bắt buộc phải có [mm]
+         * ============================
+         */
+        let coDD = false;
 
-        if (
-            String(
-                tokens[
-                    index
-                ] ||
-                ""
-            ).toLowerCase() ===
-            "[dd]"
-        ) {
-            if (
-                !coMM
-            ) {
+        if (String(tokens[index] || '').toLowerCase() === '[dd]') {
+            if (!coMM) {
                 return null;
             }
 
-            coDD =
-                true;
+            coDD = true;
 
-            index +=
-                1;
+            index += 1;
         }
 
         /*
-        * ============================
-        * [dayso:n] - KHÔNG BẮT BUỘC
-        *
-        * Nếu không truyền:
-        * mặc định n = 5
-        * ============================
-        */
-        let doRongDaySo =
-            5;
+         * ============================
+         * [dayso:n] - KHÔNG BẮT BUỘC
+         *
+         * Nếu không truyền:
+         * mặc định n = 5
+         * ============================
+         */
+        let doRongDaySo = 5;
 
-        if (
-            index <
-            tokens.length
-        ) {
-            const daySoMatch =
-                String(
-                    tokens[
-                        index
-                    ]
-                ).match(
-                    /^\[dayso:(\d+)\]$/i
-                );
+        if (index < tokens.length) {
+            const daySoMatch = String(tokens[index]).match(/^\[dayso:(\d+)\]$/i);
 
-            if (
-                !daySoMatch
-            ) {
+            if (!daySoMatch) {
                 return null;
             }
 
-            const doRong =
-                Number(
-                    daySoMatch[
-                        1
-                    ]
-                );
+            const doRong = Number(daySoMatch[1]);
 
-            if (
-                !Number.isInteger(
-                    doRong
-                ) ||
-                doRong <=
-                    0
-            ) {
+            if (!Number.isInteger(doRong) || doRong <= 0) {
                 return null;
             }
 
-            doRongDaySo =
-                doRong;
+            doRongDaySo = doRong;
 
-            index +=
-                1;
+            index += 1;
         }
 
         /*
-        * Sau dayso không được còn
-        * token nào khác.
-        */
-        if (
-            index !==
-            tokens.length
-        ) {
+         * Sau dayso không được còn
+         * token nào khác.
+         */
+        if (index !== tokens.length) {
             return null;
         }
 
         /*
-        * Chuẩn hóa lại format.
-        *
-        * Ví dụ:
-        *
-        * [á1][yy][mm]
-        *
-        * ->
-        *
-        * [A1][yy][mm][dayso:5]
-        */
-        const parts =
-            [];
+         * Chuẩn hóa lại format.
+         *
+         * Ví dụ:
+         *
+         * [á1][yy][mm]
+         *
+         * ->
+         *
+         * [A1][yy][mm][dayso:5]
+         */
+        const parts = [];
 
-        if (
-            tienTo
-        ) {
-            parts.push(
-                `[${tienTo}]`
-            );
+        if (tienTo) {
+            parts.push(`[${tienTo}]`);
         }
 
-        parts.push(
-            "[yy]"
-        );
+        parts.push('[yy]');
 
-        if (
-            coMM
-        ) {
-            parts.push(
-                "[mm]"
-            );
+        if (coMM) {
+            parts.push('[mm]');
         }
 
-        if (
-            coDD
-        ) {
-            parts.push(
-                "[dd]"
-            );
+        if (coDD) {
+            parts.push('[dd]');
         }
 
-        parts.push(
-            `[dayso:${doRongDaySo}]`
-        );
+        parts.push(`[dayso:${doRongDaySo}]`);
 
         return {
-            dinhDang:
-                parts.join(
-                    ""
-                ),
+            dinhDang: parts.join(''),
 
             tienTo,
 
@@ -1150,110 +673,52 @@ class CauHinhService {
 
             doRongDaySo,
 
-            resetTheo:
-                coDD
-                    ? "day"
-                    : coMM
-                        ? "month"
-                        : "year"
+            resetTheo: coDD ? 'day' : coMM ? 'month' : 'year'
         };
     }
 
     async getQuyTacSinhMaVeAn() {
-        const MAC_DINH =
-            "[VA][yy][mm][dd][dayso:5]";
+        const MAC_DINH = '[VA][yy][mm][dd][dayso:5]';
 
-        const cauHinhMacDinh =
-            this.parseDinhDangMaVeAn(
-                MAC_DINH
-            );
+        const cauHinhMacDinh = this.parseDinhDangMaVeAn(MAC_DINH);
 
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .DINH_DANG_MA_VE_AN
-                );
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.DINH_DANG_MA_VE_AN);
 
-        if (
-            !thietLap ||
-            thietLap.active !==
-                true
-        ) {
+        if (!thietLap || thietLap.active !== true) {
             return cauHinhMacDinh;
         }
 
-        return (
-            this.parseDinhDangMaVeAn(
-                thietLap.gia_tri
-            ) ||
-            cauHinhMacDinh
-        );
+        return this.parseDinhDangMaVeAn(thietLap.gia_tri) || cauHinhMacDinh;
     }
 
     async getDinhDangMaVeAn() {
-        const cauHinh =
-            await this
-                .getQuyTacSinhMaVeAn();
+        const cauHinh = await this.getQuyTacSinhMaVeAn();
 
-        return cauHinh
-            .dinhDang;
+        return cauHinh.dinhDang;
     }
 
     async getSoPhutDatHangTruoc() {
+        const MAC_DINH = 20;
 
-        const MAC_DINH =
-            20;
+        const thietLap = await cauHinhRepository.getThietLapByMa(MA_THIET_LAP.SO_PHUT_DAT_HANG_TRUOC);
 
-        const thietLap =
-            await cauHinhRepository
-                .getThietLapByMa(
-                    MA_THIET_LAP
-                        .SO_PHUT_DAT_HANG_TRUOC
-                );
-
-        if (
-            !thietLap ||
-            thietLap.active !== true
-        ) {
-
+        if (!thietLap || thietLap.active !== true) {
             return MAC_DINH;
-
         }
 
-        const giaTri =
-            String(
-                thietLap.gia_tri ??
-                ""
-            ).trim();
+        const giaTri = String(thietLap.gia_tri ?? '').trim();
 
-        if (
-            !/^\d+$/.test(
-                giaTri
-            )
-        ) {
-
+        if (!/^\d+$/.test(giaTri)) {
             return MAC_DINH;
-
         }
 
-        const soPhut =
-            Number(giaTri);
+        const soPhut = Number(giaTri);
 
-        if (
-            !Number.isInteger(
-                soPhut
-            ) ||
-            soPhut < 0 ||
-            soPhut > 1440
-        ) {
-
+        if (!Number.isInteger(soPhut) || soPhut < 0 || soPhut > 1440) {
             return MAC_DINH;
-
         }
 
         return soPhut;
-
     }
 }
 

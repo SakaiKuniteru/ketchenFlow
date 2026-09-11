@@ -1,9 +1,6 @@
 {{#if listPage.filters.length}}
 
-    <div
-        class="data-list-filter"
-        data-list-filter-panel
-        hidden>
+    <div class="data-list-filter" data-list-filter-panel hidden>
 
         <div class="data-list-filter__body">
 
@@ -19,10 +16,7 @@
 
                         <div class="data-list-filter__range-grid">
 
-                            <div
-                                data-list-filter-field
-                                data-filter-name="{{from.name}}"
-                                data-filter-type="date">
+                            <div data-list-filter-field data-filter-name="{{from.name}}" data-filter-type="date">
 
                                 {{> forms/date
                                     id=from.id
@@ -36,10 +30,7 @@
 
                             </div>
 
-                            <div
-                                data-list-filter-field
-                                data-filter-name="{{to.name}}"
-                                data-filter-type="date">
+                            <div data-list-filter-field data-filter-name="{{to.name}}" data-filter-type="date">
 
                                 {{> forms/date
                                     id=to.id
@@ -61,15 +52,9 @@
 
                 {{#if isSelect}}
 
-                    <div
-                        class="data-list-filter__field"
-                        data-list-filter-field
-                        data-filter-name="{{name}}"
-                        data-filter-type="select"
-                        data-filter-source="{{source}}"
-                        data-filter-value-key="{{valueKey}}"
-                        data-filter-label-key="{{labelKey}}"
-                        data-filter-multiple="{{multiple}}"
+                    <div class="data-list-filter__field" data-list-filter-field data-filter-name="{{name}}"
+                        data-filter-type="select" data-filter-source="{{source}}" data-filter-value-key="{{valueKey}}"
+                        data-filter-label-key="{{labelKey}}" data-filter-multiple="{{multiple}}"
                         data-filter-allow-all="{{allowAll}}">
 
                         {{> forms/select
@@ -93,19 +78,13 @@
 
         <div class="data-list-filter__footer">
 
-            <button
-                type="button"
-                class="data-list-btn data-list-btn--outline"
-                data-list-filter-reset>
+            <button type="button" class="data-list-btn data-list-btn--outline" data-list-filter-reset>
 
                 Đặt lại
 
             </button>
 
-            <button
-                type="button"
-                class="data-list-btn data-list-btn--primary"
-                data-list-filter-apply>
+            <button type="button" class="data-list-btn data-list-btn--primary" data-list-filter-apply>
 
                 Áp dụng
 

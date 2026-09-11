@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 window.MCS = window.MCS || {};
 window.MCS.catalog = window.MCS.catalog || {};
 
 class MCSCatalogToolbar {
     constructor(root, options = {}) {
-        this.root = typeof root === "string" ? document.querySelector(root) : root;
+        this.root = typeof root === 'string' ? document.querySelector(root) : root;
 
         this.options = {
             actions: [],
@@ -14,9 +14,9 @@ class MCSCatalogToolbar {
         };
         this.permissions = this.getPermissions();
         this.elements = {
-            utility: this.root?.querySelector("[data-catalog-utility]"),
-            toggle: this.root?.querySelector("[data-catalog-utility-toggle]"),
-            menu: this.root?.querySelector("[data-catalog-utility-menu]")
+            utility: this.root?.querySelector('[data-catalog-utility]'),
+            toggle: this.root?.querySelector('[data-catalog-utility-toggle]'),
+            menu: this.root?.querySelector('[data-catalog-utility-menu]')
         };
 
         this.bindEvents();
@@ -29,15 +29,13 @@ class MCSCatalogToolbar {
     }
 
     getPermissions() {
-        const value =
-            this.root?.dataset?.permissions ||
-            "";
+        const value = this.root?.dataset?.permissions || '';
 
         return new Set(
             String(value)
-                .split(",")
-                .map(permission =>
-                    String(permission || "")
+                .split(',')
+                .map((permission) =>
+                    String(permission || '')
                         .trim()
                         .toUpperCase()
                 )
@@ -46,10 +44,9 @@ class MCSCatalogToolbar {
     }
 
     hasPermission(permission) {
-        const code =
-            String(permission || "")
-                .trim()
-                .toUpperCase();
+        const code = String(permission || '')
+            .trim()
+            .toUpperCase();
 
         if (!code) {
             return true;
@@ -59,40 +56,24 @@ class MCSCatalogToolbar {
     }
 
     canRenderAction(action) {
-        if (
-            !action ||
-            action.hidden === true
-        ) {
+        if (!action || action.hidden === true) {
             return false;
         }
 
         if (action.permission) {
-            return this.hasPermission(
-                action.permission
-            );
+            return this.hasPermission(action.permission);
         }
 
-        const actionName =
-            String(action.action || "")
-                .trim()
-                .toLowerCase();
+        const actionName = String(action.action || '')
+            .trim()
+            .toLowerCase();
 
-        if (
-            actionName === "import" ||
-            actionName.startsWith("import-")
-        ) {
-            return this.hasPermission(
-                "Q100002"
-            );
+        if (actionName === 'import' || actionName.startsWith('import-')) {
+            return this.hasPermission('Q100002');
         }
 
-        if (
-            actionName === "export" ||
-            actionName.startsWith("export-")
-        ) {
-            return this.hasPermission(
-                "Q100001"
-            );
+        if (actionName === 'export' || actionName.startsWith('export-')) {
+            return this.hasPermission('Q100001');
         }
 
         return true;
@@ -105,26 +86,19 @@ class MCSCatalogToolbar {
             return;
         }
 
-        menu
-            .querySelectorAll("[data-catalog-toolbar-dynamic]")
-            .forEach(element => element.remove());
+        menu.querySelectorAll('[data-catalog-toolbar-dynamic]').forEach((element) => element.remove());
 
         this.options.actions
-            .filter(action => this.canRenderAction(action))
-            .forEach(action => {
-                const button = document.createElement("button");
+            .filter((action) => this.canRenderAction(action))
+            .forEach((action) => {
+                const button = document.createElement('button');
 
-                button.type = "button";
+                button.type = 'button';
 
-                button.className = [
-                    "catalog-toolbar__utility-item",
-                    action.className || ""
-                ]
-                    .filter(Boolean)
-                    .join(" ");
+                button.className = ['catalog-toolbar__utility-item', action.className || ''].filter(Boolean).join(' ');
 
-                button.dataset.catalogToolbarDynamic = "true";
-                button.dataset.catalogToolbarAction = String(action.action || "");
+                button.dataset.catalogToolbarDynamic = 'true';
+                button.dataset.catalogToolbarAction = String(action.action || '');
 
                 if (action.title) {
                     button.title = action.title;
@@ -140,11 +114,7 @@ class MCSCatalogToolbar {
                     ${icon}
 
                     <span>
-                        ${this.escapeHtml(
-                            action.label ||
-                            action.action ||
-                            ""
-                        )}
+                        ${this.escapeHtml(action.label || action.action || '')}
                     </span>
                 `;
 
@@ -153,7 +123,7 @@ class MCSCatalogToolbar {
     }
 
     bindEvents() {
-        this.elements.toggle?.addEventListener("click", event => {
+        this.elements.toggle?.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
 
@@ -167,14 +137,11 @@ class MCSCatalogToolbar {
 
             menu.hidden = !open;
 
-            this.elements.toggle?.setAttribute(
-                "aria-expanded",
-                String(open)
-            );
+            this.elements.toggle?.setAttribute('aria-expanded', String(open));
         });
 
-        this.elements.menu?.addEventListener("click", event => {
-            const button = event.target.closest("[data-catalog-toolbar-action]");
+        this.elements.menu?.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-catalog-toolbar-action]');
 
             if (!button) {
                 return;
@@ -191,18 +158,11 @@ class MCSCatalogToolbar {
 
             this.close();
 
-            this.options.onAction?.(
-                action,
-                button,
-                this
-            );
+            this.options.onAction?.(action, button, this);
         });
 
-        document.addEventListener("click", event => {
-            if (
-                !this.elements.utility ||
-                !this.elements.menu
-            ) {
+        document.addEventListener('click', (event) => {
+            if (!this.elements.utility || !this.elements.menu) {
                 return;
             }
 
@@ -221,15 +181,11 @@ class MCSCatalogToolbar {
 
         this.elements.menu.hidden = true;
 
-        this.elements.toggle?.setAttribute(
-            "aria-expanded",
-            "false"
-        );
+        this.elements.toggle?.setAttribute('aria-expanded', 'false');
     }
 
     renderIcon(icon) {
-        if (icon === "search") {
-
+        if (icon === 'search') {
             return `
                 <svg
                     class="catalog-toolbar__utility-icon"
@@ -245,8 +201,8 @@ class MCSCatalogToolbar {
                 </svg>
             `;
         }
-        
-        if (icon === "upload") {
+
+        if (icon === 'upload') {
             return `
                 <svg
                     class="catalog-toolbar__utility-icon"
@@ -266,7 +222,7 @@ class MCSCatalogToolbar {
             `;
         }
 
-        if (icon === "download") {
+        if (icon === 'download') {
             return `
                 <svg
                     class="catalog-toolbar__utility-icon"
@@ -286,23 +242,21 @@ class MCSCatalogToolbar {
         }
 
         if (!icon) {
-            return "";
+            return '';
         }
 
         return `
             <i
-                class="${this.escapeHtml(
-                    icon
-                )}"
+                class="${this.escapeHtml(icon)}"
                 aria-hidden="true">
             </i>
         `;
     }
 
     escapeHtml(value) {
-        const div = document.createElement("div");
+        const div = document.createElement('div');
 
-        div.textContent = String(value ?? "");
+        div.textContent = String(value ?? '');
 
         return div.innerHTML;
     }

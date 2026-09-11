@@ -1,20 +1,11 @@
-<link
-    rel="stylesheet"
-    href="/assets/css/pages/chi-tiet/danh-sach-binh-chon.css">
+<link rel="stylesheet" href="/assets/css/pages/chi-tiet/danh-sach-binh-chon.css">
 
-<link
-    rel="stylesheet"
-    href="/assets/css/pages/chi-tiet/binh-chon.css">
+<link rel="stylesheet" href="/assets/css/pages/chi-tiet/binh-chon.css">
 
-<main
-    class="meal-vote-page"
-    data-meal-vote-page
-    data-thuc-don-id="{{thucDonId}}"
+<main class="meal-vote-page" data-meal-vote-page data-thuc-don-id="{{thucDonId}}"
     data-dot-binh-chon-id="{{dotBinhChonId}}">
 
-    <div
-        class="meal-vote-page__content"
-        data-meal-vote-content>
+    <div class="meal-vote-page__content" data-meal-vote-content>
 
         <header class="meal-vote-header">
             <div class="meal-vote-header__main">
@@ -27,14 +18,9 @@
                 </p>
             </div>
 
-            <a
-                href="/binh-chon/lich-su-binh-chon"
-                class="meal-vote-history"
-                data-meal-vote-history>
+            <a href="/binh-chon/lich-su-binh-chon" class="meal-vote-history" data-meal-vote-history>
 
-                <i
-                    class="fa-solid fa-clock-rotate-left"
-                    aria-hidden="true">
+                <i class="fa-solid fa-clock-rotate-left" aria-hidden="true">
                 </i>
 
                 <span>
@@ -43,17 +29,12 @@
             </a>
         </header>
 
-        <section
-            class="meal-vote-current"
-            data-meal-vote-current
-            hidden>
+        <section class="meal-vote-current" data-meal-vote-current hidden>
 
             <div class="meal-vote-current__header">
                 <div class="meal-vote-current__heading">
-                    <span
-                        class="meal-vote-status
-                               meal-vote-status--active"
-                        data-current-status>
+                    <span class="meal-vote-status
+                               meal-vote-status--active" data-current-status>
 
                         Đang diễn ra
                     </span>
@@ -64,9 +45,7 @@
                         </h2>
 
                         <span class="meal-vote-current__meal">
-                            <i
-                                class="fa-regular fa-calendar"
-                                aria-hidden="true">
+                            <i class="fa-regular fa-calendar" aria-hidden="true">
                             </i>
 
                             <span data-current-meal>
@@ -77,9 +56,7 @@
                 </div>
 
                 <div class="meal-vote-current__deadline">
-                    <i
-                        class="fa-regular fa-clock"
-                        aria-hidden="true">
+                    <i class="fa-regular fa-clock" aria-hidden="true">
                     </i>
 
                     <span>
@@ -98,23 +75,16 @@
                         THỰC ĐƠN
                     </h3>
 
-                    <div
-                        class="meal-vote-food-list"
-                        data-current-food-list>
+                    <div class="meal-vote-food-list" data-current-food-list>
                     </div>
 
-                    <a
-                        href="#"
-                        class="meal-vote-menu-link"
-                        data-current-menu-link>
+                    <a href="#" class="meal-vote-menu-link" data-current-menu-link>
 
                         <span>
                             Xem chi tiết thực đơn
                         </span>
 
-                        <i
-                            class="fa-solid fa-arrow-right"
-                            aria-hidden="true">
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true">
                         </i>
                     </a>
                 </section>
@@ -125,17 +95,12 @@
                     </h3>
 
                     <div class="meal-vote-choice-grid">
-                        <button
-                            type="button"
-                            class="
+                        <button type="button" class="
                                 meal-vote-choice
                                 meal-vote-choice--yes
-                            "
-                            data-vote-choice="true">
+                            " data-vote-choice="true">
 
-                            <i
-                                class="fa-solid fa-check"
-                                aria-hidden="true">
+                            <i class="fa-solid fa-check" aria-hidden="true">
                             </i>
 
                             <span>
@@ -143,17 +108,12 @@
                             </span>
                         </button>
 
-                        <button
-                            type="button"
-                            class="
+                        <button type="button" class="
                                 meal-vote-choice
                                 meal-vote-choice--no
-                            "
-                            data-vote-choice="false">
+                            " data-vote-choice="false">
 
-                            <i
-                                class="fa-solid fa-xmark"
-                                aria-hidden="true">
+                            <i class="fa-solid fa-xmark" aria-hidden="true">
                             </i>
 
                             <span>
@@ -162,15 +122,10 @@
                         </button>
                     </div>
 
-                    <div
-                        class="meal-vote-selected"
-                        data-vote-selected
-                        hidden>
+                    <div class="meal-vote-selected" data-vote-selected hidden>
 
                         <div class="meal-vote-selected__value">
-                            <i
-                                class="fa-regular fa-circle-check"
-                                aria-hidden="true">
+                            <i class="fa-regular fa-circle-check" aria-hidden="true">
                             </i>
 
                             <span>
@@ -182,18 +137,13 @@
                             </strong>
                         </div>
 
-                        <button
-                            type="button"
-                            class="meal-vote-change"
-                            data-vote-change>
+                        <button type="button" class="meal-vote-change" data-vote-change>
 
                             <span>
                                 Thay đổi lựa chọn
                             </span>
 
-                            <i
-                                class="fa-regular fa-pen-to-square"
-                                aria-hidden="true">
+                            <i class="fa-regular fa-pen-to-square" aria-hidden="true">
                             </i>
                         </button>
                     </div>
@@ -213,15 +163,12 @@
 
                 <div class="meal-vote-stat-grid">
                     <article class="meal-vote-stat-card">
-                        <span
-                            class="
+                        <span class="
                                 meal-vote-stat-card__icon
                                 meal-vote-stat-card__icon--total
                             ">
 
-                            <i
-                                class="fa-solid fa-users"
-                                aria-hidden="true">
+                            <i class="fa-solid fa-users" aria-hidden="true">
                             </i>
                         </span>
 
@@ -241,15 +188,12 @@
                     </article>
 
                     <article class="meal-vote-stat-card">
-                        <span
-                            class="
+                        <span class="
                                 meal-vote-stat-card__icon
                                 meal-vote-stat-card__icon--yes
                             ">
 
-                            <i
-                                class="fa-regular fa-user"
-                                aria-hidden="true">
+                            <i class="fa-regular fa-user" aria-hidden="true">
                             </i>
                         </span>
 
@@ -258,9 +202,7 @@
                                 Có tham gia
                             </span>
 
-                            <strong
-                                class="is-positive"
-                                data-result-yes>
+                            <strong class="is-positive" data-result-yes>
                                 0
                             </strong>
 
@@ -272,15 +214,12 @@
                     </article>
 
                     <article class="meal-vote-stat-card">
-                        <span
-                            class="
+                        <span class="
                                 meal-vote-stat-card__icon
                                 meal-vote-stat-card__icon--no
                             ">
 
-                            <i
-                                class="fa-regular fa-user"
-                                aria-hidden="true">
+                            <i class="fa-regular fa-user" aria-hidden="true">
                             </i>
                         </span>
 
@@ -289,9 +228,7 @@
                                 Không tham gia
                             </span>
 
-                            <strong
-                                class="is-negative"
-                                data-result-no>
+                            <strong class="is-negative" data-result-no>
                                 0
                             </strong>
 
@@ -305,8 +242,7 @@
 
                 <div class="meal-vote-progress-list">
                     <div class="meal-vote-progress-row">
-                        <strong
-                            class="
+                        <strong class="
                                 meal-vote-progress-row__label
                                 is-positive
                             ">
@@ -314,12 +250,10 @@
                         </strong>
 
                         <div class="meal-vote-progress">
-                            <span
-                                class="
+                            <span class="
                                     meal-vote-progress__bar
                                     meal-vote-progress__bar--yes
-                                "
-                                data-result-yes-bar>
+                                " data-result-yes-bar>
                             </span>
                         </div>
 
@@ -331,8 +265,7 @@
                             người
                         </span>
 
-                        <strong
-                            class="
+                        <strong class="
                                 meal-vote-progress-row__percent
                                 is-positive
                             ">
@@ -344,8 +277,7 @@
                     </div>
 
                     <div class="meal-vote-progress-row">
-                        <strong
-                            class="
+                        <strong class="
                                 meal-vote-progress-row__label
                                 is-negative
                             ">
@@ -353,12 +285,10 @@
                         </strong>
 
                         <div class="meal-vote-progress">
-                            <span
-                                class="
+                            <span class="
                                     meal-vote-progress__bar
                                     meal-vote-progress__bar--no
-                                "
-                                data-result-no-bar>
+                                " data-result-no-bar>
                             </span>
                         </div>
 
@@ -370,8 +300,7 @@
                             người
                         </span>
 
-                        <strong
-                            class="
+                        <strong class="
                                 meal-vote-progress-row__percent
                                 is-negative
                             ">
@@ -384,9 +313,7 @@
                 </div>
 
                 <div class="meal-vote-results__note">
-                    <i
-                        class="fa-regular fa-circle-info"
-                        aria-hidden="true">
+                    <i class="fa-regular fa-circle-info" aria-hidden="true">
                     </i>
 
                     <span>
@@ -396,14 +323,9 @@
             </section>
         </section>
 
-        <section
-            class="meal-vote-empty-current"
-            data-meal-vote-current-empty
-            hidden>
+        <section class="meal-vote-empty-current" data-meal-vote-current-empty hidden>
 
-            <i
-                class="fa-regular fa-calendar-check"
-                aria-hidden="true">
+            <i class="fa-regular fa-calendar-check" aria-hidden="true">
             </i>
 
             <strong>
@@ -417,48 +339,30 @@
 
         <section class="meal-vote-upcoming">
 
-            <div
-                class="meal-vote-related-tabs"
-                data-related-tabs>
+            <div class="meal-vote-related-tabs" data-related-tabs>
 
-                <button
-                    type="button"
-                    class="meal-vote-related-tab is-active"
-                    data-related-tab="all">
+                <button type="button" class="meal-vote-related-tab is-active" data-related-tab="all">
                     Tất cả
                 </button>
 
-                <button
-                    type="button"
-                    class="meal-vote-related-tab"
-                    data-related-tab="active">
+                <button type="button" class="meal-vote-related-tab" data-related-tab="active">
                     Đang diễn ra
                 </button>
 
-                <button
-                    type="button"
-                    class="meal-vote-related-tab"
-                    data-related-tab="upcoming">
+                <button type="button" class="meal-vote-related-tab" data-related-tab="upcoming">
                     Sắp diễn ra
                 </button>
 
             </div>
 
 
-            <div
-                class="meal-vote-upcoming__list"
-                data-upcoming-list>
+            <div class="meal-vote-upcoming__list" data-upcoming-list>
             </div>
 
 
-            <div
-                class="meal-vote-upcoming__empty"
-                data-upcoming-empty
-                hidden>
+            <div class="meal-vote-upcoming__empty" data-upcoming-empty hidden>
 
-                <i
-                    class="fa-regular fa-calendar"
-                    aria-hidden="true">
+                <i class="fa-regular fa-calendar" aria-hidden="true">
                 </i>
 
                 <strong data-related-empty-title>
@@ -474,9 +378,7 @@
         </section>
     </div>
 
-    <div
-        class="meal-vote-loading"
-        data-meal-vote-loading>
+    <div class="meal-vote-loading" data-meal-vote-loading>
 
         <span class="meal-vote-loading__spinner">
         </span>
@@ -489,6 +391,5 @@
     {{> catalog/no-permission}}
 </main>
 
-<script
-    src="/assets/js/pages/chi-tiet/binh-chon.js">
+<script src="/assets/js/pages/chi-tiet/binh-chon.js">
 </script>

@@ -1,161 +1,67 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class VaiTroRepository {
-
-    mapVaiTro(
-        row
-    ) {
-
+    mapVaiTro(row) {
         if (!row) {
-
             return null;
-
         }
 
+        const dsQuyen = Array.isArray(row.quyens) ? row.quyens : [];
 
-        const dsQuyen =
-            Array.isArray(
-                row.quyens
-            )
-                ? row.quyens
-                : [];
+        const dsNhomTinhNang = [];
 
+        const nhomTinhNangMap = new Map();
 
-        const dsNhomTinhNang =
-            [];
+        dsQuyen.forEach((quyen) => {
+            const danhSachNhom = Array.isArray(quyen.dsNhomTinhNang) ? quyen.dsNhomTinhNang : [];
 
+            danhSachNhom.forEach((nhom) => {
+                const id = Number(nhom.id);
 
-        const nhomTinhNangMap =
-            new Map();
+                if (!Number.isInteger(id) || nhomTinhNangMap.has(id)) {
+                    return;
+                }
 
+                nhomTinhNangMap.set(id, nhom);
 
-        dsQuyen.forEach(
-            quyen => {
-
-                const danhSachNhom =
-                    Array.isArray(
-                        quyen.dsNhomTinhNang
-                    )
-                        ? quyen.dsNhomTinhNang
-                        : [];
-
-
-                danhSachNhom.forEach(
-                    nhom => {
-
-                        const id =
-                            Number(
-                                nhom.id
-                            );
-
-
-                        if (
-                            !Number.isInteger(
-                                id
-                            ) ||
-                            nhomTinhNangMap
-                                .has(
-                                    id
-                                )
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        nhomTinhNangMap
-                            .set(
-                                id,
-                                nhom
-                            );
-
-
-                        dsNhomTinhNang
-                            .push(
-                                nhom
-                            );
-
-                    }
-                );
-
-            }
-        );
-
+                dsNhomTinhNang.push(nhom);
+            });
+        });
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maVaiTro: row.ma_vai_tro,
 
-            maVaiTro:
-                row.ma_vai_tro,
+            tenVaiTro: row.ten_vai_tro,
 
-            tenVaiTro:
-                row.ten_vai_tro,
+            moTa: row.mo_ta,
 
-            moTa:
-                row.mo_ta,
+            dsQuyenId: dsQuyen.map((item) => Number(item.id)),
 
-            dsQuyenId:
-                dsQuyen.map(
-                    item =>
-                        Number(
-                            item.id
-                        )
-                ),
+            dsMaQuyen: dsQuyen.map((item) => item.maQuyen),
 
-            dsMaQuyen:
-                dsQuyen.map(
-                    item =>
-                        item.maQuyen
-                ),
-
-            dsTenQuyen:
-                dsQuyen.map(
-                    item =>
-                        item.tenQuyen
-                ),
+            dsTenQuyen: dsQuyen.map((item) => item.tenQuyen),
 
             dsQuyen,
 
             dsNhomTinhNang,
 
-            dsNhomTinhNangId:
-                dsNhomTinhNang.map(
-                    item =>
-                        Number(
-                            item.id
-                        )
-                ),
+            dsNhomTinhNangId: dsNhomTinhNang.map((item) => Number(item.id)),
 
-            dsMaNhomTinhNang:
-                dsNhomTinhNang.map(
-                    item =>
-                        item.maNhomTinhNang
-                ),
+            dsMaNhomTinhNang: dsNhomTinhNang.map((item) => item.maNhomTinhNang),
 
-            dsTenNhomTinhNang:
-                dsNhomTinhNang.map(
-                    item =>
-                        item.tenNhomTinhNang
-                ),
+            dsTenNhomTinhNang: dsNhomTinhNang.map((item) => item.tenNhomTinhNang),
 
-            active:
-                row.active,
+            active: row.active,
 
-            createdAt:
-                row.created_at,
+            createdAt: row.created_at,
 
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -232,11 +138,9 @@ class VaiTroRepository {
                 ON q.id = vtq.quyen_id
 
         `;
-
     }
 
     getGroupBy() {
-
         return `
             GROUP BY
                 vt.id,
@@ -247,11 +151,9 @@ class VaiTroRepository {
                 vt.created_at,
                 vt.updated_at
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -260,17 +162,12 @@ class VaiTroRepository {
             ORDER BY vt.ma_vai_tro ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapVaiTro(row)
-        );
-
+        return result.rows.map((row) => this.mapVaiTro(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -281,26 +178,16 @@ class VaiTroRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapVaiTro(
-            result.rows[0]
-        );
-
+        return this.mapVaiTro(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maVaiTro
-    ) {
-
+    async getChiTietByMa(maVaiTro) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -315,33 +202,16 @@ class VaiTroRepository {
             LIMIT 1
         `;
 
+        const result = await pool.query(sql, [maVaiTro]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maVaiTro
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
+        if (result.rows.length === 0) {
             return null;
-
         }
 
-
-        return this.mapVaiTro(
-            result.rows[0]
-        );
-
+        return this.mapVaiTro(result.rows[0]);
     }
 
     async getDsQuyenByIds(ids) {
-
         const sql = `
             SELECT
                 id,
@@ -352,32 +222,20 @@ class VaiTroRepository {
             WHERE id = ANY($1::BIGINT[])
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [ids]
-            );
+        const result = await pool.query(sql, [ids]);
 
-        return result.rows.map(
-            row => ({
-                id:
-                    row.id,
+        return result.rows.map((row) => ({
+            id: row.id,
 
-                maQuyen:
-                    row.ma_quyen,
+            maQuyen: row.ma_quyen,
 
-                tenQuyen:
-                    row.ten_quyen,
+            tenQuyen: row.ten_quyen,
 
-                active:
-                    row.active
-            })
-        );
-
+            active: row.active
+        }));
     }
 
     async getDsQuyenByMas(mas) {
-
         const sql = `
             SELECT
                 id,
@@ -393,40 +251,21 @@ class VaiTroRepository {
                 )
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [mas]
-            );
+        const result = await pool.query(sql, [mas]);
 
-        return result.rows.map(
-            row => ({
-                id:
-                    row.id,
+        return result.rows.map((row) => ({
+            id: row.id,
 
-                maQuyen:
-                    row.ma_quyen,
+            maQuyen: row.ma_quyen,
 
-                tenQuyen:
-                    row.ten_quyen,
+            tenQuyen: row.ten_quyen,
 
-                active:
-                    row.active
-            })
-        );
-
+            active: row.active
+        }));
     }
 
-    async ganDsQuyen(
-        client,
-        vaiTroId,
-        dsQuyenId
-    ) {
-
-        if (
-            !Array.isArray(dsQuyenId) ||
-            dsQuyenId.length === 0
-        ) {
+    async ganDsQuyen(client, vaiTroId, dsQuyenId) {
+        if (!Array.isArray(dsQuyenId) || dsQuyenId.length === 0) {
             return;
         }
 
@@ -453,24 +292,11 @@ class VaiTroRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                vaiTroId,
-                dsQuyenId
-            ]
-        );
-
+        await client.query(sql, [vaiTroId, dsQuyenId]);
     }
 
-    async existsMaVaiTro(
-        maVaiTro,
-        excludeId = null
-    ) {
-
-        const values = [
-            maVaiTro
-        ];
+    async existsMaVaiTro(maVaiTro, excludeId = null) {
+        const values = [maVaiTro];
 
         let sql = `
             SELECT EXISTS (
@@ -481,37 +307,24 @@ class VaiTroRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenVaiTro(
-        tenVaiTro,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenVaiTro
-        ];
+    async existsTenVaiTro(tenVaiTro, excludeId = null) {
+        const values = [tenVaiTro];
 
         let sql = `
             SELECT EXISTS (
@@ -522,37 +335,27 @@ class VaiTroRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
-        const client =
-            await pool.connect();
+        const client = await pool.connect();
 
         try {
-
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 INSERT INTO dm_vai_tro (
@@ -575,59 +378,34 @@ class VaiTroRepository {
             `;
 
             const values = [
-
                 data.maVaiTro,
 
                 data.tenVaiTro,
 
                 data.moTa || null,
 
-                data.active !== undefined
-                    ? data.active
-                    : true
-
+                data.active !== undefined ? data.active : true
             ];
 
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
-            const vaiTroId =
-                result.rows[0].id;
+            const vaiTroId = result.rows[0].id;
 
-            await this.ganDsQuyen(
-                client,
-                vaiTroId,
-                data.dsQuyenId
-            );
+            await this.ganDsQuyen(client, vaiTroId, data.dsQuyenId);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                vaiTroId
-            );
-
+            return await this.getChiTiet(vaiTroId);
         } catch (error) {
-
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
 
-    async khoaTatCaQuyen(
-        client,
-        vaiTroId
-    ) {
-
+    async khoaTatCaQuyen(client, vaiTroId) {
         const sql = `
             UPDATE dm_vai_tro_quyen
             SET
@@ -636,21 +414,14 @@ class VaiTroRepository {
             WHERE vai_tro_id = $1
         `;
 
-        await client.query(
-            sql,
-            [vaiTroId]
-        );
-
+        await client.query(sql, [vaiTroId]);
     }
 
     async update(id, data) {
-
-        const client =
-            await pool.connect();
+        const client = await pool.connect();
 
         try {
-
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 UPDATE dm_vai_tro
@@ -664,63 +435,31 @@ class VaiTroRepository {
                 RETURNING id
             `;
 
-            const values = [
+            const values = [data.maVaiTro, data.tenVaiTro, data.moTa || null, data.active, id];
 
-                data.maVaiTro,
-
-                data.tenVaiTro,
-
-                data.moTa || null,
-
-                data.active,
-
-                id
-
-            ];
-
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
             if (result.rows.length === 0) {
-
-                await client.query("ROLLBACK");
+                await client.query('ROLLBACK');
 
                 return null;
-
             }
 
-            await this.khoaTatCaQuyen(
-                client,
-                id
-            );
+            await this.khoaTatCaQuyen(client, id);
 
-            await this.ganDsQuyen(
-                client,
-                id,
-                data.dsQuyenId
-            );
+            await this.ganDsQuyen(client, id, data.dsQuyenId);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
             return await this.getChiTiet(id);
-
         } catch (error) {
-
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
-
 }
 
 module.exports = new VaiTroRepository();

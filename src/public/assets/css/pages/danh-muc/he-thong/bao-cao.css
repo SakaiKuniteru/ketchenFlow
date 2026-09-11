@@ -1,62 +1,39 @@
 #bao-caoPage {
-    min-width:
-        0;
+    min-width: 0;
 }
 
-#baoCaoDetailPanel
-.catalog-form-grid {
-    align-items:
-        start;
+#baoCaoDetailPanel .catalog-form-grid {
+    align-items: start;
 }
 
-#baoCaoDetailPanel
-.form-field {
-    min-width:
-        0;
+#baoCaoDetailPanel .form-field {
+    min-width: 0;
 }
 
-#baoCaoTable
-.catalog-table__body
-.catalog-table__cell {
-    height:
-        auto;
+#baoCaoTable .catalog-table__body .catalog-table__cell {
+    height: auto;
 
-    min-height:
-        50px;
+    min-height: 50px;
 
-    white-space:
-        normal;
+    white-space: normal;
 
-    overflow:
-        visible;
+    overflow: visible;
 
-    text-overflow:
-        clip;
+    text-overflow: clip;
 
-    overflow-wrap:
-        anywhere;
+    overflow-wrap: anywhere;
 
-    word-break:
-        break-word;
+    word-break: break-word;
 
-    line-height:
-        1.45;
+    line-height: 1.45;
 }
 
-#baoCaoTable
-.catalog-table__body
-.catalog-table__cell--nowrap {
-    white-space:
-        nowrap;
+#baoCaoTable .catalog-table__body .catalog-table__cell--nowrap {
+    white-space: nowrap;
 }
 
-@media (
-    max-width:
-        820px
-) {
-    #baoCaoDetailPanel
-    .catalog-form-grid {
-        grid-template-columns:
-            1fr;
+@media (max-width: 820px) {
+    #baoCaoDetailPanel .catalog-form-grid {
+        grid-template-columns: 1fr;
     }
 }

@@ -1,56 +1,43 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class TinhThanhRepository {
-
     mapTinhThanh(row) {
-
         if (!row) {
             return null;
         }
 
         return {
-
             id: row.id,
 
-            maTinhThanh:
-                row.ma_tinh_thanh,
+            maTinhThanh: row.ma_tinh_thanh,
 
-            tenTinhThanh:
-                row.ten_tinh_thanh,
+            tenTinhThanh: row.ten_tinh_thanh,
 
-            tenVietTat:
-                row.tinh_thanh_ten_viet_tat,
+            tenVietTat: row.tinh_thanh_ten_viet_tat,
 
-            quocGiaId:
-                row.quoc_gia_id,
+            quocGiaId: row.quoc_gia_id,
 
             quocGia: row.quoc_gia_id
                 ? {
-                    id: row.quoc_gia_id,
-                    maQuocGia: row.ma_quoc_gia,
-                    tenQuocGia: row.ten_quoc_gia,
-                    tenTiengAnh: row.ten_tieng_anh,
-                    maIso2: row.ma_iso2,
-                    maIso3: row.ma_iso3,
-                    tenVietTat: row.quoc_gia_ten_viet_tat
-                }
+                      id: row.quoc_gia_id,
+                      maQuocGia: row.ma_quoc_gia,
+                      tenQuocGia: row.ten_quoc_gia,
+                      tenTiengAnh: row.ten_tieng_anh,
+                      maIso2: row.ma_iso2,
+                      maIso3: row.ma_iso3,
+                      tenVietTat: row.quoc_gia_ten_viet_tat
+                  }
                 : null,
 
-            active:
-                row.active,
+            active: row.active,
 
-            createdAt:
-                row.created_at,
+            createdAt: row.created_at,
 
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -81,28 +68,21 @@ class TinhThanhRepository {
                 ON qg.id = tt.quoc_gia_id
 
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
             ORDER BY tt.ma_tinh_thanh ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapTinhThanh(row)
-        );
-
+        return result.rows.map((row) => this.mapTinhThanh(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -111,26 +91,16 @@ class TinhThanhRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapTinhThanh(
-            result.rows[0]
-        );
-
+        return this.mapTinhThanh(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maTinhThanh
-    ) {
-
+    async getChiTietByMa(maTinhThanh) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -143,33 +113,16 @@ class TinhThanhRepository {
             LIMIT 1
         `;
 
+        const result = await pool.query(sql, [maTinhThanh]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maTinhThanh
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
+        if (result.rows.length === 0) {
             return null;
-
         }
 
-
-        return this.mapTinhThanh(
-            result.rows[0]
-        );
-
+        return this.mapTinhThanh(result.rows[0]);
     }
 
     async getQuocGiaByMa(maQuocGia) {
-
         const sql = `
             SELECT
                 id,
@@ -181,11 +134,7 @@ class TinhThanhRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [maQuocGia]
-            );
+        const result = await pool.query(sql, [maQuocGia]);
 
         if (result.rows.length === 0) {
             return null;
@@ -193,18 +142,13 @@ class TinhThanhRepository {
 
         return {
             id: result.rows[0].id,
-            maQuocGia:
-                result.rows[0].ma_quoc_gia,
-            tenQuocGia:
-                result.rows[0].ten_quoc_gia,
-            active:
-                result.rows[0].active
+            maQuocGia: result.rows[0].ma_quoc_gia,
+            tenQuocGia: result.rows[0].ten_quoc_gia,
+            active: result.rows[0].active
         };
-
     }
 
     async existsQuocGia(quocGiaId) {
-
         const sql = `
             SELECT EXISTS (
                 SELECT 1
@@ -214,24 +158,13 @@ class TinhThanhRepository {
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [quocGiaId]
-            );
+        const result = await pool.query(sql, [quocGiaId]);
 
         return result.rows[0].exists;
-
     }
 
-    async existsMaTinhThanh(
-        maTinhThanh,
-        excludeId = null
-    ) {
-
-        const values = [
-            maTinhThanh
-        ];
+    async existsMaTinhThanh(maTinhThanh, excludeId = null) {
+        const values = [maTinhThanh];
 
         let sql = `
             SELECT EXISTS (
@@ -242,39 +175,24 @@ class TinhThanhRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenTinhThanh(
-        tenTinhThanh,
-        quocGiaId,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenTinhThanh,
-            quocGiaId
-        ];
+    async existsTenTinhThanh(tenTinhThanh, quocGiaId, excludeId = null) {
+        const values = [tenTinhThanh, quocGiaId];
 
         let sql = `
             SELECT EXISTS (
@@ -286,31 +204,23 @@ class TinhThanhRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $3
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
         const sql = `
             INSERT INTO dm_tinh_thanh (
                 ma_tinh_thanh,
@@ -334,7 +244,6 @@ class TinhThanhRepository {
         `;
 
         const values = [
-
             data.maTinhThanh,
 
             data.tenTinhThanh,
@@ -343,26 +252,15 @@ class TinhThanhRepository {
 
             data.quocGiaId,
 
-            data.active !== undefined
-                ? data.active
-                : true
-
+            data.active !== undefined ? data.active : true
         ];
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async update(id, data) {
-
         const sql = `
             UPDATE dm_tinh_thanh
             SET
@@ -376,38 +274,16 @@ class TinhThanhRepository {
             RETURNING id
         `;
 
-        const values = [
+        const values = [data.maTinhThanh, data.tenTinhThanh, data.tenVietTat || null, data.quocGiaId, data.active, id];
 
-            data.maTinhThanh,
-
-            data.tenTinhThanh,
-
-            data.tenVietTat || null,
-
-            data.quocGiaId,
-
-            data.active,
-
-            id
-
-        ];
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id);
     }
-
 }
 
 module.exports = new TinhThanhRepository();

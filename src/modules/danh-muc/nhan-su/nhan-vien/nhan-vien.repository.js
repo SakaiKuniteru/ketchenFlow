@@ -1,4 +1,4 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class NhanVienRepository {
     mapNhanVien(row) {
@@ -17,59 +17,59 @@ class NhanVienRepository {
             quocGiaId: row.quoc_gia_id,
             quocGia: row.quoc_gia_id
                 ? {
-                    id: row.quoc_gia_id,
-                    ma: row.ma_quoc_gia,
-                    ten: row.ten_quoc_gia,
-                    tenVietTat: row.quoc_gia_ten_viet_tat
-                }
+                      id: row.quoc_gia_id,
+                      ma: row.ma_quoc_gia,
+                      ten: row.ten_quoc_gia,
+                      tenVietTat: row.quoc_gia_ten_viet_tat
+                  }
                 : null,
 
             tinhThanhId: row.tinh_thanh_id,
             tinhThanh: row.tinh_thanh_id
                 ? {
-                    id: row.tinh_thanh_id,
-                    ma: row.ma_tinh_thanh,
-                    ten: row.ten_tinh_thanh,
-                    tenVietTat: row.tinh_thanh_ten_viet_tat
-                }
+                      id: row.tinh_thanh_id,
+                      ma: row.ma_tinh_thanh,
+                      ten: row.ten_tinh_thanh,
+                      tenVietTat: row.tinh_thanh_ten_viet_tat
+                  }
                 : null,
 
             xaPhuongId: row.xa_phuong_id,
             xaPhuong: row.xa_phuong_id
                 ? {
-                    id: row.xa_phuong_id,
-                    ma: row.ma_xa_phuong,
-                    ten: row.ten_xa_phuong,
-                    tenVietTat: row.xa_phuong_ten_viet_tat
-                }
+                      id: row.xa_phuong_id,
+                      ma: row.ma_xa_phuong,
+                      ten: row.ten_xa_phuong,
+                      tenVietTat: row.xa_phuong_ten_viet_tat
+                  }
                 : null,
 
             coSoId: row.co_so_id,
             coSo: row.co_so_id
                 ? {
-                    id: row.co_so_id,
-                    ma: row.ma_co_so,
-                    ten: row.ten_co_so,
-                    diaChi: row.co_so_dia_chi
-                }
+                      id: row.co_so_id,
+                      ma: row.ma_co_so,
+                      ten: row.ten_co_so,
+                      diaChi: row.co_so_dia_chi
+                  }
                 : null,
 
             phongBanId: row.phong_ban_id,
             phongBan: row.phong_ban_id
                 ? {
-                    id: row.phong_ban_id,
-                    ma: row.ma_phong_ban,
-                    ten: row.ten_phong_ban
-                }
+                      id: row.phong_ban_id,
+                      ma: row.ma_phong_ban,
+                      ten: row.ten_phong_ban
+                  }
                 : null,
 
             chucVuId: row.chuc_vu_id,
             chucVu: row.chuc_vu_id
                 ? {
-                    id: row.chuc_vu_id,
-                    ma: row.ma_chuc_vu,
-                    ten: row.ten_chuc_vu
-                }
+                      id: row.chuc_vu_id,
+                      ma: row.ma_chuc_vu,
+                      ten: row.ten_chuc_vu
+                  }
                 : null,
 
             ghiChu: row.ghi_chu,
@@ -171,7 +171,7 @@ class NhanVienRepository {
 
         const result = await pool.query(sql);
 
-        return result.rows.map(row => this.mapNhanVien(row));
+        return result.rows.map((row) => this.mapNhanVien(row));
     }
 
     async getChiTiet(id) {
@@ -202,20 +202,13 @@ class NhanVienRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [
-                maNhanVien
-            ]
-        );
+        const result = await pool.query(sql, [maNhanVien]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapNhanVien(
-            result.rows[0]
-        );
+        return this.mapNhanVien(result.rows[0]);
     }
 
     async getQuocGiaByMa(maQuocGia) {
@@ -229,18 +222,12 @@ class NhanVienRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maQuocGia]
-        );
+        const result = await pool.query(sql, [maQuocGia]);
 
         return result.rows[0] || null;
     }
 
-    async getTinhThanhByMa(
-        maTinhThanh,
-        quocGiaId = null
-    ) {
+    async getTinhThanhByMa(maTinhThanh, quocGiaId = null) {
         let sql = `
             SELECT
                 id,
@@ -263,18 +250,12 @@ class NhanVienRepository {
 
         sql += ` LIMIT 1`;
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rows[0] || null;
     }
 
-    async getXaPhuongByMa(
-        maXaPhuong,
-        tinhThanhId = null
-    ) {
+    async getXaPhuongByMa(maXaPhuong, tinhThanhId = null) {
         let sql = `
             SELECT
                 id,
@@ -297,10 +278,7 @@ class NhanVienRepository {
 
         sql += ` LIMIT 1`;
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rows[0] || null;
     }
@@ -316,18 +294,12 @@ class NhanVienRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maCoSo]
-        );
+        const result = await pool.query(sql, [maCoSo]);
 
         return result.rows[0] || null;
     }
 
-    async getPhongBanByMa(
-        maPhongBan,
-        coSoId = null
-    ) {
+    async getPhongBanByMa(maPhongBan, coSoId = null) {
         let sql = `
             SELECT
                 id,
@@ -350,10 +322,7 @@ class NhanVienRepository {
 
         sql += ` LIMIT 1`;
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rows[0] || null;
     }
@@ -369,10 +338,7 @@ class NhanVienRepository {
             LIMIT 1
         `;
 
-        const result = await pool.query(
-            sql,
-            [maChucVu]
-        );
+        const result = await pool.query(sql, [maChucVu]);
 
         return result.rows[0] || null;
     }
@@ -385,18 +351,12 @@ class NhanVienRepository {
             AND active = TRUE
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         return result.rowCount > 0;
     }
 
-    async existsTinhThanh(
-        tinhThanhId,
-        quocGiaId = null
-    ) {
+    async existsTinhThanh(tinhThanhId, quocGiaId = null) {
         let sql = `
             SELECT id
             FROM dm_tinh_thanh
@@ -414,18 +374,12 @@ class NhanVienRepository {
             params.push(quocGiaId);
         }
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rowCount > 0;
     }
 
-    async existsXaPhuong(
-        xaPhuongId,
-        tinhThanhId = null
-    ) {
+    async existsXaPhuong(xaPhuongId, tinhThanhId = null) {
         let sql = `
             SELECT id
             FROM dm_xa_phuong
@@ -443,10 +397,7 @@ class NhanVienRepository {
             params.push(tinhThanhId);
         }
 
-        const result = await pool.query(
-            sql,
-            params
-        );
+        const result = await pool.query(sql, params);
 
         return result.rowCount > 0;
     }
@@ -459,10 +410,7 @@ class NhanVienRepository {
             AND active = TRUE
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         return result.rowCount > 0;
     }
@@ -475,10 +423,7 @@ class NhanVienRepository {
             AND active = TRUE
         `;
 
-        const result = await pool.query(
-            sql,
-            [phongBanId]
-        );
+        const result = await pool.query(sql, [phongBanId]);
 
         return result.rowCount > 0;
     }
@@ -491,10 +436,7 @@ class NhanVienRepository {
             AND active = TRUE
         `;
 
-        const result = await pool.query(
-            sql,
-            [id]
-        );
+        const result = await pool.query(sql, [id]);
 
         return result.rowCount > 0;
     }
@@ -643,18 +585,13 @@ class NhanVienRepository {
             id
         ];
 
-        const result = await pool.query(
-            sql,
-            values
-        );
+        const result = await pool.query(sql, values);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
+        return await this.getChiTiet(result.rows[0].id);
     }
 
     async existsMaNhanVien(maNhanVien, id = 0) {
@@ -665,10 +602,7 @@ class NhanVienRepository {
             AND id <> $2
         `;
 
-        const result = await pool.query(sql, [
-            maNhanVien,
-            id
-        ]);
+        const result = await pool.query(sql, [maNhanVien, id]);
 
         return result.rowCount > 0;
     }
@@ -686,10 +620,7 @@ class NhanVienRepository {
                 AND id <> $2
         `;
 
-        const result = await pool.query(
-            sql,
-            [phone, id]
-        );
+        const result = await pool.query(sql, [phone, id]);
 
         return result.rowCount > 0;
     }
@@ -707,10 +638,7 @@ class NhanVienRepository {
                 AND id <> $2
         `;
 
-        const result = await pool.query(
-            sql,
-            [email, id]
-        );
+        const result = await pool.query(sql, [email, id]);
 
         return result.rowCount > 0;
     }

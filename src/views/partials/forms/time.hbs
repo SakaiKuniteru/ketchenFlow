@@ -1,14 +1,9 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}"
-    data-time-picker
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}" data-time-picker
     data-show-seconds="{{#if showSeconds}}true{{else}}false{{/if}}">
 
     {{#if label}}
 
-        <label
-            for="{{id}}"
-            class="form-field__label">
+        <label for="{{id}}" class="form-field__label">
 
             <span>
                 {{label}}
@@ -16,9 +11,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -33,56 +26,18 @@
 
         <div class="time-picker__control">
 
-            <input
-                type="text"
-                id="{{id}}"
-                name="{{name}}"
-                value="{{value}}"
+            <input type="text" id="{{id}}" name="{{name}}" value="{{value}}"
                 class="form-input time-picker__input {{#if inputClass}}{{inputClass}}{{/if}}"
                 placeholder="{{#if placeholder}}{{placeholder}}{{else}}{{#if showSeconds}}HH:mm:ss{{else}}HH:mm{{/if}}{{/if}}"
-                inputmode="numeric"
-                autocomplete="off"
-                maxlength="{{#if showSeconds}}8{{else}}5{{/if}}"
-                data-time-input
+                inputmode="numeric" autocomplete="off" maxlength="{{#if showSeconds}}8{{else}}5{{/if}}" data-time-input
+                {{#if required}} required aria-required="true" {{/if}} {{#if readonly}} readonly {{/if}}
+                {{#if disabled}} disabled {{/if}} {{#if error}} aria-invalid="true" aria-describedby="{{id}}Error"
+                {{else if description}} aria-describedby="{{id}}Description" {{/if}}>
 
-                {{#if required}}
-                    required
-                    aria-required="true"
-                {{/if}}
+            <button type="button" class="time-picker__toggle" data-time-toggle aria-label="Chọn thời gian"
+                aria-expanded="false" {{#if readonly}} disabled {{/if}} {{#if disabled}} disabled {{/if}}>
 
-                {{#if readonly}}
-                    readonly
-                {{/if}}
-
-                {{#if disabled}}
-                    disabled
-                {{/if}}
-
-                {{#if error}}
-                    aria-invalid="true"
-                    aria-describedby="{{id}}Error"
-                {{else if description}}
-                    aria-describedby="{{id}}Description"
-                {{/if}}>
-
-            <button
-                type="button"
-                class="time-picker__toggle"
-                data-time-toggle
-                aria-label="Chọn thời gian"
-                aria-expanded="false"
-
-                {{#if readonly}}
-                    disabled
-                {{/if}}
-
-                {{#if disabled}}
-                    disabled
-                {{/if}}>
-
-                <i
-                    class="fa-regular fa-clock"
-                    aria-hidden="true">
+                <i class="fa-regular fa-clock" aria-hidden="true">
                 </i>
 
             </button>
@@ -90,10 +45,7 @@
         </div>
 
 
-        <div
-            class="time-picker__dropdown"
-            data-time-dropdown
-            hidden>
+        <div class="time-picker__dropdown" data-time-dropdown hidden>
 
             <div class="time-picker__fields">
 
@@ -105,31 +57,17 @@
 
                     <div class="time-picker__number">
 
-                        <button
-                            type="button"
-                            class="time-picker__step"
-                            data-time-step="hour"
-                            data-time-direction="1"
+                        <button type="button" class="time-picker__step" data-time-step="hour" data-time-direction="1"
                             aria-label="Tăng giờ">
 
                             <i class="fa-solid fa-chevron-up"></i>
 
                         </button>
 
-                        <input
-                            type="text"
-                            class="time-picker__number-input"
-                            inputmode="numeric"
-                            maxlength="2"
-                            placeholder="00"
-                            data-time-hour
-                            aria-label="Giờ">
+                        <input type="text" class="time-picker__number-input" inputmode="numeric" maxlength="2"
+                            placeholder="00" data-time-hour aria-label="Giờ">
 
-                        <button
-                            type="button"
-                            class="time-picker__step"
-                            data-time-step="hour"
-                            data-time-direction="-1"
+                        <button type="button" class="time-picker__step" data-time-step="hour" data-time-direction="-1"
                             aria-label="Giảm giờ">
 
                             <i class="fa-solid fa-chevron-down"></i>
@@ -154,31 +92,17 @@
 
                     <div class="time-picker__number">
 
-                        <button
-                            type="button"
-                            class="time-picker__step"
-                            data-time-step="minute"
-                            data-time-direction="1"
+                        <button type="button" class="time-picker__step" data-time-step="minute" data-time-direction="1"
                             aria-label="Tăng phút">
 
                             <i class="fa-solid fa-chevron-up"></i>
 
                         </button>
 
-                        <input
-                            type="text"
-                            class="time-picker__number-input"
-                            inputmode="numeric"
-                            maxlength="2"
-                            placeholder="00"
-                            data-time-minute
-                            aria-label="Phút">
+                        <input type="text" class="time-picker__number-input" inputmode="numeric" maxlength="2"
+                            placeholder="00" data-time-minute aria-label="Phút">
 
-                        <button
-                            type="button"
-                            class="time-picker__step"
-                            data-time-step="minute"
-                            data-time-direction="-1"
+                        <button type="button" class="time-picker__step" data-time-step="minute" data-time-direction="-1"
                             aria-label="Giảm phút">
 
                             <i class="fa-solid fa-chevron-down"></i>
@@ -205,32 +129,18 @@
 
                         <div class="time-picker__number">
 
-                            <button
-                                type="button"
-                                class="time-picker__step"
-                                data-time-step="second"
-                                data-time-direction="1"
-                                aria-label="Tăng giây">
+                            <button type="button" class="time-picker__step" data-time-step="second"
+                                data-time-direction="1" aria-label="Tăng giây">
 
                                 <i class="fa-solid fa-chevron-up"></i>
 
                             </button>
 
-                            <input
-                                type="text"
-                                class="time-picker__number-input"
-                                inputmode="numeric"
-                                maxlength="2"
-                                placeholder="00"
-                                data-time-second
-                                aria-label="Giây">
+                            <input type="text" class="time-picker__number-input" inputmode="numeric" maxlength="2"
+                                placeholder="00" data-time-second aria-label="Giây">
 
-                            <button
-                                type="button"
-                                class="time-picker__step"
-                                data-time-step="second"
-                                data-time-direction="-1"
-                                aria-label="Giảm giây">
+                            <button type="button" class="time-picker__step" data-time-step="second"
+                                data-time-direction="-1" aria-label="Giảm giây">
 
                                 <i class="fa-solid fa-chevron-down"></i>
 
@@ -247,19 +157,14 @@
 
             <div class="time-picker__footer">
 
-                <button
-                    type="button"
-                    class="time-picker__footer-button"
-                    data-time-clear>
+                <button type="button" class="time-picker__footer-button" data-time-clear>
 
                     Xóa
 
                 </button>
 
 
-                <button
-                    type="button"
-                    class="time-picker__footer-button time-picker__footer-button--primary"
+                <button type="button" class="time-picker__footer-button time-picker__footer-button--primary"
                     data-time-confirm>
 
                     Xong
@@ -275,9 +180,7 @@
 
     {{#if description}}
 
-        <small
-            id="{{id}}Description"
-            class="form-field__description">
+        <small id="{{id}}Description" class="form-field__description">
 
             {{description}}
 
@@ -286,11 +189,7 @@
     {{/if}}
 
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

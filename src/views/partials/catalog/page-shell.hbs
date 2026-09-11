@@ -1,8 +1,5 @@
-<section
-    id="{{#if pageId}}{{pageId}}{{else}}catalogPage{{/if}}"
-    class="catalog-page {{#if pageClass}}{{pageClass}}{{/if}}"
-    data-catalog-page
-    data-module="{{moduleName}}">
+<section id="{{#if pageId}}{{pageId}}{{else}}catalogPage{{/if}}"
+    class="catalog-page {{#if pageClass}}{{pageClass}}{{/if}}" data-catalog-page data-module="{{moduleName}}">
 
     <div class="catalog-page__list">
 
@@ -18,12 +15,8 @@
 
     </div>
 
-    <aside
-        id="{{#if detailPanelId}}{{detailPanelId}}{{else}}catalogDetailPanel{{/if}}"
-        class="catalog-page__detail"
-        data-catalog-detail-panel
-        data-panel-mode="view"
-        aria-label="Thông tin chi tiết">
+    <aside id="{{#if detailPanelId}}{{detailPanelId}}{{else}}catalogDetailPanel{{/if}}" class="catalog-page__detail"
+        data-catalog-detail-panel data-panel-mode="view" aria-label="Thông tin chi tiết">
 
         <div class="catalog-page__detail-content">
 
@@ -37,10 +30,7 @@
 
     </aside>
 
-    <div
-        class="catalog-page__overlay"
-        data-catalog-overlay
-        hidden>
+    <div class="catalog-page__overlay" data-catalog-overlay hidden>
     </div>
 
 </section>

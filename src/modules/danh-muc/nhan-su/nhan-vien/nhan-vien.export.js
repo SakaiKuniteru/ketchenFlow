@@ -1,27 +1,23 @@
-"use strict";
+'use strict';
 
-const nhanVienRepository = require("./nhan-vien.repository");
+const nhanVienRepository = require('./nhan-vien.repository');
 
-const {createExportFile} = require("../../../../helpers/excel/excel-export");
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const {sendExcel} = require("../../../../helpers/excel/excel-response");
+const { sendExcel } = require('../../../../helpers/excel/excel-response');
 
-const MA_BAO_CAO = "dm_nhan_vien";
+const MA_BAO_CAO = 'dm_nhan_vien';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;
 
 function taoDongExport(item) {
-
     return {
         id: item.id,
 
         maNhanVien: item.maNhanVien,
 
-        tenDangNhap:
-            item.tenDangNhap ||
-            item.taiKhoan?.tenDangNhap ||
-            "",
+        tenDangNhap: item.tenDangNhap || item.taiKhoan?.tenDangNhap || '',
 
         hoTen: item.hoTen,
 
@@ -35,102 +31,41 @@ function taoDongExport(item) {
 
         diaChi: item.diaChi,
 
+        quocGiaId: item.quocGiaId,
 
-        quocGiaId:
-            item.quocGiaId,
+        maQuocGia: item.maQuocGia || item.quocGia?.ma || item.quocGia?.maQuocGia || '',
 
-        maQuocGia:
-            item.maQuocGia ||
-            item.quocGia?.ma ||
-            item.quocGia?.maQuocGia ||
-            "",
+        tenQuocGia: item.tenQuocGia || item.quocGia?.ten || item.quocGia?.tenQuocGia || '',
 
-        tenQuocGia:
-            item.tenQuocGia ||
-            item.quocGia?.ten ||
-            item.quocGia?.tenQuocGia ||
-            "",
+        tinhThanhId: item.tinhThanhId,
 
+        maTinhThanh: item.maTinhThanh || item.tinhThanh?.ma || item.tinhThanh?.maTinhThanh || '',
 
-        tinhThanhId:
-            item.tinhThanhId,
+        tenTinhThanh: item.tenTinhThanh || item.tinhThanh?.ten || item.tinhThanh?.tenTinhThanh || '',
 
-        maTinhThanh:
-            item.maTinhThanh ||
-            item.tinhThanh?.ma ||
-            item.tinhThanh?.maTinhThanh ||
-            "",
+        xaPhuongId: item.xaPhuongId,
 
-        tenTinhThanh:
-            item.tenTinhThanh ||
-            item.tinhThanh?.ten ||
-            item.tinhThanh?.tenTinhThanh ||
-            "",
+        maXaPhuong: item.maXaPhuong || item.xaPhuong?.ma || item.xaPhuong?.maXaPhuong || '',
 
+        tenXaPhuong: item.tenXaPhuong || item.xaPhuong?.ten || item.xaPhuong?.tenXaPhuong || '',
 
-        xaPhuongId:
-            item.xaPhuongId,
+        coSoId: item.coSoId,
 
-        maXaPhuong:
-            item.maXaPhuong ||
-            item.xaPhuong?.ma ||
-            item.xaPhuong?.maXaPhuong ||
-            "",
+        maCoSo: item.maCoSo || item.coSo?.ma || item.coSo?.maCoSo || '',
 
-        tenXaPhuong:
-            item.tenXaPhuong ||
-            item.xaPhuong?.ten ||
-            item.xaPhuong?.tenXaPhuong ||
-            "",
+        tenCoSo: item.tenCoSo || item.coSo?.ten || item.coSo?.tenCoSo || '',
 
+        phongBanId: item.phongBanId,
 
-        coSoId:
-            item.coSoId,
+        maPhongBan: item.maPhongBan || item.phongBan?.ma || item.phongBan?.maPhongBan || '',
 
-        maCoSo:
-            item.maCoSo ||
-            item.coSo?.ma ||
-            item.coSo?.maCoSo ||
-            "",
+        tenPhongBan: item.tenPhongBan || item.phongBan?.ten || item.phongBan?.tenPhongBan || '',
 
-        tenCoSo:
-            item.tenCoSo ||
-            item.coSo?.ten ||
-            item.coSo?.tenCoSo ||
-            "",
+        chucVuId: item.chucVuId,
 
+        maChucVu: item.maChucVu || item.chucVu?.ma || item.chucVu?.maChucVu || '',
 
-        phongBanId:
-            item.phongBanId,
-
-        maPhongBan:
-            item.maPhongBan ||
-            item.phongBan?.ma ||
-            item.phongBan?.maPhongBan ||
-            "",
-
-        tenPhongBan:
-            item.tenPhongBan ||
-            item.phongBan?.ten ||
-            item.phongBan?.tenPhongBan ||
-            "",
-
-
-        chucVuId:
-            item.chucVuId,
-
-        maChucVu:
-            item.maChucVu ||
-            item.chucVu?.ma ||
-            item.chucVu?.maChucVu ||
-            "",
-
-        tenChucVu:
-            item.tenChucVu ||
-            item.chucVu?.ten ||
-            item.chucVu?.tenChucVu ||
-            "",
-
+        tenChucVu: item.tenChucVu || item.chucVu?.ten || item.chucVu?.tenChucVu || '',
 
         ghiChu: item.ghiChu,
 
@@ -142,20 +77,12 @@ function taoDongExport(item) {
 
         active: item.active
     };
-
 }
 
 async function xuLyExport(query = {}) {
+    const danhSach = await nhanVienRepository.getTongHop(query);
 
-    const danhSach =
-        await nhanVienRepository.getTongHop(
-            query
-        );
-
-    const data =
-        danhSach.map(
-            item => taoDongExport(item)
-        );
+    const data = danhSach.map((item) => taoDongExport(item));
 
     return await createExportFile({
         maBaoCao: MA_BAO_CAO,
@@ -164,36 +91,17 @@ async function xuLyExport(query = {}) {
         dataStartRowNumber: DATA_START_ROW,
         data
     });
-
 }
 
-
-async function exportData(
-    req,
-    res,
-    next
-) {
-
+async function exportData(req, res, next) {
     try {
+        const result = await xuLyExport(req.query);
 
-        const result =
-            await xuLyExport(
-                req.query
-            );
-
-        return sendExcel(
-            res,
-            result
-        );
-
+        return sendExcel(res, result);
     } catch (error) {
-
         next(error);
-
     }
-
 }
-
 
 module.exports = {
     exportData,

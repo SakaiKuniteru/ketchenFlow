@@ -1,98 +1,52 @@
-"use strict";
+'use strict';
 
-const {
-    createExportFile
-} = require(
-    "../../../../helpers/excel/excel-export"
-);
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
 
-const nhomSanPhamRepository =
-    require(
-        "./nhom-san-pham.repository"
-    );
+const nhomSanPhamRepository = require('./nhom-san-pham.repository');
 
+const MA_BAO_CAO = 'dm_nhom_san_pham';
 
-const MA_BAO_CAO =
-    "dm_nhom_san_pham";
+const HEADER_ROW = 3;
 
-const HEADER_ROW =
-    3;
+const TEMPLATE_ROW = 5;
 
-const TEMPLATE_ROW =
-    5;
+const DATA_START_ROW = 5;
 
-const DATA_START_ROW =
-    5;
-
-
-function mapExportItem(
-    item
-) {
-
+function mapExportItem(item) {
     return {
+        id: item.id,
 
-        id:
-            item.id,
+        maNhomSanPham: item.maNhomSanPham,
 
-        maNhomSanPham:
-            item.maNhomSanPham,
+        tenNhomSanPham: item.tenNhomSanPham,
 
-        tenNhomSanPham:
-            item.tenNhomSanPham,
+        loaiSanPham: item.loaiSanPham,
 
-        loaiSanPham:
-            item.loaiSanPham,
+        moTa: item.moTa,
 
-        moTa:
-            item.moTa,
+        thuTuHienThi: item.thuTuHienThi,
 
-        thuTuHienThi:
-            item.thuTuHienThi,
-
-        active:
-            item.active
-
+        active: item.active
     };
-
 }
 
-
-async function exportNhomSanPham(
-    query = {}
-) {
-
-    const danhSach =
-        await nhomSanPhamRepository
-            .getTongHop(
-                query
-            );
+async function exportNhomSanPham(query = {}) {
+    const danhSach = await nhomSanPhamRepository.getTongHop(query);
 
     return createExportFile({
+        maBaoCao: MA_BAO_CAO,
 
-        maBaoCao:
-            MA_BAO_CAO,
+        headerRowNumber: HEADER_ROW,
 
-        headerRowNumber:
-            HEADER_ROW,
+        templateRowNumber: TEMPLATE_ROW,
 
-        templateRowNumber:
-            TEMPLATE_ROW,
+        dataStartRowNumber: DATA_START_ROW,
 
-        dataStartRowNumber:
-            DATA_START_ROW,
-
-        data:
-            danhSach.map(
-                mapExportItem
-            )
-
+        data: danhSach.map(mapExportItem)
     });
-
 }
 
-
 module.exports = {
-
     MA_BAO_CAO,
 
     HEADER_ROW,
@@ -102,5 +56,4 @@ module.exports = {
     DATA_START_ROW,
 
     exportNhomSanPham
-
 };

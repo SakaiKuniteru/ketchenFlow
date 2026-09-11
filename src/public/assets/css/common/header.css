@@ -9,10 +9,8 @@
     justify-content: space-between;
     height: var(--header-height);
     padding: 0 20px;
-    border-bottom: 1px solid
-        var(--color-border-light);
-    background:
-        rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid var(--color-border-light);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: var(--shadow-sm);
     backdrop-filter: blur(14px);
     overflow: visible;
@@ -158,12 +156,7 @@
 }
 
 .app-header__user-button.is-open {
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            var(--color-primary-rgb),
-            0.08
-        );
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.08);
 }
 
 .app-header__avatar {
@@ -245,10 +238,8 @@
     border-radius: 14px;
     background: var(--color-surface);
     box-shadow:
-        0 18px 45px
-        rgba(15, 23, 42, 0.14),
-        0 4px 12px
-        rgba(15, 23, 42, 0.06);
+        0 18px 45px rgba(15, 23, 42, 0.14),
+        0 4px 12px rgba(15, 23, 42, 0.06);
     transform-origin: top right;
 }
 
@@ -257,10 +248,7 @@
 }
 
 .app-header__user-menu.is-open {
-    animation:
-        header-user-menu-enter
-        160ms
-        ease-out;
+    animation: header-user-menu-enter 160ms ease-out;
 }
 
 .app-header__user-menu-header {
@@ -364,15 +352,10 @@
     border-radius: 7px;
     color: currentColor;
     background: currentColor;
-    background:
-        rgba(
-            var(--color-primary-rgb),
-            0.08
-        );
+    background: rgba(var(--color-primary-rgb), 0.08);
 }
 
-.app-header__user-menu-item--danger
-.app-header__user-menu-icon {
+.app-header__user-menu-item--danger .app-header__user-menu-icon {
     background: var(--color-danger-soft);
 }
 
@@ -382,25 +365,18 @@
 }
 
 @keyframes header-user-menu-enter {
-
     from {
         opacity: 0;
-        transform:
-            translateY(-6px)
-            scale(0.98);
+        transform: translateY(-6px) scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform:
-            translateY(0)
-            scale(1);
+        transform: translateY(0) scale(1);
     }
-
 }
 
 @media (max-width: 640px) {
-
     .app-header {
         padding: 0 12px;
     }
@@ -420,7 +396,6 @@
         max-width: 120px;
         font-size: 11px;
     }
-
 }
 
 .app-header__notification {
@@ -480,7 +455,7 @@
 }
 
 .app-header__notification-menu::before {
-    content: "";
+    content: '';
     position: absolute;
     top: -8px;
     right: 28px;
@@ -497,10 +472,7 @@
 }
 
 .app-header__notification-menu.is-open {
-    animation:
-        header-user-menu-enter
-        160ms
-        ease-out;
+    animation: header-user-menu-enter 160ms ease-out;
 }
 
 .app-header__notification-header {
@@ -580,7 +552,7 @@
 }
 
 .app-header__notification-tab::after {
-    content: "";
+    content: '';
     position: absolute;
     right: 0;
     bottom: 0;
@@ -634,8 +606,7 @@
     font-family: inherit;
     text-align: left;
     cursor: pointer;
-    transition:
-        background-color var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
 .app-header__notification-item:first-child {
@@ -647,11 +618,7 @@
 }
 
 .app-header__notification-item.is-unread {
-    background:
-        rgba(
-            var(--color-primary-rgb),
-            0.035
-        );
+    background: rgba(var(--color-primary-rgb), 0.035);
 }
 
 .app-header__notification-icon {
@@ -696,8 +663,7 @@
     white-space: nowrap;
 }
 
-.app-header__notification-item.is-unread
-.app-header__notification-item-title {
+.app-header__notification-item.is-unread .app-header__notification-item-title {
     font-weight: 800;
 }
 
@@ -790,8 +756,7 @@
     font-size: 13px;
     font-weight: 700;
     text-decoration: none;
-    transition:
-        background-color var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
 .app-header__notification-footer:hover {
@@ -811,12 +776,7 @@
         right: 10px;
         left: 10px;
         width: auto;
-        max-height:
-            calc(
-                100vh -
-                var(--header-height) -
-                20px
-            );
+        max-height: calc(100vh - var(--header-height) - 20px);
     }
 
     .app-header__notification-menu::before {
@@ -864,8 +824,7 @@
     background: transparent;
     text-align: left;
     cursor: pointer;
-    transition:
-        background-color var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
 .app-header__user-menu-header--button:hover {
@@ -882,76 +841,49 @@
    Lỗi từng trường trong hồ sơ nhân viên
    ========================================================= */
 
-.employee-profile-form
-.form-field {
+.employee-profile-form .form-field {
     min-width: 0;
 }
 
-.employee-profile-form
-.form-field.is-invalid
-.form-input {
+.employee-profile-form .form-field.is-invalid .form-input {
     border-color: var(--color-danger);
     background: var(--color-danger-soft);
-    box-shadow:
-        0 0 0 3px
-        rgba(220, 38, 38, 0.08);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
-.employee-profile-form
-.form-field.is-invalid
-.form-input:focus {
+.employee-profile-form .form-field.is-invalid .form-input:focus {
     border-color: var(--color-danger);
-    box-shadow:
-        0 0 0 3px
-        rgba(220, 38, 38, 0.12);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
-
 
 /* Date picker */
 
-.employee-profile-form
-.form-field.is-invalid
-.date-picker__input {
+.employee-profile-form .form-field.is-invalid .date-picker__input {
     border-color: var(--color-danger);
     background: var(--color-danger-soft);
 }
 
-.employee-profile-form
-.form-field.is-invalid
-.date-picker__toggle {
+.employee-profile-form .form-field.is-invalid .date-picker__toggle {
     color: var(--color-danger);
 }
-
 
 /* Smart select */
 
-.employee-profile-form
-.smart-select.is-invalid
-.smart-select__control,
-.employee-profile-form
-.form-field.is-invalid
-.smart-select__control {
+.employee-profile-form .smart-select.is-invalid .smart-select__control,
+.employee-profile-form .form-field.is-invalid .smart-select__control {
     border-color: var(--color-danger);
     background: var(--color-danger-soft);
-    box-shadow:
-        0 0 0 3px
-        rgba(220, 38, 38, 0.08);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
-.employee-profile-form
-.smart-select.is-invalid
-.smart-select__toggle,
-.employee-profile-form
-.form-field.is-invalid
-.smart-select__toggle {
+.employee-profile-form .smart-select.is-invalid .smart-select__toggle,
+.employee-profile-form .form-field.is-invalid .smart-select__toggle {
     color: var(--color-danger);
 }
 
-
 /* Nội dung lỗi */
 
-.employee-profile-form
-.form-field__error {
+.employee-profile-form .form-field__error {
     position: relative;
     display: flex;
     align-items: flex-start;
@@ -966,14 +898,12 @@
     line-height: 1.4;
 }
 
-.employee-profile-form
-.form-field__error[hidden] {
+.employee-profile-form .form-field__error[hidden] {
     display: none !important;
 }
 
-.employee-profile-form
-.form-field__error::before {
-    content: "!";
+.employee-profile-form .form-field__error::before {
+    content: '!';
 
     display: inline-flex;
     flex: 0 0 auto;
@@ -994,17 +924,12 @@
     line-height: 1;
 }
 
-
 /* Lỗi ảnh */
 
-.employee-profile__avatar-section.is-invalid
-.employee-profile__avatar {
+.employee-profile__avatar-section.is-invalid .employee-profile__avatar {
     border-color: var(--color-danger);
-    box-shadow:
-        0 0 0 4px
-        rgba(220, 38, 38, 0.1);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
 }
-
 
 /* Lỗi hệ thống không thuộc trường nào */
 
@@ -1031,7 +956,7 @@
 }
 
 .employee-profile__message::before {
-    content: "!";
+    content: '!';
 
     display: inline-flex;
     flex: 0 0 auto;
@@ -1077,17 +1002,13 @@
 }
 
 @media (max-width: 1024px) {
-
     .app-header__center {
         width: min(340px, 32vw);
     }
-
 }
 
 @media (max-width: 768px) {
-
     .app-header__center {
         display: none;
     }
-
 }

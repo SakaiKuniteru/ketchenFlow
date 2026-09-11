@@ -1,12 +1,8 @@
-<div
-    class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}"
-    data-form-field="{{name}}">
+<div class="form-field {{#if fieldClass}}{{fieldClass}}{{/if}}" data-form-field="{{name}}">
 
     {{#if label}}
 
-        <label
-            for="{{id}}"
-            class="form-field__label">
+        <label for="{{id}}" class="form-field__label">
 
             <span>
                 {{label}}
@@ -14,9 +10,7 @@
 
             {{#if required}}
 
-                <span
-                    class="form-field__required"
-                    aria-hidden="true">
+                <span class="form-field__required" aria-hidden="true">
                     *
                 </span>
 
@@ -28,43 +22,13 @@
 
     <div class="form-field__control">
 
-        <textarea
-            id="{{id}}"
-            name="{{name}}"
-            class="form-textarea {{#if inputClass}}{{inputClass}}{{/if}}"
+        <textarea id="{{id}}" name="{{name}}" class="form-textarea {{#if inputClass}}{{inputClass}}{{/if}}"
             rows="{{#if rows}}{{rows}}{{else}}4{{/if}}"
-            data-editable-in-view="{{#if editableInView}}true{{else}}false{{/if}}"
-
-            {{#if placeholder}}
-                placeholder="{{placeholder}}"
-            {{/if}}
-
-            {{#if maxlength}}
-                maxlength="{{maxlength}}"
-            {{/if}}
-
-            {{#if minlength}}
-                minlength="{{minlength}}"
-            {{/if}}
-
-            {{#if required}}
-                required
-                aria-required="true"
-            {{/if}}
-
-            {{#if readonly}}
-                readonly
-            {{/if}}
-
-            {{#if disabled}}
-                disabled
-            {{/if}}
-
-            {{#if error}}
-                aria-invalid="true"
-                aria-describedby="{{id}}Error"
-            {{else if description}}
-                aria-describedby="{{id}}Description"
+            data-editable-in-view="{{#if editableInView}}true{{else}}false{{/if}}" {{#if placeholder}}
+            placeholder="{{placeholder}}" {{/if}} {{#if maxlength}} maxlength="{{maxlength}}" {{/if}} {{#if minlength}}
+            minlength="{{minlength}}" {{/if}} {{#if required}} required aria-required="true" {{/if}} {{#if readonly}}
+            readonly {{/if}} {{#if disabled}} disabled {{/if}} {{#if error}} aria-invalid="true"
+            aria-describedby="{{id}}Error" {{else if description}} aria-describedby="{{id}}Description"
             {{/if}}>{{value}}</textarea>
 
     </div>
@@ -73,9 +37,7 @@
 
         {{#if description}}
 
-            <small
-                id="{{id}}Description"
-                class="form-field__description">
+            <small id="{{id}}Description" class="form-field__description">
                 {{description}}
             </small>
 
@@ -83,9 +45,7 @@
 
         {{#if showCounter}}
 
-            <small
-                class="form-field__counter"
-                data-character-counter="{{id}}">
+            <small class="form-field__counter" data-character-counter="{{id}}">
 
                 <span data-character-current>
                     0
@@ -109,11 +69,7 @@
 
     </div>
 
-    <small
-        id="{{id}}Error"
-        class="form-field__error"
-        data-field-error="{{name}}"
-        {{#unless error}}hidden{{/unless}}>
+    <small id="{{id}}Error" class="form-field__error" data-field-error="{{name}}" {{#unless error}}hidden{{/unless}}>
 
         {{error}}
 

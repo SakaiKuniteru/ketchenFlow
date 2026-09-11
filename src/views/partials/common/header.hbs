@@ -1,15 +1,9 @@
-<header
-    id="appHeader"
-    class="app-header">
+<header id="appHeader" class="app-header">
 
     <div class="app-header__left">
 
-        <button
-            type="button"
-            class="app-header__menu-button"
-            data-sidebar-main-toggle
-            aria-label="Mở hoặc thu gọn thanh điều hướng"
-            aria-expanded="false">
+        <button type="button" class="app-header__menu-button" data-sidebar-main-toggle
+            aria-label="Mở hoặc thu gọn thanh điều hướng" aria-expanded="false">
 
             ☰
 
@@ -17,17 +11,12 @@
 
         <div class="app-header__brand">
 
-            <img
-                class="app-header__brand-logo"
-                data-header-system-logo
-                src="/assets/images/logo/logo.png"
+            <img class="app-header__brand-logo" data-header-system-logo src="/assets/images/logo/logo.png"
                 alt="Logo hệ thống">
 
             <div class="app-header__brand-information">
 
-                <span
-                    class="app-header__brand-name"
-                    data-header-system-name>
+                <span class="app-header__brand-name" data-header-system-name>
 
                     MCS KITCHENFLOW
 
@@ -60,35 +49,21 @@
 
     <div class="app-header__right">
 
-        <div
-            class="app-header__notification"
-            data-header-notification>
+        <div class="app-header__notification" data-header-notification>
 
-            <button
-                type="button"
-                class="app-header__action app-header__notification-button"
-                data-header-notification-button
-                aria-label="Thông báo"
-                aria-expanded="false">
+            <button type="button" class="app-header__action app-header__notification-button"
+                data-header-notification-button aria-label="Thông báo" aria-expanded="false">
 
-                <i
-                    class="fa-regular fa-bell"
-                    aria-hidden="true">
+                <i class="fa-regular fa-bell" aria-hidden="true">
                 </i>
 
-                <span
-                    class="app-header__notification-count"
-                    data-header-notification-count
-                    hidden>
+                <span class="app-header__notification-count" data-header-notification-count hidden>
                     0
                 </span>
 
             </button>
 
-            <div
-                class="app-header__notification-menu"
-                data-header-notification-menu
-                hidden>
+            <div class="app-header__notification-menu" data-header-notification-menu hidden>
 
                 <div class="app-header__notification-header">
 
@@ -96,10 +71,7 @@
                         Thông báo
                     </strong>
 
-                    <button
-                        type="button"
-                        class="app-header__notification-mark-all"
-                        data-header-notification-mark-all
+                    <button type="button" class="app-header__notification-mark-all" data-header-notification-mark-all
                         hidden>
 
                         <i class="fa-regular fa-circle-check"></i>
@@ -114,9 +86,7 @@
 
                 <div class="app-header__notification-tabs">
 
-                    <button
-                        type="button"
-                        class="app-header__notification-tab is-active"
+                    <button type="button" class="app-header__notification-tab is-active"
                         data-header-notification-filter="all">
 
                         Tất cả
@@ -131,10 +101,7 @@
 
                     </button>
 
-                    <button
-                        type="button"
-                        class="app-header__notification-tab"
-                        data-header-notification-filter="unread">
+                    <button type="button" class="app-header__notification-tab" data-header-notification-filter="unread">
 
                         Chưa đọc
 
@@ -152,10 +119,7 @@
 
                 <div class="app-header__notification-content">
 
-                    <div
-                        class="app-header__notification-loading"
-                        data-header-notification-loading
-                        hidden>
+                    <div class="app-header__notification-loading" data-header-notification-loading hidden>
 
                         <span class="app-header__notification-spinner">
                         </span>
@@ -166,15 +130,10 @@
 
                     </div>
 
-                    <div
-                        class="app-header__notification-list"
-                        data-header-notification-list>
+                    <div class="app-header__notification-list" data-header-notification-list>
                     </div>
 
-                    <div
-                        class="app-header__notification-empty"
-                        data-header-notification-empty
-                        hidden>
+                    <div class="app-header__notification-empty" data-header-notification-empty hidden>
 
                         <i class="fa-regular fa-bell-slash"></i>
 
@@ -190,10 +149,7 @@
 
                 </div>
 
-                <a
-                    href="/thong-bao"
-                    class="app-header__notification-footer"
-                    data-header-notification-view-all>
+                <a href="/thong-bao" class="app-header__notification-footer" data-header-notification-view-all>
 
                     Xem tất cả thông báo
 
@@ -205,20 +161,14 @@
 
         <div class="app-header__user">
 
-            <button
-                type="button"
-                class="app-header__user-button"
-                data-header-user-button
-                aria-expanded="false"
+            <button type="button" class="app-header__user-button" data-header-user-button aria-expanded="false"
                 aria-controls="headerUserMenu">
 
                 <span class="app-header__avatar" data-header-user-avatar>
 
                     {{#if currentUser.anhDaiDien}}
 
-                        <img
-                            src="{{currentUser.anhDaiDien}}"
-                            alt="{{currentUser.hoTen}}">
+                        <img src="{{currentUser.anhDaiDien}}" alt="{{currentUser.hoTen}}">
 
                     {{else}}
 
@@ -240,9 +190,7 @@
                         {{/if}}
                     </strong>
 
-                    <small
-                        class="app-header__username"
-                        data-header-account-name>
+                    <small class="app-header__username" data-header-account-name>
 
                         {{#if currentUser.taiKhoan}}
 
@@ -262,17 +210,9 @@
 
                 </span>
 
-                <span
-                    class="app-header__user-arrow"
-                    data-header-user-arrow
-                    aria-hidden="true">
+                <span class="app-header__user-arrow" data-header-user-arrow aria-hidden="true">
 
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
 
                         <path d="m6 9 6 6 6-6"></path>
@@ -284,20 +224,12 @@
             </button>
 
 
-            <div
-                id="headerUserMenu"
-                class="app-header__user-menu"
-                data-header-user-menu
-                hidden>
+            <div id="headerUserMenu" class="app-header__user-menu" data-header-user-menu hidden>
 
-                <button
-                    type="button"
-                    class="app-header__user-menu-header app-header__user-menu-header--button"
+                <button type="button" class="app-header__user-menu-header app-header__user-menu-header--button"
                     data-header-profile-open>
 
-                    <span
-                        class="app-header__user-menu-avatar"
-                        data-header-user-avatar>
+                    <span class="app-header__user-menu-avatar" data-header-user-avatar>
 
                         <span aria-hidden="true">
                             👤
@@ -317,47 +249,29 @@
 
                     </span>
 
-                    <span
-                        class="app-header__profile-arrow"
-                        aria-hidden="true">
+                    <span class="app-header__profile-arrow" aria-hidden="true">
 
                         ›
 
                     </span>
 
                 </button>
-                
+
                 <div class="app-header__user-menu-divider">
                 </div>
 
 
-                <button
-                    type="button"
-                    class="app-header__user-menu-item"
-                    data-header-change-password>
+                <button type="button" class="app-header__user-menu-item" data-header-change-password>
 
-                    <span
-                        class="app-header__user-menu-icon"
-                        aria-hidden="true">
+                    <span class="app-header__user-menu-icon" aria-hidden="true">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
 
-                            <rect
-                                x="5"
-                                y="10"
-                                width="14"
-                                height="10"
-                                rx="2">
+                            <rect x="5" y="10" width="14" height="10" rx="2">
                             </rect>
 
-                            <path
-                                d="M8 10V7a4 4 0 0 1 8 0v3">
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3">
                             </path>
 
                         </svg>
@@ -371,36 +285,23 @@
                 </button>
 
 
-                <button
-                    type="button"
-                    class="
+                <button type="button" class="
                         app-header__user-menu-item
                         app-header__user-menu-item--danger
-                    "
-                    data-header-logout>
+                    " data-header-logout>
 
-                    <span
-                        class="app-header__user-menu-icon"
-                        aria-hidden="true">
+                    <span class="app-header__user-menu-icon" aria-hidden="true">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
 
-                            <path
-                                d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4">
+                            <path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4">
                             </path>
 
-                            <path
-                                d="m16 17 5-5-5-5">
+                            <path d="m16 17 5-5-5-5">
                             </path>
 
-                            <path
-                                d="M21 12H9">
+                            <path d="M21 12H9">
                             </path>
 
                         </svg>

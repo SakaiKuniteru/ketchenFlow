@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class DonHangReportRepository {
     async getData(query) {
         const values = [query.coSoId];
-        const conditions = ["dh.co_so_id = $1"];
+        const conditions = ['dh.co_so_id = $1'];
 
         if (query.tuNgay) {
             values.push(query.tuNgay);
@@ -35,7 +35,7 @@ class DonHangReportRepository {
                 FROM nv_don_hang dh
                 JOIN dm_nhan_vien nd ON nd.id = dh.nguoi_dat_id
                 LEFT JOIN dm_phong_ban pb ON pb.id = dh.phong_ban_id
-                WHERE ${conditions.join(" AND ")}
+                WHERE ${conditions.join(' AND ')}
                 ORDER BY dh.created_at DESC
             `,
             values

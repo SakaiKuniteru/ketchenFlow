@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const { createExportFile } = require("../../../../helpers/excel/excel-export");
-const caAnRepository = require("./ca-an.repository");
+const { createExportFile } = require('../../../../helpers/excel/excel-export');
+const caAnRepository = require('./ca-an.repository');
 
-const MA_BAO_CAO = "dm_ca_an";
+const MA_BAO_CAO = 'dm_ca_an';
 const HEADER_ROW = 3;
 const TEMPLATE_ROW = 5;
 const DATA_START_ROW = 5;

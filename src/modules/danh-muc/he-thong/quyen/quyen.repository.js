@@ -1,61 +1,37 @@
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 class QuyenRepository {
-
     mapQuyen(row) {
-
         if (!row) {
             return null;
         }
 
         return {
+            id: row.id,
 
-            id:
-                row.id,
+            maQuyen: row.ma_quyen,
 
-            maQuyen:
-                row.ma_quyen,
+            tenQuyen: row.ten_quyen,
 
-            tenQuyen:
-                row.ten_quyen,
+            moTa: row.mo_ta,
 
-            moTa:
-                row.mo_ta,
+            dsNhomTinhNangId: Array.isArray(row.nhom_tinh_nangs) ? row.nhom_tinh_nangs.map((item) => item.id) : [],
 
-            dsNhomTinhNangId:
-                Array.isArray(row.nhom_tinh_nangs)
-                    ? row.nhom_tinh_nangs.map(
-                        item => item.id
-                    )
-                    : [],
+            dsMaNhomTinhNang: Array.isArray(row.nhom_tinh_nangs)
+                ? row.nhom_tinh_nangs.map((item) => item.maNhomTinhNang)
+                : [],
 
-            dsMaNhomTinhNang:
-                Array.isArray(row.nhom_tinh_nangs)
-                    ? row.nhom_tinh_nangs.map(
-                        item => item.maNhomTinhNang
-                    )
-                    : [],
+            dsNhomTinhNang: Array.isArray(row.nhom_tinh_nangs) ? row.nhom_tinh_nangs : [],
 
-            dsNhomTinhNang:
-                Array.isArray(row.nhom_tinh_nangs)
-                    ? row.nhom_tinh_nangs
-                    : [],
+            active: row.active,
 
-            active:
-                row.active,
+            createdAt: row.created_at,
 
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            updatedAt: row.updated_at
         };
-
     }
 
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -94,11 +70,9 @@ class QuyenRepository {
                 ON ntn.id = qntn.nhom_tinh_nang_id
 
         `;
-
     }
 
     getGroupBy() {
-
         return `
             GROUP BY
                 q.id,
@@ -109,11 +83,9 @@ class QuyenRepository {
                 q.created_at,
                 q.updated_at
         `;
-
     }
 
     async getTongHop() {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -122,17 +94,12 @@ class QuyenRepository {
             ORDER BY q.ma_quyen ASC
         `;
 
-        const result =
-            await pool.query(sql);
+        const result = await pool.query(sql);
 
-        return result.rows.map(
-            row => this.mapQuyen(row)
-        );
-
+        return result.rows.map((row) => this.mapQuyen(row));
     }
 
     async getChiTiet(id) {
-
         const sql = `
             ${this.getBaseQuery()}
 
@@ -143,26 +110,16 @@ class QuyenRepository {
             LIMIT 1
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [id]
-            );
+        const result = await pool.query(sql, [id]);
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.mapQuyen(
-            result.rows[0]
-        );
-
+        return this.mapQuyen(result.rows[0]);
     }
 
-    async getChiTietByMa(
-        maQuyen
-    ) {
-
+    async getChiTietByMa(maQuyen) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -177,33 +134,16 @@ class QuyenRepository {
             LIMIT 1
         `;
 
+        const result = await pool.query(sql, [maQuyen]);
 
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maQuyen
-                ]
-            );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
+        if (result.rows.length === 0) {
             return null;
-
         }
 
-
-        return this.mapQuyen(
-            result.rows[0]
-        );
-
+        return this.mapQuyen(result.rows[0]);
     }
 
     async getDsNhomTinhNangByIds(ids) {
-
         const sql = `
             SELECT
                 id,
@@ -214,32 +154,20 @@ class QuyenRepository {
             WHERE id = ANY($1::BIGINT[])
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [ids]
-            );
+        const result = await pool.query(sql, [ids]);
 
-        return result.rows.map(
-            row => ({
-                id:
-                    row.id,
+        return result.rows.map((row) => ({
+            id: row.id,
 
-                maNhomTinhNang:
-                    row.ma_nhom_tinh_nang,
+            maNhomTinhNang: row.ma_nhom_tinh_nang,
 
-                tenNhomTinhNang:
-                    row.ten_nhom_tinh_nang,
+            tenNhomTinhNang: row.ten_nhom_tinh_nang,
 
-                active:
-                    row.active
-            })
-        );
-
+            active: row.active
+        }));
     }
 
     async getDsNhomTinhNangByMas(mas) {
-
         const sql = `
             SELECT
                 id,
@@ -255,40 +183,21 @@ class QuyenRepository {
                 )
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                [mas]
-            );
+        const result = await pool.query(sql, [mas]);
 
-        return result.rows.map(
-            row => ({
-                id:
-                    row.id,
+        return result.rows.map((row) => ({
+            id: row.id,
 
-                maNhomTinhNang:
-                    row.ma_nhom_tinh_nang,
+            maNhomTinhNang: row.ma_nhom_tinh_nang,
 
-                tenNhomTinhNang:
-                    row.ten_nhom_tinh_nang,
+            tenNhomTinhNang: row.ten_nhom_tinh_nang,
 
-                active:
-                    row.active
-            })
-        );
-
+            active: row.active
+        }));
     }
 
-    async ganDsNhomTinhNang(
-        client,
-        quyenId,
-        dsNhomTinhNangId
-    ) {
-
-        if (
-            !Array.isArray(dsNhomTinhNangId) ||
-            dsNhomTinhNangId.length === 0
-        ) {
+    async ganDsNhomTinhNang(client, quyenId, dsNhomTinhNangId) {
+        if (!Array.isArray(dsNhomTinhNangId) || dsNhomTinhNangId.length === 0) {
             return;
         }
 
@@ -315,24 +224,11 @@ class QuyenRepository {
                 updated_at = NOW()
         `;
 
-        await client.query(
-            sql,
-            [
-                quyenId,
-                dsNhomTinhNangId
-            ]
-        );
-
+        await client.query(sql, [quyenId, dsNhomTinhNangId]);
     }
 
-    async existsMaQuyen(
-        maQuyen,
-        excludeId = null
-    ) {
-
-        const values = [
-            maQuyen
-        ];
+    async existsMaQuyen(maQuyen, excludeId = null) {
+        const values = [maQuyen];
 
         let sql = `
             SELECT EXISTS (
@@ -343,37 +239,24 @@ class QuyenRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
-    async existsTenQuyen(
-        tenQuyen,
-        excludeId = null
-    ) {
-
-        const values = [
-            tenQuyen
-        ];
+    async existsTenQuyen(tenQuyen, excludeId = null) {
+        const values = [tenQuyen];
 
         let sql = `
             SELECT EXISTS (
@@ -384,37 +267,27 @@ class QuyenRepository {
         `;
 
         if (excludeId) {
-
             values.push(excludeId);
 
             sql += `
                 AND id <> $2
             `;
-
         }
 
         sql += `
             ) AS "exists"
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
         return result.rows[0].exists;
-
     }
 
     async create(data) {
-
-        const client =
-            await pool.connect();
+        const client = await pool.connect();
 
         try {
-
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 INSERT INTO dm_quyen (
@@ -437,59 +310,34 @@ class QuyenRepository {
             `;
 
             const values = [
-
                 data.maQuyen,
 
                 data.tenQuyen,
 
                 data.moTa || null,
 
-                data.active !== undefined
-                    ? data.active
-                    : true
-
+                data.active !== undefined ? data.active : true
             ];
 
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
-            const quyenId =
-                result.rows[0].id;
+            const quyenId = result.rows[0].id;
 
-            await this.ganDsNhomTinhNang(
-                client,
-                quyenId,
-                data.dsNhomTinhNangId
-            );
+            await this.ganDsNhomTinhNang(client, quyenId, data.dsNhomTinhNangId);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return await this.getChiTiet(
-                quyenId
-            );
-
+            return await this.getChiTiet(quyenId);
         } catch (error) {
-
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
 
-    async khoaTatCaNhomTinhNang(
-        client,
-        quyenId
-    ) {
-
+    async khoaTatCaNhomTinhNang(client, quyenId) {
         const sql = `
             UPDATE dm_quyen_nhom_tinh_nang
             SET
@@ -498,21 +346,14 @@ class QuyenRepository {
             WHERE quyen_id = $1
         `;
 
-        await client.query(
-            sql,
-            [quyenId]
-        );
-
+        await client.query(sql, [quyenId]);
     }
 
     async update(id, data) {
-
-        const client =
-            await pool.connect();
+        const client = await pool.connect();
 
         try {
-
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             const sql = `
                 UPDATE dm_quyen
@@ -526,63 +367,31 @@ class QuyenRepository {
                 RETURNING id
             `;
 
-            const values = [
+            const values = [data.maQuyen, data.tenQuyen, data.moTa || null, data.active, id];
 
-                data.maQuyen,
-
-                data.tenQuyen,
-
-                data.moTa || null,
-
-                data.active,
-
-                id
-
-            ];
-
-            const result =
-                await client.query(
-                    sql,
-                    values
-                );
+            const result = await client.query(sql, values);
 
             if (result.rows.length === 0) {
-
-                await client.query("ROLLBACK");
+                await client.query('ROLLBACK');
 
                 return null;
-
             }
 
-            await this.khoaTatCaNhomTinhNang(
-                client,
-                id
-            );
+            await this.khoaTatCaNhomTinhNang(client, id);
 
-            await this.ganDsNhomTinhNang(
-                client,
-                id,
-                data.dsNhomTinhNangId
-            );
+            await this.ganDsNhomTinhNang(client, id, data.dsNhomTinhNangId);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
             return await this.getChiTiet(id);
-
         } catch (error) {
-
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
-
         } finally {
-
             client.release();
-
         }
-
     }
-
 }
 
 module.exports = new QuyenRepository();

@@ -1,126 +1,81 @@
-"use strict";
+'use strict';
 
-const pool = require("../../../../config/database");
+const pool = require('../../../../config/database');
 
 const relationMap = {
     nhomSanPhamIds: {
-        detailKey: "dsNhomSanPham",
-        relationTable:
-            "ct_voucher_don_hang_nhom_san_pham",
-        foreignKey:
-            "nhom_san_pham_id",
-        masterTable:
-            "dm_nhom_san_pham",
-        codeColumn:
-            "ma_nhom_san_pham",
-        nameColumn:
-            "ten_nhom_san_pham",
-        dataType:
-            "BIGINT"
+        detailKey: 'dsNhomSanPham',
+        relationTable: 'ct_voucher_don_hang_nhom_san_pham',
+        foreignKey: 'nhom_san_pham_id',
+        masterTable: 'dm_nhom_san_pham',
+        codeColumn: 'ma_nhom_san_pham',
+        nameColumn: 'ten_nhom_san_pham',
+        dataType: 'BIGINT'
     },
 
     sanPhamIds: {
-        detailKey: "dsSanPham",
-        relationTable:
-            "ct_voucher_don_hang_san_pham",
-        foreignKey:
-            "san_pham_id",
-        masterTable:
-            "dm_san_pham",
-        codeColumn:
-            "ma_san_pham",
-        nameColumn:
-            "ten_san_pham",
-        dataType:
-            "BIGINT"
+        detailKey: 'dsSanPham',
+        relationTable: 'ct_voucher_don_hang_san_pham',
+        foreignKey: 'san_pham_id',
+        masterTable: 'dm_san_pham',
+        codeColumn: 'ma_san_pham',
+        nameColumn: 'ten_san_pham',
+        dataType: 'BIGINT'
     },
 
     coSoIds: {
-        detailKey: "dsCoSo",
-        relationTable:
-            "ct_voucher_don_hang_co_so",
-        foreignKey:
-            "co_so_id",
-        masterTable:
-            "dm_co_so",
-        codeColumn:
-            "ma_co_so",
-        nameColumn:
-            "ten_co_so",
-        dataType:
-            "INTEGER"
+        detailKey: 'dsCoSo',
+        relationTable: 'ct_voucher_don_hang_co_so',
+        foreignKey: 'co_so_id',
+        masterTable: 'dm_co_so',
+        codeColumn: 'ma_co_so',
+        nameColumn: 'ten_co_so',
+        dataType: 'INTEGER'
     },
 
     nhaAnIds: {
-        detailKey: "dsNhaAn",
-        relationTable:
-            "ct_voucher_don_hang_nha_an",
-        foreignKey:
-            "nha_an_id",
-        masterTable:
-            "dm_nha_an",
-        codeColumn:
-            "ma_nha_an",
-        nameColumn:
-            "ten_nha_an",
-        dataType:
-            "INTEGER"
+        detailKey: 'dsNhaAn',
+        relationTable: 'ct_voucher_don_hang_nha_an',
+        foreignKey: 'nha_an_id',
+        masterTable: 'dm_nha_an',
+        codeColumn: 'ma_nha_an',
+        nameColumn: 'ten_nha_an',
+        dataType: 'INTEGER'
     },
 
     phongBanIds: {
-        detailKey: "dsPhongBan",
-        relationTable:
-            "ct_voucher_don_hang_phong_ban",
-        foreignKey:
-            "phong_ban_id",
-        masterTable:
-            "dm_phong_ban",
-        codeColumn:
-            "ma_phong_ban",
-        nameColumn:
-            "ten_phong_ban",
-        dataType:
-            "INTEGER"
+        detailKey: 'dsPhongBan',
+        relationTable: 'ct_voucher_don_hang_phong_ban',
+        foreignKey: 'phong_ban_id',
+        masterTable: 'dm_phong_ban',
+        codeColumn: 'ma_phong_ban',
+        nameColumn: 'ten_phong_ban',
+        dataType: 'INTEGER'
     },
 
     chucVuIds: {
-        detailKey: "dsChucVu",
-        relationTable:
-            "ct_voucher_don_hang_chuc_vu",
-        foreignKey:
-            "chuc_vu_id",
-        masterTable:
-            "dm_chuc_vu",
-        codeColumn:
-            "ma_chuc_vu",
-        nameColumn:
-            "ten_chuc_vu",
-        dataType:
-            "INTEGER"
+        detailKey: 'dsChucVu',
+        relationTable: 'ct_voucher_don_hang_chuc_vu',
+        foreignKey: 'chuc_vu_id',
+        masterTable: 'dm_chuc_vu',
+        codeColumn: 'ma_chuc_vu',
+        nameColumn: 'ten_chuc_vu',
+        dataType: 'INTEGER'
     },
 
     nhanVienIds: {
-        detailKey: "dsNhanVien",
-        relationTable:
-            "ct_voucher_don_hang_nhan_vien",
-        foreignKey:
-            "nhan_vien_id",
-        masterTable:
-            "dm_nhan_vien",
-        codeColumn:
-            "ma_nhan_vien",
-        nameColumn:
-            "ho_ten",
-        dataType:
-            "INTEGER"
+        detailKey: 'dsNhanVien',
+        relationTable: 'ct_voucher_don_hang_nhan_vien',
+        foreignKey: 'nhan_vien_id',
+        masterTable: 'dm_nhan_vien',
+        codeColumn: 'ma_nhan_vien',
+        nameColumn: 'ho_ten',
+        dataType: 'INTEGER'
     }
 };
 
 function toNumberOrNull(value) {
-    return value === null ||
-        value === undefined
-        ? null
-        : Number(value);
+    return value === null || value === undefined ? null : Number(value);
 }
 
 function toDecimalString(value) {
@@ -128,14 +83,13 @@ function toDecimalString(value) {
         return null;
     }
 
-    const [whole, fraction = ""] = String(value).split(".");
-    const decimals = fraction.replace(/0+$/, "");
+    const [whole, fraction = ''] = String(value).split('.');
+    const decimals = fraction.replace(/0+$/, '');
 
-    return whole + (decimals ? "." + decimals : "");
+    return whole + (decimals ? '.' + decimals : '');
 }
 
 class VoucherDonHangRepository {
-
     mapVoucher(row) {
         if (!row) {
             return null;
@@ -147,42 +101,23 @@ class VoucherDonHangRepository {
             tenVoucher: row.ten_voucher,
             moTa: row.mo_ta,
             loaiGiam: Number(row.loai_giam),
-            giaTri:
-                toDecimalString(row.gia_tri),
+            giaTri: toDecimalString(row.gia_tri),
 
-            giamToiDa:
-                toDecimalString(row.giam_toi_da),
+            giamToiDa: toDecimalString(row.giam_toi_da),
 
-            giaTriDonHangToiThieu:
-                toDecimalString(row.gia_tri_don_hang_toi_thieu),
-            soLuongPhatHanh:
-                toNumberOrNull(
-                    row.so_luong_phat_hanh
-                ),
-            soLuotMoiNhanVien:
-                toNumberOrNull(
-                    row.so_luot_moi_nhan_vien
-                ),
-            phamViApDung:
-                Number(row.pham_vi_ap_dung),
-            choPhepDungChung:
-                row.cho_phep_dung_chung,
-            tuDongApDung:
-                row.tu_dong_ap_dung,
-            thoiGianBatDau:
-                row.thoi_gian_bat_dau,
-            thoiGianKetThuc:
-                row.thoi_gian_ket_thuc,
-            nguoiTaoId:
-                Number(row.nguoi_tao_id),
-            tenNguoiTao:
-                row.ten_nguoi_tao,
-            active:
-                row.active,
-            createdAt:
-                row.created_at,
-            updatedAt:
-                row.updated_at
+            giaTriDonHangToiThieu: toDecimalString(row.gia_tri_don_hang_toi_thieu),
+            soLuongPhatHanh: toNumberOrNull(row.so_luong_phat_hanh),
+            soLuotMoiNhanVien: toNumberOrNull(row.so_luot_moi_nhan_vien),
+            phamViApDung: Number(row.pham_vi_ap_dung),
+            choPhepDungChung: row.cho_phep_dung_chung,
+            tuDongApDung: row.tu_dong_ap_dung,
+            thoiGianBatDau: row.thoi_gian_bat_dau,
+            thoiGianKetThuc: row.thoi_gian_ket_thuc,
+            nguoiTaoId: Number(row.nguoi_tao_id),
+            tenNguoiTao: row.ten_nguoi_tao,
+            active: row.active,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
         };
     }
 
@@ -221,9 +156,7 @@ class VoucherDonHangRepository {
         const values = [];
 
         if (query.keyword) {
-            values.push(
-                `%${String(query.keyword).trim()}%`
-            );
+            values.push(`%${String(query.keyword).trim()}%`);
 
             conditions.push(`
                 (
@@ -236,9 +169,7 @@ class VoucherDonHangRepository {
         }
 
         if (query.loaiGiam !== undefined) {
-            values.push(
-                Number(query.loaiGiam)
-            );
+            values.push(Number(query.loaiGiam));
 
             conditions.push(`
                 voucher.loai_giam =
@@ -246,13 +177,8 @@ class VoucherDonHangRepository {
             `);
         }
 
-        if (
-            query.phamViApDung !==
-            undefined
-        ) {
-            values.push(
-                Number(query.phamViApDung)
-            );
+        if (query.phamViApDung !== undefined) {
+            values.push(Number(query.phamViApDung));
 
             conditions.push(`
                 voucher.pham_vi_ap_dung =
@@ -260,14 +186,8 @@ class VoucherDonHangRepository {
             `);
         }
 
-        if (
-            query.active !== undefined &&
-            query.active !== ""
-        ) {
-            values.push(
-                String(query.active) ===
-                    "true"
-            );
+        if (query.active !== undefined && query.active !== '') {
+            values.push(String(query.active) === 'true');
 
             conditions.push(`
                 voucher.active =
@@ -275,10 +195,7 @@ class VoucherDonHangRepository {
             `);
         }
 
-        const whereClause =
-            conditions.length > 0
-                ? `WHERE ${conditions.join(" AND ")}`
-                : "";
+        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
         const sql = `
             ${this.getBaseQuery()}
@@ -290,54 +207,33 @@ class VoucherDonHangRepository {
                 voucher.id DESC
         `;
 
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
+        const result = await pool.query(sql, values);
 
-        return result.rows.map(
-            row => this.mapVoucher(row)
-        );
+        return result.rows.map((row) => this.mapVoucher(row));
     }
 
-    async getChiTiet(
-        id,
-        client = pool
-    ) {
-        const result =
-            await client.query(
-                `
+    async getChiTiet(id, client = pool) {
+        const result = await client.query(
+            `
                     ${this.getBaseQuery()}
 
                     WHERE voucher.id = $1
 
                     LIMIT 1
                 `,
-                [id]
-            );
+            [id]
+        );
 
-        const voucher =
-            this.mapVoucher(
-                result.rows[0]
-            );
+        const voucher = this.mapVoucher(result.rows[0]);
 
         if (!voucher) {
             return null;
         }
 
-        const relations =
-            await Promise.all(
-                Object.entries(
-                    relationMap
-                ).map(
-                    async ([
-                        key,
-                        config
-                    ]) => {
-                        const relationResult =
-                            await client.query(
-                                `
+        const relations = await Promise.all(
+            Object.entries(relationMap).map(async ([key, config]) => {
+                const relationResult = await client.query(
+                    `
                                     SELECT
                                         master.id,
                                         master.${config.codeColumn}
@@ -356,71 +252,54 @@ class VoucherDonHangRepository {
                                     ORDER BY
                                         master.${config.nameColumn}
                                 `,
-                                [id]
-                            );
+                    [id]
+                );
 
-                        return {
-                            key,
-                            detailKey:
-                                config.detailKey,
-                            data:
-                                relationResult.rows
-                        };
-                    }
-                )
-            );
+                return {
+                    key,
+                    detailKey: config.detailKey,
+                    data: relationResult.rows
+                };
+            })
+        );
 
         for (const relation of relations) {
-            voucher[relation.key] =
-                relation.data.map(
-                    item => Number(item.id)
-                );
+            voucher[relation.key] = relation.data.map((item) => Number(item.id));
 
-            voucher[relation.detailKey] =
-                relation.data.map(
-                    item => ({
-                        id: Number(item.id),
-                        ma: item.ma,
-                        ten: item.ten,
-                        active: item.active
-                    })
-                );
+            voucher[relation.detailKey] = relation.data.map((item) => ({
+                id: Number(item.id),
+                ma: item.ma,
+                ten: item.ten,
+                active: item.active
+            }));
         }
 
         return voucher;
     }
 
-    async getChiTietByMa(
-        maVoucher
-    ) {
-        const result =
-            await pool.query(
-                `
+    async getChiTietByMa(maVoucher) {
+        const result = await pool.query(
+            `
                     SELECT id
                     FROM dm_voucher_don_hang
                     WHERE UPPER(TRIM(ma_voucher)) =
                         UPPER(TRIM($1))
                     LIMIT 1
                 `,
-                [maVoucher]
-            );
+            [maVoucher]
+        );
 
         if (result.rows.length === 0) {
             return null;
         }
 
-        return this.getChiTiet(
-            result.rows[0].id
-        );
+        return this.getChiTiet(result.rows[0].id);
     }
 
-    async existsMaVoucher(
-        maVoucher,
-        excludeId = null
-    ) {
+    async existsMaVoucher(maVoucher, excludeId = null) {
         const values = [maVoucher];
 
-        let excludeCondition = "";
+        let excludeCondition = '';
 
         if (excludeId) {
             values.push(excludeId);
@@ -430,9 +309,8 @@ class VoucherDonHangRepository {
             `;
         }
 
-        const result =
-            await pool.query(
-                `
+        const result = await pool.query(
+            `
                     SELECT EXISTS (
                         SELECT 1
                         FROM dm_voucher_don_hang
@@ -441,19 +319,16 @@ class VoucherDonHangRepository {
                         ${excludeCondition}
                     ) AS "exists"
                 `,
-                values
-            );
+            values
+        );
 
         return result.rows[0].exists;
     }
 
-    async existsTenVoucher(
-        tenVoucher,
-        excludeId = null
-    ) {
+    async existsTenVoucher(tenVoucher, excludeId = null) {
         const values = [tenVoucher];
 
-        let excludeCondition = "";
+        let excludeCondition = '';
 
         if (excludeId) {
             values.push(excludeId);
@@ -463,9 +338,8 @@ class VoucherDonHangRepository {
             `;
         }
 
-        const result =
-            await pool.query(
-                `
+        const result = await pool.query(
+            `
                     SELECT EXISTS (
                         SELECT 1
                         FROM dm_voucher_don_hang
@@ -474,8 +348,8 @@ class VoucherDonHangRepository {
                         ${excludeCondition}
                     ) AS "exists"
                 `,
-                values
-            );
+            values
+        );
 
         return result.rows[0].exists;
     }
@@ -483,19 +357,15 @@ class VoucherDonHangRepository {
     async getInvalidRelationIds(data) {
         const invalidRelations = [];
 
-        for (
-            const [key, config] of
-            Object.entries(relationMap)
-        ) {
+        for (const [key, config] of Object.entries(relationMap)) {
             const ids = data[key] || [];
 
             if (ids.length === 0) {
                 continue;
             }
 
-            const result =
-                await pool.query(
-                    `
+            const result = await pool.query(
+                `
                         SELECT input.id
                         FROM UNNEST(
                             $1::${config.dataType}[]
@@ -506,15 +376,13 @@ class VoucherDonHangRepository {
                             AND master.active = TRUE
                         WHERE master.id IS NULL
                     `,
-                    [ids]
-                );
+                [ids]
+            );
 
             if (result.rows.length > 0) {
                 invalidRelations.push({
                     key,
-                    ids: result.rows.map(
-                        item => Number(item.id)
-                    )
+                    ids: result.rows.map((item) => Number(item.id))
                 });
             }
         }
@@ -522,15 +390,8 @@ class VoucherDonHangRepository {
         return invalidRelations;
     }
 
-    async saveRelations(
-        client,
-        voucherId,
-        data
-    ) {
-        for (
-            const [key, config] of
-            Object.entries(relationMap)
-        ) {
+    async saveRelations(client, voucherId, data) {
+        for (const [key, config] of Object.entries(relationMap)) {
             await client.query(
                 `
                     DELETE FROM ${config.relationTable}
@@ -558,10 +419,7 @@ class VoucherDonHangRepository {
                         $2::${config.dataType}[]
                     ) AS relation_id
                 `,
-                [
-                    voucherId,
-                    ids
-                ]
+                [voucherId, ids]
             );
         }
     }
@@ -570,25 +428,15 @@ class VoucherDonHangRepository {
         return this.save(data);
     }
 
-    async update(
-        id,
-        data
-    ) {
-        return this.save(
-            data,
-            id
-        );
+    async update(id, data) {
+        return this.save(data, id);
     }
 
-    async save(
-        data,
-        id = null
-    ) {
-        const client =
-            await pool.connect();
+    async save(data, id = null) {
+        const client = await pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             let voucherId = id;
 
@@ -633,15 +481,11 @@ class VoucherDonHangRepository {
                             updated_at = NOW()
                         WHERE id = $16
                     `,
-                    [
-                        ...values,
-                        id
-                    ]
+                    [...values, id]
                 );
             } else {
-                const result =
-                    await client.query(
-                        `
+                const result = await client.query(
+                    `
                             INSERT INTO dm_voucher_don_hang (
                                 ma_voucher,
                                 ten_voucher,
@@ -668,29 +512,19 @@ class VoucherDonHangRepository {
                             )
                             RETURNING id
                         `,
-                        [
-                            ...values,
-                            data.nguoiTaoId
-                        ]
-                    );
+                    [...values, data.nguoiTaoId]
+                );
 
-                voucherId =
-                    result.rows[0].id;
+                voucherId = result.rows[0].id;
             }
 
-            await this.saveRelations(
-                client,
-                voucherId,
-                data
-            );
+            await this.saveRelations(client, voucherId, data);
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
 
-            return this.getChiTiet(
-                voucherId
-            );
+            return this.getChiTiet(voucherId);
         } catch (error) {
-            await client.query("ROLLBACK");
+            await client.query('ROLLBACK');
 
             throw error;
         } finally {
@@ -699,5 +533,4 @@ class VoucherDonHangRepository {
     }
 }
 
-module.exports =
-    new VoucherDonHangRepository();
+module.exports = new VoucherDonHangRepository();
