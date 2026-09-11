@@ -1,15 +1,156 @@
-<div class="detail-panel__section"><h3 class="detail-panel__section-title">Thông tin sản phẩm</h3><div class="catalog-form-grid">
-{{> forms/input id="maSanPham" name="maSanPham" label="Mã sản phẩm" placeholder="Nhập mã sản phẩm" maxlength=50 required=true}}
-{{> forms/input id="tenSanPham" name="tenSanPham" label="Tên sản phẩm" placeholder="Nhập tên sản phẩm" maxlength=255 required=true}}
-{{> forms/select id="nhomSanPhamId" name="nhomSanPhamId" label="Nhóm sản phẩm" mode="single" multiple=false allowAll=false placeholder="Chọn nhóm sản phẩm..." required=true}}
-{{> forms/select id="donViTinhId" name="donViTinhId" label="Đơn vị tính" mode="single" multiple=false allowAll=false placeholder="Chọn đơn vị tính..."}}
-{{> forms/number id="giaBan" name="giaBan" label="Giá bán" min=0 step="any" required=true}}
-{{> forms/image id="hinhAnh" name="hinhAnh" label="Hình ảnh sản phẩm" accept="image/jpeg,image/png,image/webp" width=100 height=100 minWidth=100 minHeight=100 placeholder="Tải ảnh lên"}}
-{{> forms/number id="soLuongToiThieu" name="soLuongToiThieu" label="Số lượng tối thiểu" min=0 step="any"}}
-{{> forms/number id="soLuongToiDa" name="soLuongToiDa" label="Số lượng tối đa" min=0 step="any"}}
-{{> forms/number id="buocSoLuong" name="buocSoLuong" label="Bước số lượng" min=0 step="any"}}
-{{> forms/number id="thoiGianChuanBiPhut" name="thoiGianChuanBiPhut" label="Thời gian chuẩn bị (phút)" min=0 step=1 integer=true}}
-{{> forms/number id="thuTuHienThi" name="thuTuHienThi" label="Thứ tự hiển thị" min=0 step=1 integer=true}}
-{{> forms/textarea id="moTa" name="moTa" label="Mô tả" maxlength=500 rows=3 showCounter=true fieldClass="catalog-form-grid__full"}}
-</div></div>
-<div class="detail-panel__section">{{> forms/switch id="choPhepDat" name="choPhepDat" label="Cho phép đặt" checked=true}}{{> forms/switch id="laSanPhamMoi" name="laSanPhamMoi" label="Sản phẩm mới"}}{{> forms/switch id="laSanPhamNoiBat" name="laSanPhamNoiBat" label="Sản phẩm nổi bật"}}{{> forms/switch id="active" name="active" label="Đang hoạt động" checked=true}}</div>
+<div class="detail-panel__section">
+    <h3 class="detail-panel__section-title">Thông tin sản phẩm</h3>
+
+    <div class="catalog-form-grid">
+        {{> forms/input
+            id="maSanPham"
+            name="maSanPham"
+            label="Mã sản phẩm"
+            placeholder="Nhập mã sản phẩm"
+            maxlength=50
+            required=true
+        }}
+
+        {{> forms/input
+            id="tenSanPham"
+            name="tenSanPham"
+            label="Tên sản phẩm"
+            placeholder="Nhập tên sản phẩm"
+            maxlength=255
+            required=true
+        }}
+
+        {{> forms/select
+            id="nhomSanPhamId"
+            name="nhomSanPhamId"
+            label="Nhóm sản phẩm"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn nhóm sản phẩm..."
+            required=true
+        }}
+
+        {{> forms/select
+            id="donViTinhId"
+            name="donViTinhId"
+            label="Đơn vị tính"
+            mode="single"
+            multiple=false
+            allowAll=false
+            placeholder="Chọn đơn vị tính..."
+        }}
+
+        {{> forms/number
+            id="giaBan"
+            name="giaBan"
+            label="Giá bán"
+            min=0
+            step="any"
+            integer=false
+            suffix="đ"
+            placeholder="Nhập giá bán..."
+            required=true
+        }}
+
+        {{> forms/number
+            id="soLuongToiThieu"
+            name="soLuongToiThieu"
+            label="Số lượng tối thiểu"
+            min=0
+            step="any"
+            placeholder="Nhập số lượng tối thiểu..."
+            integer=true
+        }}
+
+        {{> forms/number
+            id="soLuongToiDa"
+            name="soLuongToiDa"
+            label="Số lượng tối đa"
+            min=0
+            step="any"
+            placeholder="Nhập số lượng tối đa..."
+            integer=true
+        }}
+
+        {{> forms/number
+            id="buocSoLuong"
+            name="buocSoLuong"
+            label="Bước số lượng"
+            min=0
+            step="any"
+            placeholder="Nhập bước số lượng..."
+            integer=true
+        }}
+
+        {{> forms/number
+            id="thoiGianChuanBiPhut"
+            name="thoiGianChuanBiPhut"
+            label="Thời gian chuẩn bị (phút)"
+            min=0
+            step=1
+            placeholder="Nhập thời gian chuẩn bị..."
+        }}
+
+        {{> forms/number
+            id="thuTuHienThi"
+            name="thuTuHienThi"
+            label="Thứ tự hiển thị"
+            min=0
+            step=1
+            placeholder="Nhập thứ tự hiển thị..."
+            integer=true
+        }}
+
+        {{> forms/textarea
+            id="moTa"
+            name="moTa"
+            label="Mô tả"
+            maxlength=500
+            rows=3
+            showCounter=true
+            placeholder="Nhập mô tả..."
+        }}
+
+        {{> forms/image
+            id="hinhAnh"
+            name="hinhAnh"
+            label="Hình ảnh sản phẩm"
+            accept="image/jpeg,image/png,image/webp"
+            width="100px"
+            height="100px"
+            uploadLabel="Tải ảnh lên"
+        }}
+    </div>
+</div>
+
+<div class="detail-panel__section">
+    <div class="catalog-form-grid">
+        {{> forms/checkbox
+            id="choPhepDat"
+            name="choPhepDat"
+            label="Cho phép đặt"
+            checked=true
+        }}
+
+        {{> forms/checkbox
+            id="laSanPhamMoi"
+            name="laSanPhamMoi"
+            label="Sản phẩm mới"
+        }}
+
+        {{> forms/checkbox
+            id="laSanPhamNoiBat"
+            name="laSanPhamNoiBat"
+            label="Sản phẩm nổi bật"
+        }}
+
+        {{> forms/checkbox
+            id="active"
+            name="active"
+            label="Đang hoạt động"
+            checked=true
+        }}
+    </div>
+
+</div>

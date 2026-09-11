@@ -1,103 +1,40 @@
-const pool =
-    require(
-        "../../../../config/database"
-    );
-
+const pool = require("../../../../config/database");
 
 class SanPhamRepository {
-
-    mapSanPham(
-        row
-    ) {
-
+    mapSanPham(row) {
         if (!row) {
             return null;
         }
-
         return {
-
-            id:
-                row.id,
-
-            maSanPham:
-                row.ma_san_pham,
-
-            tenSanPham:
-                row.ten_san_pham,
-
-            nhomSanPhamId:
-                row.nhom_san_pham_id,
-
-            maNhomSanPham:
-                row.ma_nhom_san_pham,
-
-            tenNhomSanPham:
-                row.ten_nhom_san_pham,
-
-            loaiSanPham:
-                row.loai_san_pham,
-
-            donViTinhId:
-                row.don_vi_tinh_id,
-
-            maDonViTinh:
-                row.ma_don_vi_tinh,
-
-            tenDonViTinh:
-                row.ten_don_vi_tinh,
-
-            kyHieuDonVi:
-                row.ky_hieu_don_vi,
-
-            giaBan:
-                row.gia_ban,
-
-            moTa:
-                row.mo_ta,
-
-            hinhAnh:
-                row.hinh_anh,
-
-            choPhepDat:
-                row.cho_phep_dat,
-
-            laSanPhamMoi:
-                row.la_san_pham_moi,
-
-            laSanPhamNoiBat:
-                row.la_san_pham_noi_bat,
-
-            soLuongToiThieu:
-                row.so_luong_toi_thieu,
-
-            soLuongToiDa:
-                row.so_luong_toi_da,
-
-            buocSoLuong:
-                row.buoc_so_luong,
-
-            thoiGianChuanBiPhut:
-                row.thoi_gian_chuan_bi_phut,
-
-            thuTuHienThi:
-                row.thu_tu_hien_thi,
-
-            active:
-                row.active,
-
-            createdAt:
-                row.created_at,
-
-            updatedAt:
-                row.updated_at
-
+            id: row.id,
+            maSanPham: row.ma_san_pham,
+            tenSanPham: row.ten_san_pham,
+            nhomSanPhamId: row.nhom_san_pham_id,
+            maNhomSanPham: row.ma_nhom_san_pham,
+            tenNhomSanPham: row.ten_nhom_san_pham,
+            loaiSanPham: row.loai_san_pham,
+            donViTinhId: row.don_vi_tinh_id,
+            maDonViTinh: row.ma_don_vi_tinh,
+            tenDonViTinh: row.ten_don_vi_tinh,
+            kyHieuDonVi: row.ky_hieu_don_vi,
+            giaBan: row.gia_ban,
+            moTa: row.mo_ta,
+            hinhAnh: row.hinh_anh,
+            choPhepDat: row.cho_phep_dat,
+            laSanPhamMoi: row.la_san_pham_moi,
+            laSanPhamNoiBat: row.la_san_pham_noi_bat,
+            soLuongToiThieu: row.so_luong_toi_thieu,
+            soLuongToiDa: row.so_luong_toi_da,
+            buocSoLuong: row.buoc_so_luong,
+            thoiGianChuanBiPhut: row.thoi_gian_chuan_bi_phut,
+            thuTuHienThi: row.thu_tu_hien_thi,
+            active: row.active,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
         };
-
     }
 
-
     getBaseQuery() {
-
         return `
 
             SELECT
@@ -141,28 +78,15 @@ class SanPhamRepository {
                     sp.don_vi_tinh_id
 
         `;
-
     }
 
-
-    async getTongHop(
-        query = {}
-    ) {
-
-        const values =
-            [];
-
-        const conditions =
-            [];
-
+    async getTongHop(query = {}) {
+        const values = [];
+        const conditions = [];
         if (query.keyword) {
-
-            values.push(
-                `%${String(
+            values.push(`%${String(
                     query.keyword
-                ).trim()}%`
-            );
-
+                ).trim()}%`);
             conditions.push(`
                 (
                     sp.ma_san_pham
@@ -175,110 +99,36 @@ class SanPhamRepository {
                         ILIKE $${values.length}
                 )
             `);
-
         }
-
-        if (
-            query.nhomSanPhamId !== undefined &&
-            query.nhomSanPhamId !== ""
-        ) {
-
-            values.push(
-                Number(
-                    query.nhomSanPhamId
-                )
-            );
-
-            conditions.push(
-                `sp.nhom_san_pham_id = $${values.length}`
-            );
-
+        if (query.nhomSanPhamId !== undefined && query.nhomSanPhamId !== "") {
+            values.push(Number(query.nhomSanPhamId));
+            conditions.push(`sp.nhom_san_pham_id = $${values.length}`);
         }
-
-        if (
-            query.loaiSanPham !== undefined &&
-            query.loaiSanPham !== ""
-        ) {
-
-            values.push(
-                Number(
-                    query.loaiSanPham
-                )
-            );
-
-            conditions.push(
-                `nsp.loai_san_pham = $${values.length}`
-            );
-
+        if (query.loaiSanPham !== undefined && query.loaiSanPham !== "") {
+            values.push(Number(query.loaiSanPham));
+            conditions.push(`nsp.loai_san_pham = $${values.length}`);
         }
-
-        if (
-            query.donViTinhId !== undefined &&
-            query.donViTinhId !== ""
-        ) {
-
-            values.push(
-                Number(
-                    query.donViTinhId
-                )
-            );
-
-            conditions.push(
-                `sp.don_vi_tinh_id = $${values.length}`
-            );
-
+        if (query.donViTinhId !== undefined && query.donViTinhId !== "") {
+            values.push(Number(query.donViTinhId));
+            conditions.push(`sp.don_vi_tinh_id = $${values.length}`);
         }
-
-        for (
-            const [
+        for (const [
                 key,
                 column
             ] of [
-                [
-                    "choPhepDat",
-                    "sp.cho_phep_dat"
-                ],
-                [
-                    "laSanPhamMoi",
-                    "sp.la_san_pham_moi"
-                ],
-                [
-                    "laSanPhamNoiBat",
-                    "sp.la_san_pham_noi_bat"
-                ],
-                [
-                    "active",
-                    "sp.active"
-                ]
-            ]
-        ) {
-
-            if (
-                query[key] !== undefined &&
-                query[key] !== ""
-            ) {
-
-                values.push(
-                    String(
-                        query[key]
-                    ) === "true"
-                );
-
-                conditions.push(
-                    `${column} = $${values.length}`
-                );
-
+                ["choPhepDat", "sp.cho_phep_dat"],
+                ["laSanPhamMoi", "sp.la_san_pham_moi"],
+                ["laSanPhamNoiBat", "sp.la_san_pham_noi_bat"],
+                ["active", "sp.active"]
+            ]) {
+            if (query[key] !== undefined && query[key] !== "") {
+                values.push(String(query[key]) === "true");
+                conditions.push(`${column} = $${values.length}`);
             }
-
         }
-
-        const where =
-            conditions.length > 0
-                ? `WHERE ${conditions.join(
+        const where = conditions.length > 0 ? `WHERE ${conditions.join(
                     " AND "
-                )}`
-                : "";
-
+                )}` : "";
         const sql = `
             ${this.getBaseQuery()}
 
@@ -288,27 +138,11 @@ class SanPhamRepository {
                 sp.thu_tu_hien_thi ASC,
                 sp.ma_san_pham ASC
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-        return result.rows.map(
-            row =>
-                this.mapSanPham(
-                    row
-                )
-        );
-
+        const result = await pool.query(sql, values);
+        return result.rows.map(row => this.mapSanPham(row));
     }
 
-
-    async getChiTiet(
-        id
-    ) {
-
+    async getChiTiet(id, client = pool) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -316,33 +150,17 @@ class SanPhamRepository {
 
             LIMIT 1
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    id
-                ]
-            );
-
-        if (
-            result.rows.length ===
-            0
-        ) {
+        const result = await client.query(sql,
+            [
+                id
+            ]);
+        if (result.rows.length === 0) {
             return null;
         }
-
-        return this.mapSanPham(
-            result.rows[0]
-        );
-
+        return this.mapSanPham(result.rows[0]);
     }
 
-
-    async getChiTietByMa(
-        maSanPham
-    ) {
-
+    async getChiTietByMa(maSanPham) {
         const sql = `
             ${this.getBaseQuery()}
 
@@ -356,38 +174,20 @@ class SanPhamRepository {
 
             LIMIT 1
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    maSanPham
-                ]
-            );
-
-        if (
-            result.rows.length ===
-            0
-        ) {
+        const result = await pool.query(sql,
+            [
+                maSanPham
+            ]);
+        if (result.rows.length === 0) {
             return null;
         }
-
-        return this.mapSanPham(
-            result.rows[0]
-        );
-
+        return this.mapSanPham(result.rows[0]);
     }
 
-
-    async existsMaSanPham(
-        maSanPham,
-        excludeId = null
-    ) {
-
+    async existsMaSanPham(maSanPham, excludeId = null) {
         const values = [
             maSanPham
         ];
-
         let sql = `
             SELECT EXISTS (
 
@@ -402,43 +202,23 @@ class SanPhamRepository {
                     TRIM($1)
                 )
         `;
-
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
-
+            values.push(excludeId);
             sql += `
                 AND id <> $2
             `;
-
         }
-
         sql += `
             ) AS "exists"
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
+        const result = await pool.query(sql, values);
         return result.rows[0].exists;
-
     }
 
-
-    async existsTenSanPham(
-        tenSanPham,
-        excludeId = null
-    ) {
-
+    async existsTenSanPham(tenSanPham, excludeId = null) {
         const values = [
             tenSanPham
         ];
-
         let sql = `
             SELECT EXISTS (
 
@@ -453,38 +233,20 @@ class SanPhamRepository {
                     TRIM($1)
                 )
         `;
-
         if (excludeId) {
-
-            values.push(
-                excludeId
-            );
-
+            values.push(excludeId);
             sql += `
                 AND id <> $2
             `;
-
         }
-
         sql += `
             ) AS "exists"
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
+        const result = await pool.query(sql, values);
         return result.rows[0].exists;
-
     }
 
-
-    async existsNhomSanPham(
-        nhomSanPhamId
-    ) {
-
+    async existsNhomSanPham(nhomSanPhamId) {
         const sql = `
             SELECT EXISTS (
 
@@ -496,31 +258,17 @@ class SanPhamRepository {
 
             ) AS "exists"
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    nhomSanPhamId
-                ]
-            );
-
+        const result = await pool.query(sql,
+            [
+                nhomSanPhamId
+            ]);
         return result.rows[0].exists;
-
     }
 
-
-    async existsDonViTinh(
-        donViTinhId
-    ) {
-
-        if (
-            donViTinhId === null ||
-            donViTinhId === undefined
-        ) {
+    async existsDonViTinh(donViTinhId) {
+        if (donViTinhId === null || donViTinhId === undefined) {
             return true;
         }
-
         const sql = `
             SELECT EXISTS (
 
@@ -532,24 +280,14 @@ class SanPhamRepository {
 
             ) AS "exists"
         `;
-
-        const result =
-            await pool.query(
-                sql,
-                [
-                    donViTinhId
-                ]
-            );
-
+        const result = await pool.query(sql,
+            [
+                donViTinhId
+            ]);
         return result.rows[0].exists;
-
     }
 
-
-    async create(
-        data
-    ) {
-
+    async create(data, client = pool) {
         const sql = `
             INSERT INTO dm_san_pham (
 
@@ -597,61 +335,29 @@ class SanPhamRepository {
             )
             RETURNING id
         `;
-
         const values = [
-
             data.maSanPham,
-
             data.tenSanPham,
-
             data.nhomSanPhamId,
-
             data.donViTinhId,
-
             data.giaBan,
-
             data.moTa,
-
             data.hinhAnh,
-
             data.choPhepDat,
-
             data.laSanPhamMoi,
-
             data.laSanPhamNoiBat,
-
             data.soLuongToiThieu,
-
             data.soLuongToiDa,
-
             data.buocSoLuong,
-
             data.thoiGianChuanBiPhut,
-
             data.thuTuHienThi,
-
             data.active
-
         ];
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        const result = await client.query(sql, values);
+        return await this.getChiTiet(result.rows[0].id, client);
     }
 
-
-    async update(
-        id,
-        data
-    ) {
-
+    async update(id, data, client = pool) {
         const sql = `
             UPDATE dm_san_pham
             SET
@@ -678,66 +384,31 @@ class SanPhamRepository {
 
             RETURNING id
         `;
-
         const values = [
-
             data.maSanPham,
-
             data.tenSanPham,
-
             data.nhomSanPhamId,
-
             data.donViTinhId,
-
             data.giaBan,
-
             data.moTa,
-
             data.hinhAnh,
-
             data.choPhepDat,
-
             data.laSanPhamMoi,
-
             data.laSanPhamNoiBat,
-
             data.soLuongToiThieu,
-
             data.soLuongToiDa,
-
             data.buocSoLuong,
-
             data.thoiGianChuanBiPhut,
-
             data.thuTuHienThi,
-
             data.active,
-
             id
-
         ];
-
-        const result =
-            await pool.query(
-                sql,
-                values
-            );
-
-        if (
-            result.rows.length ===
-            0
-        ) {
+        const result = await client.query(sql, values);
+        if (result.rows.length === 0) {
             return null;
         }
-
-        return await this.getChiTiet(
-            result.rows[0].id
-        );
-
+        return await this.getChiTiet(result.rows[0].id, client);
     }
-
 }
 
-
-module.exports =
-    new SanPhamRepository();
+module.exports = new SanPhamRepository();
