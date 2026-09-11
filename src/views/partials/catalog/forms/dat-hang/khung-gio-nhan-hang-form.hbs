@@ -34,15 +34,16 @@
             placeholder="Chọn cơ sở..."
             required=true
         }}
-        
+
         {{> forms/number
             id="soDonToiDa"
             name="soDonToiDa"
             label="Số đơn tối đa"
             placeholder="Để trống nếu không giới hạn"
-            min=0.00001
-            step="any"
-            integer=false
+            min=1
+            max=999999999999
+            step=1
+            integer=true
         }}
 
         {{> forms/time

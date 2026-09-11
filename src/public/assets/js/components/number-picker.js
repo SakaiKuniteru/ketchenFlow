@@ -30,7 +30,9 @@
         raw = raw.replace(/[+-]/g, "");
 
         if (integer) {
-            const digits = raw.replace(/\D/g, "");
+            const digits = raw
+                .replace(/\D/g, "")
+                .replace(/^0+(?=\d)/, "");
 
             if (!digits) {
                 return sign;

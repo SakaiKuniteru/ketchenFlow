@@ -18,7 +18,7 @@ const soDonToiDaSchema = Joi.string()
     .optional()
     .messages({
         "string.base":
-            "Số đơn tối đa phải được gửi dưới dạng chuỗi số chuẩn.",
+            "Số đơn tối đa phải được gửi dưới dạng chuỗi số nguyên.",
 
         "string.empty":
             "Nếu không giới hạn, gửi số đơn tối đa là null.",

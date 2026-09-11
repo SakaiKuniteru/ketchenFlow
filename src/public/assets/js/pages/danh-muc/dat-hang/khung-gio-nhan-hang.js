@@ -466,21 +466,16 @@ document.addEventListener(
                 errors.gioKetThuc =
                     "Giờ kết thúc phải lớn hơn giờ bắt đầu.";
             }
-
+            
             const soDonToiDa = formData.soDonToiDa;
 
             if (
                 soDonToiDa !== null &&
-                (
-                    !/^(?:0|[1-9]\d{0,11})(?:\.\d{1,5})?$/.test(
-                        soDonToiDa
-                    ) ||
-                    !/[1-9]/.test(soDonToiDa)
-                )
+                !/^[1-9]\d{0,11}$/.test(soDonToiDa)
             ) {
                 errors.soDonToiDa =
-                    "Số đơn tối đa phải lớn hơn 0, tối đa 12 số phần nguyên " +
-                    "và 5 số sau dấu phẩy; hoặc để trống.";
+                    "Số đơn tối đa phải là số nguyên dương, " +
+                    "tối đa 12 chữ số; hoặc để trống nếu không giới hạn.";
             }
 
             const currentId =
@@ -893,36 +888,40 @@ document.addEventListener(
             );
         }
 
-        function limitSoDonInput(value) {
-            const raw = String(value ?? "")
-                .replace(/\s/g, "");
+        function bindSoDonInput() {
+            const input = document.getElementById("soDonToiDa");
 
-            const commaIndex = raw.indexOf(",");
+            if (!input || input.dataset.soDonBound === "true") {
+                return;
+            }
 
-            const integerPart = (
-                commaIndex < 0
-                    ? raw
-                    : raw.slice(0, commaIndex)
-            )
-                .replace(/\D/g, "")
-                .replace(/^0+(?=\d)/, "")
-                .slice(0, 12);
+            window.MCS.numberInput.initialize(input);
+            input.dataset.soDonBound = "true";
 
-            const decimalPart = commaIndex < 0
-                ? null
-                : raw.slice(commaIndex + 1)
-                    .replace(/\D/g, "")
-                    .slice(0, 5);
+            // Chặn nhập dấu phẩy, dấu âm và các ký tự khác.
+            input.addEventListener("beforeinput", event => {
+                if (
+                    event.data &&
+                    /[^\d.]/.test(event.data)
+                ) {
+                    event.preventDefault();
+                }
+            });
 
-            const displayValue = decimalPart === null
-                ? integerPart
-                : `${integerPart || "0"},${decimalPart}`;
+            // Chỉ cho dán số nguyên hoặc số có dấu chấm hàng nghìn.
+            // Không để bộ xử lý chung biến "12,5" thành "125".
+            input.addEventListener("paste", event => {
+                const text = event.clipboardData
+                    ?.getData("text")
+                    .trim();
 
-            return window.MCS.numberInput.formatInputValue(
-                displayValue,
-                false,
-                false
-            );
+                if (
+                    text === undefined ||
+                    !/^(?:\d+|\d{1,3}(?:\.\d{3})+)$/.test(text)
+                ) {
+                    event.preventDefault();
+                }
+            });
         }
 
         function bindSoDonInput() {
