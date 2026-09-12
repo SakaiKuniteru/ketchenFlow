@@ -16,8 +16,14 @@ const gateways = {
 };
 
 class ThanhToanService {
-    async create(donHangId, user, manager = false) {
-        const client = await pool.connect();
+    async create(
+        donHangId,
+        user,
+        manager = false,
+        transactionClient = null
+    ) {
+        const ownsTransaction = !transactionClient;
+        const client = transactionClient || await pool.connect();
         try {
             await client.query('BEGIN');
             const order = await orderRepository.getById(donHangId, client, true);
@@ -78,8 +84,9 @@ class ThanhToanService {
         return repository.list(donHangId);
     }
 
-    async confirm(id, data, user) {
-        const client = await pool.connect();
+    async confirm(id, data, user, transactionClient = null) {
+        const ownsTransaction = !transactionClient;
+        const client = transactionClient || await pool.connect();
         try {
             await client.query('BEGIN');
             const transaction = await client.query('SELECT don_hang_id FROM nv_thanh_toan_don_hang WHERE id = $1', [
@@ -105,6 +112,16 @@ class ThanhToanService {
             );
             if (!result.rowCount)
                 throw new ApiError(409, 'Giao dịch đã xử lý, đã hết hạn hoặc mã giao dịch không đúng.');
+            if (
+                Number(order.phuong_thuc_thanh_toan) !==
+                PHUONG_THUC_THANH_TOAN.QR
+            ) {
+                await repository.recordCollector(
+                    id,
+                    user.taiKhoanId,
+                    client
+                );
+            }
             await client.query(
                 `UPDATE nv_don_hang SET trang_thai_thanh_toan = $2, version = version + 1, updated_at = NOW() WHERE id = $1`,
                 [result.rows[0].don_hang_id, TRANG_THAI_THANH_TOAN.DA_THANH_TOAN]
@@ -121,13 +138,67 @@ class ThanhToanService {
                 client
             );
             await client.query('COMMIT');
-            return repository.list(result.rows[0].don_hang_id);
+            return await repository.list(
+                result.rows[0].don_hang_id,
+                client
+            );
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
         } finally {
             client.release();
         }
+    }
+
+    async settleOnDelivery(order, user, client) {
+        const method = Number(order.phuong_thuc_thanh_toan);
+        const status = Number(order.trang_thai_thanh_toan);
+
+        // Đã thanh toán thì không thu lại, không đổi người thu cũ.
+        if (status === TRANG_THAI_THANH_TOAN.DA_THANH_TOAN) {
+            return;
+        }
+
+        if (method === PHUONG_THUC_THANH_TOAN.QR) {
+            throw new ApiError(
+                409,
+                'Đơn QR phải thanh toán trước khi hoàn thành.'
+            );
+        }
+
+        const methods = [
+            PHUONG_THUC_THANH_TOAN.NOI_BO,
+            PHUONG_THUC_THANH_TOAN.TIEN_MAT,
+            PHUONG_THUC_THANH_TOAN.CHUYEN_KHOAN
+        ];
+
+        if (!methods.includes(method)) {
+            throw new ApiError(400, 'Phương thức thanh toán không hợp lệ.');
+        }
+
+        if (status === TRANG_THAI_THANH_TOAN.DA_HOAN_TIEN) {
+            throw new ApiError(
+                409,
+                'Không tự thu tiền cho đơn đã hoàn tiền.'
+            );
+        }
+
+        const transaction = await this.create(
+            order.id,
+            user,
+            true,
+            client
+        );
+
+        await this.confirm(
+            transaction.id,
+            {
+                maGiaoDich:
+                    transaction.maGiaoDich || transaction.ma_giao_dich
+            },
+            user,
+            client
+        );
     }
 }
 

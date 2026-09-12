@@ -3,7 +3,7 @@
 const pool = require('../../config/database');
 
 class CauHinhRepository {
-    async getThietLapByMa(ma) {
+    async getThietLapByMa(ma, client = pool) {
         const query = `
             SELECT
                 id,
@@ -24,7 +24,7 @@ class CauHinhRepository {
             LIMIT 1
         `;
 
-        const { rows } = await pool.query(query, [ma]);
+        const { rows } = await client.query(query, [ma]);
 
         return rows[0] || null;
     }

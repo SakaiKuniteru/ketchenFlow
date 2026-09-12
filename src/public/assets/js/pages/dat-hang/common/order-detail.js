@@ -66,6 +66,9 @@
         const status =
             Number(order.trangThai);
 
+        const isQr = Number(order.phuongThucThanhToan) === 40;
+        const isPaid = Number(order.trangThaiThanhToan) === 30;
+
         let actions = [];
 
         if (
@@ -212,6 +215,8 @@
 
             progress,
 
+            isPaid,
+
             quantity:
                 (order.items || [])
                     .reduce(
@@ -235,30 +240,27 @@
                     ? `tel:${phone}`
                     : null,
 
-            actions:
-                actions.map(
-                    (action) => ({
-                        action,
-                        ...actionOptions[
-                            action
-                        ]
-                    })
-                ),
+            actions: actions.map(action => ({
+                action,
+                ...actionOptions[action],
+                disabled:
+                    isQr &&
+                    !isPaid &&
+                    [
+                        'xac-nhan',
+                        'san-sang-giao',
+                        'bat-dau-giao',
+                        'hoan-thanh'
+                    ].includes(action)
+            })),
 
             canPay:
                 !management &&
+                isQr &&
                 status > 0 &&
-                Number(
-                    order.trangThaiThanhToan
-                ) !== 30 &&
-                Number(
-                    order.trangThaiThanhToan
-                ) !== 50,
+                ![30, 50].includes(Number(order.trangThaiThanhToan)),
 
-            isQr:
-                Number(
-                    order.phuongThucThanhToan
-                ) === 40,
+            isQr,
 
             actionHint:
                 management &&
@@ -366,7 +368,34 @@
                     return null;
                 }
 
+                const previous = order;
+
+                const sameOrder =
+                    previous &&
+                    String(previous.id) === String(result.id);
+
+                const preserveQr =
+                    quiet &&
+                    sameOrder &&
+                    Number(previous.version) === Number(result.version) &&
+                    Number(previous.trangThaiThanhToan) ===
+                        Number(result.trangThaiThanhToan) &&
+                    Number(result.trangThaiThanhToan) !== 30 &&
+                    $('[data-payment-result]', detailTarget)?.childElementCount;
+
                 order = result;
+
+                if (
+                    sameOrder &&
+                    Number(previous.trangThaiThanhToan) !== 30 &&
+                    Number(result.trangThaiThanhToan) === 30
+                ) {
+                    MCS.toast.success('Thanh toán thành công.');
+                }
+
+                if (preserveQr) {
+                    return order;
+                }
 
                 const view =
                     orderView(
@@ -445,10 +474,23 @@
             const action =
                 button.dataset.orderAction;
 
-            const option =
-                actionOptions[action];
+            const baseOption = actionOptions[action];
 
-            if (!option) return;
+            if (!baseOption || button.disabled) return;
+
+            const option = { ...baseOption };
+
+            if (
+                action === 'hoan-thanh' &&
+                Number(order.phuongThucThanhToan) !== 40 &&
+                Number(order.trangThaiThanhToan) !== 30
+            ) {
+                option.label = 'Hoàn thành và xác nhận thanh toán';
+                option.hint =
+                    'Chỉ xác nhận khi đã giao đủ món và hoàn tất thu tiền ' +
+                    'hoặc ghi nhận thanh toán nội bộ. ' +
+                    'Tài khoản đang đăng nhập sẽ được lưu là người thu tiền.';
+            }
 
             pending = {
                 id: order.id,
@@ -776,26 +818,16 @@
                 return;
             }
 
-            timer = setInterval(
-                () => {
-                    if (
-                        !document.hidden &&
-                        !dialog?.open &&
-                        !actionBusy &&
-                        !paymentBusy &&
-                        !$(
-                            '[data-payment-result]'
-                        )
-                            ?.childElementCount
-                    ) {
-                        void load(
-                            selectedId,
-                            true
-                        );
-                    }
-                },
-                20000
-            );
+            timer = setInterval(() => {
+                if (
+                    !document.hidden &&
+                    !dialog?.open &&
+                    !actionBusy &&
+                    !paymentBusy
+                ) {
+                    void load(selectedId, true);
+                }
+            }, 5000);
 
             document.addEventListener(
                 'visibilitychange',

@@ -204,6 +204,12 @@
             </div>
         {{/if}}
 
+        {{#if isPaid}}
+            <p class="order-notice order-text-success" role="status">
+                Thanh toán thành công.
+            </p>
+        {{/if}}
+
         <div data-payment-result></div>
     {{/dat-hang/dung-chung}}
 
@@ -220,9 +226,9 @@
                     type="button"
                     class="order-button order-button--{{theme}}"
                     data-order-action="{{action}}"
-                >
-                    <i class="fa-solid {{icon}}"></i>
-                    {{label}}
+                    {{#if disabled}}disabled{{/if}}>
+                        <i class="fa-solid {{icon}}"></i>
+                        {{label}}
                 </button>
             {{/each}}
 
@@ -236,6 +242,15 @@
                 </a>
             {{/if}}
         </div>
+
+        {{#if isQr}}
+            {{#unless isPaid}}
+                <p class="order-notice">
+                    Đơn QR chưa thanh toán thành công.
+                    Nhà ăn chưa thể xác nhận xử lý đơn.
+                </p>
+            {{/unless}}
+        {{/if}}
 
         {{#if actionHint}}
             <p class="order-notice">

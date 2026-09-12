@@ -604,75 +604,83 @@ class ThongBaoService {
         }
     }
 
-    async send(data) {
+    async send(data, transactionClient = null) {
         const guiTatCa = data.guiTatCa === true;
-
         const doiTuong = this.chuanHoaDoiTuong(data.doiTuong || []);
 
         this.validatePhamVi(guiTatCa, doiTuong);
 
         if (!data.maSuKien) {
-            throw new ApiError(400, 'Mã sự kiện thông báo tự động không được để trống.');
+            throw new ApiError(400, 'Thiếu mã sự kiện thông báo.');
         }
 
-        const client = await pool.connect();
+        const ownsTransaction = !transactionClient;
+        const client = transactionClient || await pool.connect();
+
+        let thongBao;
 
         try {
-            await client.query('BEGIN');
+            if (ownsTransaction) {
+                await client.query('BEGIN');
+            }
 
             if (!guiTatCa) {
                 await this.validateDoiTuong(doiTuong, client);
             }
 
-            const thongBao = await thongBaoRepository.create(
+            const nguoiNhanIds = await this.resolveNguoiNhan(
+                guiTatCa,
+                doiTuong,
+                client
+            );
+
+            if (!nguoiNhanIds.length) {
+                throw new ApiError(400, 'Không có tài khoản nhận thông báo.');
+            }
+
+            thongBao = await thongBaoRepository.create(
                 {
-                    tieuDe: data.tieuDe,
-
-                    noiDung: data.noiDung,
-
+                    ...data,
                     guiTatCa,
-
                     tuDong: true,
-
-                    maSuKien: data.maSuKien,
-
-                    loaiThamChieu: data.loaiThamChieu || null,
-
-                    thamChieuId: data.thamChieuId || null,
-
-                    duongDan: data.duongDan || null,
-
                     trangThai: 10,
-
-                    nguoiTaoId: data.nguoiTaoId || null,
-
                     thoiGianGui: null
                 },
                 client
             );
 
-            await thongBaoRepository.saveDoiTuong(thongBao.id, doiTuong, client);
+            await thongBaoRepository.saveDoiTuong(
+                thongBao.id,
+                doiTuong,
+                client
+            );
 
-            const nguoiNhanIds = await this.resolveNguoiNhan(guiTatCa, doiTuong, client);
-
-            if (nguoiNhanIds.length === 0) {
-                throw new ApiError(400, 'Không xác định được tài khoản nhận thông báo.');
-            }
-
-            await thongBaoRepository.saveNguoiNhan(thongBao.id, nguoiNhanIds, client);
+            await thongBaoRepository.saveNguoiNhan(
+                thongBao.id,
+                nguoiNhanIds,
+                client
+            );
 
             await thongBaoRepository.danhDauDaGui(thongBao.id, client);
 
-            await client.query('COMMIT');
-
-            return await this.getChiTiet(thongBao.id);
+            if (ownsTransaction) {
+                await client.query('COMMIT');
+            }
         } catch (error) {
-            await client.query('ROLLBACK');
+            if (ownsTransaction) {
+                await client.query('ROLLBACK');
+            }
 
             throw error;
         } finally {
-            client.release();
+            if (ownsTransaction) {
+                client.release();
+            }
         }
+
+        return ownsTransaction
+            ? this.getChiTiet(thongBao.id)
+            : thongBao;
     }
 }
 

@@ -1059,8 +1059,16 @@ document.addEventListener('DOMContentLoaded', () => {
         stopNotificationPolling();
 
         notificationState.refreshTimer = window.setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                loadNotificationCount();
+            if (document.visibilityState !== 'visible') {
+                return;
+            }
+
+            notificationState.loaded = false;
+
+            if (isNotificationMenuOpen()) {
+                void loadHeaderNotifications(true);
+            } else {
+                void loadNotificationCount();
             }
         }, CONFIG.notificationRefreshInterval);
     }

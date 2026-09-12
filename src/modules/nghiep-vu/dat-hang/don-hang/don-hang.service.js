@@ -143,17 +143,21 @@ class DonHangService {
                 },
                 client
             );
+
+            const createdOrder = await repository.getById(
+                orderId,
+                client
+            );
+
+            await notificationService.sendNewOrder(
+                createdOrder,
+                user,
+                client
+            );
             await client.query('COMMIT');
 
             await notificationService
-                .sendToEmployee({
-                    nhanVienId: user.nhanVienId,
-                    donHangId: orderId,
-                    maSuKien: 'DON_HANG_DA_TAO',
-                    tieuDe: 'Đặt hàng thành công',
-                    noiDung: 'Đơn hàng của bạn đã được ghi nhận và đang chờ xác nhận.',
-                    nguoiTaoId: user.nhanVienId
-                })
+                .sendToEmployee(/* ... */)
                 .catch(() => null);
 
             return this.getDetail(orderId, user, true);
@@ -238,6 +242,25 @@ class DonHangService {
                 throw new ApiError(409, 'Không thể chuyển đơn hàng sang trạng thái được yêu cầu.');
             const isCancel = [TRANG_THAI_DON_HANG.DA_HUY, TRANG_THAI_DON_HANG.TU_CHOI].includes(targetStatus);
             if (isCancel && !body.lyDo) throw new ApiError(400, 'Vui lòng nhập lý do huỷ hoặc từ chối đơn hàng.');
+            const requiresPaidQr = [
+                TRANG_THAI_DON_HANG.DANG_CHUAN_BI,
+                TRANG_THAI_DON_HANG.SAN_SANG_GIAO,
+                TRANG_THAI_DON_HANG.DANG_GIAO,
+                TRANG_THAI_DON_HANG.HOAN_THANH
+            ].includes(targetStatus);
+
+            if (
+                requiresPaidQr &&
+                Number(order.phuong_thuc_thanh_toan) ===
+                    PHUONG_THUC_THANH_TOAN.QR &&
+                Number(order.trang_thai_thanh_toan) !==
+                    TRANG_THAI_THANH_TOAN.DA_THANH_TOAN
+            ) {
+                throw new ApiError(
+                    409,
+                    'Đơn QR chưa thanh toán thành công, chưa thể xử lý đơn.'
+                );
+            }
             const result = await repository.updateStatus(
                 id,
                 body.version,
@@ -252,6 +275,13 @@ class DonHangService {
             );
             if (!result.rowCount)
                 throw new ApiError(409, 'Đơn hàng đã được người khác cập nhật. Vui lòng tải lại dữ liệu.');
+            if (targetStatus === TRANG_THAI_DON_HANG.HOAN_THANH) {
+                await paymentService.settleOnDelivery(
+                    order,
+                    user,
+                    client
+                );
+            }
             const itemStatus = isCancel
                 ? TRANG_THAI_CHI_TIET.DA_HUY
                 : targetStatus === TRANG_THAI_DON_HANG.DANG_CHUAN_BI
@@ -273,18 +303,14 @@ class DonHangService {
                 },
                 client
             );
+            await notificationService.sendProgress(
+                order,
+                action,
+                user,
+                client,
+                body.lyDo || ''
+            );
             await client.query('COMMIT');
-
-            await notificationService
-                .sendToEmployee({
-                    nhanVienId: order.nguoi_dat_id,
-                    donHangId: Number(id),
-                    maSuKien: action,
-                    tieuDe: 'Đơn hàng đã được cập nhật',
-                    noiDung: body.lyDo || `Đơn hàng đã chuyển sang ${enumName(enums.trangThaiDonHang, targetStatus)}.`,
-                    nguoiTaoId: user.nhanVienId
-                })
-                .catch(() => null);
 
             return this.getDetail(id, user, true);
         } catch (error) {

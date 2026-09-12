@@ -226,3 +226,18 @@ ALTER TABLE public.dm_khung_gio_nhan_hang
 ALTER COLUMN so_don_toi_da
 TYPE numeric(18,6)
 USING so_don_toi_da::numeric(18,6);
+
+
+
+ALTER TABLE dm_khung_gio_nhan_hang
+DROP CONSTRAINT chk_dm_khung_gio_nhan_hang_gio;
+
+ALTER TABLE dm_khung_gio_nhan_hang
+ADD CONSTRAINT chk_dm_khung_gio_nhan_hang_gio
+CHECK (
+    gio_bat_dau < gio_ket_thuc
+    OR (
+        gio_bat_dau = TIME '23:45:00'
+        AND gio_ket_thuc = TIME '00:00:00'
+    )
+);
