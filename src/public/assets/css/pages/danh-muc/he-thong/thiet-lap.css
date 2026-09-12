@@ -1,0 +1,280 @@
+/* =========================================
+ * DANH MỤC THIẾT LẬP
+ * ========================================= */
+
+
+/*
+ * Danh sách các giá trị.
+ */
+.thiet-lap-values {
+    display: grid;
+
+    gap: 14px;
+
+    width: 100%;
+}
+
+.thiet-lap-values-toolbar {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    margin-bottom: 12px;
+}
+
+
+.thiet-lap-values-toolbar[hidden] {
+    display: none !important;
+}
+
+
+.thiet-lap-values-toggle {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--color-primary);
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+
+.thiet-lap-values-toggle:hover {
+    text-decoration: underline;
+}
+
+
+.thiet-lap-values-toggle i {
+    font-size: 12px;
+
+    transition:
+        transform
+        0.2s
+        ease;
+}
+
+
+.thiet-lap-value-row[hidden] {
+    display: none !important;
+}
+
+/*
+ * 12 phần:
+ *
+ * Giá trị : 3.5
+ * Từ ngày : 3.5
+ * Đến ngày: 3.5
+ * Icon    : 1.5
+ */
+.thiet-lap-value-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 3.5fr)
+        minmax(0, 3.5fr)
+        minmax(0, 3.5fr)
+        minmax(52px, 1.5fr);
+
+    gap: 12px;
+
+    align-items: start;
+
+    width: 100%;
+}
+
+.thiet-lap-value-row > * {
+    min-width: 0;
+}
+
+.thiet-lap-value-row .form-field {
+    min-width: 0;
+}
+
+.thiet-lap-value-row .form-field__error {
+    width: 100%;
+    max-width: 100%;
+
+    margin-top: 6px;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+/*
+ * Cụm icon.
+ *
+ * Không cho nút chiếm cả cột.
+ */
+.thiet-lap-value-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 7px;
+
+    min-height: 44px;
+
+    padding-top: 34px;
+}
+
+
+/*
+ * Nút tròn + / -
+ */
+.thiet-lap-value-action {
+    display: inline-grid;
+
+    place-items: center;
+
+    width: 20px;
+    height: 20px;
+
+    min-width: 20px;
+
+    padding: 0;
+
+    border:
+        2px
+        solid
+        currentColor;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    line-height: 1;
+}
+
+
+/*
+ * +
+ */
+.thiet-lap-value-action--add {
+    color: #0d6efd;
+}
+
+
+/*
+ * -
+ */
+.thiet-lap-value-action--remove {
+    color: #ff1f1f;
+}
+
+
+.thiet-lap-value-action:hover {
+    background: #f8fafc;
+}
+
+
+.thiet-lap-value-action:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.55;
+}
+
+
+.thiet-lap-value-action[hidden] {
+    display: none !important;
+}
+
+
+/*
+ * Ghi chú quy tắc cơ sở
+ * lấy từ BE.
+ */
+.thiet-lap-co-so-rule {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+.thiet-lap-active-field {
+    padding-top: 2px;
+}
+
+.thiet-lap-update-all-button {
+    white-space: nowrap;
+}
+
+
+.thiet-lap-update-all-button i {
+    font-size: 13px;
+}
+
+
+.thiet-lap-update-all-button:disabled {
+    cursor: wait;
+
+    opacity: 0.65;
+}
+
+
+/*
+ * Tablet.
+ */
+@media (max-width: 900px) {
+
+    .thiet-lap-value-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+
+    .thiet-lap-value-actions {
+        grid-column:
+            1 /
+            -1;
+        padding-top: 0;
+    }
+
+}
+
+
+/*
+ * Mobile.
+ */
+@media (max-width: 640px) {
+
+    .thiet-lap-value-row {
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+
+    .thiet-lap-value-actions {
+        grid-column: auto;
+        padding-top: 0;
+    }
+
+}

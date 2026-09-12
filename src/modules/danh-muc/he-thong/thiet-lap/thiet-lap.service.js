@@ -89,6 +89,108 @@ class ThietLapService {
         };
     }
 
+    validateKhoangGiaTri(
+        dsGiaTri
+    ) {
+        if (
+            !Array.isArray(
+                dsGiaTri
+            ) ||
+            dsGiaTri.length <= 1
+        ) {
+            return;
+        }
+
+        const danhSach =
+            dsGiaTri
+                .filter(
+                    item =>
+                        item.active !==
+                        false
+                )
+                .map(
+                    item => ({
+                        ...item,
+
+                        tuNgay:
+                            item.tuNgay ||
+                            null,
+
+                        denNgay:
+                            item.denNgay ||
+                            null
+                    })
+                )
+                .sort(
+                    (a, b) => {
+                        if (
+                            !a.tuNgay &&
+                            !b.tuNgay
+                        ) {
+                            return 0;
+                        }
+
+                        if (!a.tuNgay) {
+                            return -1;
+                        }
+
+                        if (!b.tuNgay) {
+                            return 1;
+                        }
+
+                        return String(
+                            a.tuNgay
+                        ).localeCompare(
+                            String(
+                                b.tuNgay
+                            )
+                        );
+                    }
+                );
+
+
+        for (
+            let index = 0;
+            index <
+            danhSach.length - 1;
+            index += 1
+        ) {
+            const hienTai =
+                danhSach[index];
+
+            const tiepTheo =
+                danhSach[index + 1];
+
+
+            if (!tiepTheo.tuNgay) {
+                continue;
+            }
+
+
+            if (!hienTai.denNgay) {
+                throw new ApiError(
+                    400,
+                    `Khoảng thời gian của giá trị "${hienTai.giaTri}" bị chồng với giá trị "${tiepTheo.giaTri}".`
+                );
+            }
+
+
+            if (
+                String(
+                    hienTai.denNgay
+                ) >=
+                String(
+                    tiepTheo.tuNgay
+                )
+            ) {
+                throw new ApiError(
+                    400,
+                    `Khoảng thời gian của giá trị "${hienTai.giaTri}" bị chồng với giá trị "${tiepTheo.giaTri}".`
+                );
+            }
+        }
+    }
+
     async getTongHop(query) {
         return await thietLapRepository.getTongHop(query);
     }
@@ -119,6 +221,28 @@ class ThietLapService {
                         thietLap.maThietLap
                     )
         };
+    }
+
+    getCauHinhTheoMa(maThietLap) {
+        const ma =
+            String(
+                maThietLap ||
+                ''
+            )
+                .trim()
+                .toUpperCase();
+
+        if (!ma) {
+            throw new ApiError(
+                400,
+                'Mã thiết lập không hợp lệ.'
+            );
+        }
+
+        return cauHinhService
+            .getCauHinhThietLap(
+                ma
+            );
     }
 
     async getGiaTriTheoMa(maThietLap) {
@@ -598,6 +722,10 @@ class ThietLapService {
                     };
                 });
 
+        this.validateKhoangGiaTri(
+            duLieuDaChuanHoa.dsGiaTri
+        );
+
         return await thietLapRepository
             .create(
                 duLieuDaChuanHoa
@@ -759,6 +887,10 @@ class ThietLapService {
             thietLapId
         );
 
+        this.validateKhoangGiaTri(
+            duLieuDaChuanHoa.dsGiaTri
+        );
+
         const ketQua =
             await thietLapRepository
                 .update(
@@ -789,6 +921,95 @@ class ThietLapService {
                     thietLap
                 }
             );
+    }
+
+    async dongBoTatCa() {
+        const danhSach =
+            await thietLapRepository
+                .getTongHop();
+
+
+        const ketQua =
+            [];
+
+        let thanhCong =
+            0;
+
+        let thatBai =
+            0;
+
+
+        for (
+            const thietLap of danhSach
+        ) {
+
+            try {
+
+                const result =
+                    await cauHinhService
+                        .dongBoThietLap(
+                            thietLap.maThietLap,
+                            {
+                                thietLap
+                            }
+                        );
+
+
+                ketQua.push({
+                    id:
+                        thietLap.id,
+
+                    maThietLap:
+                        thietLap.maThietLap,
+
+                    success:
+                        true,
+
+                    ...result
+                });
+
+
+                thanhCong +=
+                    1;
+
+            } catch (
+                error
+            ) {
+
+                ketQua.push({
+                    id:
+                        thietLap.id,
+
+                    maThietLap:
+                        thietLap.maThietLap,
+
+                    success:
+                        false,
+
+                    message:
+                        error?.message ||
+                        'Cập nhật thiết lập thất bại.'
+                });
+
+
+                thatBai +=
+                    1;
+
+            }
+
+        }
+
+
+        return {
+            tongSo:
+                danhSach.length,
+
+            thanhCong,
+
+            thatBai,
+
+            ketQua
+        };
     }
 }
 

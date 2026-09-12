@@ -37,6 +37,13 @@ router.get(
     controller.getChiTiet
 );
 
+router.get(
+    '/cau-hinh/:maThietLap',
+    authenticate,
+    authorize('Q000532', 'Q000533', 'Q000534'), 
+    controller.getCauHinhTheoMa
+);
+
 router.post(
     '/them-moi', 
     authenticate, 
@@ -58,6 +65,13 @@ router.post(
     authenticate,
     authorize('Q000534'),
     controller.dongBo
+);
+
+router.post(
+    '/dong-bo-tat-ca',
+    authenticate,
+    authorize('Q000534'),
+    controller.dongBoTatCa
 );
 
 module.exports = router;

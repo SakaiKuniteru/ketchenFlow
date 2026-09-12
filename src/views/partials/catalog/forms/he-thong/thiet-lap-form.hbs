@@ -4,8 +4,13 @@
         Thông tin thiết lập
     </h3>
 
-
     <div class="catalog-form-grid">
+
+        {{!--
+            ==============================
+            MÃ | TÊN
+            ==============================
+        --}}
 
         {{> forms/input
             id="maThietLap"
@@ -15,7 +20,6 @@
             maxlength=100
             required=true
         }}
-
 
         {{> forms/input
             id="tenThietLap"
@@ -27,19 +31,147 @@
         }}
 
 
+        {{!--
+            ==============================
+            GIÁ TRỊ | TỪ NGÀY | ĐẾN NGÀY | ICON
+            ==============================
+        --}}
+
         <div class="catalog-form-grid__full">
-            {{> forms/input
-                id="giaTri"
-                name="giaTri"
-                label="Giá trị"
-                placeholder="Nhập giá trị thiết lập"
-                maxlength=500
-                required=true
-            }}
+
+            <div
+                class="thiet-lap-values-toolbar"
+                data-thiet-lap-values-toolbar
+                hidden>
+
+                <button
+                    type="button"
+                    class="thiet-lap-values-toggle"
+                    data-toggle-values
+                    aria-expanded="false">
+
+                    <span data-toggle-values-label>
+                        Hiển thị thêm
+                    </span>
+
+                    <i
+                        class="fa-solid fa-chevron-down"
+                        data-toggle-values-icon
+                        aria-hidden="true">
+                    </i>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="thiet-lap-values"
+                data-thiet-lap-values>
+            </div>
+
+
+            <template data-thiet-lap-value-template>
+
+                <div
+                    class="thiet-lap-value-row"
+                    data-thiet-lap-value-row>
+
+                    <div data-thiet-lap-gia-tri-field>
+
+                        {{> forms/input
+                            id="giaTri__INDEX__"
+                            name="giaTriRows.__INDEX__.giaTri"
+                            label="Giá trị"
+                            placeholder="Nhập giá trị thiết lập"
+                            maxlength=500
+                            required=true
+                        }}
+
+                    </div>
+
+
+                    <div data-thiet-lap-tu-ngay-field>
+
+                        {{> forms/date
+                            id="tuNgay__INDEX__"
+                            name="giaTriRows.__INDEX__.tuNgay"
+                            label="Từ ngày"
+                            placeholder="dd/mm/yyyy"
+                            defaultTime="00:00:00"
+                        }}
+
+                    </div>
+
+
+                    <div data-thiet-lap-den-ngay-field>
+
+                        {{> forms/date
+                            id="denNgay__INDEX__"
+                            name="giaTriRows.__INDEX__.denNgay"
+                            label="Đến ngày"
+                            placeholder="dd/mm/yyyy"
+                            defaultTime="23:59:59"
+                        }}
+
+                    </div>
+
+
+                    <div class="thiet-lap-value-actions">
+
+                        <button
+                            type="button"
+                            class="
+                                thiet-lap-value-action
+                                thiet-lap-value-action--remove
+                            "
+                            data-remove-value
+                            aria-label="Xóa giá trị"
+                            title="Xóa giá trị"
+                            hidden>
+
+                            <i
+                                class="fa-solid fa-minus"
+                                aria-hidden="true">
+                            </i>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="
+                                thiet-lap-value-action
+                                thiet-lap-value-action--add
+                            "
+                            data-add-value
+                            aria-label="Thêm giá trị"
+                            title="Thêm giá trị">
+
+                            <i
+                                class="fa-solid fa-plus"
+                                aria-hidden="true">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </template>
+
         </div>
 
 
-        <div class="catalog-form-grid__full">
+        {{!--
+            ==============================
+            NHÓM | CƠ SỞ
+            ==============================
+        --}}
+
+        <div>
+
             {{> forms/select
                 id="dsNhomTinhNangId"
                 name="dsNhomTinhNangId"
@@ -51,24 +183,39 @@
                 description=""
                 required=true
             }}
+
         </div>
 
-        <div class="catalog-form-grid__full">
+
+        <div>
+
             {{> forms/select
                 id="dsCoSoId"
                 name="dsCoSoId"
                 label="Cơ sở"
                 mode="multiple"
                 multiple=true
-                allowAll=true
-                allLabel="Tất cả"
+                allowAll=false
                 placeholder="Chọn cơ sở..."
                 description=""
-                required=true
             }}
+
+            <small
+                class="thiet-lap-co-so-rule"
+                data-co-so-rule-message>
+            </small>
+
         </div>
 
+
+        {{!--
+            ==============================
+            MÔ TẢ
+            ==============================
+        --}}
+
         <div class="catalog-form-grid__full">
+
             {{> forms/textarea
                 id="moTa"
                 name="moTa"
@@ -77,22 +224,32 @@
                 maxlength=500
                 rows=4
                 showCounter=true
-                required=true
             }}
+
+        </div>
+
+
+        {{!--
+            ==============================
+            ACTIVE
+            ==============================
+        --}}
+
+        <div
+            class="
+                catalog-form-grid__full
+                thiet-lap-active-field
+            ">
+
+            {{> forms/checkbox
+                id="active"
+                name="active"
+                label="Đang hoạt động"
+                checked=true
+            }}
+
         </div>
 
     </div>
-
-</div>
-
-
-<div class="detail-panel__section">
-
-    {{> forms/checkbox
-        id="active"
-        name="active"
-        label="Đang hoạt động"
-        checked=true
-    }}
 
 </div>

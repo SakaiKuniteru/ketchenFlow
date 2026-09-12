@@ -25,6 +25,25 @@ class ThietLapController {
         }
     }
 
+    async getCauHinhTheoMa(req, res, next) {
+        try {
+            const data =
+                thietLapService
+                    .getCauHinhTheoMa(
+                        req.params.maThietLap
+                    );
+
+            return successResponse(
+                res,
+                'Lấy cấu hình thiết lập thành công.',
+                data,
+                200
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getGiaTriTheoMa(req, res, next) {
         try {
             const { maThietLap } = req.params;
@@ -93,12 +112,42 @@ class ThietLapController {
 
             return successResponse(
                 res,
-                'Đồng bộ thiết lập thành công.',
+                'Cập nhật thiết lập thành công.',
                 data,
                 200
             );
         } catch (error) {
             next(error);
+        }
+    }
+
+    async dongBoTatCa(
+        req,
+        res,
+        next
+    ) {
+        try {
+
+            const data =
+                await thietLapService
+                    .dongBoTatCa();
+
+
+            return successResponse(
+                res,
+                'Cập nhật toàn bộ thiết lập thành công.',
+                data,
+                200
+            );
+
+        } catch (
+            error
+        ) {
+
+            next(
+                error
+            );
+
         }
     }
 }
