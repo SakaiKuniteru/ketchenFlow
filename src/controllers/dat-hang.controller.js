@@ -29,8 +29,12 @@ class DatHangWebController {
         try {
             return renderOrderPage(req, res, 'pages/dat-hang/thong-tin-nhan-hang', {
                 title: 'Thông tin nhận hàng',
-                breadcrumbs: [{ label: 'Đặt món', path: '/dat-hang/dat-mon' }, { label: 'Thông tin nhận hàng' }],
-                orderPage: 'delivery'
+                breadcrumbs: [
+                    { label: 'Đặt món', path: '/dat-hang/dat-mon' },
+                    { label: 'Thông tin nhận hàng' }
+                ],
+                orderPage: 'delivery',
+                taiKhoanId: req.params.taiKhoanId
             });
         } catch (error) {
             next(error);
@@ -41,8 +45,12 @@ class DatHangWebController {
         try {
             return renderOrderPage(req, res, 'pages/dat-hang/xac-nhan-don-hang', {
                 title: 'Xác nhận đơn hàng',
-                breadcrumbs: [{ label: 'Đặt món', path: '/dat-hang/dat-mon' }, { label: 'Xác nhận đơn hàng' }],
-                orderPage: 'confirmation'
+                breadcrumbs: [
+                    { label: 'Đặt món', path: '/dat-hang/dat-mon' },
+                    { label: 'Xác nhận đơn hàng' }
+                ],
+                orderPage: 'confirmation',
+                taiKhoanId: req.params.taiKhoanId
             });
         } catch (error) {
             next(error);
@@ -53,9 +61,13 @@ class DatHangWebController {
         try {
             return renderOrderPage(req, res, 'pages/dat-hang/hoan-tat-don-hang', {
                 title: 'Hoàn tất đơn hàng',
-                breadcrumbs: [{ label: 'Đặt món', path: '/dat-hang/dat-mon' }, { label: 'Hoàn tất' }],
+                breadcrumbs: [
+                    { label: 'Đặt món', path: '/dat-hang/dat-mon' },
+                    { label: 'Hoàn tất' }
+                ],
                 orderPage: 'completed',
-                orderId: req.params.id
+                taiKhoanId: req.params.taiKhoanId,
+                orderId: req.params.donHangId
             });
         } catch (error) {
             next(error);
@@ -83,7 +95,8 @@ class DatHangWebController {
                     { label: 'Chi tiết xử lý đơn hàng' }
                 ],
                 orderPage: 'management-detail',
-                orderId: req.params.id
+                nguoiDatId: req.params.nguoiDatId,
+                orderId: req.params.donHangId
             });
         } catch (error) {
             next(error);
@@ -111,7 +124,8 @@ class DatHangWebController {
                     { label: 'Chi tiết đơn hàng' }
                 ],
                 orderPage: 'my-order-detail',
-                orderId: req.params.id
+                taiKhoanId: req.params.taiKhoanId,
+                orderId: req.params.donHangId
             });
         } catch (error) {
             next(error);

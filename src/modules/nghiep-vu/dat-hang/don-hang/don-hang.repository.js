@@ -6,8 +6,33 @@ const { TRANG_THAI_DON_HANG } = require('./don-hang.constants');
 class DonHangRepository {
     async create(data, client) {
         const result = await client.query(
-            `INSERT INTO nv_don_hang (ma_don_hang, nguoi_dat_id, phong_ban_id, co_so_id, dat_ho, nguoi_nhan_id, ten_nguoi_nhan, so_dien_thoai_nguoi_nhan, dia_diem_nhan_id, dia_chi_nhan_snapshot, khung_gio_nhan_id, thoi_gian_nhan_tu, thoi_gian_nhan_den, ghi_chu, tam_tinh, tong_mien_giam, phi_dich_vu, tong_thanh_toan, phuong_thuc_thanh_toan, trang_thai_thanh_toan, trang_thai) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21) RETURNING id`,
-            [
+            `INSERT INTO nv_don_hang (
+                ma_don_hang,
+                nguoi_dat_id,
+                phong_ban_id,
+                co_so_id,
+                dat_ho,
+                nguoi_nhan_id,
+                ten_nguoi_nhan,
+                so_dien_thoai_nguoi_nhan,
+                dia_diem_nhan_id,
+                dia_chi_nhan_snapshot,
+                khung_gio_nhan_id,
+                thoi_gian_nhan_tu,
+                thoi_gian_nhan_den,
+                ghi_chu,
+                tam_tinh,
+                tong_mien_giam,
+                phi_dich_vu,
+                tong_thanh_toan,
+                phuong_thuc_thanh_toan,
+                trang_thai_thanh_toan,
+                trang_thai,
+                ten_dia_diem_nhan_snapshot
+            ) VALUES (
+                $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+                $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22
+            ) RETURNING id`,            [
                 data.maDonHang,
                 data.nguoiDatId,
                 data.phongBanId,
@@ -28,7 +53,8 @@ class DonHangRepository {
                 data.tongThanhToan,
                 data.phuongThucThanhToan,
                 data.trangThaiThanhToan,
-                data.trangThai
+                data.trangThai,
+                data.tenDiaDiemNhanSnapshot
             ]
         );
         return result.rows[0].id;
@@ -37,7 +63,38 @@ class DonHangRepository {
     async createItems(donHangId, items, client) {
         for (const item of items) {
             await client.query(
-                `INSERT INTO ct_don_hang (don_hang_id, san_pham_id, ma_san_pham_snapshot, ten_san_pham_snapshot, ten_nhom_snapshot, don_vi_snapshot, hinh_anh_snapshot, so_luong, don_gia, tien_giam, thanh_tien, ghi_chu, trang_thai) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,0,$10,$11,$12)`,
+                `
+                    INSERT INTO ct_don_hang (
+                        don_hang_id,
+                        san_pham_id,
+                        ma_san_pham_snapshot,
+                        ten_san_pham_snapshot,
+                        ten_nhom_snapshot,
+                        don_vi_snapshot,
+                        hinh_anh_snapshot,
+                        so_luong,
+                        don_gia,
+                        tien_giam,
+                        thanh_tien,
+                        ghi_chu,
+                        trang_thai
+                    )
+                    VALUES (
+                        $1,
+                        $2,
+                        $3,
+                        $4,
+                        $5,
+                        $6,
+                        $7,
+                        $8,
+                        $9,
+                        $10,
+                        (($8::NUMERIC * $9::NUMERIC) - $10::NUMERIC),
+                        $11,
+                        $12
+                    )
+                `,
                 [
                     donHangId,
                     item.sanPhamId,
@@ -48,7 +105,7 @@ class DonHangRepository {
                     item.hinhAnh,
                     item.soLuong,
                     item.donGia,
-                    item.thanhTien,
+                    item.tienGiam || 0,
                     item.ghiChu,
                     item.trangThai
                 ]
@@ -122,7 +179,19 @@ class DonHangRepository {
         );
         values.push(query.limit, (query.page - 1) * query.limit);
         const result = await pool.query(
-            `SELECT dh.id, dh.ma_don_hang AS "maDonHang", dh.created_at AS "thoiGianDat", nd.ho_ten AS "nguoiDat", dh.ten_nguoi_nhan AS "nguoiNhan", (SELECT COUNT(*) FROM ct_don_hang ct WHERE ct.don_hang_id = dh.id)::INTEGER AS "soLoai", (SELECT COALESCE(SUM(ct.so_luong),0) FROM ct_don_hang ct WHERE ct.don_hang_id = dh.id) AS "tongSoLuong", dh.tong_thanh_toan AS "tongThanhToan", dh.phuong_thuc_thanh_toan AS "phuongThucThanhToan", dh.trang_thai_thanh_toan AS "trangThaiThanhToan", dh.trang_thai AS "trangThai" FROM nv_don_hang dh JOIN dm_nhan_vien nd ON nd.id = dh.nguoi_dat_id ${where} ORDER BY dh.created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
+            `SELECT 
+                dh.id, 
+                dh.nguoi_dat_id AS "nguoiDatId",
+                dh.ma_don_hang AS "maDonHang", 
+                dh.created_at AS "thoiGianDat", 
+                nd.ho_ten AS "nguoiDat", 
+                dh.ten_nguoi_nhan AS "nguoiNhan", 
+                (SELECT COUNT(*) FROM ct_don_hang ct WHERE ct.don_hang_id = dh.id)::INTEGER AS "soLoai", 
+                (SELECT COALESCE(SUM(ct.so_luong),0) FROM ct_don_hang ct WHERE ct.don_hang_id = dh.id) AS "tongSoLuong", 
+                dh.tong_thanh_toan AS "tongThanhToan", 
+                dh.phuong_thuc_thanh_toan AS "phuongThucThanhToan", 
+                dh.trang_thai_thanh_toan AS "trangThaiThanhToan", 
+                dh.trang_thai AS "trangThai" FROM nv_don_hang dh JOIN dm_nhan_vien nd ON nd.id = dh.nguoi_dat_id ${where} ORDER BY dh.created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
             values
         );
         const total = count.rows[0].total;

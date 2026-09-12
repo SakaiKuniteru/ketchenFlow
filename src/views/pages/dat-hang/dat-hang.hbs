@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/assets/css/catalog/pagination.css">
+
 {{#> dat-hang/dung-chung
     type="page-shell"
     page="catalog"
@@ -10,15 +12,6 @@
                     title="Đặt món"
                     description="Đồ ăn, đồ uống và dịch vụ cho một ngày làm việc trọn vẹn."
                 }}
-
-                <div class="order-promo">
-                    <div>
-                        <strong>Đặt nhanh<br>Tiện lợi mỗi ngày</strong>
-                        <span>Món ngon · Đồ uống · Dịch vụ</span>
-                    </div>
-
-                    <i class="fa-solid fa-bowl-food"></i>
-                </div>
             </div>
 
             {{> dat-hang/dat-mon type="search"}}
@@ -28,13 +21,20 @@
             <div class="order-product-grid" data-product-grid>
                 {{> dat-hang/dung-chung type="loading"}}
             </div>
-
-            <div class="order-pagination" data-catalog-pagination></div>
         </main>
 
         <aside class="order-cart-panel" data-cart-panel>
             {{> dat-hang/gio-hang type="empty"}}
         </aside>
+    </div>
+
+    <div
+        class="order-pagination-wrap"
+        data-order-catalog-pagination
+    >
+        {{> catalog/pagination
+            paginationId="orderCatalogPagination"
+        }}
     </div>
 
     {{> dat-hang/dat-mon type="filter"}}

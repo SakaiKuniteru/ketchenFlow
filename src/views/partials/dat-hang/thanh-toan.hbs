@@ -1,18 +1,26 @@
 {{#if (eq type "delivery-form")}}
 
-    {{> forms/native-select
+    {{> forms/select
         id="orderKhungGio"
         name="khungGioNhanId"
         label="Thời gian nhận dự kiến"
+        mode="single"
+        multiple=false
+        allowAll=false
         placeholder="Chọn khung giờ còn chỗ..."
+        options=null
         required=true
     }}
 
-    {{> forms/native-select
+    {{> forms/select
         id="orderDiaDiem"
         name="diaDiemNhanId"
         label="Địa điểm đã lưu"
+        mode="single"
+        multiple=false
+        allowAll=false
         placeholder="Nhập địa chỉ khác bên dưới"
+        options=null
     }}
 
     <p
@@ -166,11 +174,12 @@
                         readonly=true
                     }}
 
-                    {{> forms/input
+                    {{> forms/date
                         id="orderNgayNhan"
                         name="ngayNhan"
-                        type="date"
                         label="Ngày nhận"
+                        placeholder=""
+                        showTime=false
                         required=true
                     }}
 

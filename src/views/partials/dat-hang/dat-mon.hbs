@@ -140,11 +140,15 @@
                 </button>
             </header>
 
-            {{> forms/native-select
+            {{> forms/select
                 id="orderGroupFilter"
                 name="nhomSanPhamId"
                 label="Nhóm sản phẩm"
+                mode="single"
+                multiple=false
+                allowAll=false
                 placeholder="Tất cả nhóm"
+                options=null
             }}
 
             <div class="order-dialog__actions">

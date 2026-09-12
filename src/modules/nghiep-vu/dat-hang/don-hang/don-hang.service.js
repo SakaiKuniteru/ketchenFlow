@@ -39,8 +39,28 @@ class DonHangService {
             throw new ApiError(403, 'Bạn chỉ được đặt hàng tại cơ sở của mình.');
         }
         if (data.diaDiemNhanId) {
-            const location = await locationRepository.getChiTiet(data.diaDiemNhanId, user.nhanVienId, client);
-            if (!location?.active) throw new ApiError(400, 'Địa điểm nhận hàng không hợp lệ.');
+            const location = await locationRepository.getChiTiet(
+                data.diaDiemNhanId,
+                user.nhanVienId,
+                client
+            );
+
+            if (!location?.active) {
+                throw new ApiError(400, 'Địa điểm nhận hàng không hợp lệ.');
+            }
+
+            data.tenDiaDiemNhanSnapshot = String(
+                location.tenDiaDiem || ''
+            ).trim();
+
+            if (!data.tenDiaDiemNhanSnapshot) {
+                throw new ApiError(
+                    400,
+                    'Địa điểm nhận hàng chưa có tên hợp lệ.'
+                );
+            }
+        } else {
+            data.tenDiaDiemNhanSnapshot = 'Địa điểm nhận khác';
         }
         const ngayNhan = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(
             new Date(data.thoiGianNhanTu)

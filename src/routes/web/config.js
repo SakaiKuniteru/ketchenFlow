@@ -246,17 +246,17 @@ const datHangRoutes = [
     },
     {
         method: 'get',
-        path: '/dat-hang/thong-tin-nhan-hang',
+        path: '/dat-hang/thong-tin-nhan-hang/\:taiKhoanId',
         handler: datHangWebController.thongTinNhanHang
     },
     {
         method: 'get',
-        path: '/dat-hang/xac-nhan-don-hang',
+        path: '/dat-hang/xac-nhan-don-hang/\:taiKhoanId',
         handler: datHangWebController.xacNhanDonHang
     },
     {
         method: 'get',
-        path: '/dat-hang/hoan-tat-don-hang/:id',
+        path: '/dat-hang/hoan-tat-don-hang/\:taiKhoanId/\:donHangId',
         handler: datHangWebController.hoanTatDonHang
     },
     {
@@ -266,7 +266,7 @@ const datHangRoutes = [
     },
     {
         method: 'get',
-        path: '/dat-hang/chi-tiet-xu-ly-don-hang/:id',
+        path: '/dat-hang/chi-tiet-xu-ly-don-hang/\:nguoiDatId/\:donHangId',
         handler: datHangWebController.chiTietXuLyDonHang
     },
     {
@@ -276,7 +276,7 @@ const datHangRoutes = [
     },
     {
         method: 'get',
-        path: '/dat-hang/chi-tiet-don-hang-cua-toi/:id',
+        path: '/dat-hang/chi-tiet-don-hang-cua-toi/\:taiKhoanId/\:donHangId',
         handler: datHangWebController.chiTietDonHangCuaToi
     }
 ];

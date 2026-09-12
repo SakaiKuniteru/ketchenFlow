@@ -19,7 +19,7 @@ class ThongBaoDonHangService {
             maSuKien: data.maSuKien,
             loaiThamChieu: 'DON_HANG',
             thamChieuId: data.donHangId,
-            duongDan: `/dat-hang/chi-tiet-don-hang-cua-toi/${data.donHangId}`,
+            duongDan: `/dat-hang/chi-tiet-don-hang-cua-toi/${result.rows[0].id}/${data.donHangId}`,
             nguoiTaoId: data.nguoiTaoId || null
         });
     }

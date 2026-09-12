@@ -1297,10 +1297,6 @@ class DanhMucWebController {
                         width: '200px',
                         className: 'catalog-table__cell--center'
                     }),
-                    textColumn('thongTinLoaiDiaDiem.name', 'Loại địa điểm', {
-                        width: '180px',
-                        className: 'catalog-table__cell--center'
-                    }),
                     textColumn('gioBatDau', 'Giờ bắt đầu', {
                         width: '130px',
                         className: 'catalog-table__cell--center'

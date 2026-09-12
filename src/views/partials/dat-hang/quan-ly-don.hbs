@@ -1,32 +1,42 @@
 {{#if (eq type "filter")}}
 
     <form class="order-list-filters" data-order-filters hidden>
-        {{> forms/native-select
+        {{> forms/select
             id="orderStatusFilter"
             name="trangThai"
             label="Trạng thái đơn"
+            mode="single"
+            multiple=false
+            allowAll=false
             placeholder="Tất cả trạng thái"
+            options=null
         }}
 
-        {{> forms/native-select
+        {{> forms/select
             id="orderPaymentFilter"
             name="trangThaiThanhToan"
             label="Thanh toán"
+            mode="single"
+            multiple=false
+            allowAll=false
             placeholder="Tất cả"
+            options=null
         }}
 
-        {{> forms/input
+        {{> forms/date
             id="orderFromDate"
             name="tuNgay"
-            type="date"
             label="Từ ngày"
+            placeholder="dd/mm/yyyy"
+            defaultTime="00:00:00"
         }}
 
-        {{> forms/input
+        {{> forms/date
             id="orderToDate"
             name="denNgay"
-            type="date"
             label="Đến ngày"
+            placeholder="dd/mm/yyyy"
+            defaultTime="23:59:59"
         }}
 
         <div class="order-action-row">
@@ -135,53 +145,12 @@
     </div>
 
     <div
-        class="order-pagination"
+        class="order-pagination-wrap"
         data-orders-pagination
-    ></div>
-
-{{else if (eq type "pagination")}}
-
-    <span class="order-pagination__info">
-        {{#if total}}
-            Hiển thị {{from}}–{{to}} trong {{total}} {{noun}}
-        {{else}}
-            Chưa có {{noun}}
-        {{/if}}
-    </span>
-
-    <div class="order-pagination__buttons">
-        <button
-            type="button"
-            data-page="{{previous}}"
-            {{#unless hasPrevious}}disabled{{/unless}}
-            aria-label="Trang trước"
-        >
-            ‹
-        </button>
-
-        {{#each pages}}
-            {{#if gap}}
-                <span>…</span>
-            {{else}}
-                <button
-                    type="button"
-                    data-page="{{value}}"
-                    class="{{#if active}}is-active{{/if}}"
-                    {{#if active}}aria-current="page"{{/if}}
-                >
-                    {{value}}
-                </button>
-            {{/if}}
-        {{/each}}
-
-        <button
-            type="button"
-            data-page="{{next}}"
-            {{#unless hasNext}}disabled{{/unless}}
-            aria-label="Trang sau"
-        >
-            ›
-        </button>
+    >
+        {{> catalog/pagination
+            paginationId="orderListPagination"
+        }}
     </div>
 
 {{else if (eq type "detail-panel")}}

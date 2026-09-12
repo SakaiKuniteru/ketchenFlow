@@ -882,29 +882,6 @@
     color: #6c7a91;
 }
 
-.order-pagination {
-    display: flex;
-    justify-content: flex-end;
-    gap: 6px;
-    padding-top: 16px;
-}
-
-.order-pagination button {
-    min-width: 34px;
-    height: 34px;
-    border: 1px solid #d6e3f4;
-    border-radius: 7px;
-    background: #fff;
-    color: var(--order-blue);
-    cursor: pointer;
-}
-
-.order-pagination button.is-active {
-    border-color: var(--order-blue);
-    background: var(--order-blue);
-    color: #fff;
-}
-
 .order-management-detail {
     position: sticky;
     top: 84px;

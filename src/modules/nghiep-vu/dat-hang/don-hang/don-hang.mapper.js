@@ -19,7 +19,7 @@ function mapOrder(row) {
         },
         diaDiemNhan: {
             id: row.dia_diem_nhan_id,
-            tenDiaDiem: row.ten_dia_diem,
+            tenDiaDiem: row.ten_dia_diem_nhan_snapshot ?? row.ten_dia_diem,
             diaChi: row.dia_chi_nhan_snapshot
         },
         khungGioNhan: {

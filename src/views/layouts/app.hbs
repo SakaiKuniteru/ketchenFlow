@@ -44,6 +44,10 @@
         <link rel="stylesheet" href="/assets/css/pages/dat-hang/index.css">
     {{/if}}
 
+    {{#if (eq orderPage "catalog")}}
+        <link rel="stylesheet" href="/assets/css/pages/dat-hang/catalog.css">
+    {{/if}}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
@@ -102,8 +106,6 @@
     {{#if orderScript}}
         <script defer src="/assets/js/pages/dat-hang/templates.js"></script>
         <script defer src="/assets/js/pages/dat-hang/core.js"></script>
-        <script defer src="/assets/js/pages/dat-hang/checkout.js"></script>
-        <script defer src="/assets/js/pages/dat-hang/orders.js"></script>
         <script defer src="{{orderScript}}"></script>
     {{/if}}
 </body>

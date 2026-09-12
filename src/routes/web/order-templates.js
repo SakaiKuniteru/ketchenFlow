@@ -26,6 +26,22 @@ function buildTemplates() {
     }
     visit(path.join(partialRoot, 'dat-hang'));
     visit(path.join(partialRoot, 'forms'));
+    const paginationFile = path.join(
+        partialRoot,
+        'catalog',
+        'pagination.hbs'
+    );
+
+    const paginationTemplate = handlebars.precompile(
+        fs.readFileSync(paginationFile, 'utf8')
+    );
+
+    chunks.push(
+        `Handlebars.registerPartial(
+            "catalog/pagination",
+            Handlebars.template(${paginationTemplate})
+        );`
+    );
     return chunks.join('\n');
 }
 

@@ -167,6 +167,8 @@
     <div
         class="order-page"
         data-order-page="{{page}}"
+        {{#if taiKhoanId}}data-tai-khoan-id="{{taiKhoanId}}"{{/if}}
+        {{#if nguoiDatId}}data-nguoi-dat-id="{{nguoiDatId}}"{{/if}}
         {{#if orderId}}data-order-id="{{orderId}}"{{/if}}
     >
         {{> @partial-block}}

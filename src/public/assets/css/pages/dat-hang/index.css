@@ -33,12 +33,6 @@
     letter-spacing: normal;
 }
 
-.order-help,
-.order-pagination__info {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-xs);
-}
-
 .order-card,
 .order-cart,
 .order-summary {
@@ -688,28 +682,6 @@
 .order-code {
     color: var(--order-blue);
     font-weight: 700;
-}
-
-.order-pagination {
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-
-.order-pagination__info {
-    font-size: 0.76rem;
-    color: var(--order-muted);
-}
-
-.order-pagination__buttons {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.order-pagination button:disabled {
-    opacity: 0.35;
 }
 
 .order-table .order-status {
