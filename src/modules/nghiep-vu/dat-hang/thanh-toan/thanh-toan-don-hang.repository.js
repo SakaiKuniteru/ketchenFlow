@@ -57,7 +57,8 @@ class ThanhToanRepository {
             SET nguoi_thu_tien_tai_khoan_id = $2,
                 updated_at = NOW()
             WHERE id = $1
-            AND trang_thai = 30`,
+            AND trang_thai = 30
+            AND nguoi_thu_tien_tai_khoan_id IS NULL`,
             [id, taiKhoanId]
         );
     }

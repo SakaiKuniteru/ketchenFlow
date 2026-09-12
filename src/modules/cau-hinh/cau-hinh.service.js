@@ -26,7 +26,282 @@ const MA_THIET_LAP = {
     SO_PHUT_DAT_HANG_TRUOC: 'SO_PHUT_DAT_HANG_TRUOC'
 };
 
+const QUY_TAC_CO_SO = Object.freeze({
+    KHONG_CHO_CHON: 'KHONG_CHO_CHON',
+    BAT_BUOC: 'BAT_BUOC',
+    TUY_CHON: 'TUY_CHON'
+});
+
+const MOC_THOI_GIAN = Object.freeze({
+    HIEN_TAI: 'NOW',
+    THOI_GIAN_TAO: 'createdAt',
+    THOI_GIAN_CAP_NHAT: 'updatedAt',
+    NGAY_SU_DUNG: 'ngaySuDung',
+    THOI_GIAN_NGHIEP_VU: 'thoiGianNghiepVu'
+});
+
+/*
+ * Các mã nằm trong đây:
+ * tuyệt đối không được gắn cơ sở.
+ */
+const THIET_LAP_KHONG_CHO_CHON_CO_SO = new Set([
+    MA_THIET_LAP.TEN_HE_THONG,
+    MA_THIET_LAP.LOGO_CO_SO_MAC_DINH,
+    MA_THIET_LAP.SO_LAN_DANG_NHAP_SAI_TOI_DA,
+    MA_THIET_LAP.THOI_GIAN_KHOA_TAI_KHOAN,
+    MA_THIET_LAP.THOI_GIAN_ACCESS_TOKEN,
+    MA_THIET_LAP.THOI_GIAN_REFRESH_TOKEN,
+    MA_THIET_LAP.THOI_GIAN_TIMEOUT,
+    MA_THIET_LAP.SIDEBAR_MAC_DINH_DONG
+]);
+
+/*
+ * Mã nào bắt buộc phải chọn cơ sở
+ * thì thêm trực tiếp vào đây.
+ */
+const THIET_LAP_BAT_BUOC_CO_SO = new Set([
+    /*
+    MA_THIET_LAP.MA_NAO_DO
+    */
+]);
+
+/*
+ * Không nằm trong 2 danh sách trên
+ * => TUY_CHON:
+ *
+ * không chọn cơ sở = toàn hệ thống
+ * có chọn cơ sở    = chỉ các cơ sở đó
+ */
+
+/*
+ * Mốc thời gian dùng để tìm giá trị.
+ *
+ * Không khai báo trong object này
+ * => mặc định dùng thời điểm hiện tại.
+ */
+const MOC_THOI_GIAN_THEO_THIET_LAP = Object.freeze({
+    /*
+    [MA_THIET_LAP.MA_A]:
+        MOC_THOI_GIAN.THOI_GIAN_TAO,
+
+    [MA_THIET_LAP.MA_B]:
+        MOC_THOI_GIAN.THOI_GIAN_CAP_NHAT,
+
+    [MA_THIET_LAP.MA_C]:
+        MOC_THOI_GIAN.NGAY_SU_DUNG
+    */
+});
+
+const DONG_BO_HANDLERS = new Map();
+
 class CauHinhService {
+
+    getCauHinhThietLap(ma) {
+        const maThietLap =
+            String(ma || '')
+                .trim()
+                .toUpperCase();
+
+        let quyTacCoSo =
+            QUY_TAC_CO_SO.TUY_CHON;
+
+        if (
+            THIET_LAP_KHONG_CHO_CHON_CO_SO
+                .has(maThietLap)
+        ) {
+            quyTacCoSo =
+                QUY_TAC_CO_SO.KHONG_CHO_CHON;
+        } else if (
+            THIET_LAP_BAT_BUOC_CO_SO
+                .has(maThietLap)
+        ) {
+            quyTacCoSo =
+                QUY_TAC_CO_SO.BAT_BUOC;
+        }
+
+        return {
+            maThietLap,
+
+            quyTacCoSo,
+
+            batBuocCoSo:
+                quyTacCoSo ===
+                QUY_TAC_CO_SO.BAT_BUOC,
+
+            choPhepCoSo:
+                quyTacCoSo !==
+                QUY_TAC_CO_SO.KHONG_CHO_CHON,
+
+            mocThoiGian:
+                MOC_THOI_GIAN_THEO_THIET_LAP[
+                    maThietLap
+                ] ||
+                MOC_THOI_GIAN.HIEN_TAI
+        };
+    }
+
+    resolveThoiDiemApDung(
+        maThietLap,
+        context = {}
+    ) {
+        const cauHinh =
+            this.getCauHinhThietLap(
+                maThietLap
+            );
+
+        if (
+            cauHinh.mocThoiGian ===
+            MOC_THOI_GIAN.HIEN_TAI
+        ) {
+            return new Date();
+        }
+
+        const value =
+            context[
+                cauHinh.mocThoiGian
+            ];
+
+        if (
+            value === undefined ||
+            value === null ||
+            value === ''
+        ) {
+            throw new ApiError(
+                400,
+                `Thiết lập "${maThietLap}" yêu cầu mốc thời gian "${cauHinh.mocThoiGian}".`
+            );
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            throw new ApiError(
+                400,
+                `Mốc thời gian của thiết lập "${maThietLap}" không hợp lệ.`
+            );
+        }
+
+        return date;
+    }
+
+    dangKyDongBo(
+        maThietLap,
+        handler
+    ) {
+        DONG_BO_HANDLERS.set(
+            String(maThietLap)
+                .trim()
+                .toUpperCase(),
+            handler
+        );
+    }
+
+    async dongBoThietLap(
+        maThietLap,
+        context = {}
+    ) {
+        const ma =
+            String(maThietLap)
+                .trim()
+                .toUpperCase();
+
+        const handler =
+            DONG_BO_HANDLERS.get(
+                ma
+            );
+
+        if (!handler) {
+            return {
+                maThietLap: ma,
+
+                soBanGhi: 0,
+
+                message:
+                    'Thiết lập được áp dụng trực tiếp, không có dữ liệu cần đồng bộ lại.'
+            };
+        }
+
+        const result =
+            await handler(
+                context
+            );
+
+        return {
+            maThietLap: ma,
+            ...result
+        };
+    }
+
+    async getGiaTriRaw(
+        maThietLap,
+        context = {}
+    ) {
+        const ma =
+            String(maThietLap || '')
+                .trim()
+                .toUpperCase();
+
+        const cauHinh =
+            this.getCauHinhThietLap(
+                ma
+            );
+
+        let coSoId =
+            context.coSoId !== undefined &&
+            context.coSoId !== null &&
+            context.coSoId !== ''
+                ? Number(context.coSoId)
+                : null;
+
+        if (
+            cauHinh.quyTacCoSo ===
+            QUY_TAC_CO_SO.KHONG_CHO_CHON
+        ) {
+            coSoId = null;
+        }
+
+        if (
+            cauHinh.quyTacCoSo ===
+                QUY_TAC_CO_SO.BAT_BUOC &&
+            (
+                !Number.isInteger(coSoId) ||
+                coSoId <= 0
+            )
+        ) {
+            throw new ApiError(
+                400,
+                `Thiết lập "${ma}" bắt buộc phải có cơ sở.`
+            );
+        }
+
+        const thoiDiem =
+            this.resolveThoiDiemApDung(
+                ma,
+                context
+            );
+
+        const thietLap =
+            await cauHinhRepository
+                .getGiaTriHieuLuc(
+                    ma,
+                    {
+                        coSoId,
+                        thoiDiem
+                    }
+                );
+
+        if (!thietLap) {
+            return null;
+        }
+
+        return thietLap.gia_tri;
+    }
+
     async getGiaTriPublic(ma) {
         if (!ma) {
             throw new ApiError(400, 'Mã thiết lập không được để trống.');

@@ -95,7 +95,60 @@ function taoDongExport(item) {
 async function xuLyExport(query = {}) {
     const danhSach = await thietLapRepository.getTongHop(query);
 
-    const data = danhSach.map((item) => taoDongExport(item));
+    const data =
+        danhSach.flatMap(
+            (item) =>
+                item.dsGiaTri.map(
+                    (giaTri) => ({
+                        id:
+                            item.id,
+
+                        maThietLap:
+                            item.maThietLap,
+
+                        giaTriId:
+                            giaTri.id,
+
+                        tenThietLap:
+                            item.tenThietLap,
+
+                        giaTri:
+                            giaTri.giaTri,
+
+                        tuNgay:
+                            giaTri.tuNgay,
+
+                        denNgay:
+                            giaTri.denNgay,
+
+                        dsCoSoId:
+                            noiDanhSach(
+                                item.dsCoSoId
+                            ),
+
+                        dsMaCoSo:
+                            noiDanhSach(
+                                item.dsMaCoSo
+                            ),
+
+                        dsNhomTinhNangId:
+                            noiDanhSach(
+                                item.dsNhomTinhNangId
+                            ),
+
+                        dsMaNhomTinhNang:
+                            noiDanhSach(
+                                item.dsMaNhomTinhNang
+                            ),
+
+                        moTa:
+                            item.moTa,
+
+                        active:
+                            giaTri.active
+                    })
+                )
+        );
 
     return await createExportFile({
         maBaoCao: MA_BAO_CAO,

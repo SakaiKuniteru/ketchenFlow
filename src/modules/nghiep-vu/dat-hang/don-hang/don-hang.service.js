@@ -20,6 +20,7 @@ const enums = require('../../../../constants/enums');
 const { listSchema } = require('./don-hang.validation');
 const notificationService = require('../thong-bao/thong-bao-don-hang.service');
 const paymentRepository = require('../thanh-toan/thanh-toan-don-hang.repository');
+const paymentService = require('../thanh-toan/thanh-toan-don-hang.service');
 const slotService = require('../../../danh-muc/dat-hang/khung-gio-nhan-hang/khung-gio-nhan-hang.service');
 const locationRepository = require('../../../danh-muc/dat-hang/dia-diem-nhan-hang/dia-diem-nhan-hang.repository');
 
@@ -87,8 +88,9 @@ class DonHangService {
                     [user.nhanVienId, data.clientRequestId]
                 );
                 if (existing.rows.length) {
+                    const detail = await this.getDetail(existing.rows[0].don_hang_id, user, false, client);
                     await client.query('COMMIT');
-                    return this.getDetail(existing.rows[0].don_hang_id, user);
+                    return detail;
                 }
             }
             await this.validateDelivery(data, user, client);
@@ -154,13 +156,10 @@ class DonHangService {
                 user,
                 client
             );
+            const detail = await this.getDetail(orderId, user, false, client);
             await client.query('COMMIT');
 
-            await notificationService
-                .sendToEmployee(/* ... */)
-                .catch(() => null);
-
-            return this.getDetail(orderId, user, true);
+            return detail;
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;
@@ -169,16 +168,15 @@ class DonHangService {
         }
     }
 
-    async getDetail(id, user, manager = false) {
-        const row = await repository.getById(id);
+    async getDetail(id, user, manager = false, client = pool) {
+        const row = await repository.getById(id, client);
         if (!row || (!manager && Number(row.nguoi_dat_id) !== Number(user.nhanVienId)))
             throw new ApiError(404, 'Đơn hàng không tồn tại.');
-        const [items, vouchers, payments, history] = await Promise.all([
-            repository.getItems(id),
-            repository.getVouchers(id),
-            paymentRepository.list(id),
-            historyService.list(id)
-        ]);
+        // Một transaction dùng một connection: không chạy chồng query trên cùng client.
+        const items = await repository.getItems(id, client);
+        const vouchers = await repository.getVouchers(id, client);
+        const payments = await paymentRepository.list(id, client);
+        const history = await historyService.list(id, client);
 
         return {
             ...mapOrder(row),
@@ -310,9 +308,10 @@ class DonHangService {
                 client,
                 body.lyDo || ''
             );
+            const detail = await this.getDetail(id, user, true, client);
             await client.query('COMMIT');
 
-            return this.getDetail(id, user, true);
+            return detail;
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;

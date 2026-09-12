@@ -210,6 +210,16 @@
             </p>
         {{/if}}
 
+        {{#if canConfirmPayment}}
+            <p class="order-help">Giao dịch: {{pendingPayment.maGiaoDich}}</p>
+            <button type="button"
+                class="order-button order-button--outline"
+                data-order-action="xac-nhan-thanh-toan">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                Xác nhận đã nhận tiền QR
+            </button>
+        {{/if}}
+
         <div data-payment-result></div>
     {{/dat-hang/dung-chung}}
 

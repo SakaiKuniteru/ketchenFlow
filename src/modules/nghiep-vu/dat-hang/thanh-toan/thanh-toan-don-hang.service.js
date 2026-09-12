@@ -25,7 +25,7 @@ class ThanhToanService {
         const ownsTransaction = !transactionClient;
         const client = transactionClient || await pool.connect();
         try {
-            await client.query('BEGIN');
+            if (ownsTransaction) await client.query('BEGIN');
             const order = await orderRepository.getById(donHangId, client, true);
             const profile = manager ? await cartService.getNhanVien(user.nhanVienId, client) : null;
             if (
@@ -45,11 +45,13 @@ class ThanhToanService {
             const transactions = await repository.list(donHangId, client);
             const pending = transactions.find(
                 (row) =>
+                    Number(row.loaiGiaoDich) === LOAI_GIAO_DICH.THANH_TOAN &&
+                    Number(row.phuongThuc) === Number(order.phuong_thuc_thanh_toan) &&
                     [TRANG_THAI_GIAO_DICH.KHOI_TAO, TRANG_THAI_GIAO_DICH.CHO_XU_LY].includes(row.trangThai) &&
                     (!row.qrHetHanLuc || new Date(row.qrHetHanLuc) > new Date())
             );
             if (pending) {
-                await client.query('COMMIT');
+                if (ownsTransaction) await client.query('COMMIT');
                 return pending;
             }
             const gateway = gateways[order.phuong_thuc_thanh_toan];
@@ -66,13 +68,13 @@ class ThanhToanService {
                 },
                 client
             );
-            await client.query('COMMIT');
+            if (ownsTransaction) await client.query('COMMIT');
             return transaction;
         } catch (error) {
-            await client.query('ROLLBACK');
+            if (ownsTransaction) await client.query('ROLLBACK');
             throw error;
         } finally {
-            client.release();
+            if (ownsTransaction) client.release();
         }
     }
 
@@ -88,7 +90,7 @@ class ThanhToanService {
         const ownsTransaction = !transactionClient;
         const client = transactionClient || await pool.connect();
         try {
-            await client.query('BEGIN');
+            if (ownsTransaction) await client.query('BEGIN');
             const transaction = await client.query('SELECT don_hang_id FROM nv_thanh_toan_don_hang WHERE id = $1', [
                 id
             ]);
@@ -137,16 +139,17 @@ class ThanhToanService {
                 },
                 client
             );
-            await client.query('COMMIT');
-            return await repository.list(
+            const payments = await repository.list(
                 result.rows[0].don_hang_id,
                 client
             );
+            if (ownsTransaction) await client.query('COMMIT');
+            return payments;
         } catch (error) {
-            await client.query('ROLLBACK');
+            if (ownsTransaction) await client.query('ROLLBACK');
             throw error;
         } finally {
-            client.release();
+            if (ownsTransaction) client.release();
         }
     }
 

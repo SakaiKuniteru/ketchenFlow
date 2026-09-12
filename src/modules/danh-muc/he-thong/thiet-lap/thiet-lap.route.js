@@ -8,9 +8,19 @@ const controller = require('./thiet-lap.controller');
 const uploadImportExcel = require('../../../../middlewares/upload-import-excel.middleware');
 const thietLapExcel = require('./thiet-lap.excel');
 
-router.get('/tong-hop', authenticate, authorize('Q000013'), controller.getTongHop);
+router.get(
+    '/tong-hop', 
+    authenticate, 
+    authorize('Q000013'), 
+    controller.getTongHop
+);
 
-router.get('/xuat-du-lieu', authenticate, authorize('Q100001'), thietLapExcel.exportData);
+router.get(
+    '/xuat-du-lieu', 
+    authenticate, 
+    authorize('Q100001'), 
+    thietLapExcel.exportData
+);
 
 router.post(
     '/import-du-lieu',
@@ -20,10 +30,34 @@ router.post(
     thietLapExcel.importData
 );
 
-router.get('/:id', authenticate, authorize('Q000532', 'Q000533', 'Q000534'), controller.getChiTiet);
+router.get(
+    '/:id', 
+    authenticate, 
+    authorize('Q000532', 'Q000533', 'Q000534'), 
+    controller.getChiTiet
+);
 
-router.post('/them-moi', authenticate, authorize('Q000533', 'Q000534'), validate(createSchema), controller.create);
+router.post(
+    '/them-moi', 
+    authenticate, 
+    authorize('Q000533', 'Q000534'), 
+    validate(createSchema), 
+    controller.create
+);
 
-router.patch('/cap-nhat/:id', authenticate, authorize('Q000534'), validate(updateSchema), controller.update);
+router.patch(
+    '/cap-nhat/:id', 
+    authenticate, 
+    authorize('Q000534'), 
+    validate(updateSchema), 
+    controller.update
+);
+
+router.post(
+    '/dong-bo/:id',
+    authenticate,
+    authorize('Q000534'),
+    controller.dongBo
+);
 
 module.exports = router;

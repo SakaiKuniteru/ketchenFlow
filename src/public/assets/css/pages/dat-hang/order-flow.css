@@ -763,10 +763,24 @@
 
 .order-summary__actions {
     padding-top: 2px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.order-summary__actions > p {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.order-summary__actions > .order-button {
+    min-width: 0;
+    padding: 10px;
+    text-align: center;
 }
 
 .order-summary__actions .order-button + .order-button {
-    margin-top: 10px;
+    margin-top: 0;
 }
 
 .order-stat-grid {

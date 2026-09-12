@@ -1,6 +1,6 @@
 const ApiError = require('../../../../utils/api-error');
-
 const thietLapRepository = require('./thiet-lap.repository');
+const cauHinhService = require('../../../cau-hinh/cau-hinh.service');
 
 class ThietLapService {
     parseId(id) {
@@ -13,20 +13,112 @@ class ThietLapService {
         return thietLapId;
     }
 
+    chuanHoaThoiGian(
+        value,
+        laDenNgay = false
+    ) {
+        if (
+            value === undefined ||
+            value === null ||
+            String(value).trim() === ''
+        ) {
+            return null;
+        }
+
+        const text =
+            String(value).trim();
+
+        if (
+            /^\d{4}-\d{2}-\d{2}$/
+                .test(text)
+        ) {
+            return `${text} ${
+                laDenNgay
+                    ? '23:59:59'
+                    : '00:00:00'
+            }`;
+        }
+
+        if (
+            /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}$/
+                .test(text)
+        ) {
+            return text.replace(
+                'T',
+                ' '
+            );
+        }
+
+        throw new ApiError(
+            400,
+            'Thời gian phải có định dạng yyyy-MM-dd hoặc yyyy-MM-dd HH:mm:ss.'
+        );
+    }
+
+    chuanHoaKhoangThoiGian(
+        tuNgay,
+        denNgay
+    ) {
+        const tu =
+            this.chuanHoaThoiGian(
+                tuNgay,
+                false
+            );
+
+        const den =
+            this.chuanHoaThoiGian(
+                denNgay,
+                true
+            );
+
+        if (
+            tu &&
+            den &&
+            new Date(tu).getTime() >
+                new Date(den).getTime()
+        ) {
+            throw new ApiError(
+                400,
+                'Từ ngày phải nhỏ hơn hoặc bằng đến ngày.'
+            );
+        }
+
+        return {
+            tuNgay: tu,
+            denNgay: den
+        };
+    }
+
     async getTongHop(query) {
         return await thietLapRepository.getTongHop(query);
     }
 
     async getChiTiet(id) {
-        const thietLapId = this.parseId(id);
+        const thietLapId =
+            this.parseId(id);
 
-        const thietLap = await thietLapRepository.getChiTiet(thietLapId);
+        const thietLap =
+            await thietLapRepository
+                .getChiTiet(
+                    thietLapId
+                );
 
         if (!thietLap) {
-            throw new ApiError(404, 'Thiết lập không tồn tại.');
+            throw new ApiError(
+                404,
+                'Thiết lập không tồn tại.'
+            );
         }
 
-        return thietLap;
+        return {
+            ...thietLap,
+
+            cauHinh:
+                cauHinhService
+                    .getCauHinhThietLap(
+                        thietLap.maThietLap
+                    )
+        };
     }
 
     async getGiaTriTheoMa(maThietLap) {
@@ -72,50 +164,139 @@ class ThietLapService {
 
         if (Array.isArray(duLieu.dsMaCoSo)) {
             const danhSachMa = [
-                ...new Set(duLieu.dsMaCoSo.map((ma) => String(ma).trim().toUpperCase()).filter(Boolean))
+                ...new Set(
+                    duLieu.dsMaCoSo
+                        .map(
+                            (ma) =>
+                                String(ma)
+                                    .trim()
+                                    .toUpperCase()
+                        )
+                        .filter(Boolean)
+                )
             ];
 
             if (danhSachMa.length === 0) {
-                throw new ApiError(400, 'Danh sách mã cơ sở không được để trống.');
-            }
+                duLieu.dsCoSoId = [];
+                delete duLieu.dsMaCoSo;
+            } else {
+                const danhSachCoSo =
+                    await thietLapRepository
+                        .getDsCoSoByMas(
+                            danhSachMa
+                        );
 
-            const danhSachCoSo = await thietLapRepository.getDsCoSoByMas(danhSachMa);
+                if (
+                    danhSachCoSo.length !==
+                    danhSachMa.length
+                ) {
+                    const maTimThay =
+                        danhSachCoSo.map(
+                            (item) =>
+                                item.maCoSo
+                                    .trim()
+                                    .toUpperCase()
+                        );
 
-            if (danhSachCoSo.length !== danhSachMa.length) {
-                const maTimThay = danhSachCoSo.map((item) => item.maCoSo.trim().toUpperCase());
+                    const maKhongTonTai =
+                        danhSachMa.filter(
+                            (ma) =>
+                                !maTimThay.includes(ma)
+                        );
 
-                const maKhongTonTai = danhSachMa.filter((ma) => !maTimThay.includes(ma));
-
-                throw new ApiError(400, `Mã cơ sở không tồn tại: ${maKhongTonTai.join(', ')}.`);
-            }
-
-            const coSoBiKhoa = danhSachCoSo.find((item) => !item.active);
-
-            if (coSoBiKhoa) {
-                throw new ApiError(400, `Cơ sở "${coSoBiKhoa.tenCoSo}" đã bị khóa.`);
-            }
-
-            const idsTheoMa = danhSachMa.map((ma) => {
-                const coSo = danhSachCoSo.find((item) => item.maCoSo.trim().toUpperCase() === ma);
-
-                return Number(coSo.id);
-            });
-
-            if (Array.isArray(duLieu.dsCoSoId)) {
-                const idsDaTruyen = [...new Set(duLieu.dsCoSoId.map((id) => Number(id)))];
-
-                const a = [...idsTheoMa].sort((x, y) => x - y);
-
-                const b = [...idsDaTruyen].sort((x, y) => x - y);
-
-                if (JSON.stringify(a) !== JSON.stringify(b)) {
-                    throw new ApiError(400, 'Danh sách ID và mã cơ sở không khớp.');
+                    throw new ApiError(
+                        400,
+                        `Mã cơ sở không tồn tại: ${maKhongTonTai.join(', ')}.`
+                    );
                 }
-            }
 
-            duLieu.dsCoSoId = idsTheoMa;
-        } else if (Array.isArray(duLieu.dsCoSoId)) {
-            duLieu.dsCoSoId = [...new Set(duLieu.dsCoSoId.map((id) => Number(id)))];
+                const coSoBiKhoa =
+                    danhSachCoSo.find(
+                        (item) =>
+                            !item.active
+                    );
+
+                if (coSoBiKhoa) {
+                    throw new ApiError(
+                        400,
+                        `Cơ sở "${coSoBiKhoa.tenCoSo}" đã bị khóa.`
+                    );
+                }
+
+                const idsTheoMa =
+                    danhSachMa.map(
+                        (ma) => {
+                            const coSo =
+                                danhSachCoSo.find(
+                                    (item) =>
+                                        item.maCoSo
+                                            .trim()
+                                            .toUpperCase() === ma
+                                );
+
+                            return Number(
+                                coSo.id
+                            );
+                        }
+                    );
+
+                if (
+                    Array.isArray(
+                        duLieu.dsCoSoId
+                    )
+                ) {
+                    const idsDaTruyen = [
+                        ...new Set(
+                            duLieu.dsCoSoId.map(
+                                (id) =>
+                                    Number(id)
+                            )
+                        )
+                    ];
+
+                    const a =
+                        [...idsTheoMa]
+                            .sort(
+                                (x, y) =>
+                                    x - y
+                            );
+
+                    const b =
+                        [...idsDaTruyen]
+                            .sort(
+                                (x, y) =>
+                                    x - y
+                            );
+
+                    if (
+                        JSON.stringify(a) !==
+                        JSON.stringify(b)
+                    ) {
+                        throw new ApiError(
+                            400,
+                            'Danh sách ID và mã cơ sở không khớp.'
+                        );
+                    }
+                }
+
+                duLieu.dsCoSoId =
+                    idsTheoMa;
+
+                delete duLieu.dsMaCoSo;
+            }
+        } else if (
+            Array.isArray(
+                duLieu.dsCoSoId
+            )
+        ) {
+            duLieu.dsCoSoId = [
+                ...new Set(
+                    duLieu.dsCoSoId.map(
+                        (id) =>
+                            Number(id)
+                    )
+                )
+            ];
         }
 
         delete duLieu.dsMaCoSo;
@@ -205,36 +386,117 @@ class ThietLapService {
         data.dsNhomTinhNangId = danhSachId;
     }
 
-    async validateCoSo(data) {
-        if (!Array.isArray(data.dsCoSoId) || data.dsCoSoId.length === 0) {
-            throw new ApiError(400, 'Phải chọn ít nhất một cơ sở.');
+    async validateCoSo(
+        maThietLap,
+        dsCoSoId
+    ) {
+        const cauHinh =
+            cauHinhService
+                .getCauHinhThietLap(
+                    maThietLap
+                );
+
+        const danhSachId =
+            Array.isArray(dsCoSoId)
+                ? [
+                    ...new Set(
+                        dsCoSoId.map(
+                            (id) =>
+                                Number(id)
+                        )
+                    )
+                ]
+                : [];
+
+        if (
+            cauHinh.quyTacCoSo ===
+            'KHONG_CHO_CHON'
+        ) {
+            if (
+                danhSachId.length > 0
+            ) {
+                throw new ApiError(
+                    400,
+                    'Thiết lập này không được thiết lập cơ sở.'
+                );
+            }
+
+            return [];
         }
 
-        const danhSachId = [...new Set(data.dsCoSoId.map((id) => Number(id)))];
-
-        const idKhongHopLe = danhSachId.some((id) => !Number.isInteger(id) || id <= 0);
-
-        if (idKhongHopLe) {
-            throw new ApiError(400, 'Danh sách cơ sở không hợp lệ.');
+        if (
+            cauHinh.quyTacCoSo ===
+                'BAT_BUOC' &&
+            danhSachId.length === 0
+        ) {
+            throw new ApiError(
+                400,
+                'Thiết lập này bắt buộc phải có cơ sở.'
+            );
         }
 
-        const danhSachCoSo = await thietLapRepository.getDsCoSoByIds(danhSachId);
-
-        if (danhSachCoSo.length !== danhSachId.length) {
-            const idsTimThay = danhSachCoSo.map((item) => Number(item.id));
-
-            const idsKhongTonTai = danhSachId.filter((id) => !idsTimThay.includes(id));
-
-            throw new ApiError(400, `Cơ sở không tồn tại: ${idsKhongTonTai.join(', ')}.`);
+        if (
+            danhSachId.length === 0
+        ) {
+            return [];
         }
 
-        const coSoBiKhoa = danhSachCoSo.find((item) => !item.active);
+        const coIdKhongHopLe =
+            danhSachId.some(
+                (id) =>
+                    !Number.isInteger(id) ||
+                    id <= 0
+            );
+
+        if (coIdKhongHopLe) {
+            throw new ApiError(
+                400,
+                'Danh sách cơ sở không hợp lệ.'
+            );
+        }
+
+        const danhSachCoSo =
+            await thietLapRepository
+                .getDsCoSoByIds(
+                    danhSachId
+                );
+
+        if (
+            danhSachCoSo.length !==
+            danhSachId.length
+        ) {
+            const idsTimThay =
+                danhSachCoSo.map(
+                    (item) =>
+                        Number(item.id)
+                );
+
+            const idsKhongTonTai =
+                danhSachId.filter(
+                    (id) =>
+                        !idsTimThay.includes(id)
+                );
+
+            throw new ApiError(
+                400,
+                `Cơ sở không tồn tại: ${idsKhongTonTai.join(', ')}.`
+            );
+        }
+
+        const coSoBiKhoa =
+            danhSachCoSo.find(
+                (item) =>
+                    !item.active
+            );
 
         if (coSoBiKhoa) {
-            throw new ApiError(400, `Cơ sở "${coSoBiKhoa.tenCoSo}" đã bị khóa.`);
+            throw new ApiError(
+                400,
+                `Cơ sở "${coSoBiKhoa.tenCoSo}" đã bị khóa.`
+            );
         }
 
-        data.dsCoSoId = danhSachId;
+        return danhSachId;
     }
 
     async validateTrungDuLieu(data, excludeId = null) {
@@ -256,91 +518,277 @@ class ThietLapService {
             ...data,
 
             maThietLap:
-                data.maThietLap !== undefined && data.maThietLap !== null
-                    ? String(data.maThietLap).trim().toUpperCase()
-                    : '',
+                String(
+                    data.maThietLap || ''
+                )
+                    .trim()
+                    .toUpperCase(),
 
             tenThietLap:
-                data.tenThietLap !== undefined && data.tenThietLap !== null ? String(data.tenThietLap).trim() : '',
+                String(
+                    data.tenThietLap || ''
+                ).trim(),
 
-            giaTri: data.giaTri !== undefined && data.giaTri !== null ? String(data.giaTri) : null,
+            moTa:
+                data.moTa !== undefined &&
+                data.moTa !== null
+                    ? String(
+                        data.moTa
+                    ).trim() || null
+                    : null,
 
-            moTa: data.moTa !== undefined && data.moTa !== null ? String(data.moTa).trim() || null : null,
+            active:
+                data.active !== false,
 
-            active: data.active !== undefined ? data.active : true
+            dsGiaTri:
+                Array.isArray(
+                    data.dsGiaTri
+                )
+                    ? data.dsGiaTri
+                    : []
         };
 
-        const duLieuDaChuanHoa = await this.chuanHoaLienKet(duLieuTao);
+        const duLieuDaChuanHoa =
+            await this.chuanHoaLienKet(
+                duLieuTao
+            );
 
-        await this.validateCoSo(duLieuDaChuanHoa);
+        duLieuDaChuanHoa.dsCoSoId =
+            await this.validateCoSo(
+                duLieuDaChuanHoa.maThietLap,
+                duLieuDaChuanHoa.dsCoSoId
+            );
 
-        await this.validateLienKet(duLieuDaChuanHoa);
+        await this.validateLienKet(
+            duLieuDaChuanHoa
+        );
 
-        await this.validateTrungDuLieu(duLieuDaChuanHoa);
+        await this.validateTrungDuLieu(
+            duLieuDaChuanHoa
+        );
 
-        return await thietLapRepository.create(duLieuDaChuanHoa);
+        duLieuDaChuanHoa.dsGiaTri =
+            duLieuDaChuanHoa.dsGiaTri
+                .map((item) => {
+                    const range =
+                        this.chuanHoaKhoangThoiGian(
+                            item.tuNgay,
+                            item.denNgay
+                        );
+
+                    return {
+                        id:
+                            item.id,
+
+                        giaTri:
+                            item.giaTri === null
+                                ? null
+                                : String(
+                                    item.giaTri
+                                ),
+
+                        tuNgay:
+                            range.tuNgay,
+
+                        denNgay:
+                            range.denNgay,
+
+                        active:
+                            item.active !== false
+                    };
+                });
+
+        return await thietLapRepository
+            .create(
+                duLieuDaChuanHoa
+            );
     }
 
     async update(id, data) {
-        const thietLapId = this.parseId(id);
+        const thietLapId =
+            this.parseId(id);
 
-        const thietLap = await thietLapRepository.getChiTiet(thietLapId);
+        const thietLap =
+            await thietLapRepository
+                .getChiTiet(
+                    thietLapId
+                );
 
         if (!thietLap) {
-            throw new ApiError(404, 'Thiết lập không tồn tại.');
+            throw new ApiError(
+                404,
+                'Thiết lập không tồn tại.'
+            );
+        }
+
+        const dsGiaTriNguon =
+            data.dsGiaTri !== undefined
+                ? data.dsGiaTri
+                : thietLap.dsGiaTri;
+
+        const idsGiaTriHienTai =
+            new Set(
+                thietLap.dsGiaTri.map(
+                    (item) =>
+                        Number(item.id)
+                )
+            );
+
+        for (
+            const item of dsGiaTriNguon
+        ) {
+            if (
+                item.id !== undefined &&
+                item.id !== null &&
+                !idsGiaTriHienTai.has(
+                    Number(item.id)
+                )
+            ) {
+                throw new ApiError(
+                    400,
+                    `Giá trị thiết lập ID ${item.id} không thuộc thiết lập này.`
+                );
+            }
         }
 
         const duLieuCapNhat = {
             maThietLap:
-                data.maThietLap !== undefined ? String(data.maThietLap).trim().toUpperCase() : thietLap.maThietLap,
+                data.maThietLap !== undefined
+                    ? String(
+                        data.maThietLap
+                    )
+                        .trim()
+                        .toUpperCase()
+                    : thietLap.maThietLap,
 
-            tenThietLap: data.tenThietLap !== undefined ? String(data.tenThietLap).trim() : thietLap.tenThietLap,
-
-            giaTri: data.giaTri !== undefined ? (data.giaTri === null ? null : String(data.giaTri)) : thietLap.giaTri,
+            tenThietLap:
+                data.tenThietLap !== undefined
+                    ? String(
+                        data.tenThietLap
+                    ).trim()
+                    : thietLap.tenThietLap,
 
             moTa:
                 data.moTa !== undefined
                     ? data.moTa === null
                         ? null
-                        : String(data.moTa).trim() || null
+                        : String(
+                            data.moTa
+                        ).trim() || null
                     : thietLap.moTa,
 
             dsCoSoId:
                 data.dsCoSoId !== undefined
                     ? data.dsCoSoId
                     : data.dsMaCoSo !== undefined
-                      ? undefined
-                      : thietLap.dsCoSoId,
+                        ? undefined
+                        : thietLap.dsCoSoId,
 
-            dsMaCoSo: data.dsMaCoSo !== undefined ? data.dsMaCoSo : undefined,
+            dsMaCoSo:
+                data.dsMaCoSo !== undefined
+                    ? data.dsMaCoSo
+                    : undefined,
 
             dsNhomTinhNangId:
                 data.dsNhomTinhNangId !== undefined
                     ? data.dsNhomTinhNangId
                     : data.dsMaNhomTinhNang !== undefined
-                      ? undefined
-                      : thietLap.dsNhomTinhNangId,
+                        ? undefined
+                        : thietLap.dsNhomTinhNangId,
 
-            dsMaNhomTinhNang: data.dsMaNhomTinhNang !== undefined ? data.dsMaNhomTinhNang : undefined,
+            dsMaNhomTinhNang:
+                data.dsMaNhomTinhNang !== undefined
+                    ? data.dsMaNhomTinhNang
+                    : undefined,
 
-            active: data.active !== undefined ? data.active : thietLap.active
+            dsGiaTri:
+                dsGiaTriNguon.map(
+                    (item) => {
+                        const range =
+                            this.chuanHoaKhoangThoiGian(
+                                item.tuNgay,
+                                item.denNgay
+                            );
+
+                        return {
+                            id:
+                                item.id,
+
+                            giaTri:
+                                item.giaTri === null
+                                    ? null
+                                    : String(
+                                        item.giaTri
+                                    ),
+
+                            tuNgay:
+                                range.tuNgay,
+
+                            denNgay:
+                                range.denNgay,
+
+                            active:
+                                item.active !== false
+                        };
+                    }
+                ),
+
+            active:
+                data.active !== undefined
+                    ? data.active
+                    : thietLap.active
         };
 
-        const duLieuDaChuanHoa = await this.chuanHoaLienKet(duLieuCapNhat);
+        const duLieuDaChuanHoa =
+            await this.chuanHoaLienKet(
+                duLieuCapNhat
+            );
 
-        await this.validateCoSo(duLieuDaChuanHoa);
+        duLieuDaChuanHoa.dsCoSoId =
+            await this.validateCoSo(
+                duLieuDaChuanHoa.maThietLap,
+                duLieuDaChuanHoa.dsCoSoId
+            );
 
-        await this.validateLienKet(duLieuDaChuanHoa);
+        await this.validateLienKet(
+            duLieuDaChuanHoa
+        );
 
-        await this.validateTrungDuLieu(duLieuDaChuanHoa, thietLapId);
+        await this.validateTrungDuLieu(
+            duLieuDaChuanHoa,
+            thietLapId
+        );
 
-        const ketQua = await thietLapRepository.update(thietLapId, duLieuDaChuanHoa);
+        const ketQua =
+            await thietLapRepository
+                .update(
+                    thietLapId,
+                    duLieuDaChuanHoa
+                );
 
         if (!ketQua) {
-            throw new ApiError(404, 'Thiết lập không tồn tại.');
+            throw new ApiError(
+                404,
+                'Thiết lập không tồn tại.'
+            );
         }
 
         return ketQua;
+    }
+
+    async dongBo(id) {
+        const thietLap =
+            await this.getChiTiet(
+                id
+            );
+
+        return await cauHinhService
+            .dongBoThietLap(
+                thietLap.maThietLap,
+                {
+                    thietLap
+                }
+            );
     }
 }
 

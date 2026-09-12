@@ -82,6 +82,25 @@ class ThietLapController {
             next(error);
         }
     }
+
+    async dongBo(req, res, next) {
+        try {
+            const data =
+                await thietLapService
+                    .dongBo(
+                        req.params.id
+                    );
+
+            return successResponse(
+                res,
+                'Đồng bộ thiết lập thành công.',
+                data,
+                200
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = new ThietLapController();

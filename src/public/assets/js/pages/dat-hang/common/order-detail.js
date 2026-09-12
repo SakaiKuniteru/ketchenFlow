@@ -10,6 +10,12 @@
     } = C;
 
     const actionOptions = {
+        'xac-nhan-thanh-toan': {
+            label: 'Xác nhận đã nhận tiền QR',
+            theme: 'outline',
+            icon: 'fa-money-check-dollar',
+            hint: 'Chỉ xác nhận sau khi đã đối chiếu và thực sự nhận đủ tiền. Việc tạo hoặc quét mã QR không chứng minh đã thanh toán.'
+        },
         'xac-nhan': {
             label: 'Xác nhận đơn',
             theme: 'primary',
@@ -204,6 +210,13 @@
                 }
             );
 
+        const pendingPayment = (order.payments || []).find(payment =>
+            Number(payment.loaiGiaoDich) === 10 &&
+            Number(payment.phuongThuc) === 40 &&
+            [10, 20].includes(Number(payment.trangThai)) &&
+            (!payment.qrHetHanLuc || new Date(payment.qrHetHanLuc) > new Date())
+        );
+
         return {
             ...order,
 
@@ -216,6 +229,9 @@
             progress,
 
             isPaid,
+            canConfirmPayment: management && C.can('Q002033') && isQr &&
+                !isPaid && status > 0 && Number(order.trangThaiThanhToan) !== 50 && !!pendingPayment,
+            pendingPayment,
 
             quantity:
                 (order.items || [])
@@ -308,6 +324,7 @@
         let detailSequence = 0;
         let actionBusy = false;
         let paymentBusy = false;
+        let autoPaymentOrderId = null;
         let pending = null;
         let timer = null;
         let bound = false;
@@ -434,6 +451,14 @@
                                 )
                     );
 
+                // Đơn đã được lưu mới có ID để khởi tạo giao dịch QR.
+                // Chỉ tự mở một lần mỗi đơn; lỗi/hết hạn có nút tạo lại.
+                if (view.canPay && autoPaymentOrderId !== String(order.id)) {
+                    autoPaymentOrderId = String(order.id);
+                    const paymentButton = $('[data-payment-create]', detailTarget);
+                    if (paymentButton) await createPayment(paymentButton);
+                }
+
                 return order;
             } catch (error) {
                 if (
@@ -500,6 +525,12 @@
                 option
             };
 
+            if (action === 'xac-nhan-thanh-toan') {
+                const view = orderView(order, management, completed);
+                if (!view.canConfirmPayment) return;
+                pending.payment = view.pendingPayment;
+            }
+
             $('[data-action-title]',
                 dialog
             ).textContent =
@@ -549,16 +580,20 @@
 
             paymentBusy = true;
             button.disabled = true;
+            const paymentOrderId = String(order.id);
+            const paymentSequence = detailSequence;
 
             try {
                 const transaction =
                     await api(
-                        `/nv-thanh-toan-don-hang/${encodeURIComponent(order.id)}/khoi-tao`,
+                        `/nv-thanh-toan-don-hang/${encodeURIComponent(paymentOrderId)}/khoi-tao`,
                         {}
                     );
 
+                if (paymentSequence !== detailSequence || String(order?.id) !== paymentOrderId) return;
+
                 const target =
-                    $('[data-payment-result]');
+                    $('[data-payment-result]', detailTarget);
 
                 if (!target) return;
 
@@ -607,6 +642,13 @@
                     );
 
                 target.append(info);
+                const expiresAt = transaction.qrHetHanLuc || transaction.qr_het_han_luc;
+                if (expiresAt) {
+                    const expiry = document.createElement('p');
+                    expiry.className = 'order-help';
+                    expiry.textContent = `QR có hiệu lực đến ${C.dateTime(expiresAt)}. Hết hạn hãy bấm Xem / tạo mã QR để lấy mã mới.`;
+                    target.append(expiry);
+                }
             } catch (error) {
                 MCS.toast.error(
                     error.message
@@ -750,7 +792,13 @@
                                 pending.action ===
                                     'huy';
 
-                            await api(
+                            if (pending.payment) {
+                                await api(
+                                    `/nv-thanh-toan-don-hang/giao-dich/${encodeURIComponent(pending.payment.id)}/xac-nhan`,
+                                    { maGiaoDich: pending.payment.maGiaoDich },
+                                    'PATCH'
+                                );
+                            } else await api(
                                 `/nv-don-hang/${managementCancel ? 'quan-ly/' : ''}${encodeURIComponent(pending.id)}/${pending.action}`,
 
                                 {
@@ -768,7 +816,7 @@
                             dialog.close();
 
                             MCS.toast.success(
-                                'Đã cập nhật đơn hàng.'
+                                pending.payment ? 'Thanh toán thành công.' : 'Đã cập nhật đơn hàng.'
                             );
 
                             await changed();

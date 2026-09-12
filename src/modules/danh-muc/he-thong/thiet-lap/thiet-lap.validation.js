@@ -1,5 +1,35 @@
 const Joi = require('joi');
 
+const dateTimeInputSchema = Joi.string()
+    .trim()
+    .pattern(
+        /^\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}:\d{2})?$/
+    )
+    .allow('', null);
+
+const giaTriSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .optional(),
+
+    giaTri: Joi.alternatives()
+        .try(
+            Joi.string(),
+            Joi.number(),
+            Joi.boolean(),
+            Joi.valid(null)
+        )
+        .required(),
+
+    tuNgay: dateTimeInputSchema.optional(),
+
+    denNgay: dateTimeInputSchema.optional(),
+
+    active: Joi.boolean()
+        .default(true)
+});
+
 const createSchema = Joi.object({
     maThietLap: Joi.string().trim().max(100).required().messages({
         'string.base': 'Mã thiết lập phải là chuỗi.',
@@ -21,13 +51,10 @@ const createSchema = Joi.object({
         'any.required': 'Tên thiết lập là bắt buộc.'
     }),
 
-    giaTri: Joi.alternatives().try(Joi.string(), Joi.number(), Joi.boolean(), Joi.valid(null)).required().messages({
-        'alternatives.types': 'Giá trị thiết lập phải là chuỗi, số, boolean hoặc null.',
-
-        'alternatives.match': 'Giá trị thiết lập không hợp lệ.',
-
-        'any.required': 'Giá trị thiết lập là bắt buộc.'
-    }),
+    dsGiaTri: Joi.array()
+        .items(giaTriSchema)
+        .min(1)
+        .required(),
 
     moTa: Joi.string().trim().max(500).allow('', null).optional().messages({
         'string.base': 'Mô tả phải là chuỗi.',
@@ -35,17 +62,33 @@ const createSchema = Joi.object({
         'string.max': 'Mô tả không được vượt quá 500 ký tự.'
     }),
 
-    dsCoSoId: Joi.array().items(Joi.number().integer().positive()).min(1).unique().optional().messages({
-        'array.base': 'Cơ sở phải là một danh sách.',
+    dsCoSoId: Joi.array()
+        .items(
+            Joi.number()
+                .integer()
+                .positive()
+        )
+        .unique()
+        .optional()
+        .messages({
+            'array.base': 'Cơ sở phải là một danh sách.',
 
-        'array.unique': 'Danh sách cơ sở không được trùng nhau.'
-    }),
+            'array.unique': 'Danh sách cơ sở không được trùng nhau.'
+        }),
 
-    dsMaCoSo: Joi.array().items(Joi.string().trim().max(50)).min(1).unique().optional().messages({
-        'array.base': 'Mã cơ sở phải là một danh sách.',
+    dsMaCoSo: Joi.array()
+        .items(
+            Joi.string()
+                .trim()
+                .max(50)
+        )
+        .unique()
+        .optional()
+        .messages({
+            'array.base': 'Mã cơ sở phải là một danh sách.',
 
-        'array.unique': 'Danh sách mã cơ sở không được trùng nhau.'
-    }),
+            'array.unique': 'Danh sách mã cơ sở không được trùng nhau.'
+        }),
 
     dsNhomTinhNangId: Joi.array()
         .items(
@@ -111,11 +154,10 @@ const updateSchema = Joi.object({
         'string.max': 'Tên thiết lập không được vượt quá 255 ký tự.'
     }),
 
-    giaTri: Joi.alternatives().try(Joi.string(), Joi.number(), Joi.boolean(), Joi.valid(null)).optional().messages({
-        'alternatives.types': 'Giá trị thiết lập phải là chuỗi, số, boolean hoặc null.',
-
-        'alternatives.match': 'Giá trị thiết lập không hợp lệ.'
-    }),
+    dsGiaTri: Joi.array()
+        .items(giaTriSchema)
+        .min(1)
+        .optional(),
 
     moTa: Joi.string().trim().max(500).allow('', null).optional().messages({
         'string.base': 'Mô tả phải là chuỗi.',
@@ -123,17 +165,33 @@ const updateSchema = Joi.object({
         'string.max': 'Mô tả không được vượt quá 500 ký tự.'
     }),
 
-    dsCoSoId: Joi.array().items(Joi.number().integer().positive()).min(1).unique().optional().messages({
-        'array.base': 'Cơ sở phải là một danh sách.',
+    dsCoSoId: Joi.array()
+        .items(
+            Joi.number()
+                .integer()
+                .positive()
+        )
+        .unique()
+        .optional()
+        .messages({
+            'array.base': 'Cơ sở phải là một danh sách.',
 
-        'array.unique': 'Danh sách cơ sở không được trùng nhau.'
-    }),
+            'array.unique': 'Danh sách cơ sở không được trùng nhau.'
+        }),
 
-    dsMaCoSo: Joi.array().items(Joi.string().trim().max(50)).min(1).unique().optional().messages({
-        'array.base': 'Mã cơ sở phải là một danh sách.',
+    dsMaCoSo: Joi.array()
+        .items(
+            Joi.string()
+                .trim()
+                .max(50)
+        )
+        .unique()
+        .optional()
+        .messages({
+            'array.base': 'Mã cơ sở phải là một danh sách.',
 
-        'array.unique': 'Danh sách mã cơ sở không được trùng nhau.'
-    }),
+            'array.unique': 'Danh sách mã cơ sở không được trùng nhau.'
+        }),
 
     dsNhomTinhNangId: Joi.array()
         .items(

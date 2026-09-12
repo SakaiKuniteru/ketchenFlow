@@ -172,6 +172,10 @@ async function docDuLieuImport(file) {
 
         const giaTri = getValue(row, 'giaTri');
 
+        const tuNgay = getValue(row, 'tuNgay');
+
+        const denNgay = getValue(row, 'denNgay');
+
         const moTaRaw = getValue(row, 'moTa');
 
         const moTa = moTaRaw !== undefined && moTaRaw !== null ? String(moTaRaw).trim() : undefined;
@@ -194,6 +198,10 @@ async function docDuLieuImport(file) {
         if (tenThietLap !== undefined) item.tenThietLap = tenThietLap;
 
         if (giaTri !== undefined) item.giaTri = giaTri;
+
+        if (tuNgay !== undefined) item.tuNgay = tuNgay;
+
+        if (denNgay !== undefined) item.denNgay = denNgay;
 
         if (moTa !== undefined) item.moTa = moTa;
 
@@ -276,7 +284,31 @@ function taoDuLieuNghiepVu(item) {
 
     if (item.tenThietLap !== undefined) data.tenThietLap = item.tenThietLap;
 
-    if (item.giaTri !== undefined) data.giaTri = item.giaTri;
+    if (
+        item.giaTri !== undefined ||
+        item.tuNgay !== undefined ||
+        item.denNgay !== undefined
+    ) {
+        data.dsGiaTri = [
+            {
+                giaTri:
+                    item.giaTri !== undefined
+                        ? item.giaTri
+                        : null,
+
+                tuNgay:
+                    item.tuNgay,
+
+                denNgay:
+                    item.denNgay,
+
+                active:
+                    item.active !== undefined
+                        ? item.active
+                        : true
+            }
+        ];
+    }
 
     if (item.moTa !== undefined) data.moTa = item.moTa;
 

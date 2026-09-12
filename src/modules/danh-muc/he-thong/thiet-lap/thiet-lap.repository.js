@@ -2,45 +2,38 @@ const pool = require('../../../../config/database');
 
 class ThietLapRepository {
     mapThietLap(row) {
-        if (!row) {
-            return null;
-        }
+        if (!row) { return null; }
 
         const dsCoSo = Array.isArray(row.co_sos) ? row.co_sos : [];
-
         const dsNhomTinhNang = Array.isArray(row.nhom_tinh_nangs) ? row.nhom_tinh_nangs : [];
+        const dsGiaTri = Array.isArray(row.gia_tris) ? row.gia_tris : [];
 
         return {
             id: row.id,
-
             maThietLap: row.ma_thiet_lap,
-
             tenThietLap: row.ten_thiet_lap,
-
-            giaTri: row.gia_tri,
-
             moTa: row.mo_ta,
-
+            dsGiaTri: dsGiaTri.map(
+                (item) => ({
+                    id: Number(item.id),
+                    giaTri: item.giaTri,
+                    tuNgay: item.tuNgay,
+                    denNgay: item.denNgay,
+                    active: item.active,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt
+                })
+            ),
             dsCoSoId: dsCoSo.map((item) => Number(item.id)),
-
             dsMaCoSo: dsCoSo.map((item) => item.maCoSo),
-
             dsCoSo,
-
             coSo: dsCoSo.map((item) => item.tenCoSo).join(', '),
-
             dsNhomTinhNangId: dsNhomTinhNang.map((item) => Number(item.id)),
-
             dsMaNhomTinhNang: dsNhomTinhNang.map((item) => item.maNhomTinhNang),
-
             dsNhomTinhNang,
-
             nhomTinhNang: dsNhomTinhNang.map((item) => item.tenNhomTinhNang).join(', '),
-
             active: row.active,
-
             createdAt: row.created_at,
-
             updatedAt: row.updated_at
         };
     }
@@ -53,17 +46,54 @@ class ThietLapRepository {
                 tl.id,
                 tl.ma_thiet_lap,
                 tl.ten_thiet_lap,
-                tl.gia_tri,
                 tl.mo_ta,
                 tl.active,
                 tl.created_at,
                 tl.updated_at,
 
+                COALESCE(
+                    (
+                        SELECT
+                            JSON_AGG(
+                                JSON_BUILD_OBJECT(
+                                    'id',
+                                        gt.id,
+
+                                    'giaTri',
+                                        gt.gia_tri,
+
+                                    'tuNgay',
+                                        gt.tu_ngay,
+
+                                    'denNgay',
+                                        gt.den_ngay,
+
+                                    'active',
+                                        gt.active,
+
+                                    'createdAt',
+                                        gt.created_at,
+
+                                    'updatedAt',
+                                        gt.updated_at
+                                )
+                                ORDER BY
+                                    gt.tu_ngay ASC NULLS FIRST,
+                                    gt.id ASC
+                            )
+
+                        FROM dm_thiet_lap_gia_tri gt
+
+                        WHERE
+                            gt.thiet_lap_id =
+                                tl.id
+                    ),
+
+                    '[]'::JSON
+                ) AS gia_tris,
 
                 COALESCE(
-
                     (
-
                         SELECT
                             JSON_AGG(
 
@@ -112,9 +142,7 @@ class ThietLapRepository {
 
 
                 COALESCE(
-
                     (
-
                         SELECT
                             JSON_AGG(
 
@@ -151,38 +179,77 @@ class ThietLapRepository {
 
                             AND lkntn.active =
                                 TRUE
-
                     ),
 
                     '[]'::JSON
 
                 ) AS nhom_tinh_nangs
 
-
             FROM dm_thiet_lap tl
-
         `;
     }
 
     async getGiaTriTheoMa(maThietLap) {
         const sql = `
             SELECT
-                gia_tri
+                gt.gia_tri
 
-            FROM dm_thiet_lap
+            FROM dm_thiet_lap tl
+
+            INNER JOIN LATERAL (
+                SELECT
+                    value.gia_tri
+
+                FROM dm_thiet_lap_gia_tri value
+
+                WHERE
+                    value.thiet_lap_id = tl.id
+
+                    AND value.active = TRUE
+
+                    AND (
+                        value.tu_ngay IS NULL
+                        OR value.tu_ngay <= NOW()
+                    )
+
+                    AND (
+                        value.den_ngay IS NULL
+                        OR value.den_ngay >= NOW()
+                    )
+
+                ORDER BY
+                    value.tu_ngay DESC NULLS LAST,
+                    value.id DESC
+
+                LIMIT 1
+            ) gt
+                ON TRUE
 
             WHERE
-                UPPER(ma_thiet_lap)
-                    = UPPER($1)
+                UPPER(
+                    TRIM(
+                        tl.ma_thiet_lap
+                    )
+                ) = UPPER(
+                    TRIM(
+                        $1
+                    )
+                )
 
-                AND active = TRUE
+                AND tl.active = TRUE
 
             LIMIT 1
         `;
 
-        const result = await pool.query(sql, [maThietLap]);
+        const result =
+            await pool.query(
+                sql,
+                [maThietLap]
+            );
 
-        if (result.rows.length === 0) {
+        if (
+            result.rows.length === 0
+        ) {
             return null;
         }
 
@@ -567,61 +634,200 @@ class ThietLapRepository {
         await client.query(sql, [thietLapId]);
     }
 
+    async createGiaTri(
+        client,
+        thietLapId,
+        item
+    ) {
+        const sql = `
+            INSERT INTO dm_thiet_lap_gia_tri (
+                thiet_lap_id,
+                gia_tri,
+                tu_ngay,
+                den_ngay,
+                active,
+                created_at,
+                updated_at
+            )
+            VALUES (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                NOW(),
+                NOW()
+            )
+            RETURNING id
+        `;
+
+        const result =
+            await client.query(
+                sql,
+                [
+                    thietLapId,
+
+                    item.giaTri !== undefined &&
+                    item.giaTri !== null
+                        ? String(
+                            item.giaTri
+                        )
+                        : null,
+
+                    item.tuNgay || null,
+
+                    item.denNgay || null,
+
+                    item.active !== false
+                ]
+            );
+
+        return result.rows[0].id;
+    }
+
+    async khoaTatCaGiaTri(
+        client,
+        thietLapId
+    ) {
+        const sql = `
+            UPDATE dm_thiet_lap_gia_tri
+
+            SET
+                active = FALSE,
+                updated_at = NOW()
+
+            WHERE
+                thiet_lap_id = $1
+        `;
+
+        await client.query(
+            sql,
+            [thietLapId]
+        );
+    }
+
+    async updateGiaTri(
+        client,
+        thietLapId,
+        item
+    ) {
+        const sql = `
+            UPDATE dm_thiet_lap_gia_tri
+
+            SET
+                gia_tri = $3,
+                tu_ngay = $4,
+                den_ngay = $5,
+                active = $6,
+                updated_at = NOW()
+
+            WHERE
+                id = $1
+
+                AND thiet_lap_id = $2
+
+            RETURNING id
+        `;
+
+        const result =
+            await client.query(
+                sql,
+                [
+                    item.id,
+                    thietLapId,
+
+                    item.giaTri !== undefined &&
+                    item.giaTri !== null
+                        ? String(
+                            item.giaTri
+                        )
+                        : null,
+
+                    item.tuNgay || null,
+
+                    item.denNgay || null,
+
+                    item.active !== false
+                ]
+            );
+
+        return result.rows[0] || null;
+    }
+
     async create(data) {
-        const client = await pool.connect();
+        const client =
+            await pool.connect();
 
         try {
-            await client.query('BEGIN');
+            await client.query(
+                'BEGIN'
+            );
 
-            const sql = `
-                INSERT INTO dm_thiet_lap
-                (
-                    ma_thiet_lap,
-                    ten_thiet_lap,
-                    gia_tri,
-                    mo_ta,
-                    active,
-                    created_at,
-                    updated_at
-                )
-                VALUES
-                (
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5,
-                    NOW(),
-                    NOW()
-                )
-                RETURNING id
-            `;
+            const result =
+                await client.query(
+                    `
+                        INSERT INTO dm_thiet_lap (
+                            ma_thiet_lap,
+                            ten_thiet_lap,
+                            mo_ta,
+                            active,
+                            created_at,
+                            updated_at
+                        )
+                        VALUES (
+                            $1,
+                            $2,
+                            $3,
+                            $4,
+                            NOW(),
+                            NOW()
+                        )
+                        RETURNING id
+                    `,
+                    [
+                        data.maThietLap,
+                        data.tenThietLap,
+                        data.moTa || null,
+                        data.active !== false
+                    ]
+                );
 
-            const values = [
-                data.maThietLap,
+            const thietLapId =
+                result.rows[0].id;
 
-                data.tenThietLap,
+            await this.ganDsCoSo(
+                client,
+                thietLapId,
+                data.dsCoSoId
+            );
 
-                data.giaTri !== undefined ? data.giaTri : null,
+            await this.ganDsNhomTinhNang(
+                client,
+                thietLapId,
+                data.dsNhomTinhNangId
+            );
 
-                data.moTa || null,
+            for (
+                const item of data.dsGiaTri
+            ) {
+                await this.createGiaTri(
+                    client,
+                    thietLapId,
+                    item
+                );
+            }
 
-                data.active !== undefined ? data.active : true
-            ];
+            await client.query(
+                'COMMIT'
+            );
 
-            const result = await client.query(sql, values);
-
-            const thietLapId = result.rows[0].id;
-
-            await this.ganDsCoSo(client, thietLapId, data.dsCoSoId);
-
-            await this.ganDsNhomTinhNang(client, thietLapId, data.dsNhomTinhNangId);
-
-            await client.query('COMMIT');
-
-            return await this.getChiTiet(thietLapId);
+            return await this.getChiTiet(
+                thietLapId
+            );
         } catch (error) {
-            await client.query('ROLLBACK');
+            await client.query(
+                'ROLLBACK'
+            );
 
             throw error;
         } finally {
@@ -630,62 +836,118 @@ class ThietLapRepository {
     }
 
     async update(id, data) {
-        const client = await pool.connect();
+        const client =
+            await pool.connect();
 
         try {
-            await client.query('BEGIN');
+            await client.query(
+                'BEGIN'
+            );
 
-            const sql = `
-                UPDATE dm_thiet_lap
+            const result =
+                await client.query(
+                    `
+                        UPDATE dm_thiet_lap
 
-                SET
-                    ma_thiet_lap = $1,
-                    ten_thiet_lap = $2,
-                    gia_tri = $3,
-                    mo_ta = $4,
-                    active = $5,
-                    updated_at = NOW()
+                        SET
+                            ma_thiet_lap = $1,
+                            ten_thiet_lap = $2,
+                            mo_ta = $3,
+                            active = $4,
+                            updated_at = NOW()
 
-                WHERE id = $6
+                        WHERE
+                            id = $5
 
-                RETURNING id
-            `;
+                        RETURNING id
+                    `,
+                    [
+                        data.maThietLap,
+                        data.tenThietLap,
+                        data.moTa || null,
+                        data.active,
+                        id
+                    ]
+                );
 
-            const values = [
-                data.maThietLap,
-
-                data.tenThietLap,
-
-                data.giaTri !== undefined ? data.giaTri : null,
-
-                data.moTa || null,
-
-                data.active,
-
-                id
-            ];
-
-            const result = await client.query(sql, values);
-
-            if (result.rows.length === 0) {
-                await client.query('ROLLBACK');
+            if (
+                result.rows.length === 0
+            ) {
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return null;
             }
 
-            await this.khoaTatCaCoSo(client, id);
+            await this.khoaTatCaCoSo(
+                client,
+                id
+            );
 
-            await this.ganDsCoSo(client, id, data.dsCoSoId);
+            await this.ganDsCoSo(
+                client,
+                id,
+                data.dsCoSoId
+            );
 
-            await this.khoaTatCaNhomTinhNang(client, id);
+            await this.khoaTatCaNhomTinhNang(
+                client,
+                id
+            );
 
-            await this.ganDsNhomTinhNang(client, id, data.dsNhomTinhNangId);
+            await this.ganDsNhomTinhNang(
+                client,
+                id,
+                data.dsNhomTinhNangId
+            );
 
-            await client.query('COMMIT');
+            await this.khoaTatCaGiaTri(
+                client,
+                id
+            );
 
-            return await this.getChiTiet(id);
+            for (
+                const item of data.dsGiaTri
+            ) {
+                if (
+                    item.id !== undefined &&
+                    item.id !== null
+                ) {
+                    const giaTriDaCapNhat =
+                        await this.updateGiaTri(
+                            client,
+                            id,
+                            item
+                        );
+
+                    if (!giaTriDaCapNhat) {
+                        throw new Error(
+                            `Không tìm thấy giá trị thiết lập ID ${item.id}.`
+                        );
+                    }
+
+                    continue;
+                }
+
+                await this.createGiaTri(
+                    client,
+                    id,
+                    item
+                );
+            }
+
+            await client.query(
+                'COMMIT'
+            );
+
+            return await this.getChiTiet(
+                id
+            );
         } catch (error) {
-            await client.query('ROLLBACK');
+            await client.query(
+                'ROLLBACK'
+            );
 
             throw error;
         } finally {
